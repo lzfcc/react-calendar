@@ -10,5 +10,5 @@ module.exports = {
     filename: '[name].js', // 使用占位符[name]为每个入口生成唯一的文件名
     path: path.resolve(__dirname, 'public'),
   },
-  mode: 'production',
+  mode: 'production'
 };

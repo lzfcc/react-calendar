@@ -2,41 +2,27 @@
 // import { exec } from 'child_process'
 // import { EventEmitter } from 'events'
 // const eventEmitter = new EventEmitter()
-import { transpose, multiply, matrix, subtract } from 'mathjs'
-import { ScList } from './para_constant.mjs'
+import { transpose, multiply, matrix, subtract, divide, add, chain } from 'mathjs'
+import { ScList, big } from './para_constant.mjs'
 import { deltaT } from './astronomy_west.mjs'
 import { Jd2Date, generateTimeString } from './time_jd2date.mjs'
 import { deg2Hms } from './newm_shixian.mjs'
 import { precessionMx } from './eph/precession.mjs'
 import { nutaMx } from './eph/nutation.mjs'
-import { vsop87X, vsop87XV } from './eph/vsop.mjs'
+import { vsop87XV } from './eph/vsop.mjs'
 import { elp2000 } from './eph/elp2000.mjs'
 const abs = X => Math.abs(X)
 const pi = Math.PI
 const pi2 = 6.283185307179586476925287
 const d2r = d => d * .0174532925199432957692369 // pi / 180
-const r2d = r => r * 57.2957795130823208767981548 // 180 / pi
+const R2D = 57.2957795130823208767981548 // 180 / pi
+const c = 299792.458
+const cDay = 25902068371.2
 const sqr = X => Math.sqrt(X)
-const r2dfix = X => deg2Hms(r2d(X))
+const r2dfix = X => deg2Hms(X * R2D)
 
-
-// 只計算位置。
-const calX = (Planet, Jd) => {
-    let X = []
-    if (Planet === 'Moon') X = elp2000(Jd)
-    else if (Planet === 'Sun') { // 以地心作為標準
-        X = multiply(vsop87X('Earth', Jd), -1)
-    } else if (Planet === 'Earth') { // 以日心為標準
-        X = vsop87X(Planet, Jd)
-    } else {
-        const XEarth = vsop87X('Earth', Jd)
-        const XTarget = vsop87X(Planet, Jd)
-        X = subtract(XTarget, XEarth)
-    }
-    return [[X[0]], [X[1]], [X[2]]]
-}
 // 計算位置、速度
-const calXV = (Planet, Jd) => {
+export const calXV = (Planet, Jd) => {
     let X = [], V = []
     if (Planet === 'Moon') {
         X = elp2000(Jd)
@@ -52,7 +38,8 @@ const calXV = (Planet, Jd) => {
         X = subtract(XTarget, XEarth)
         V = subtract(VTarget, VEarth)
     }
-    return { X: [[X[0]], [X[1]], [X[2]]], V: [[V[0]], [V[1]], [V[2]]] } // 返回GCRS位置、速度
+    // return { X: [[X[0]], [X[1]], [X[2]]], V: [[V[0]], [V[1]], [V[2]]] } // 返回GCRS位置、速度
+    return { X, V }
 }
 // console.log(calXV('Mercury', 2424111))
 // 以下分別為R1 R2 R3 ，分別爲x, y, z軸旋轉矩陣。輸入弧度
@@ -78,41 +65,58 @@ const I = (Lon, Lat) => transpose([
     Math.sin(Lat)
 ])
 // const aa = multiply(transpose(I(40, 5)), I(40, 5)) //  I·IT=1
-export const x2LonLat = X => {
-    X = X.flat(Infinity)
-    const Lon = Math.atan2(X[1], X[0])
-    // const Lat = Math.asin(X[2])
-    const Lat = Math.atan2(X[2], sqr(X[0] ** 2 + X[1] ** 2))
-    return { Lon, Lat }
-}
-// const ad = multiply(r1(.4), r1(-.4)) // 正負相乘等於1
-// const R3 = r3(-0.1)
-// const test = multiply(R3, ad)
-// console.log(ad)
-// console.log(x2LonLat([0.766044443118978, 0.5894748531529738, -0.2563109608791921]))
-/**
- * 根據圖形，適用範圍+-50儒略世紀
- * @param {*} T 儒略世紀
- * @returns 平黃赤交角（單位秒''）
- */
+
 // 參考架偏差矩陣 frame bias matrix
-const B = matrix([
+export const B = matrix([
     [.99999999999999425, -7.078279744e-8, 8.05614894e-8],
     [7.078279478e-8, .99999999999999695, 3.306041454e-8],
     [-8.056149173e-8, -3.306040884e-8, .999999999999996208]])
 
 
-const c = 299792.458 // 光速
 // console.log(vec2dist([50708955572.54189, 138483686282.94858, 26896482.33861856]))
-const vec2dist = arr => {
-    const sumOfSquares = arr.reduce((sum, current) => sum + current ** 2, 0);
-    // 返回平方和的平方根
-    return sqr(sumOfSquares);
+export const x2LonLat = X => {
+    // X = X.flat(Infinity)
+    const Lon = Math.atan2(X[1], X[0])
+    // const Lat = Math.asin(X[2])
+    const Lat = Math.atan2(X[2], sqr(X[0] ** 2 + X[1] ** 2))
+    return { Lon, Lat }
 }
-// 近似光行差
-const calLightAber = (Jd, X) => Jd - vec2dist(X) / c / 86400
-// 從[x,y,z]座標值計算經緯度
+// 向量求模
+export const vec2dist = arr => {
+    // const sum = arr.reduce((sum, current) => sum + current ** 2, 0);
+    // const sum = big.pow(arr[0][0], 2).add(big.pow(arr[1][0], 2)).add(big.pow(arr[2][0], 2))
+    const sum = arr[0] ** 2 + arr[1] ** 2 + arr[2] ** 2
+    return sqr(sum)
+}
+// 求徑向速度
+const radialV = (X, V) => {
+    const R = vec2dist(X)
+    const Vr = (V[0] * X[0] + V[1] * X[1] + V[2] * X[2]) / R
+    return Vr
+}
+// 光行時修正retarded time推遲時。t - |X(tr)-XE(t)| / c 然後迭代算出。近似公式t - |X(t)-XE(t)|
+const lightTimeCorr = (t0, X) => t0 - vec2dist(X) / cDay
 
+// 光行差 見廖育棟文檔
+// n′ = γ−1n + β + (n·β)β / (1 + γ−1)
+//      / (1 + β·n)
+const lightAber = (X, V) => {
+    const Xmod = vec2dist(X)
+    const v = vec2dist(V)
+    const n = (divide(X, Xmod)) // 單位向量
+    const Vverse = multiply(V, -1)
+    const Beta = (divide(Vverse, cDay))
+    const g1 = sqr(1 - (v / cDay) ** 2)
+    const tmp1 = add(multiply(g1, n), Beta)
+    const tmp2 = chain(n).multiply(Beta).multiply(Beta).divide(1 + g1).done()
+    const tmp3 = add(1, multiply(Beta, n))
+    const n1 = divide(add(tmp1, tmp2), tmp3)
+    // 近似公式：相差很小
+    // const tmp4 = add(n, Beta)
+    // const tmp5 = vec2dist(add(n, Beta))
+    // const n1a = divide(tmp4, tmp5)
+    return multiply(n1, Xmod)
+}
 /**
  * 計算瞬時地心視黃經黃緯。在需要黃經導數的時候用calPos1，不需要的時候用calPos。注意：分析曆表的位置都是黃道座標，DE曆表是赤道座標
  * Xeq = N(t)P(t)X2000 = N(t)P(t)B·XICRS
@@ -139,9 +143,12 @@ const calLightAber = (Jd, X) => Jd - vec2dist(X) / c / 86400
  */
 const calPos = (Planet, Jd) => {
     const T = (Jd - 2451545) / 36525 // 儒略世紀
-    const Xreal = calX(Planet, Jd) // 實際位置
-    const Jdr = calLightAber(Jd, Xreal) // 推遲時
-    const { X, V } = calXV(Planet, Jdr) // 視位置
+    const { X: Xreal, V: Vreal } = calXV(Planet, Jd) // 實際位置
+    const Jdr = lightTimeCorr(Jd, Xreal) // 推遲時
+    const X = lightAber(Xreal, Vreal) // 光行差修正後的位置。這樣精確的算法和近似公式其實幾乎沒有區別，只相差5e-12rad
+    const { V: Vraw } = calXV(Planet, Jdr) // 視位置
+    const RadialV = radialV(X, Vraw)
+    const V = divide(Vraw, 1 + RadialV / cDay)
     const X2000 = multiply(B, X)
     const V2000 = multiply(B, V)
     // const { Lon: LonRaw } = x2LonLat(X) //  1024-3-15 2:37,VSOP的LonRaw是13°34′49″，DE441是12.48，一個黃道一個赤道
@@ -162,34 +169,11 @@ const calPos = (Planet, Jd) => {
     Lon = (Lon + pi2) % pi2
     return { EquaLon, EquaLat, Lon, Lat, Lon1 }
 }
-const calPos_DE = (Planet, Jd) => {
-    const T = (Jd - 2451545) / 36525 // 儒略世紀
-    const Xreal = calX(Planet, Jd) // 實際位置
-    const Jdr = calLightAber(Jd, Xreal) // 推遲時
-    const { X, V } = calXV(Planet, Jdr) // 視位置
-    const X2000 = multiply(B, X)
-    const V2000 = multiply(B, V)
-    // const { Lon: LonRaw } = x2LonLat(X) //  1024-3-15 2:37,VSOP的LonRaw是13°34′49″，DE441是12.48，一個黃道一個赤道
-    const { N, Obliq } = nutaMx(T)
-    const P = precessionMx(T) // 歲差矩陣 P(t)
-    const NP = multiply(N, P)
-    const R1Eps = r1(Obliq)
-    const Equa = multiply(NP, X2000).toArray()
-    const Equa1 = multiply(NP, V2000).toArray()
-    const Eclp = multiply(R1Eps, Equa).toArray()
-    const Eclp1 = multiply(R1Eps, Equa1).toArray()
-    // X=[x, y, z]. Lon=atan2(y, x). derivativeLon =(xy'-yx')/(x^2+y^2). 欲求x', y', 求 X' ≈ R1(Ep t)N(t)P(t)B[v(tr)-vE(tr)]
-    const Lon1 = (Eclp[0] * Eclp1[1] - Eclp[1] * Eclp1[0]) / (Eclp[0] ** 2 + Eclp[1] ** 2) // 經度的時間導數
-    let { Lon: EquaLon, Lat: EquaLat } = x2LonLat(Equa)
-    EquaLon = (EquaLon + pi2) % pi2
-    let { Lon, Lat } = x2LonLat(Eclp)
-    Lon = (Lon + pi2) % pi2
-    return { EquaLon, EquaLat, Lon, Lat, Lon1 }
-}
+
 // console.log(calPos('Sun', 2095147.609028 - 0.333333)) // 1024-3-15 2:37 Lon: '1°8′34″', LonRaw: '13°34′49″
 // console.log(calPos('Sun', 2460389.9625 - 0.333333)) // 2024-3-20 11:06 Lon: '359°59′55″', LonRaw: '0°18′37″
 // const startTime = performance.now();
-// console.log(calPos('Sun', 2433133))
+// console.log(calPos('Sun', 2433323))
 // const endTime = performance.now();
 // console.log(endTime - startTime) // 4.2ms一次
 
@@ -331,4 +315,4 @@ export const N5 = Y => {
         NewmJd, AvgSolsJd
     }
 }
-// console.log(N5('VSOP', -1124))
+// console.log(N5(2024))

@@ -5,6 +5,8 @@ import NewmList from './eph/newm_de44_list.mjs'
 import SyzygyList from './eph/syzygy_de44_list.mjs'
 import TermList from './eph/term_de44_list.mjs'
 import Term1List from './eph/term1_de44_list.mjs'
+import { mansionModern } from './eph/mansion.mjs'
+// import { } from './eph/mansion.mjs'
 function findClosest(a, list) {
     let closest = list[0], closestIndex = 0;
     let smallestDifference = Math.abs(a - closest);
@@ -39,15 +41,15 @@ export const N6 = Y => {
     const AcrChouTermJdIndex = findClosest(AvgChouTermJd, TermList).closestIndex
     const AcrChouTerm1JdIndex = findClosest(AvgChouTerm1Jd, Term1List).closestIndex
     const main = (isNewm, LeapNumTerm) => {
-        const AcrJd = [], UT18Sc = [], UT18Deci = [], NowDeci = [],
-            AcrTermJd = [], TermAcrSc = [], TermAcrDeci = [],
-            AcrTerm1Jd = [], Term1AcrSc = [], Term1AcrDeci = []
+        const AcrJd = [], UT18Sc = [], UT18Mmdd = [], UT18Deci = [], NowDeci = [],
+            AcrTermJd = [], TermAcrSc = [], TermAcrMmdd = [], TermAcrDeci = [], TermEclp = [], TermEqua = [], Term1AcrSc = [], Term1AcrMmdd = [], Term1AcrDeci = [], Term1Eclp = [], Term1Equa = []
         for (let i = 0; i <= 14; i++) {
             //////// 平朔望   
             AcrJd[i] = isNewm ? NewmList[AcrChouJdIndex + i] : SyzygyList[AcrChouSyzygyJdIndex + i]
             const UT18Jd = AcrJd[i] - deltaT(AcrJd[i]) + 8 / 24
             const UT18JdDate = Jd2Date(UT18Jd)
             UT18Sc[i] = ScList[UT18JdDate.ScOrder]
+            UT18Mmdd[i] = UT18JdDate.mm + '-' + UT18JdDate.dd
             UT18Deci[i] = generateTimeString(UT18JdDate.h, UT18JdDate.m, UT18JdDate.s, Y < 1600 ? '' : UT18JdDate.ms)
             //////// 節氣
             if (isNewm) {
@@ -56,13 +58,21 @@ export const N6 = Y => {
                 const UT18TermJd = AcrTermJd[i] + 8 / 24 - deltaT(AcrTermJd[i])
                 const UT18TermJdDate = Jd2Date(UT18TermJd)
                 TermAcrSc[i] = ScList[UT18TermJdDate.ScOrder]
+                TermAcrMmdd[i] = UT18TermJdDate.mm + '-' + UT18TermJdDate.dd
                 TermAcrDeci[i] = generateTimeString(UT18TermJdDate.h, UT18TermJdDate.m, UT18TermJdDate.s, Y < 1600 ? '' : UT18TermJdDate.ms)
+                const TermFunc = mansionModern(AcrTermJd[i])
+                TermEclp[i] = TermFunc.Eclp
+                TermEqua[i] = TermFunc.Equa
                 // 節氣
-                AcrTerm1Jd[i] = Term1List[AcrChouTerm1JdIndex + i - 1]
-                const UT18Term1Jd = AcrTerm1Jd[i] + 8 / 24 - deltaT(AcrTerm1Jd[i])
+                const AcrTerm1Jd = Term1List[AcrChouTerm1JdIndex + i - 1]
+                const UT18Term1Jd = AcrTerm1Jd + 8 / 24 - deltaT(AcrTerm1Jd)
                 const UT18Term1JdDate = Jd2Date(UT18Term1Jd)
                 Term1AcrSc[i] = ScList[UT18Term1JdDate.ScOrder]
+                Term1AcrMmdd[i] = UT18Term1JdDate.mm + '-' + UT18Term1JdDate.dd
                 Term1AcrDeci[i] = generateTimeString(UT18Term1JdDate.h, UT18Term1JdDate.m, UT18Term1JdDate.s, Y < 1600 ? '' : UT18Term1JdDate.ms)
+                const Term1Func = mansionModern(AcrTerm1Jd)
+                Term1Eclp[i] = Term1Func.Eclp
+                Term1Equa[i] = Term1Func.Equa
             }
         }
         //////// 置閏
@@ -76,27 +86,27 @@ export const N6 = Y => {
             }
         }
         return {
-            AcrJd, UT18Sc, UT18Deci, NowDeci,
-            TermAcrSc, TermAcrDeci,
-            Term1AcrSc, Term1AcrDeci,
+            AcrJd, UT18Sc, UT18Mmdd, UT18Deci, NowDeci,
+            TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
+            Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa,
             LeapNumTerm
         }
     }
     const {
-        AcrJd: NewmJd, UT18Sc: NewmSc, UT18Deci: NewmDeci,
-        TermAcrSc, TermAcrDeci,
-        Term1AcrSc, Term1AcrDeci, LeapNumTerm
+        AcrJd: NewmJd, UT18Sc: NewmSc, UT18Mmdd: NewmMmdd, UT18Deci: NewmDeci,
+        TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
+        Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa, LeapNumTerm
     } = main(true)
     const {
-        UT18Sc: SyzygySc, UT18Deci: SyzygyDeci
+        UT18Sc: SyzygySc, UT18Mmdd: SyzygyMmdd, UT18Deci: SyzygyDeci
     } = main(false, LeapNumTerm)
     return {
-        NewmSc, NewmDeci,
-        SyzygySc, SyzygyDeci,
-        TermAcrSc, TermAcrDeci,
-        Term1AcrSc, Term1AcrDeci, LeapNumTerm,
+        NewmSc, NewmMmdd, NewmDeci,
+        SyzygySc, SyzygyMmdd, SyzygyDeci,
+        TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
+        Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa, LeapNumTerm,
         //// 曆書用
         NewmJd, AvgSolsJd
     }
 }
-// console.log(N6('DE441', 2023))
+// console.log(N6(2024))

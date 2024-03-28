@@ -3,7 +3,7 @@ import DynamicList, { createCache } from 'react-window-dynamic-list'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import gfm from 'remark-gfm'
-import md1 from './note/newm.md';
+import md1 from './note/newm_de.md';
 const TableRowNameMap = {
   MonthPrint: ' ',
   NewmScPrint: '定朔',
@@ -12,14 +12,17 @@ const TableRowNameMap = {
   NewmEquaPrint: '赤道',
   NewmEclpPrint: '黃道',
   SyzygyScPrint: '定望',
+  SyzygyMmddPrint: '公曆',
   SyzygyDeciPrint: 'UT1+8',
   Term1NamePrint: '節氣',
   Term1AcrScPrint: '定氣',
+  Term1AcrMmddPrint: '公曆',
   Term1AcrDeciPrint: 'UT1+8',
   Term1EquaPrint: '赤道',
   Term1EclpPrint: '黃道',
   TermNamePrint: '節氣',
   TermAcrScPrint: '定氣',
+  TermAcrMmddPrint: '公曆',
   TermAcrDeciPrint: 'UT1+8',
   TermEquaPrint: '赤道',
   TermEclpPrint: '黃道',

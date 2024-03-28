@@ -1,6 +1,5 @@
 import { N6 } from './newm_de.mjs'
-import Para from './para_calendars.mjs'
-import { TermNameList, Term1NameList, ScList, NameList, MonNumList1, } from './para_constant.mjs'
+import { TermNameList, Term1NameList, ScList, MonNumList1 } from './para_constant.mjs'
 import { deltaT, deltaTErrorEstimate } from './astronomy_west.mjs'
 // const Index = (YearStart, YearEnd) => {
 export default (YearStart, YearEnd) => {
@@ -9,7 +8,7 @@ export default (YearStart, YearEnd) => {
         const [PrevYear, ThisYear] = Memo
         let { LeapNumTerm } = ThisYear
         const { NewmEqua, NewmEclp } = ThisYear
-        const TermAcrSc = [], TermAcrDeci = [], TermNowDeci = [], Term1Name = [], Term1Equa = [], Term1Eclp = [], Term1AcrSc = [], Term1AcrDeci = [], Term1NowDeci = []
+        const TermAcrSc = [], TermAcrMmdd = [], TermAcrDeci = [], TermNowDeci = [], Term1Name = [], Term1Equa = [], Term1Eclp = [], Term1AcrSc = [], Term1AcrMmdd = [], Term1AcrDeci = [], Term1NowDeci = []
         let TermName = [], TermEqua = [], TermEclp = [],
             NewmStart = 0
         let NewmEnd = LeapNumTerm ? 1 : 0
@@ -27,12 +26,12 @@ export default (YearStart, YearEnd) => {
         for (let i = 1; i <= 13; i++) {
             TermName[i] = TermNameList[(i + 2) % 12]
             Term1Name[i] = Term1NameList[(i + 2) % 12]
-            if (ThisYear.TermAcrSc) {
-                TermAcrSc[i] = ThisYear.TermAcrSc[i]
-                TermAcrDeci[i] = ThisYear.TermAcrDeci[i]
-                Term1AcrSc[i] = ThisYear.Term1AcrSc[i]
-                Term1AcrDeci[i] = ThisYear.Term1AcrDeci[i]
-            }
+            TermAcrSc[i] = ThisYear.TermAcrSc[i]
+            TermAcrMmdd[i] = ThisYear.TermAcrMmdd[i]
+            TermAcrDeci[i] = ThisYear.TermAcrDeci[i]
+            Term1AcrSc[i] = ThisYear.Term1AcrSc[i]
+            Term1AcrMmdd[i] = ThisYear.Term1AcrMmdd[i]
+            Term1AcrDeci[i] = ThisYear.Term1AcrDeci[i]
             if (ThisYear.TermNowDeci) {
                 TermNowDeci[i] = ThisYear.TermNowDeci[i]
                 Term1NowDeci[i] = ThisYear.Term1NowDeci[i]
@@ -41,14 +40,13 @@ export default (YearStart, YearEnd) => {
                 TermEqua[i] = ThisYear.TermEqua[i]
                 Term1Equa[i] = ThisYear.Term1Equa[i]
             }
-            if (ThisYear.TermEclp) {
-                TermEclp[i] = ThisYear.TermEclp[i]
-                Term1Eclp[i] = ThisYear.Term1Eclp[i]
-            }
+            TermEclp[i] = ThisYear.TermEclp[i]
+            Term1Eclp[i] = ThisYear.Term1Eclp[i]
         }
         if (LeapNumTerm) {
             TermName[LeapNumTerm + 1] = '无中'
             TermAcrSc[LeapNumTerm + 1] = ''
+            TermAcrMmdd[LeapNumTerm + 1] = ''
             TermAcrDeci[LeapNumTerm + 1] = ''
             TermNowDeci[LeapNumTerm + 1] = ''
             TermEqua[LeapNumTerm + 1] = ''
@@ -71,19 +69,18 @@ export default (YearStart, YearEnd) => {
                     TermEqua[i] = ThisYear.Term1Equa[i]
                     Term1Equa[i] = ThisYear.TermEqua[i - 1]
                 }
-                if (ThisYear.TermEclp) {
-                    TermEclp[i] = ThisYear.Term1Eclp[i]
-                    Term1Eclp[i] = ThisYear.TermEclp[i - 1]
-                }
+                TermEclp[i] = ThisYear.Term1Eclp[i]
+                Term1Eclp[i] = ThisYear.TermEclp[i - 1]
             }
         }
         if (PrevYear.LeapNumTerm) {
             Term1Name[1] = '无節'
             Term1AcrSc[1] = ''
+            Term1AcrMmdd[1] = ''
             Term1AcrDeci[1] = ''
             if (ThisYear.Term1NowDeci) Term1NowDeci[1] = ''
             if (ThisYear.Term1Equa) Term1Equa[1] = ''
-            if (ThisYear.Term1Eclp) Term1Eclp[1] = ''
+            Term1Eclp[1] = ''
         }
         // 月序
         const MonthName = []
@@ -107,29 +104,31 @@ export default (YearStart, YearEnd) => {
         const TermSlice = array => array.slice(1 + TermStart, 13 + TermEnd)
         ////////////下爲調整輸出////////////
         const MonthPrint = MonthName.slice(1)
-        let NewmScPrint = [], NewmDeciUT18Print = []
-        NewmScPrint = NewmSlice(ThisYear.NewmSc)
-        NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
+        const NewmScPrint = NewmSlice(ThisYear.NewmSc)
+        const NewmMmddPrint = NewmSlice(ThisYear.NewmMmdd)
+        const NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
         const NewmEquaPrint = NewmEqua ? NewmSlice(NewmEqua) : undefined
         const NewmEclpPrint = NewmEclp ? NewmSlice(NewmEclp) : undefined
         const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)
+        const SyzygyMmddPrint = NewmSlice(ThisYear.SyzygyMmdd)
         const SyzygyDeciPrint = NewmSlice(ThisYear.SyzygyDeci)
-        let TermNamePrint = [], TermAcrScPrint = [], TermAcrDeciPrint = [], TermNowDeciPrint = [], TermEquaPrint = [], TermEclpPrint = [], Term1NamePrint = [], Term1EquaPrint = [], Term1EclpPrint = [], Term1AcrDeciPrint = [], Term1NowDeciPrint = [], Term1AcrScPrint = []
-        TermNamePrint = TermSlice(TermName)
-        Term1NamePrint = Term1Name[2] ? TermSlice(Term1Name) : []
-        TermAcrScPrint = TermSlice(TermAcrSc)
-        TermAcrDeciPrint = TermSlice(TermAcrDeci)
-        Term1AcrScPrint = TermSlice(Term1AcrSc)
-        Term1AcrDeciPrint = TermSlice(Term1AcrDeci)
+        let TermNowDeciPrint = [], Term1NowDeciPrint = []
+        const TermNamePrint = TermSlice(TermName)
+        const Term1NamePrint = Term1Name[2] ? TermSlice(Term1Name) : []
+        const TermAcrScPrint = TermSlice(TermAcrSc)
+        const TermAcrMmddPrint = TermSlice(TermAcrMmdd)
+        const TermAcrDeciPrint = TermSlice(TermAcrDeci)
+        const Term1AcrScPrint = TermSlice(Term1AcrSc)
+        const Term1AcrMmddPrint = TermSlice(Term1AcrMmdd)
+        const Term1AcrDeciPrint = TermSlice(Term1AcrDeci)
         if (TermNowDeci[2]) {
             TermNowDeciPrint = TermSlice(TermNowDeci)
             Term1NowDeciPrint = TermSlice(Term1NowDeci)
         }
-        TermEquaPrint = TermEqua[2] ? TermSlice(TermEqua) : undefined
-        Term1EquaPrint = Term1Equa[2] ? TermSlice(Term1Equa) : undefined
-        TermEclpPrint = TermEclp[2] ? TermSlice(TermEclp) : undefined
-        Term1EclpPrint = Term1Eclp[2] ? TermSlice(Term1Eclp) : undefined
-
+        const TermEquaPrint = TermEqua[2] ? TermSlice(TermEqua) : undefined
+        const Term1EquaPrint = Term1Equa[2] ? TermSlice(Term1Equa) : undefined
+        const TermEclpPrint = TermSlice(TermEclp)
+        const Term1EclpPrint = TermSlice(Term1Eclp)
         const YearSc = ScList[((Y - 3) % 60 + 60) % 60]
         let Era = Y
         if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`
@@ -138,10 +137,10 @@ export default (YearStart, YearEnd) => {
         YearInfo += ' ΔT = ' + ~~(deltaT(ThisYear.NewmJd[5]) * 86400) + ' ± ' + deltaTErrorEstimate(Y)[0] + ' 秒'
         return {
             Era, YearInfo, MonthPrint,
-            NewmScPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
-            SyzygyScPrint, SyzygyDeciPrint,
-            Term1NamePrint, Term1AcrScPrint, Term1AcrDeciPrint, Term1NowDeciPrint, Term1EclpPrint, Term1EquaPrint,
-            TermNamePrint, TermAcrScPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint,
+            NewmScPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
+            SyzygyScPrint, SyzygyMmddPrint, SyzygyDeciPrint,
+            Term1NamePrint, Term1AcrScPrint, Term1AcrMmddPrint, Term1AcrDeciPrint, Term1NowDeciPrint, Term1EclpPrint, Term1EquaPrint,
+            TermNamePrint, TermAcrScPrint, TermAcrMmddPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint,
         }
     }
     Memo[0] = N6(YearStart - 1) // 去年

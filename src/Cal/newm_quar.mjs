@@ -1,4 +1,4 @@
-import { ScList, TermNameList, AutoDegAccumList, deci } from './para_constant.mjs'
+import { ScList, TermNameList, deci } from './para_constant.mjs'
 import Para from './para_calendars.mjs'
 import { mansion, midstar } from './astronomy_other.mjs'
 
@@ -75,7 +75,6 @@ export default (Name, Y) => {
     }
     // 閏餘法閏月
     const LeapNumOriginLeapSur = LeapNumAvgThis ? Math.round(((LeapNumAvgThis + ZhengSd + 12) % 12 + 12) % 12.1) : 0
-    const EquaAccumList = MansionRaw ? AutoDegAccumList(Name, Y).EquaAccumList : []
     // 朔望
     const NewmAvgBare = [], NewmAvgRaw = [], NewmInt = [], NewmAvgSc = [], NewmSd = [], NewmAvgDeci = [], NewmEqua = [], SyzygyAvgRaw = [], SyzygyAvgMod = [], SyzygyOrderMod = [], SyzygyDeci = []
     let SyzygySc = []

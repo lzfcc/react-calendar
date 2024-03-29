@@ -10,9 +10,9 @@ import {
     EquaEclpWest, sunRise, Lon2DialWest, ConstWest, starEclp2Ceclp, starEclp2Equa, testEclpEclpDif,
 } from './astronomy_west.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS, ShoushiXianV } from './astronomy_acrv.mjs'
-import { NameList, AutoDegAccumList, MansionNameList, MansionNameListQing } from './para_constant.mjs'
+import { NameList, degAccumList, MansionNameList, MansionNameListQing } from './para_constant.mjs'
 import { AutoEclipse } from './astronomy_eclipse.mjs'
-import { Deg2Mansion, Mansion2Deg, mansion, mansionQing } from './astronomy_other.mjs'
+import { deg2Mansion, mansion2Deg, mansion, mansionQing } from './astronomy_other.mjs'
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from './para_auto-constant.mjs'
 import { GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from './newm_shixian.mjs'
 const Gong2Lon = Gong => (Gong + 270) % 360
@@ -404,27 +404,27 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
 }
 // console.log(bindLon2Lat(0, 2)[14].data[3])
 export const bindDeg2Mansion = Deg => {
-    const { EquaAccumList: EquaAccumListTaichu, EclpAccumList: EclpAccumListTaichu } = AutoDegAccumList('Taichu', 300)
+    const { EquaAccumList: EquaAccumListTaichu, EclpAccumList: EclpAccumListTaichu } = degAccumList('Taichu', 300)
     const EquaAccumListHuangji = []
-    const EclpAccumListHuangji = AutoDegAccumList('Huangji', 500).EclpAccumList
+    const EclpAccumListHuangji = degAccumList('Huangji', 500).EclpAccumList
     const EquaAccumListLinde = []
-    const EclpAccumListLinde = AutoDegAccumList('Linde', 665).EclpAccumList // 麟德
-    const { EquaAccumList: EquaAccumListDayan, EclpAccumList: EclpAccumListDayan } = AutoDegAccumList('Dayan', 729)
+    const EclpAccumListLinde = degAccumList('Linde', 665).EclpAccumList // 麟德
+    const { EquaAccumList: EquaAccumListDayan, EclpAccumList: EclpAccumListDayan } = degAccumList('Dayan', 729)
     const EquaAccumListYingtian = []
-    const EclpAccumListYingtian = AutoDegAccumList('Yingtian', 964).EclpAccumList // 應天
-    const EquaAccumListMingtian = AutoDegAccumList('Mingtian', 1065).EquaAccumList // 明天
-    const EclpAccumListMingtian = AutoDegAccumList('Mingtian', 1065).EclpAccumList // 明天
-    const { EquaAccumList: EquaAccumListJiyuan, EclpAccumList: EclpAccumListJiyuan } = AutoDegAccumList('Jiyuan', 1106)
+    const EclpAccumListYingtian = degAccumList('Yingtian', 964).EclpAccumList // 應天
+    const EquaAccumListMingtian = degAccumList('Mingtian', 1065).EquaAccumList // 明天
+    const EclpAccumListMingtian = degAccumList('Mingtian', 1065).EclpAccumList // 明天
+    const { EquaAccumList: EquaAccumListJiyuan, EclpAccumList: EclpAccumListJiyuan } = degAccumList('Jiyuan', 1106)
     const EquaAccumListDaming3 = []
-    const EclpAccumListDaming3 = AutoDegAccumList('Daming3', 1180).EclpAccumList
-    const { EquaAccumList: EquaAccumListShoushi, EclpAccumList: EclpAccumListShoushi } = AutoDegAccumList('Shoushi', 1281)
-    const { EquaAccumList: EquaAccumListJiazi, EclpAccumList: EclpAccumListJiazi } = AutoDegAccumList('Jiazi', 1684) // 甲子元曆
+    const EclpAccumListDaming3 = degAccumList('Daming3', 1180).EclpAccumList
+    const { EquaAccumList: EquaAccumListShoushi, EclpAccumList: EclpAccumListShoushi } = degAccumList('Shoushi', 1281)
+    const { EquaAccumList: EquaAccumListJiazi, EclpAccumList: EclpAccumListJiazi } = degAccumList('Jiazi', 1684) // 甲子元曆
     const Print = ['Taichu', 'Huangji', 'Linde', 'Dayan', 'Yingtian', 'Mingtian', 'Jiyuan', 'Daming3', 'Shoushi', 'Jiazi'].map(Name => {
         const EclpList = eval('EclpAccumList' + Name)
-        const Eclp = Deg2Mansion(Deg, EclpList)
+        const Eclp = deg2Mansion(Deg, EclpList)
         const EquaList = eval('EquaAccumList' + Name)
         let Equa = ''
-        if ((EquaList || []).length) Equa = Deg2Mansion(Deg, EquaList)
+        if ((EquaList || []).length) Equa = deg2Mansion(Deg, EquaList)
         return {
             title: NameList[Name],
             data: [Equa, Eclp]
@@ -435,28 +435,28 @@ export const bindDeg2Mansion = Deg => {
 // console.log(bindDeg2Mansion(23.1511, 'Jiazi'))
 
 export const bindMansion2Deg = Mansion => {
-    const { EquaAccumList: EquaAccumListTaichu, EclpAccumList: EclpAccumListTaichu } = AutoDegAccumList('Taichu', 300)
+    const { EquaAccumList: EquaAccumListTaichu, EclpAccumList: EclpAccumListTaichu } = degAccumList('Taichu', 300)
     const EquaAccumListHuangji = []
-    const EclpAccumListHuangji = AutoDegAccumList('Huangji', 500).EclpAccumList
+    const EclpAccumListHuangji = degAccumList('Huangji', 500).EclpAccumList
     const EquaAccumListLinde = []
-    const EclpAccumListLinde = AutoDegAccumList('Linde', 665).EclpAccumList // 麟德
-    const { EquaAccumList: EquaAccumListDayan, EclpAccumList: EclpAccumListDayan } = AutoDegAccumList('Dayan', 729)
+    const EclpAccumListLinde = degAccumList('Linde', 665).EclpAccumList // 麟德
+    const { EquaAccumList: EquaAccumListDayan, EclpAccumList: EclpAccumListDayan } = degAccumList('Dayan', 729)
     const EquaAccumListYingtian = []
-    const EclpAccumListYingtian = AutoDegAccumList('Yingtian', 964).EclpAccumList // 應天
-    const EquaAccumListMingtian = AutoDegAccumList('Mingtian', 1065).EquaAccumList // 明天
-    const EclpAccumListMingtian = AutoDegAccumList('Mingtian', 1065).EclpAccumList // 明天
-    const { EquaAccumList: EquaAccumListJiyuan, EclpAccumList: EclpAccumListJiyuan } = AutoDegAccumList('Jiyuan', 1106)
+    const EclpAccumListYingtian = degAccumList('Yingtian', 964).EclpAccumList // 應天
+    const EquaAccumListMingtian = degAccumList('Mingtian', 1065).EquaAccumList // 明天
+    const EclpAccumListMingtian = degAccumList('Mingtian', 1065).EclpAccumList // 明天
+    const { EquaAccumList: EquaAccumListJiyuan, EclpAccumList: EclpAccumListJiyuan } = degAccumList('Jiyuan', 1106)
     const EquaAccumListDaming3 = []
-    const EclpAccumListDaming3 = AutoDegAccumList('Daming3', 1180).EclpAccumList
-    const { EquaAccumList: EquaAccumListShoushi, EclpAccumList: EclpAccumListShoushi } = AutoDegAccumList('Shoushi', 1281)
-    const { EquaAccumList: EquaAccumListJiazi, EclpAccumList: EclpAccumListJiazi } = AutoDegAccumList('Jiazi', 1684)
+    const EclpAccumListDaming3 = degAccumList('Daming3', 1180).EclpAccumList
+    const { EquaAccumList: EquaAccumListShoushi, EclpAccumList: EclpAccumListShoushi } = degAccumList('Shoushi', 1281)
+    const { EquaAccumList: EquaAccumListJiazi, EclpAccumList: EclpAccumListJiazi } = degAccumList('Jiazi', 1684)
     const Print = ['Taichu', 'Huangji', 'Linde', 'Dayan', 'Yingtian', 'Mingtian', 'Jiyuan', 'Daming3', 'Shoushi', 'Jiazi'].map(Name => {
         const EclpList = eval('EclpAccumList' + Name)
-        const Eclp = +Mansion2Deg(Mansion, EclpList, Name).toFixed(3)
+        const Eclp = +mansion2Deg(Mansion, EclpList).toFixed(3)
         const EquaList = eval('EquaAccumList' + Name)
         let Equa = ''
         if ((EquaList || []).length) {
-            Equa = +Mansion2Deg(Mansion, EquaList, Name).toFixed(3)
+            Equa = +mansion2Deg(Mansion, EquaList).toFixed(3)
         }
         return {
             title: NameList[Name],
@@ -466,18 +466,18 @@ export const bindMansion2Deg = Mansion => {
     return Print
 }
 // console.log(bindMansion2Deg('氐1'))
-export const bindMansionAccumList = (Name, Y) => { // 本函數經ChatGPT優化
+export const bindMansionAccumList = (Name, Y) => {
     Name = Name.toString()
     Y = +Y
     const { Type, Solar } = Para[Name]
-    const { EclpAccumList, EquaAccumList } = AutoDegAccumList(Name, Y)
+    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
     const p = Type === 13 ? 360 / Solar : undefined
     const EclpList = [], EquaList = []
     const NameList = Type === 13 ? MansionNameListQing : MansionNameList
     let Func = {}
     if (Type === 13) Func = mansionQing(Name, Y, 0)
     else Func = mansion(Name, Y, 0, 0)
-    const { SolsEclpMansion, SolsEquaMansion, Exchange } = Func
+    const { SolsEclpMansion, SolsEquaMansion } = Func
     let SolsEclpPrint = '', SolsEquaPrint = ''
     if (Type === 13) {
         SolsEclpPrint = SolsEclpMansion + '°' + (+SolsEclpMansion.slice(1) / p).toFixed(2) + '度'
@@ -486,64 +486,79 @@ export const bindMansionAccumList = (Name, Y) => { // 本函數經ChatGPT優化
         SolsEclpPrint = SolsEclpMansion
         SolsEquaPrint = SolsEquaMansion
     }
-    for (let i = 1; i < 30; i++) {
-        EclpList[i] = +(EclpAccumList[i] - EclpAccumList[i - 1]).toFixed(3)
-        EquaList[i] = +(EquaAccumList[i] - EquaAccumList[i - 1]).toFixed(3)
+    let EclpSortedList = [], EquaSortedList = []
+    if (EclpAccumList.length === undefined) { // 清代用字典
+        EclpSortedList = Object.entries(EclpAccumList).sort((a, b) => a[1] - b[1])
+        EquaSortedList = Object.entries(EquaAccumList).sort((a, b) => a[1] - b[1])
+        for (let i = 0; i < 27; i++) {
+            EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(3)
+            EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(3)
+        }
+        EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(3)
+        EquaList[27] = +(360 - EquaSortedList[27][1]).toFixed(3)
+    } else {
+        for (let i = 0; i < 28; i++) {
+            EclpList[i] = +(EclpAccumList[i + 1] - EclpAccumList[i]).toFixed(3)
+            EquaList[i] = +(EquaAccumList[i + 1] - EquaAccumList[i]).toFixed(3)
+        }
     }
     const EclpAccumPrint = [], EquaAccumPrint = []
     const DirList = ['東青龍', '北玄武', '西白虎', '南朱雀']
-    const NumList = ' ①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘'
-    for (let i = 0; i < 4; i++) {
-        EclpAccumPrint.push([])
-        EquaAccumPrint.push([])
-        let EclpSum = 0, EquaSum = 0
-        for (let j = 1; j <= 7; j++) {
-            const index = i * 7 + j
-            EclpSum += EclpList[index + 1]
-            EquaSum += EquaList[index + 1]
-        }
-        for (let j = 1; j <= 7; j++) {
-            const index = i * 7 + j
-            EclpAccumPrint[i].push(NameList[index] + ' ' + EclpAccumList[index] + `　\n${NumList[index]} ` + EclpList[index + 1])
-            if ((Exchange || [])[0]) {
-                Exchange.map(j => {
-                    if (index === j) {
-                        EquaAccumPrint[i].push(NameList[index + 1] + ' ' + EquaAccumList[index] + `　\n${NumList[index]} ` + EquaList[index + 1])
-                    } else if (index === j + 1) {
-                        EquaAccumPrint[i].push(NameList[index - 1] + ' ' + EquaAccumList[index] + `　\n${NumList[index]} ` + EquaList[index + 1])
-                    } else EquaAccumPrint[i].push(NameList[index] + ' ' + EquaAccumList[index] + `　\n${NumList[index]} ` + EquaList[index + 1])
-                })
-            } else EquaAccumPrint[i].push(NameList[index] + ' ' + EquaAccumList[index] + `　\n${NumList[index]} ` + EquaList[index + 1])
-        }
-        EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
-        EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
-    }
+    const NumList = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘'
     if (Type === 13) {
+        for (let i = 0; i < 4; i++) {
+            EclpAccumPrint.push([])
+            EquaAccumPrint.push([])
+            let EclpSum = 0, EquaSum = 0
+            for (let j = 0; j < 7; j++) {
+                const index = i * 7 + j
+                EclpSum += EclpList[index]
+                EquaSum += EquaList[index]
+            }
+            for (let j = 0; j < 7; j++) {
+                const index = i * 7 + j
+                EclpAccumPrint[i].push(EclpSortedList[index][0] + ' ' + EclpSortedList[index][1] + `　\n${NumList[index]} ` + EclpList[index])
+                EquaAccumPrint[i].push(EquaSortedList[index][0] + ' ' + EquaSortedList[index][1] + `　\n${NumList[index]} ` + EquaList[index])
+            }
+            EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
+            EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
+        }
+
         EclpAccumPrint[4] = ['下爲古度'], EquaAccumPrint[4] = ['下爲古度']
         for (let i = 5; i < 9; i++) {
             EclpAccumPrint.push([])
             EquaAccumPrint.push([])
             let EclpSum = 0, EquaSum = 0
-            for (let j = 1; j <= 7; j++) {
+            for (let j = 0; j < 7; j++) {
                 const index = (i - 5) * 7 + j;
-                EclpSum += EclpList[index + 1] / p
-                EquaSum += EquaList[index + 1] / p
+                EclpSum += EclpList[index] / p
+                EquaSum += EquaList[index] / p
             }
-            for (let j = 1; j <= 7; j++) {
+            for (let j = 0; j < 7; j++) {
                 const index = (i - 5) * 7 + j
-                EclpAccumPrint[i].push(NameList[index] + ' ' + (EclpAccumList[index] / p).toFixed(2) + `　\n${NumList[index]} ` + (EclpList[index + 1] / p).toFixed(2))
-                if ((Exchange || [])[0]) {
-                    Exchange.map(j => {
-                        if (index === j) {
-                            EquaAccumPrint[i].push(NameList[index + 1] + ' ' + (EquaAccumList[index] / p).toFixed(2) + `　\n${NumList[index]} ` + (EquaList[index + 1] / p).toFixed(2))
-                        } else if (index === j + 1) {
-                            EquaAccumPrint[i].push(NameList[index - 1] + ' ' + (EquaAccumList[index] / p).toFixed(2) + `　\n${NumList[index]} ` + (EquaList[index + 1] / p).toFixed(2))
-                        } else EquaAccumPrint[i].push(NameList[index] + ' ' + (EquaAccumList[index] / p).toFixed(2) + `　\n${NumList[index]} ` + (EquaList[index + 1] / p).toFixed(2))
-                    })
-                } else EquaAccumPrint[i].push(NameList[index] + ' ' + (EquaAccumList[index] / p).toFixed(2) + `　\n${NumList[index]} ` + (EquaList[index + 1] / p).toFixed(2))
+                EclpAccumPrint[i].push(EclpSortedList[index][0] + ' ' + (EclpSortedList[index][1] / p).toFixed(2) + `　\n${NumList[index]} ` + (EclpList[index] / p).toFixed(2))
+                EquaAccumPrint[i].push(EquaSortedList[index][0] + ' ' + (EquaSortedList[index][1] / p).toFixed(2) + `　\n${NumList[index]} ` + (EquaList[index] / p).toFixed(2))
             }
             EclpAccumPrint[i][8] = DirList[i - 5] + +EclpSum.toFixed(2)
             EquaAccumPrint[i][8] = DirList[i - 5] + +EquaSum.toFixed(2)
+        }
+    } else {
+        for (let i = 0; i < 4; i++) {
+            EclpAccumPrint.push([])
+            EquaAccumPrint.push([])
+            let EclpSum = 0, EquaSum = 0
+            for (let j = 0; j < 7; j++) {
+                const index = i * 7 + j
+                EclpSum += EclpList[index]
+                EquaSum += EquaList[index]
+            }
+            for (let j = 0; j < 7; j++) {
+                const index = i * 7 + j
+                EclpAccumPrint[i].push(NameList[index] + ' ' + EclpAccumList[index] + `　\n${NumList[index]} ` + EclpList[index])
+                EquaAccumPrint[i].push(NameList[index] + ' ' + EquaAccumList[index] + `　\n${NumList[index]} ` + EquaList[index])
+            }
+            EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
+            EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
         }
     }
     return {

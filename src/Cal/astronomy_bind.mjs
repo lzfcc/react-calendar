@@ -15,6 +15,7 @@ import { AutoEclipse } from './astronomy_eclipse.mjs'
 import { deg2Mansion, mansion2Deg, mansion, mansionQing } from './astronomy_other.mjs'
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from './para_auto-constant.mjs'
 import { GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from './newm_shixian.mjs'
+import { mansionModern } from './eph/mansion.mjs'
 const Gong2Lon = Gong => (Gong + 270) % 360
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cos(x* .2243) +  6.964 *sin(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {  // Name預留給誤差分析程序，否則不用
@@ -423,8 +424,7 @@ export const bindDeg2Mansion = Deg => {
         const EclpList = eval('EclpAccumList' + Name)
         const Eclp = deg2Mansion(Deg, EclpList)
         const EquaList = eval('EquaAccumList' + Name)
-        let Equa = ''
-        if ((EquaList || []).length) Equa = deg2Mansion(Deg, EquaList)
+        const Equa = deg2Mansion(Deg, EquaList)
         return {
             title: NameList[Name],
             data: [Equa, Eclp]
@@ -454,23 +454,22 @@ export const bindMansion2Deg = Mansion => {
         const EclpList = eval('EclpAccumList' + Name)
         const Eclp = +mansion2Deg(Mansion, EclpList).toFixed(3)
         const EquaList = eval('EquaAccumList' + Name)
-        let Equa = ''
-        if ((EquaList || []).length) {
-            Equa = +mansion2Deg(Mansion, EquaList).toFixed(3)
-        }
+        const Equa = +mansion2Deg(Mansion, EquaList).toFixed(3)
         return {
             title: NameList[Name],
-            data: [Equa, Eclp]
+            data: [Equa || '', Eclp]
         }
     })
     return Print
 }
 // console.log(bindMansion2Deg('氐1'))
+const DirList = ['東青龍', '北玄武', '西白虎', '南朱雀']
+const NumList = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘'
 export const bindMansionAccumList = (Name, Y) => {
     Name = Name.toString()
-    Y = +Y
+    Y = parseFloat(Y)
     const { Type, Solar } = Para[Name]
-    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
+    const { EclpAccumList, EquaAccumList } = degAccumList(Name, ~~Y)
     const p = Type === 13 ? 360 / Solar : undefined
     const EclpList = [], EquaList = []
     const NameList = Type === 13 ? MansionNameListQing : MansionNameList
@@ -503,8 +502,6 @@ export const bindMansionAccumList = (Name, Y) => {
         }
     }
     const EclpAccumPrint = [], EquaAccumPrint = []
-    const DirList = ['東青龍', '北玄武', '西白虎', '南朱雀']
-    const NumList = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘'
     if (Type === 13) {
         for (let i = 0; i < 4; i++) {
             EclpAccumPrint.push([])
@@ -523,7 +520,6 @@ export const bindMansionAccumList = (Name, Y) => {
             EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
             EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
         }
-
         EclpAccumPrint[4] = ['下爲古度'], EquaAccumPrint[4] = ['下爲古度']
         for (let i = 5; i < 9; i++) {
             EclpAccumPrint.push([])
@@ -566,6 +562,45 @@ export const bindMansionAccumList = (Name, Y) => {
     }
 }
 // console.log(bindMansionAccumList('Guimao', 281))
+export const bindMansionAccumModernList = (Name, Jd) => {
+    Jd = parseFloat(Jd)
+    const { EclpAccumList: EclpAccumListRaw, EquaAccumList: EquaAccumListRaw, SolsEclpMansion, SolsEquaMansion } = mansionModern(Jd, Name)
+    const EclpAccumList = {}, EquaAccumList = {}
+    for (let Mansion in EclpAccumListRaw) {
+        EclpAccumList[Mansion] = (EclpAccumListRaw[Mansion] - EclpAccumListRaw['角'] + 360) % 360
+    }
+    for (let Mansion in EquaAccumListRaw) {
+        EquaAccumList[Mansion] = (EquaAccumListRaw[Mansion] - EquaAccumListRaw['角'] + 360) % 360
+    }
+    const EclpSortedList = Object.entries(EclpAccumList).sort((a, b) => a[1] - b[1])
+    const EquaSortedList = Object.entries(EquaAccumList).sort((a, b) => a[1] - b[1])
+    const EclpList = [], EquaList = [], EclpAccumPrint = [], EquaAccumPrint = []
+    for (let i = 0; i < 27; i++) {
+        EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(6)
+        EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(6)
+    }
+    EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(6)
+    EquaList[27] = +(360 - EquaSortedList[27][1]).toFixed(6)
+    for (let i = 0; i < 4; i++) {
+        EclpAccumPrint.push([])
+        EquaAccumPrint.push([])
+        let EclpSum = 0, EquaSum = 0
+        for (let j = 0; j < 7; j++) {
+            const index = i * 7 + j
+            EclpSum += EclpList[index]
+            EquaSum += EquaList[index]
+        }
+        for (let j = 0; j < 7; j++) {
+            const index = i * 7 + j
+            EclpAccumPrint[i].push(EclpSortedList[index][0] + ' ' + EclpSortedList[index][1].toFixed(5) + `　\n${NumList[index]} ` + EclpList[index])
+            EquaAccumPrint[i].push(EquaSortedList[index][0] + ' ' + EquaSortedList[index][1].toFixed(5) + `　\n${NumList[index]} ` + EquaList[index])
+        }
+        EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
+        EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
+    }
+    return { EclpAccumPrint, EquaAccumPrint, SolsEclpPrint: SolsEclpMansion, SolsEquaPrint: SolsEquaMansion }
+}
+// console.log(bindMansionAccumModernList(2424222))
 export const autoMoonLat = (NodeAccum, Name) => {
     let { Type, Sidereal } = Para[Name]
     // Solar = Solar || SolarRaw

@@ -41,8 +41,7 @@ export const N6 = Y => {
     const AcrChouTermJdIndex = findClosest(AvgChouTermJd, TermList).closestIndex
     const AcrChouTerm1JdIndex = findClosest(AvgChouTerm1Jd, Term1List).closestIndex
     const main = (isNewm, LeapNumTerm) => {
-        const AcrJd = [], UT18Sc = [], UT18Mmdd = [], UT18Deci = [], NowDeci = [],
-            AcrTermJd = [], TermAcrSc = [], TermAcrMmdd = [], TermAcrDeci = [], TermEclp = [], TermEqua = [], Term1AcrSc = [], Term1AcrMmdd = [], Term1AcrDeci = [], Term1Eclp = [], Term1Equa = []
+        const AcrJd = [], UT18Sc = [], UT18Mmdd = [], UT18Deci = [], NowDeci = [], Eclp = [], Equa = [], AcrTermJd = [], TermAcrSc = [], TermAcrMmdd = [], TermAcrDeci = [], TermEclp = [], TermEqua = [], Term1AcrSc = [], Term1AcrMmdd = [], Term1AcrDeci = [], Term1Eclp = [], Term1Equa = []
         for (let i = 0; i <= 14; i++) {
             //////// 平朔望   
             AcrJd[i] = isNewm ? NewmList[AcrChouJdIndex + i] : SyzygyList[AcrChouSyzygyJdIndex + i]
@@ -53,6 +52,9 @@ export const N6 = Y => {
             UT18Deci[i] = generateTimeString(UT18JdDate.h, UT18JdDate.m, UT18JdDate.s, Y < 1600 ? '' : UT18JdDate.ms)
             //////// 節氣
             if (isNewm) {
+                const NewmFunc = mansionModern(AcrJd[i])
+                Eclp[i] = NewmFunc.Eclp
+                Equa[i] = NewmFunc.Equa
                 // 中氣
                 AcrTermJd[i] = TermList[AcrChouTermJdIndex + i - 1]
                 const UT18TermJd = AcrTermJd[i] + 8 / 24 - deltaT(AcrTermJd[i])
@@ -86,14 +88,14 @@ export const N6 = Y => {
             }
         }
         return {
-            AcrJd, UT18Sc, UT18Mmdd, UT18Deci, NowDeci,
+            AcrJd, UT18Sc, UT18Mmdd, UT18Deci, NowDeci, Eclp, Equa,
             TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
             Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa,
             LeapNumTerm
         }
     }
     const {
-        AcrJd: NewmJd, UT18Sc: NewmSc, UT18Mmdd: NewmMmdd, UT18Deci: NewmDeci,
+        AcrJd: NewmJd, UT18Sc: NewmSc, UT18Mmdd: NewmMmdd, UT18Deci: NewmDeci, Equa: NewmEqua, Eclp: NewmEclp,
         TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
         Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa, LeapNumTerm
     } = main(true)
@@ -101,7 +103,7 @@ export const N6 = Y => {
         UT18Sc: SyzygySc, UT18Mmdd: SyzygyMmdd, UT18Deci: SyzygyDeci
     } = main(false, LeapNumTerm)
     return {
-        NewmSc, NewmMmdd, NewmDeci,
+        NewmSc, NewmMmdd, NewmDeci, NewmEqua, NewmEclp,
         SyzygySc, SyzygyMmdd, SyzygyDeci,
         TermAcrSc, TermAcrMmdd, TermAcrDeci, TermEclp, TermEqua,
         Term1AcrSc, Term1AcrMmdd, Term1AcrDeci, Term1Eclp, Term1Equa, LeapNumTerm,

@@ -36,10 +36,8 @@ export default (YearStart, YearEnd) => {
                 TermNowDeci[i] = ThisYear.TermNowDeci[i]
                 Term1NowDeci[i] = ThisYear.Term1NowDeci[i]
             }
-            if (ThisYear.TermEqua) {
-                TermEqua[i] = ThisYear.TermEqua[i]
-                Term1Equa[i] = ThisYear.Term1Equa[i]
-            }
+            TermEqua[i] = ThisYear.TermEqua[i]
+            Term1Equa[i] = ThisYear.Term1Equa[i]
             TermEclp[i] = ThisYear.TermEclp[i]
             Term1Eclp[i] = ThisYear.Term1Eclp[i]
         }
@@ -65,10 +63,8 @@ export default (YearStart, YearEnd) => {
                     TermNowDeci[i] = ThisYear.Term1NowDeci[i]
                     Term1NowDeci[i] = ThisYear.TermNowDeci[i - 1]
                 }
-                if (ThisYear.TermEqua) {
-                    TermEqua[i] = ThisYear.Term1Equa[i]
-                    Term1Equa[i] = ThisYear.TermEqua[i - 1]
-                }
+                TermEqua[i] = ThisYear.Term1Equa[i]
+                Term1Equa[i] = ThisYear.TermEqua[i - 1]
                 TermEclp[i] = ThisYear.Term1Eclp[i]
                 Term1Eclp[i] = ThisYear.TermEclp[i - 1]
             }
@@ -79,7 +75,7 @@ export default (YearStart, YearEnd) => {
             Term1AcrMmdd[1] = ''
             Term1AcrDeci[1] = ''
             if (ThisYear.Term1NowDeci) Term1NowDeci[1] = ''
-            if (ThisYear.Term1Equa) Term1Equa[1] = ''
+            Term1Equa[1] = ''
             Term1Eclp[1] = ''
         }
         // 月序
@@ -107,8 +103,8 @@ export default (YearStart, YearEnd) => {
         const NewmScPrint = NewmSlice(ThisYear.NewmSc)
         const NewmMmddPrint = NewmSlice(ThisYear.NewmMmdd)
         const NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
-        const NewmEquaPrint = NewmEqua ? NewmSlice(NewmEqua) : undefined
-        const NewmEclpPrint = NewmEclp ? NewmSlice(NewmEclp) : undefined
+        const NewmEquaPrint = NewmSlice(NewmEqua)
+        const NewmEclpPrint = NewmSlice(NewmEclp)
         const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)
         const SyzygyMmddPrint = NewmSlice(ThisYear.SyzygyMmdd)
         const SyzygyDeciPrint = NewmSlice(ThisYear.SyzygyDeci)

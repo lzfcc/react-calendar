@@ -194,6 +194,14 @@ export const NameDayList = {
   Jiazi: "曆象考成",
   Guimao: "曆象考成後編",
 };
+export const NameMansionList = {
+  Shanggu: '古度',
+  Shi: '石氏',
+  Chongzhen: '崇禎曆書',
+  Xinfa: '新法曆書',
+  Lingtai: '靈臺儀象志',
+  Yixiang: '儀象考成'
+}
 export const ScList = [
   "癸亥",
   "甲子",

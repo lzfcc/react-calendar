@@ -2,7 +2,7 @@ import Para from './para_calendars.mjs'
 import { autoEquaEclp, autoRise } from './astronomy_bind.mjs'
 import { MansionNameList, degAccumList } from './para_constant.mjs'
 import { AutoMoonAvgV, AutoLightRange } from './para_auto-constant.mjs'
-import { GongHigh2Flat, LonHigh2Flat, twilight } from './newm_shixian.mjs'
+import { GongFlat2High, GongHigh2Flat, LonHigh2Flat, twilight } from './newm_shixian.mjs'
 
 export const mansion2Deg = (Mansion, AccumList) => {
     let Print = 0
@@ -72,11 +72,14 @@ export const mansion = (Name, Y, EclpGong, Sd) => {
     const SolsEclpDeg = mansion2Deg(SolsEclpMansion, EclpAccumList)
     let EclpDeg = 0, EquaDeg = 0
     if (Type >= 5) {
-        EclpDeg = (SolsEclpDeg + EclpGong) % Sidereal // 太陽改正所得就是黃道度，此處不要赤轉黃
-        EquaDeg = (SolsEquaDeg + autoEquaEclp(EclpGong, Name).Eclp2Equa) % Sidereal
+        const EquaGong = autoEquaEclp(EclpGong, Name).Eclp2Equa
+        const PrecessionFrac = isPrecession ? EquaGong / Sidereal * (Sidereal - Solar) : 0 // 一年之中的歲差
+        EclpDeg = (SolsEclpDeg + EclpGong - autoEquaEclp(PrecessionFrac, Name).Equa2Eclp) % Sidereal // 太陽改正所得就是黃道度，此處不要赤轉黃
+        EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal
     } else { // 沒有盈縮積的曆法
-        EquaDeg = (SolsEquaDeg + Sd) % Sidereal
-        EclpDeg = (SolsEclpDeg + autoEquaEclp(Sd, Name).Equa2Eclp) % Sidereal
+        const PrecessionFrac = isPrecession ? Sd / Sidereal * (Sidereal - Solar) : 0 // 一年之中的歲差
+        EclpDeg = (SolsEclpDeg + autoEquaEclp(Sd - PrecessionFrac, Name).Equa2Eclp) % Sidereal
+        EquaDeg = (SolsEquaDeg + Sd - PrecessionFrac) % Sidereal
     }
     const Equa = deg2Mansion(EquaDeg, EquaAccumList)
     const Eclp = deg2Mansion(EclpDeg, EclpAccumList)
@@ -108,10 +111,14 @@ export const mansionQing = (Name, Y, Gong, isEqua) => {
     const SolsEquaDeg = GongHigh2Flat(Sobliq, SolsEclpDeg) // 直接這樣算即可，因為平常是逆時針加，這裏是順時針加，只是方向反了，但度數不變
     const SolsEquaMansion = deg2Mansion(SolsEquaDeg, EquaAccumList, undefined, true, Exchange)
     let EclpMansionGong = 0, EquaMansionGong = 0
-    if (isEqua) EquaMansionGong = SolsEquaDeg + Gong
+    if (isEqua) {
+        const PrecessionFrac = GongHigh2Flat(Sobliq, Gong / 360 * StarVy)
+        EquaMansionGong = SolsEquaDeg + Gong - PrecessionFrac
+    }
     else {
-        EclpMansionGong = SolsEclpDeg + Gong
-        EquaMansionGong = SolsEquaDeg + GongHigh2Flat(Sobliq, Gong)
+        const PrecessionFrac = Gong / 360 * StarVy
+        EclpMansionGong = SolsEclpDeg + Gong - PrecessionFrac
+        EquaMansionGong = SolsEquaDeg + GongHigh2Flat(Sobliq, Gong - PrecessionFrac)
     }
     return {
         Eclp: deg2Mansion(EclpMansionGong % 360, EclpAccumList, 3, true, Exchange, true),

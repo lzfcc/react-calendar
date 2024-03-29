@@ -17,7 +17,7 @@ import { starEclp2Equa } from './astronomy_west.mjs'
 export const D2 = (Name, YearStart, YearEnd) => {
     YearEnd = YearEnd || YearStart
     const Main = (Name, Y) => {
-        const { Sobliq, RiseLat } = Para[Name]
+        const { Solar, Sobliq, RiseLat } = Para[Name]
         const { LeapNumTerm, Sols, SunRoot, SperiRoot, MoonRoot, MapoRoot, NodeRoot, NewmSmd, SolsmorScOrder, MansionDaySolsmor } = CalNewm(Name, Y)[0]
         ///////
         const YearScOrder = ((Y - 3) % 60 + 60) % 60

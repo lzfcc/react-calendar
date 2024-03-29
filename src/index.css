@@ -427,7 +427,7 @@ table td {
 .table2 table td {
   width: fit-content;
   white-space: nowrap;
-  padding: .15em .7em;
+  padding: .15em .4em;
   text-align: left;
 }
 
@@ -437,7 +437,7 @@ table td {
 
 .table2 table th {
   text-align: left;
-  padding: .15em .7em;
+  padding: .15em .4em;
   border: none;
   /* border-bottom: 1px solid var(--gray); */
 }

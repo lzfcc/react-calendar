@@ -463,5 +463,7 @@ a = [0, ...a]
 
 3-27 前端 `1.08` webpack打包文件分成古曆和DE曆表兩個。實現切換tab不清空之前的表單。
 
+3-30 前端 重新整理文件層級。react更改程序入口：`node_modules/react-scripts/config/paths.js`
+
 `react-window-dynamic-list` 不再維護了，不支持 react 18，想換 `react-window ` 和 `react-window-infinite-loader`。想更新庫，但失敗，終端 `Failed to parse source map from`，找了半天看到 [這篇](https://github.com/remarkjs/remark-gfm/issues/59)， 原來是因為升級了`"remark-gfm": "^4.0.0"`。
 

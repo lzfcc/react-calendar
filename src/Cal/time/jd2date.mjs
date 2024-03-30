@@ -65,10 +65,11 @@ export const Jd2Date = Jd => {
 }
 // console.log(extractFirstTwoDigits('46262'))
 // const Start = performance.now()
-// console.log(Jd2Date(3460393.12264).ms)
+// console.log(Jd2Date(2460393.12264).year)
 // const End = performance.now()
 // console.log(End - Start)
 export const Jd2DatePrint = Jd => {
+    Jd = +Jd
     const { year, mm, dd, h, m, s, ms, ScOrder } = Jd2Date(Jd)
     let yy = year
     if (year <= 0) {

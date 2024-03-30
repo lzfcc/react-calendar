@@ -14,7 +14,8 @@ import {
     autoEquaEclp, autoMoonLon, autoMoonLat, autoLat, autoRise, autoDial
 } from '../astronomy/bind.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from '../astronomy/acrv.mjs'
-import { mansion, AutoNineOrbit, midstar } from '../astronomy/other.mjs'
+import { mansion, midstar } from '../astronomy/mansion.mjs'
+import { AutoNineOrbit } from '../astronomy/nineorbits.mjs'
 import { Jd2Date } from '../time/jd2date.mjs'
 import { AutoMoonAvgV } from '../parameter/auto-constant.mjs'
 

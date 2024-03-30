@@ -1,5 +1,5 @@
 import React from 'react'
-import { ConstWest } from '../../Cal/astronomy/west.mjs'
+import { constModern } from '../../Cal/astronomy/astr_const.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { Print } = ConstWest(this.state.c)
+      const { Print } = constModern(this.state.c)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)

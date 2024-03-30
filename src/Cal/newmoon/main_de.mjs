@@ -1,5 +1,5 @@
 import { ScList } from '../parameter/constant.mjs'
-import { deltaT } from '../astronomy/west.mjs'
+import { deltaT } from '../time/delta-t.mjs'
 import { Jd2Date, generateTimeString } from '../time/jd2date.mjs'
 import NewmList from '../modern/newm_de44_list.mjs'
 import SyzygyList from '../modern/syzygy_de44_list.mjs'

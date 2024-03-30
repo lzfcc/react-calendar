@@ -1,6 +1,6 @@
 import { N6 } from './main_de.mjs'
 import { TermNameList, Term1NameList, ScList, MonNumList1 } from '../parameter/constant.mjs'
-import { deltaT, deltaTErrorEstimate } from '../astronomy/west.mjs'
+import { deltaT, deltaTErrorEstimate } from '../time/delta-t.mjs'
 // const Index = (YearStart, YearEnd) => {
 export default (YearStart, YearEnd) => {
     const Memo = []

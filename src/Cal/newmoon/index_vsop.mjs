@@ -1,7 +1,6 @@
 import { N5 } from '../newmoon/vsop.mjs'
-import Para from '../parameter/calendars.mjs'
 import { TermNameList, Term1NameList, ScList, NameList, MonNumList1, } from '../parameter/constant.mjs'
-import { deltaT, deltaTErrorEstimate } from '../astronomy/west.mjs'
+import { deltaT, deltaTErrorEstimate } from '../time/delta-t.mjs'
 // const Index = (YearStart, YearEnd) => {
 export default (YearStart, YearEnd) => {
     const Memo = []

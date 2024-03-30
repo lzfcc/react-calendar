@@ -7,12 +7,12 @@ import {
 } from '../astronomy/formula.mjs'
 import { Hushigeyuan, HushigeyuanMoon } from '../equation/geometry.mjs'
 import {
-    EquaEclpWest, sunRise, Lon2DialWest, ConstWest, eclp2Ceclp, eclp2Equa, testEclpEclpDif, equa2Ceclp, equa2Eclp,
-} from '../astronomy/west.mjs'
+    sunRise, Lon2DialWest, eclp2Ceclp, testEclpEclpDif, equa2Ceclp, equa2Eclp,
+} from '../astronomy/pos_convert.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS, ShoushiXianV } from '../astronomy/acrv.mjs'
 import { NameList, degAccumList, MansionNameList, MansionNameListQing } from '../parameter/constant.mjs'
 import { AutoEclipse } from '../astronomy/eclipse.mjs'
-import { deg2Mansion, mansion2Deg, mansion, mansionQing } from '../astronomy/other.mjs'
+import { deg2Mansion, mansion2Deg, mansion, mansionQing } from '../astronomy/mansion.mjs'
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from '../parameter/auto-constant.mjs'
 import { FlatLon2FlatLat, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from '../newmoon/main_shixian.mjs'
 import { mansionModern } from '../modern/mansion.mjs'
@@ -284,27 +284,14 @@ export const autoDial = (Sd, SolsDeci, Name) => {
     }
     return Dial
 }
-export const bindEquaEclp = (GongRaw, Jd) => {
-    Jd = +Jd, GongRaw = +GongRaw
+export const bindEquaEclp = GongRaw => {
+    GongRaw = +GongRaw
     if (GongRaw >= 365.25 || GongRaw < 0) throw (new Error('請輸入一週天度內的度數'))
-    let Range = ''
+    let Range = '', Print = []
     if (GongRaw < 91.3125) Range += '冬至 → 春分，赤度 > 黃度'
     else if (GongRaw < 182.625) Range += '春分 → 夏至，赤度 < 黃度'
     else if (GongRaw < 273.9375) Range += '夏至 → 秋分，赤度 > 黃度'
     else Range += '秋分 → 冬至，赤度 < 黃度'
-    const {
-        Equa2Eclp: WestB,
-        Equa2EclpDif: WestB1,
-        Eclp2Equa: WestA,
-        Eclp2EquaDif: WestA1
-    } = EquaEclpWest(GongRaw, Jd)
-    const { Solar, e } = ConstWest(Jd)
-    const p = 360 / Solar
-    const WestLat = HighLon2FlatLat(e, Gong2Lon(GongRaw * p))
-    let Print = [{
-        title: '現代',
-        data: [(WestB / p).toFixed(6), (WestB1 / p).toFixed(6), '-', 0, (WestA / p).toFixed(6), (WestA1 / p).toFixed(6), '-', 0, (WestLat / p).toFixed(6), '-', 0]
-    }]
     const List1 = ['Qianxiang', 'Huangji', 'Dayan', 'Chongxuan', 'Qintian', 'Yingtian', 'Qianyuan', 'Yitian', 'Chongtian', 'Mingtian', 'Guantian', 'Jiyuan', 'Shoushi']
     const List2 = ['Qianxiang', 'Huangji', 'Dayan', 'Chongxuan', 'Yitian', 'Chongtian', 'Mingtian', 'Guantian', 'Jiyuan', 'Shoushi']
     Print = Print.concat(
@@ -345,6 +332,7 @@ export const bindEquaEclp = (GongRaw, Jd) => {
         }))
     return { Range, Print }
 }
+// console.log(bindEquaEclp(3))
 export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
     Sobliq = +Sobliq, Lon = +Lon, Lat = +Lat
     const { CeclpLon, CeclpLat, EquaLon, EquaLat } = eclp2Ceclp(Sobliq, Lon, Lat)

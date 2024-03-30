@@ -4,7 +4,7 @@
 // const eventEmitter = new EventEmitter()
 import { transpose, multiply, matrix, subtract, divide, add, chain } from 'mathjs'
 import { ScList, big } from '../parameter/constant.mjs'
-import { deltaT } from '../astronomy/west.mjs'
+import { deltaT } from '../time/delta-t.mjs'
 import { Jd2Date, generateTimeString } from '../time/jd2date.mjs'
 import { deg2Hms } from './main_shixian.mjs'
 import { precessionMx } from '../modern/precession.mjs'

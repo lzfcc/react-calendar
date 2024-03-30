@@ -10,10 +10,10 @@ import {
 } from '../ephemeris/luck.mjs'
 import { sunQing, moonQing, LonHigh2Flat, HighLon2FlatLat, sunRiseQing, twilight, deg2Hms, Lat2NS, GongHigh2Flat, Lon2Gong, moonRiseQing } from '../newmoon/main_shixian.mjs'
 import CalNewm from '../newmoon/index.mjs'
-import { mansionQing, midstarQing } from '../astronomy/other.mjs'
+import { mansionQing, midstarQing } from '../astronomy/mansion.mjs'
 import { Jd2Date } from '../time/jd2date.mjs'
 import { ClockWest } from '../time/decimal2clock.mjs'
-import { eclp2Equa } from '../astronomy/west.mjs'
+import { eclp2Equa } from '../astronomy/pos_convert.mjs'
 export const D2 = (Name, YearStart, YearEnd) => {
     YearEnd = YearEnd || YearStart
     const Main = (Name, Y) => {

@@ -4,7 +4,7 @@ import nzh from 'nzh/hk.js';
 import Para from './calendars.mjs';
 import { LonHigh2Flat, fmod } from '../newmoon/main_shixian.mjs';
 import { autoEquaEclp } from '../astronomy/bind.mjs';
-import { eclp2Equa } from '../astronomy/west.mjs';
+import { eclp2Equa } from '../astronomy/pos_convert.mjs';
 
 big.config({
   precision: 64,

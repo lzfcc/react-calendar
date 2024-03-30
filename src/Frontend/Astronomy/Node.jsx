@@ -1,5 +1,5 @@
 import React from 'react'
-import { Node2Cycle } from '../../Cal/astronomy/west.mjs'
+import { Node2Cycle } from '../../Cal/astronomy/astr_const.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

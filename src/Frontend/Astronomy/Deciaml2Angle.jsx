@@ -1,5 +1,5 @@
 import React from 'react'
-import { Deciaml2Angle } from '../../Cal/astronomy/west.mjs'
+import { Deciaml2Angle } from '../../Cal/astronomy/pos_convert.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

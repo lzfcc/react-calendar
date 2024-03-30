@@ -14,7 +14,7 @@ export const ExhauDenom = (lower, upper, End) => {
     while (i < 40000) {
         const LunarFrac = IndetermEqua(49, 17, i).LunarFrac1
         const Lunar = LunarFrac / i
-        if (Lunar > lower && Lunar < upper && (i / End === ~~(i / End))) {
+        if (Lunar > lower && Lunar < upper && (i / End === Math.trunc(i / End))) {
             Denom += LunarFrac + '/' + i + ', '
         }
         i++
@@ -59,7 +59,7 @@ export const ExhauConst = (SolarNumer, Denom, year, x, Range, lower, upper, step
     const SolsAccum = year * Solar
     x = String(x)
     const x1 = +('.' + x.split('.')[1])
-    const FracInt = ~~(Denom * x1)
+    const FracInt = Math.trunc(Denom * x1)
     const Int = +(x.split('.')[0])
     x = +x
     Range = +Range

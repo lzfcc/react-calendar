@@ -1,14 +1,12 @@
 import { r1, r3 } from '../newmoon/main_vsop.mjs'
+import { MMS2R, S2R, pi2 } from '../parameter/constant.mjs'
 import NutaList from './nutation_list.mjs'
 import NutaList1 from './nutation_list1.mjs'
 const { nals_t, cls_t, napl_t, cpl_t } = NutaList1
 import { chain } from 'mathjs'
-const pi2 = 6.283185307179586476925287
-const S2R = 4.848136811095359935899141e-6
-const MMS2R = 4.848136811095359935899141e-13
 
 const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m
-const obliqAvg = T => 84381.406 - 46.836769 * T - .0001831 * T ** 2 + .00200340 * T ** 3 - .000000576 * T ** 4 - .0000000434 * T ** 5
+export const obliqAvg = T => 84381.406 - 46.836769 * T - .0001831 * T ** 2 + .00200340 * T ** 3 - .000000576 * T ** 4 - .0000000434 * T ** 5
 
 
 /**
@@ -121,7 +119,7 @@ const aa1 = T => { // 單位弧度
     return F
 }
 
-function nutation(T) {
+export const nutation = T => {
     const a = aa(T)
     // Initialize the nutation values
     let dp = 0.0, de = 0.0, dp1 = 0.0, de1 = 0.0

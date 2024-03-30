@@ -197,7 +197,7 @@ export const AutoRangeEcli = (Name, Type) => { // 日出入前後多少不算日
 
 export const AutoMoonTcorrDif = (AnomaAccum, Name) => { // 唐宋月離損益率
     const { MoonTcorrDifList, Anoma } = Para[Name]
-    const AnomaAccumInt = ~~AnomaAccum
+    const AnomaAccumInt = Math.trunc(AnomaAccum)
     const Anoma25 = Anoma / 4 // 6.8887
     const Anoma50 = Anoma / 2 // 13.7772
     const Anoma75 = Anoma * .75 // 20.6659
@@ -205,7 +205,7 @@ export const AutoMoonTcorrDif = (AnomaAccum, Name) => { // 唐宋月離損益率
     let TheDenom = 1
     if (Name === 'Yitian') {
         const AnomaAccumQuar = AnomaAccum % Anoma25
-        const AnomaAccumQuarInt = ~~AnomaAccumQuar
+        const AnomaAccumQuarInt = Math.trunc(AnomaAccumQuar)
         if (AnomaAccum < Anoma25) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumQuarInt]
         } else if (AnomaAccum < Anoma50) {
@@ -220,7 +220,7 @@ export const AutoMoonTcorrDif = (AnomaAccum, Name) => { // 唐宋月離損益率
         }
     } else if (['Xuanming', 'Yingtian'].includes(Name)) {
         const AnomaAccumHalf = AnomaAccum % Anoma50
-        const AnomaAccumHalfInt = ~~AnomaAccumHalf
+        const AnomaAccumHalfInt = Math.trunc(AnomaAccumHalf)
         if (AnomaAccum < Anoma25) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumHalfInt]
         } else if (AnomaAccum < Anoma50) {

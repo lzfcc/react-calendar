@@ -19,6 +19,19 @@ export { big, frc, nzh };
 //     ch_u: '个十百千萬億兆京',       // 数位单位字符，万以下十进制，万以上万进制，个位不能省略
 // });
 
+// console.log(big(big.acos(-1)).div(180).div(3600).toString())
+export const pi = 3.14159265358979323846264338327950288419716939937510582097494459
+export const pi2 = 6.28318530717958647692528676655900576839433879875021164194988918
+export const S2R = 4.84813681109535993589914102357947975956353302372701515582553e-6 // pi/180/3600
+export const MMS2R = 4.84813681109535993589914102357947975956353302372701515583e-13
+export const D2R = 0.01745329251994329576923690768488612713442871888541725456097191 // pi/180
+export const R2D = 57.2957795130823208767981548141051703324054724665643215491602439 // 180/pi
+export const R2H = 3.81971863420548805845321032094034468882703149777095476994401626 // 180/pi/15
+export const c = 299792.458
+export const cDay = 25902068371.2
+export const AU = 149597870.7 // km
+export const Parsec = 30856775814899.2582629 // 206264.806247 * AU
+
 export const deci = x => +('.' + (x.toString().split('.')[1])) || 0 // 截取小數
 // console.log(4999999999999.14%1) // = .1396484375
 // console.log(4999999999999.14-Math.floor(4999999999999.14)) // = .1396484375
@@ -1170,8 +1183,8 @@ export const degAccumList = (Name, Y) => {
     if (Type >= 7) {
       const OriginYear = Y - (OriginAd || CloseOriginAd) + 1
       if (Name === 'Shoushi' || Name === 'Shoushi2') {
-        Sidereal = +(Sidereal + +(~~(OriginYear / 100) / 10000)).toFixed(4)
-        Solar = +(SolarRaw - (~~(OriginYear / 100) / 10000)).toFixed(4)
+        Sidereal = +(Sidereal + +(Math.trunc(OriginYear / 100) / 10000)).toFixed(4)
+        Solar = +(SolarRaw - (Math.trunc(OriginYear / 100) / 10000)).toFixed(4)
       }
       const OriginDeg = EquaAccumList[MansionRaw[0]] + MansionRaw[1] // 曆元宿度積度
       const Accum = OriginYear * Solar + (MansionConst || 0)

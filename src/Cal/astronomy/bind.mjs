@@ -41,7 +41,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {  // Name預留給誤差分�
         let SunTcorrPrint = '-', NodeAccumCorrPrint = '-'
         const SunDifAccumPrint = SunDifAccum ? SunDifAccum.toFixed(5) : '-'
         const SunDifAccumErrPrint = EllipseSun !== undefined ?
-            ~~((SunDifAccum - EllipseSun) / EllipseSun * 10000) : '-'
+            Math.trunc((SunDifAccum - EllipseSun) / EllipseSun * 10000) : '-'
         const MoonDifAccumPrint = (MoonDifAccum || 0).toFixed(5)
         let MoonAcrVdPrint = '-'
         if (Name === 'Shoushi') {
@@ -50,7 +50,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {  // Name預留給誤差分�
         }
         else if (MoonAcrVd) MoonAcrVdPrint = MoonAcrVd.toFixed(4)
         const MoonDifAccumErrPrint = EllipseMoon !== undefined ?
-            ~~((MoonDifAccum - EllipseMoon) / EllipseMoon * 10000) : '-'
+            Math.trunc((MoonDifAccum - EllipseMoon) / EllipseMoon * 10000) : '-'
         if (SunTcorr) SunTcorrPrint = SunTcorr.toFixed(5)
         const MoonAcrSPrint = MoonAcrS.toFixed(4)
         const MoonTcorrPrint = MoonTcorr.toFixed(5)
@@ -77,11 +77,11 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {  // Name預留給誤差分�
         const MoonAcrS = AutoMoonAcrS(AnomaAccum, Name).MoonAcrS
         const SunDifAccumPrint = SunDifAccum.toFixed(5)
         const SunDifAccumErrPrint = EllipseSun !== undefined ?
-            ~~((SunDifAccum - EllipseSun) / EllipseSun * 10000) : '-'
+            Math.trunc((SunDifAccum - EllipseSun) / EllipseSun * 10000) : '-'
         const MoonAcrSPrint = MoonAcrS.toFixed(4)
         const MoonDifAccumPrint = MoonDifAccum.toFixed(5)
         const MoonDifAccumErrPrint = EllipseMoon !== undefined ?
-            ~~((MoonDifAccum - EllipseMoon) / EllipseMoon * 10000) : '-'
+            Math.trunc((MoonDifAccum - EllipseMoon) / EllipseMoon * 10000) : '-'
         const SunTcorrPrint = SunTcorr.toFixed(5)
         const MoonTcorrPrint = MoonTcorr.toFixed(5)
         const Tcorr = +MoonTcorrPrint + +SunTcorrPrint
@@ -211,7 +211,7 @@ export const autoRise = (Sd, SolsDeci, Name) => {
     let { Solar, SolarRaw } = Para[Name]
     Solar = Solar || SolarRaw
     let Corr = 0, Plus = 0, Rise = 0
-    let SdNoon = (~~(Sd + SolsDeci) - SolsDeci + Solar + .5) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
+    let SdNoon = (Math.trunc(Sd + SolsDeci) - SolsDeci + Solar + .5) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
     if (Type <= 4) Plus = -1.5 // 非常詭異
     else if (Type === 11) Plus = -.5 // 授時「置所求日晨前夜半黃道積度」
     SdNoon += Plus
@@ -251,7 +251,7 @@ export const autoDial = (Sd, SolsDeci, Name) => {
     let { Solar, SolarRaw } = Para[Name]
     Solar = Solar || SolarRaw
     let Corr = 0, Plus = 0, Dial = 0
-    let SdNoon = (~~(Sd + SolsDeci) - SolsDeci + Solar + .5) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
+    let SdNoon = (Math.trunc(Sd + SolsDeci) - SolsDeci + Solar + .5) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
     if (Type <= 4) Plus = -1.5 // 非常詭異
     else if (Type === 11) Plus = -.5 // 授時「置所求日晨前夜半黃道積度」
     SdNoon += Plus
@@ -312,13 +312,13 @@ export const bindEquaEclp = GongRaw => {
                 EclpLonPrint = Equa2Eclp.toFixed(6)
                 Equa2EclpDifPrint = Equa2EclpDif.toFixed(6)
                 EclpLonWestPrint = West0B.toFixed(6)
-                EclpLonErrPrint = ~~((Equa2Eclp - West0B) / West0B * 10000)
+                EclpLonErrPrint = Math.trunc((Equa2Eclp - West0B) / West0B * 10000)
             }
             if (Eclp2Equa) {
                 EquaLonPrint = Eclp2Equa.toFixed(6)
                 Eclp2EquaDifPrint = Eclp2EquaDif.toFixed(6)
                 EquaLonWestPrint = West0A.toFixed(6)
-                EquaLonErrPrint = ~~((Eclp2Equa - West0A) / West0A * 10000)
+                EquaLonErrPrint = Math.trunc((Eclp2Equa - West0A) / West0A * 10000)
             }
             if (Eclp2EquaLat) {
                 Eclp2EquaLatPrint = Eclp2EquaLat.toFixed(6)
@@ -373,7 +373,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
             const { Sobliq, RiseLat, DialLat } = Para[Name]
             const Solar = AutoSolar(Name)
             const p = 360 / Solar
-            const SdMidn = (~~(Sd + SolsDeci) - SolsDeci + Solar) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
+            const SdMidn = (Math.trunc(Sd + SolsDeci) - SolsDeci + Solar) % Solar // 所求日晨前夜半 // 這樣處理後算出來的緯度只是當日的情況，不能計算任意時刻
             let GongRaw = Sd
             let GongMidnRaw = SdMidn
             if (['Easthan', 'Yuanjia', 'Daming', 'Daye', 'Wuyin', 'Huangji'].includes(Name)) {
@@ -401,8 +401,8 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
             }
             if (DialLat) {
                 DialPrint = Dial.toFixed(4)
-                DialErrPrint1 = ~~((Dial - WestC.Dial) / WestC.Dial * 10000)
-                DialErrPrint2 = ~~((Dial - WestC.Dial1) / WestC.Dial1 * 10000)
+                DialErrPrint1 = Math.trunc((Dial - WestC.Dial) / WestC.Dial * 10000)
+                DialErrPrint2 = Math.trunc((Dial - WestC.Dial1) / WestC.Dial1 * 10000)
             }
             return {
                 title: NameList[Name],
@@ -475,9 +475,9 @@ const DirList = ['東青龍', '北玄武', '西白虎', '南朱雀']
 const NumList = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘'
 export const bindMansionAccumList = (Name, Y) => {
     Name = Name.toString()
-    Y = parseFloat(Y)
+    Y = parseInt(Y)
     const { Type, Solar } = Para[Name]
-    const { EclpAccumList, EquaAccumList } = degAccumList(Name, ~~Y)
+    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
     const p = Type === 13 ? 360 / Solar : undefined
     const EclpList = [], EquaList = []
     const NameList = Type === 13 ? MansionNameListQing : MansionNameList

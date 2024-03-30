@@ -1,6 +1,6 @@
 import Para from '../parameter/calendars.mjs'
 import { Interpolate1 } from '../equation/sn.mjs'
-import { NameList } from '../parameter/constant.mjs'
+import { NameList, deci } from '../parameter/constant.mjs'
 
 // import { Interpolate2 } from '../equation/sn.mjs'
 // import { Interpolate1_big } from '../equation/sn.mjs'
@@ -144,7 +144,7 @@ const GenSolar = () => {
         let { Solar, SolarRaw, CloseOriginAd } = Para[name]
         Solar = Solar || SolarRaw
         if (CloseOriginAd) {
-            const Deci = Solar - ~~Solar
+            const Deci = deci(Solar)
             if (Deci < .2425 - 1e-12 || Deci > .2425 + 1e-12) {
                 Change.push((.2425 - Deci) / ((1281 - CloseOriginAd) / 100))
                 SolarList.push([CloseOriginAd, Deci, NameList[name]])
@@ -242,7 +242,7 @@ const test5 = function () {
 //     }
 // }
 //////// 乾象入陰陽曆
-// const a = (~~(OriginYear / Lunar) + i - (isNewm ? 1 : .5)) / EcliNumer - ~~((~~(OriginYear / Lunar) + i - (isNewm ? 1 : .5)) / EcliNumer)
+// const a = (Math.trunc(OriginYear / Lunar) + i - (isNewm ? 1 : .5)) / EcliNumer - Math.trunc((Math.trunc(OriginYear / Lunar) + i - (isNewm ? 1 : .5)) / EcliNumer)
 // const b = a * EcliNumer * ShuoHeFen
 
 // 應天日食食分算法廢：
@@ -275,7 +275,7 @@ const test5 = function () {
 //         Last = TheNodeDif ** 2 / 100
 //         Last = isDescend ? 1112 - Last / 935 : 900 - Last / 1156
 //     }
-//     Last *= 1337 / MoonAcrVList[~~AcrAnomaAccum]
+//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnomaAccum)]
 // } else if (Name === 'Guantian') {
 //     if (isNewm) {
 //         Last = TheNodeDif < SunLimitYang ? (98 - TheNodeDif / 100) * (TheNodeDif / 100) / 2.5 : (140 - TheNodeDif / 100) * (TheNodeDif / 100) / 6.5 // 觀天只說250而一，沒說進二位                
@@ -283,7 +283,7 @@ const test5 = function () {
 //         Last = TheNodeDif ** 2 / 100
 //         Last = isDescend ? 1203 - Last / 1138 : 1083 - Last / 1264
 //     }
-//     Last *= 1337 / MoonAcrVList[~~AcrAnomaAccum] // 這個計算還是很粗疏，都沒有算一日之中的具體速度，平行速也很粗疏
+//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnomaAccum)] // 這個計算還是很粗疏，都沒有算一日之中的具體速度，平行速也很粗疏
 // }
 
 // 以下是授時遲疾限下行度

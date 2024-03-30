@@ -1,14 +1,14 @@
-import { big } from '../parameter/constant.mjs'
+import { pi, D2R, R2D, big } from '../parameter/constant.mjs'
 import { FlatLon2FlatLat, Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat, aCb_Sph } from '../newmoon/main_shixian.mjs'
 import { r1, x2LonLat } from '../newmoon/main_vsop.mjs'
 import { multiply } from 'mathjs'
 import { constModern } from './astr_const.mjs'
 // import { mat3, vec3 } from 'gl-matrix'
-const pi = Math.PI //big.acos(-1)
+
 // const d2r = degree => big(degree).mul(pi).div(180)
 // const r2d = degree => big(degree).mul(180).div(pi)
-const R2D = 57.2957795130823208767981548 // 180 / pi
-const D2R = .0174532925199432957692369
+
+
 const abs = X => Math.abs(X)
 const d2r = d => d * pi / 180
 const r2d = r => r * 180 / pi

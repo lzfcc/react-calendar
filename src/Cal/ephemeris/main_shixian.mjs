@@ -30,14 +30,14 @@ export const D2 = (Name, YearStart, YearEnd) => {
         Title += '日月經緯宿度時憲曆'
         const Era = '欽天監欽遵御製' + NameList[Name] + '印造時憲曆頒行天下'
         const YuanYear = ((Y - 604) % 180 + 180) % 180 // 術數的元，以604甲子爲上元，60年一元，凡三元
-        const YuanOrder = ~~(YuanYear / 60)
+        const YuanOrder = Math.trunc(YuanYear / 60)
         const ThreeYuanYear = YuanYear - YuanOrder * 60
         const Yuan = YuanList[YuanOrder] + '元' + nzh.encodeS(ThreeYuanYear + 1) + '年'
         const YearGod = YearGodConvert(YearStem, YearBranch, YearScOrder, YuanYear)
         const YearColor = YearColorConvert(YuanYear)
         // const ZhengMonScOrder = Math.round((YearStem * 12 - 9) % 60.1) // 正月月建
         const ZhengMonScOrder = (YearStem * 12 - 9) % 60
-        const SolsJdAsm = 2086292 + ~~(365.2422 * (Y - 1000))
+        const SolsJdAsm = 2086292 + Math.trunc(365.2422 * (Y - 1000))
         let AsmRealDif = (Sols - (SolsJdAsm + 50)) % 60 + 60
         AsmRealDif -= Math.sign(AsmRealDif) * 60
         const MonName = [], MonInfo = [], MonColor = [], Sc = [], Jd = [], Nayin = [], Week = [], Equa = [], Eclp = [], Rise = [], Morningstar = [], Lat = [], Duskstar = [], MoonEclp = [], MoonEclpLat = [], MoonEqua = [], MoonEquaLat = [], MoonRise = [], NodeMapo = []
@@ -51,13 +51,13 @@ export const D2 = (Name, YearStart, YearEnd) => {
             }
             MonName[i] = MonNumList1[NoleapMon] + '月'
             if (LeapNumTerm > 0 && i === LeapNumTerm + 1) MonName[i] = '閏' + MonNumList1[LeapNumTerm] + '月'
-            MonName[i] += ~~NewmSmd[i] - ~~NewmSmd[i - 1] === 29 ? '小' : '大'
+            MonName[i] += Math.trunc(NewmSmd[i]) - Math.trunc(NewmSmd[i - 1]) === 29 ? '小' : '大'
             const MonColorFunc = MonColorConvert(YuanYear, NoleapMon, ZhengMonScOrder)
             MonInfo[i] = MonColorFunc.MonInfo
             MonColor[i] = MonColorFunc.MonColor
             Sc[i] = [], Jd[i] = [], Nayin[i] = [], Week[i] = [], Eclp[i] = [], Equa[i] = [], Rise[i] = [], Morningstar[i] = [], Lat[i] = [], Duskstar[i] = [], MoonEclp[i] = [], MoonEclpLat[i] = [], MoonEqua[i] = [], MoonEquaLat[i] = [], MoonRise[i] = [], NodeMapo[i] = []
-            for (let k = 1; k <= ~~NewmSmd[i] - ~~NewmSmd[i - 1]; k++) { // 每月日數                
-                const SmdMidn = ~~(NewmSmd[i - 1]) + k // 每日夜半距冬至次日夜半日數
+            for (let k = 1; k <= Math.trunc(NewmSmd[i]) - Math.trunc(NewmSmd[i - 1]); k++) { // 每月日數                
+                const SmdMidn = Math.trunc(NewmSmd[i - 1]) + k // 每日夜半距冬至次日夜半日數
                 // const SmdMidn = 263 // 1722-9-11八月朔 :263 廖育棟01:05
                 DayAccum++ // 這個位置不能變
                 //////////天文曆///////////
@@ -86,7 +86,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
                 MoonRise[i][k] = ClockWest(MoonRiseTmp) + ' ' + ClockWest(MoonSetTmp, false)
                 NodeMapo[i][k] = deg2Hms(Node) + deg2Hms(Mapo)
                 ///////////具注曆////////////
-                const ScOrder = ~~(SolsmorScOrder + SmdMidn) % 60
+                const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn) % 60
                 Sc[i][k] = ScList[ScOrder]
                 Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SmdMidn + 2)
                 const date = Jd2Date(Jd[i][k])

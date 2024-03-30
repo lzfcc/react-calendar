@@ -27,7 +27,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         let { Solar, Sidereal, Lunar } = Para[Name]
         const { LeapNumTerm, SolsAccum, NewmInt, NewmRaw, NewmAcrRaw, NewmNodeAccumMidnPrint, NewmAnomaAccumPrint, NewmAnomaAccumMidnPrint } = CalNewm(Name, Y)[0]
         if (['Shoushi', 'Shoushi2'].includes(Name)) {
-            Solar = +(SolarRaw - ~~((Y - CloseOriginAd + 1) / 100) * .0001).toFixed(4)
+            Solar = +(SolarRaw - Math.trunc((Y - CloseOriginAd + 1) / 100) * .0001).toFixed(4)
         }
         Sidereal = Sidereal || Solar
         Lunar = Lunar || LunarRaw
@@ -110,7 +110,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const FirstMo = Math.ceil(SolsAccum / MoLeng) * MoLeng // floor在冬至之前，ceil在之後
         for (let i = 0; i <= 6; i++) {
             MoSd[i] = parseFloat((FirstMo + i * MoLeng).toPrecision(14)) // 距冬至日數
-            if (Type <= 6 && MoSd[i] === ~~MoSd[i]) {
+            if (Type <= 6 && MoSd[i] === Math.trunc(MoSd[i])) {
                 MieSd[i] = MoSd[i]
             }
             MoSd[i] = parseFloat((MoSd[i] - SolsAccum).toPrecision(14))
@@ -134,14 +134,14 @@ export const D1 = (Name, YearStart, YearEnd) => {
         }
         const Title = NameList[Name] + '萬年天文具注曆日'
         const YuanYear = ((Y - 604) % 180 + 180) % 180 // 術數的元，以604甲子爲上元，60年一元，凡三元
-        const YuanOrder = ~~(YuanYear / 60)
+        const YuanOrder = Math.trunc(YuanYear / 60)
         const ThreeYuanYear = YuanYear - YuanOrder * 60
         const Yuan = YuanList[YuanOrder] + '元' + nzh.encodeS(ThreeYuanYear + 1) + '年'
         const YearGod = YearGodConvert(YearStem, YearBranch, YearScOrder, YuanYear)
         const YearColor = YearColorConvert(YuanYear)
         // const ZhengMonScOrder = Math.round((YearStem * 12 - 9) % 60.1) // 正月月建        
         const ZhengMonScOrder = (YearStem * 12 - 9) % 60
-        const SolsJdAsm = 2086292 + ~~(365.2422 * (Y - 1000)) // 設公元1000年前冬至12月16日2086292乙酉(22)爲曆元，到當年假想冬至的標準儒略日
+        const SolsJdAsm = 2086292 + Math.trunc(365.2422 * (Y - 1000)) // 設公元1000年前冬至12月16日2086292乙酉(22)爲曆元，到當年假想冬至的標準儒略日
         const SolsErr = (Solar - 365.2422) * (Y - CloseOriginAd) // 從曆元開始冬至比理論大約差了那麼多。這個是為了校驗，不直接參與運算
         let AsmRealDif = ((SolsAccum + (ScConst || 0)) - (SolsJdAsm + 50)) % 60
         if (abs(abs(AsmRealDif - SolsErr) - 60) > 6) {
@@ -267,9 +267,9 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 Jd[i][k] += ' ' + date.mm + '.' + date.dd
                 const Stem = StemList.indexOf(Sc[i][k][0])
                 const Branch = BranchList.indexOf(Sc[i][k][1])
-                const JieNum = Math.round((Math.ceil(~~(SdMidn / HalfTermLeng) / 2) + 11) % 12.1)
+                const JieNum = Math.round((Math.ceil(Math.trunc(SdMidn / HalfTermLeng) / 2) + 11) % 12.1)
                 // 順序不一樣！立春1，驚蟄2，清明3，立夏4，芒種5，小暑6，立秋7，白露8，寒露9，立冬10，大雪11，小寒12
-                const JieDifInt = ~~((SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar)
+                const JieDifInt = Math.trunc((SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar)
                 if (Type >= 6) {
                     const WeekOrder = Math.round(((NewmInt[i - 1] + k - 1) % 7 + 5 + (WeekConst || 0)) % 7.1)
                     const MansionOrder = Math.round((((NewmInt[i - 1] + k - 1) % 28 + 23 + (MansionDayConst || 0)) + 28) % 28.1)
@@ -300,7 +300,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 }
                 if (DayAccum === 1) {
                     const XiaohanDifInt = ZhengSdInt - HalfTermLeng + DayAccum
-                    const tmp = ~~((SdInt + 1 - XiaohanDifInt) / 12)
+                    const tmp = Math.trunc((SdInt + 1 - XiaohanDifInt) / 12)
                     const tmp1 = SdInt + 1 - tmp * 12 - Branch
                     JianchuOrigin = tmp1 + 2 // 小寒後第一個丑開始建除
                     HuangheiOrigin = tmp1 + 12 // 小寒後第一個戌開始黃黑道

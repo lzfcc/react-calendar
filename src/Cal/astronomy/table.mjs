@@ -131,7 +131,7 @@ const termNum = (Sd, Name) => {
     const { Solar } = Para[Name]
     Sd %= Solar
     const HalfTermLeng = Solar / 24
-    const TermNum = ~~(Sd / HalfTermLeng) // 每日所在氣名
+    const TermNum = Math.trunc(Sd / HalfTermLeng) // 每日所在氣名
     const TermDif = Sd - TermNum * HalfTermLeng
     return { TermNum, TermDif }
 }
@@ -354,7 +354,7 @@ const MoonLonTable = (Sd, NodeAccumRaw, Name) => { ///////赤白轉換//////
         // EclpWhiteDif = (Lon - RangeAccum[LonOrder]) * (Smallquadrant / 2) * OriginXian / 1296 // 這個用公式來算黃白差，沒寫對
         EquaWhiteDif = (Lon - RangeAccum[LonOrder]) * (Smallquadrant / 8) * (1 - OriginXian / 324)
     } else if (Name === 'Yingtian') {
-        const Hou = ~~(SdHalf / (Solar / 72)) / 18
+        const Hou = Math.trunc(SdHalf / (Solar / 72)) / 18
         EquaWhiteDif = (Lon - RangeAccum[LonOrder]) * (.5 - 5 * Hou / 3636)
     }
     let EquaLon = 0
@@ -380,7 +380,7 @@ export const MoonLatTable = (NodeAccum, Name) => {
     else if (Name === 'Wuji') Portion = 50 / 3 // 五紀正元找不到比例，瞎填
     else if (Name === 'Tsrengyuan') Portion = 219 / 4
     const NodeAccumHalf = NodeAccum % (Node / 2)
-    const NodeAccumHalfInt = ~~NodeAccumHalf
+    const NodeAccumHalfInt = Math.trunc(NodeAccumHalf)
     const Yinyang = NodeAccum > Node / 2 ? 1 : -1
     let Lat = 0
     if (Type < 6) {
@@ -399,7 +399,7 @@ export const MoonLatTable = (NodeAccum, Name) => {
         const Cycle = AutoNodeCycle(Name)
         const l = 15 // Cycle / 24 // 一象限15度
         const Lon = LonRaw * 360 / Cycle
-        const k = ~~(Lon / l) // 本爻
+        const k = Math.trunc(Lon / l) // 本爻
         const Frac = Lon - k * l
         // const D1 = MoonLatDifList[k + 1] - MoonLatDifList[k] // 前差
         // const D2 = MoonLatDifList[k + 2] - MoonLatDifList[k + 1] // 後差

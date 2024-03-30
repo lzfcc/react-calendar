@@ -81,7 +81,7 @@ export const N6 = Y => {
         LeapNumTerm = LeapNumTerm || 0
         if (isNewm) {
             for (let i = 1; i <= 12; i++) {
-                if ((~~AcrTermJd[i] < ~~AcrJd[i + 1]) && (~~AcrTermJd[i + 1] >= ~~AcrJd[i + 2])) {
+                if ((Math.trunc(AcrTermJd[i]) < Math.trunc(AcrJd[i + 1])) && (Math.trunc(AcrTermJd[i + 1]) >= Math.trunc(AcrJd[i + 2]))) {
                     LeapNumTerm = i // 閏Leap月，第Leap+1月爲閏月
                     break
                 }

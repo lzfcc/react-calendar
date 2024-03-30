@@ -3,7 +3,7 @@
 // import { EventEmitter } from 'events'
 // const eventEmitter = new EventEmitter()
 import { transpose, multiply, matrix, subtract, divide, add, chain } from 'mathjs'
-import { ScList, big } from '../parameter/constant.mjs'
+import { D2R, R2D, cDay, ScList, pi, pi2 } from '../parameter/constant.mjs'
 import { deltaT } from '../time/delta-t.mjs'
 import { Jd2Date, generateTimeString } from '../time/jd2date.mjs'
 import { deg2Hms } from './main_shixian.mjs'
@@ -12,13 +12,6 @@ import { nutaMx } from '../modern/nutation.mjs'
 import { vsop87XV } from '../modern/vsop.mjs'
 import { elp2000 } from '../modern/elp2000.mjs'
 const abs = X => Math.abs(X)
-const pi = Math.PI
-const pi2 = 6.283185307179586476925287
-const d2r = d => d * .0174532925199432957692369 // pi / 180
-const R2D = 57.2957795130823208767981548 // 180 / pi
-const D2R = .0174532925199432957692369
-const c = 299792.458
-const cDay = 25902068371.2
 const sqr = X => Math.sqrt(X)
 const r2dfix = X => deg2Hms(X * R2D)
 
@@ -220,7 +213,7 @@ export const N5 = Y => {
             //////// 節氣
             if (isNewm) {
                 // 中氣
-                const TermLon = d2r(((2 * i + 2) * 15 + 270) % 360)
+                const TermLon = D2R * (((2 * i + 2) * 15 + 270) % 360)
                 const AvgTermSd = (i + 1) * TermLeng
                 const AvgTermJd = AvgTermSd + AvgSolsJd
                 const delta = Jd => {
@@ -243,7 +236,7 @@ export const N5 = Y => {
                 const FuncTermEclp = calPos('Sun', AcrTermJd[i])
                 TermEqua[i] = r2dfix(FuncTermEclp.EquaLon)
                 // 節氣
-                const Term1Lon = d2r(((2 * i + 1) * 15 + 270) % 360)
+                const Term1Lon = D2R * (((2 * i + 1) * 15 + 270) % 360)
                 const AvgTerm1Sd = (i + .5) * TermLeng
                 const AvgTerm1Jd = AvgTerm1Sd + AvgSolsJd
                 const delta1 = Jd => {
@@ -270,7 +263,7 @@ export const N5 = Y => {
         LeapNumTerm = LeapNumTerm || 0
         if (isNewm) {
             for (let i = 1; i <= 12; i++) {
-                if ((~~AcrTermJd[i] < ~~AcrJd[i + 1]) && (~~AcrTermJd[i + 1] >= ~~AcrJd[i + 2])) {
+                if ((Math.trunc(AcrTermJd[i]) < Math.trunc(AcrJd[i + 1])) && (Math.trunc(AcrTermJd[i + 1]) >= Math.trunc(AcrJd[i + 2]))) {
                     LeapNumTerm = i // 閏Leap月，第Leap+1月爲閏月
                     break
                 }

@@ -1,16 +1,14 @@
 // 可參考廖育棟的時憲曆日月氣朔網站 http://ytliu.epizy.com/Shixian/index_chinese.html ，有一分很漂亮的公式說明。
 import Para from '../parameter/calendars.mjs'
-import { ScList, big, deci, fix } from '../parameter/constant.mjs'
+import { D2R, R2D, pi, ScList, big, deci, fix } from '../parameter/constant.mjs'
 import { mansionQing } from '../astronomy/mansion.mjs'
 import { clockQingB } from '../time/decimal2clock.mjs'
 import { eclp2Equa } from '../astronomy/pos_convert.mjs'
+
 const abs = X => Math.abs(X)
 const sign = X => Math.sign(X)
-const pi = Math.PI
 export const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m 
 // console.log(fmod(-370, 360)) // 350
-const R2D = 57.2957795130823208767981548 // 180 / pi
-const D2R = .0174532925199432957692369
 const sin = X => Math.sin(D2R * X)//.toFixed(8) // 數理精蘊附八線表用的是七位小數
 const sin2 = X => 2 * sin(X / 2) // 通弦
 const cos = X => Math.cos(D2R * X) //.toFixed(8)
@@ -33,8 +31,8 @@ const f3 = X => X % 360 % 180 > 90 ? 1 : -1 // 一、三象限加，二、四象
 const f4 = X => X % 360 % 180 < 90 ? 1 : -1
 export const Lon2Gong = Lon => (Lon + 90) % 360
 export const Gong2Lon = Gong => (Gong + 270) % 360
-export const LonHigh2Flat = (e, X) => ~~(Math.ceil(X / 90) / 2) * 180 + atan(cos(e) * tan(X)) // 傾角、經度，用於黃轉赤，白轉黃
-// export const LonHigh2Flat = (e, X) => ~~(Math.ceil(X / 90) / 2) * 180 + big(R2D).mul(big.atan(big.mul(big.cos(big(D2R).mul(e)), big.tan(big(D2R).mul(X))))).toNumber()
+export const LonHigh2Flat = (e, X) => Math.trunc(Math.ceil(X / 90) / 2) * 180 + atan(cos(e) * tan(X)) // 傾角、經度，用於黃轉赤，白轉黃
+// export const LonHigh2Flat = (e, X) => Math.trunc(Math.ceil(X / 90) / 2) * 180 + big(R2D).mul(big.atan(big.mul(big.cos(big(D2R).mul(e)), big.tan(big(D2R).mul(X))))).toNumber()
 export const GongHigh2Flat = (e, X) => Lon2Gong(LonHigh2Flat(e, Gong2Lon(X)))
 const LonHigh2FlatB = (Lat, X) => acos(cos(X) / cos(Lat)) // 已知黃經赤緯求赤經
 // const LonHigh2FlatB = (Lat, X) => big.acos(big.div(big.cos(big(D2R).mul(X)), big.cos(big(D2R).mul(Lat)))).toNumber()
@@ -65,10 +63,10 @@ export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
 }
 export const deg2Hms = deg => {
     const Deci = deci(deg)
-    const m = ~~(60 * Deci)
-    const s = ~~(3600 * Deci - 60 * m)
+    const m = Math.trunc(60 * Deci)
+    const s = Math.trunc(3600 * Deci - 60 * m)
     // const ss = Math.round(216000 * Deci - 3600 * m - 60 * s)
-    return ~~deg + '°' + m + '′' + s + '″' // + ss
+    return Math.trunc(deg) + '°' + m + '′' + s + '″' // + ss
 }
 export const Lat2NS = X => (X > 0 ? 'N' : 'S') + deg2Hms(Math.abs(X))
 // 切線分外角法，見梅文鼎三角法舉要卷二。兩邊的輸入順序無所謂。已知邊角邊，求另外兩角。
@@ -159,7 +157,7 @@ const moonEclp2EquaGuimao = (Sobliq, Lon, Lat) => { // 《後編》已知黃道�
     const A_ArcMNox_Equa = (Lon > 180 ? -1 : 1) * Sobliq + A_ArcMNox_Eclp // 太陰距二分弧與赤道交角
     // 思路：黃轉白，白轉赤。
     const tanA_ArcMNox_Equa = cos(A_ArcMNox_Eclp) * tan(Lon) // 太陰距二分弧之正切線
-    const EquaLon = ~~(Math.ceil(Lon / 90) / 2) * 180 + atan(cos(A_ArcMNox_Equa) * tanA_ArcMNox_Equa) // 太陰距二分赤道經度
+    const EquaLon = Math.trunc(Math.ceil(Lon / 90) / 2) * 180 + atan(cos(A_ArcMNox_Equa) * tanA_ArcMNox_Equa) // 太陰距二分赤道經度
     return {
         EquaLon,
         EquaLat: atan(tan(A_ArcMNox_Equa) * sin(t3(EquaLon)))
@@ -464,7 +462,7 @@ const timeAvg2RealXinfaLiao = (Sobliq, SunLon) => { // 根據廖育棟附錄A
     return SunCorrTcorr * 4 + EclpEquaDifTcorr * 4 + k
 }
 const timeAvg2RealXinfa = (Sobliq, SunLon) => { // 査表
-    const SunGong = ~~Lon2Gong(SunLon)
+    const SunGong = Math.trunc(Lon2Gong(SunLon))
     return timeAvg2RealXinfaList[SunGong] / 1440
 }
 const timeAvg2RealXinfaB = (Sobliq, SunLon) => (SunLon - LonHigh2Flat(Sobliq, SunLon)) / 360 // 只考慮升度差
@@ -614,7 +612,7 @@ const moonGuimao = (Name, MoonRoot, NodeRoot, MapoRoot, Smd, SunCorr, SunGong, S
     const MSDifSum = t(AcrMSDif + SunMoonApoDif) // 相距總數
     const Corr3 = sin(MSDifSum) * Corr3Max // 三均。总数初宫至五宫为加，六宫至十一宫为减
     const Dif90 = t3(SunMoonApoDif) / 10
-    const Corr4Max = deci(Dif90) * (Corr4MaxList[~~Dif90 + 1] - Corr4MaxList[~~Dif90]) + Corr4MaxList[~~Dif90] // 兩弦最大末均
+    const Corr4Max = deci(Dif90) * (Corr4MaxList[Math.trunc(Dif90) + 1] - Corr4MaxList[Math.trunc(Dif90)]) + Corr4MaxList[Math.trunc(Dif90)] // 兩弦最大末均
     const Corr4 = -sin(AcrMSDif) * Corr4Max // 末均。实月距日初宫至五宫为减，六宫至十一宫为加。
     const Whitegong = Acr1 + Corr2 + Corr3 + Corr4 // 白道實行moon's path
     //////// 黃白差
@@ -643,14 +641,14 @@ export const N4 = (Name, Y) => {
     const CloseOriginYear = abs(Y - CloseOriginAd) // 積年
     const OriginAccum = +(CloseOriginYear * Solar).toFixed(9) // 中積
     const SolsAccum = Y >= CloseOriginAd ? OriginAccum + SolsConst : OriginAccum - SolsConst // 通積分
-    const MansionDaySolsmor = Y >= CloseOriginAd ? ~~(((OriginAccum + MansionDayConst) % 28) % 28) : ~~((28 - (OriginAccum - MansionDayConst) % 28) % 28) // 值宿日分
+    const MansionDaySolsmor = Y >= CloseOriginAd ? Math.trunc(((OriginAccum + MansionDayConst) % 28) % 28) : Math.trunc((28 - (OriginAccum - MansionDayConst) % 28) % 28) // 值宿日分
     const Sols = +(Y >= CloseOriginAd ? SolsAccum % 60 : 60 - SolsAccum % 60).toFixed(9)
     const SolsDeci = deci(Sols) // 冬至小數
-    const SolsmorScOrder = (~~Sols + 2) % 60 // 本年紀日：以天正冬至干支加一日得紀日。（考成：所求本年天正冬至次日之干支。既有天正冬至干支，可以不用紀日，因用表推算起於年根而不用天正冬至。若無紀日，則無以定干支，且日數自紀日干支起初日，故並用之）Solsmor: winter solstice tomorrow 冬至次日子正初刻
+    const SolsmorScOrder = (Math.trunc(Sols) + 2) % 60 // 本年紀日：以天正冬至干支加一日得紀日。（考成：所求本年天正冬至次日之干支。既有天正冬至干支，可以不用紀日，因用表推算起於年根而不用天正冬至。若無紀日，則無以定干支，且日數自紀日干支起初日，故並用之）Solsmor: winter solstice tomorrow 冬至次日子正初刻
     const SunRoot = (1 - SolsDeci) * SunAvgVd // 年根（考成：天正冬至次日子正初刻太陽距冬至之平行經度。天正冬至分：冬至距本日子正初刻後之分數與周日一萬分相減，餘爲冬至距次日子正初刻前之分數，故與每日平行為比例，得次日子正初刻太陽距冬至之平行經度）。一率：週日一萬分，二率：每日平行，三率：以天正冬至分與週日一萬分相減，求得四率爲秒，以分收之得年根。// 本來是分，我收作度。    
     const DayAccum = Y >= CloseOriginAd ? OriginAccum + deci(SolsConst) - SolsDeci : OriginAccum - deci(SolsConst) + SolsDeci // 積日（曆元冬至次日到所求天正冬至次日的日數，等於算式的曆元冬至當日到所求冬至當日日數）    
     const ChouAccum = Y >= CloseOriginAd ? DayAccum - ChouConst : DayAccum + ChouConst // 通朔
-    // const LunarAccum = Y >= CloseOriginAd ? ~~(ChouAccum / Lunar) + 1 : ~~(ChouAccum / Lunar) // 積朔。似乎+1是為了到十二月首朔
+    // const LunarAccum = Y >= CloseOriginAd ? Math.trunc(ChouAccum / Lunar) + 1 : Math.trunc(ChouAccum / Lunar) // 積朔。似乎+1是為了到十二月首朔
     const ChouSmd = Y >= CloseOriginAd ? (Lunar - ChouAccum % Lunar) % Lunar : ChouAccum % Lunar // 首朔（十二月朔距冬至次日子正）：通朔以朔策除之，得數加一爲積朔，餘數與朔策相減爲首朔。上考則通朔以朔策除之爲積朔，餘數爲首朔。Smd：某時刻距離冬至次日子正的時間
     // const LunarAccumSun = LunarAccum * SunAvgVm // 積朔太陽平行
     // const ChouSun = t(Y >= CloseOriginAd ? ChouSunConst + LunarAccumSun : ChouSunConst - LunarAccumSun)
@@ -1078,24 +1076,24 @@ export const N4 = (Name, Y) => {
         SunLonAft += isNewm ? 0 : 180
         SunLonAft %= 360
         const Deci = deci(Smd) - step + t(SunLonBef - MoonLonBef) / (t(MoonLonAft - MoonLonBef) - t(SunLonAft - SunLonBef)) * step * 2 // 一小時月距日實行
-        return ~~Smd + Deci // 實朔實時距冬至次日的時間
+        return Math.trunc(Smd) + Deci // 實朔實時距冬至次日的時間
     }
     const term = (i, isMid) => {
         const TermGong = ((2 * i + (isMid ? 2 : 1)) * 15) % 360
         const TermSmd = (i + (isMid ? 1 : .5)) * TermLeng - (1 - SolsDeci)
-        const TermSc = ScList[(SolsmorScOrder + ~~TermSmd) % 60]
+        const TermSc = ScList[(SolsmorScOrder + Math.trunc(TermSmd)) % 60]
         const TermDeci = fix(deci(TermSmd))
-        const TermSperiMidn = SperiRoot + SperiVd * ~~TermSmd
+        const TermSperiMidn = SperiRoot + SperiVd * Math.trunc(TermSmd)
         const TermSunCorr = sunCorrQing(Name, TermGong - TermSperiMidn).Corr
         const AcrlineBSmd = TermSmd - TermSunCorr / SunAvgVd // 下編之平氣推定氣法。算這步是為了確定注曆定氣是在哪天
         // 推節氣時刻法。沒有推逐日太陽宮度，為了少點麻煩，只用泛時本日次日，不考慮再昨天或明天的情況。與曆書相較密合。        
-        const SunTod = sunQing(Name, SunRoot, SperiRoot, ~~AcrlineBSmd)
-        const SunMor = sunQing(Name, SunRoot, SperiRoot, ~~AcrlineBSmd + 1)
+        const SunTod = sunQing(Name, SunRoot, SperiRoot, Math.trunc(AcrlineBSmd))
+        const SunMor = sunQing(Name, SunRoot, SperiRoot, Math.trunc(AcrlineBSmd) + 1)
         const Tod = SunTod.SunGong
         const Mor = SunMor.SunGong
-        const AcrlineSmd = ~~AcrlineBSmd + (TermGong - Tod + (TermGong === 0 ? 360 : 0)) / ((Mor - Tod + 360) % 360)
+        const AcrlineSmd = Math.trunc(AcrlineBSmd) + (TermGong - Tod + (TermGong === 0 ? 360 : 0)) / ((Mor - Tod + 360) % 360)
         const NowlineSmd = AcrlineSmd + timeAvg2Real(Name, Sobliq, Gong2Lon(TermGong), SunTod.SunCorr)
-        const NowlineSc = ScList[(SolsmorScOrder + ~~NowlineSmd) % 60]
+        const NowlineSc = ScList[(SolsmorScOrder + Math.trunc(NowlineSmd)) % 60]
         // const NowlineDeci = fix(deci(NowlineSmd), 3)
         const NowlineDeci = clockQingB(deci(NowlineSmd) * 100)
         const { Eclp: TermEclp, Equa: TermEqua } = mansionQing(Name, Y, TermGong)
@@ -1113,7 +1111,7 @@ export const N4 = (Name, Y) => {
             //////// 平朔望
             // const AvgSmd = 212 // 1921算例
             const AvgSmd = ChouSmd + (i + (isNewm ? 0 : .5)) * Lunar // 各月平朔望到冬至次日子正日分
-            const AvgSmdMidn = ~~AvgSmd
+            const AvgSmdMidn = Math.trunc(AvgSmd)
             AvgSc[i] = ScList[(SolsmorScOrder + AvgSmdMidn) % 60]
             AvgDeci[i] = fix(deci(AvgSmd))
             let AcrSmd = 0, AcrlineDeci = 0, AcrSunGong = 0, AcrWhitelongi = 0, AcrSunCorr = 0, AcrMorb = 0, AcrMoonCorr1 = 0, AcrSorb = 0
@@ -1186,7 +1184,7 @@ export const N4 = (Name, Y) => {
             // NowlineDeci[i] = fix(deci(NowlineSmd[i]), 3)
             NowlineDeci[i] = clockQingB(deci(NowlineSmd[i]) * 100)
             NowSmd[i] = AcrSmd + timeAvg2Real(Name, Sobliq, AcrSunLon, AcrSunCorr) // 朔望只有月離初均，沒有日差，所以都要加。不清楚新法的交食用那種日差
-            NowSc[i] = ScList[(SolsmorScOrder + ~~NowSmd[i]) % 60]
+            NowSc[i] = ScList[(SolsmorScOrder + Math.trunc(NowSmd[i])) % 60]
             NowDeci[i] = fix(deci(NowSmd[i]), 3)
             const Func = mansionQing(Name, Y, AcrSunGong)
             Eclp[i] = Func.Eclp
@@ -1239,7 +1237,7 @@ export const N4 = (Name, Y) => {
         LeapNumTerm = LeapNumTerm || 0
         if (isNewm) {
             for (let i = 1; i <= 12; i++) {
-                if ((~~TermAcrSmd[i] < ~~NowlineSmd[i + 1]) && (~~TermAcrSmd[i + 1] >= ~~NowlineSmd[i + 2])) {
+                if ((Math.trunc(TermAcrSmd[i]) < Math.trunc(NowlineSmd[i + 1])) && (Math.trunc(TermAcrSmd[i + 1]) >= Math.trunc(NowlineSmd[i + 2]))) {
                     LeapNumTerm = i // 閏Leap月，第Leap+1月爲閏月
                     break
                 }

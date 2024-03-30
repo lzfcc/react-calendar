@@ -4,9 +4,9 @@ import {
 } from '../parameter/constant.mjs'
 
 export const ClockWest = (Deci, isS) => {
-    let h = ~~(Deci * 24)
-    let m = ~~((Deci - h / 24) * 24 * 60)
-    let s = ~~((Deci - h / 24 - m / 24 / 60) * 86400)
+    let h = Math.trunc(Deci * 24)
+    let m = Math.trunc((Deci - h / 24) * 24 * 60)
+    let s = Math.trunc((Deci - h / 24 - m / 24 / 60) * 86400)
     h = h.toString()
     m = m.toString()
     s = s.toString()
@@ -60,17 +60,17 @@ const ClockTmp = (Deci, Mode) => { // 我假設：每日96刻，子初夜半，�
         Portion2 = 10
     }
     const KeRaw = Deci * Portion1
-    const ClockOrder = ~~(KeRaw / Portion2)
-    const QuarOrder = ~~(KeRaw - ClockOrder * Portion2)
-    // const MinOrder = ~~(deci(KeRaw) * 100)
+    const ClockOrder = Math.trunc(KeRaw / Portion2)
+    const QuarOrder = Math.trunc(KeRaw - ClockOrder * Portion2)
+    // const MinOrder = Math.trunc(deci(KeRaw) * 100)
     return BranchList[ClockOrder + 1] + '時' + QuarList[QuarOrder % 8] + '刻' // + nzh.encodeS(MinOrder) +'分'
 }
 
 const Clock24 = Deci => {
     const Portion = 100 / 24 + 1e-10
-    let ClockOrder = ~~(Deci / Portion)
+    let ClockOrder = Math.trunc(Deci / Portion)
     const ClockFrac = Deci - ClockOrder * Portion
-    const Twelve = ~~(ClockFrac / Portion * 12)
+    const Twelve = Math.trunc(ClockFrac / Portion * 12)
     if (Twelve === 11) {
         ClockOrder++
     }
@@ -79,7 +79,7 @@ const Clock24 = Deci => {
 
 const ClockTang = Deci => { // 唐、宋皇祐之前。1/3刻放在時辰最後，可能是初或正兩種情況
     const KeRaw = (Deci + 100 / 24 + 1e-10) % 100 // 夜半子半 
-    let ClockOrder = ~~(KeRaw / (100 / 12))
+    let ClockOrder = Math.trunc(KeRaw / (100 / 12))
     const HalfRaw = KeRaw - (ClockOrder * (100 / 12))
     let QuarOrder = 0
     for (let i = 1; i <= 9; i++) {
@@ -92,8 +92,8 @@ const ClockTang = Deci => { // 唐、宋皇祐之前。1/3刻放在時辰最後�
 
 const ClockSong = Deci => { // 皇祐之後、元、明。四刻是1/6。1刻60分，1分=14.4s
     const KeRaw = (Deci + 100 / 24 + 1e-10) % 100 // 夜半子半 
-    let ClockOrder = ~~(KeRaw / (100 / 12))
-    const HalfOrder = ~~((KeRaw - ClockOrder * (100 / 12)) / (4 + 1 / 6))
+    let ClockOrder = Math.trunc(KeRaw / (100 / 12))
+    const HalfOrder = Math.trunc((KeRaw - ClockOrder * (100 / 12)) / (4 + 1 / 6))
     let HalfRaw = KeRaw - (ClockOrder * (100 / 12) + HalfOrder * (4 + 1 / 6))
     let QuarOrder = 0
     if (HalfRaw < 1) { } else if (HalfRaw < 2) {
@@ -105,19 +105,19 @@ const ClockSong = Deci => { // 皇祐之後、元、明。四刻是1/6。1刻60�
     } else {
         QuarOrder = 4
     }
-    const MinOrder = ~~((KeRaw - (ClockOrder * (100 / 12) + HalfOrder * (4 + 1 / 6) + QuarOrder)) * 60)
+    const MinOrder = Math.trunc((KeRaw - (ClockOrder * (100 / 12) + HalfOrder * (4 + 1 / 6) + QuarOrder)) * 60)
     return BranchList[ClockOrder + 1] + HalfList[HalfOrder] + '' + QuarList[QuarOrder] + '刻' + nzh.encodeS(MinOrder) + '分'
 }
 const clockQingMain = DeciRaw => {
     const Deci = DeciRaw + 100 / 24 // 夜半子半
     const KeRaw = Deci * .96 + 1e-10
-    const KeOrder = ~~KeRaw
-    const ClockOrder = ~~(KeRaw / 8)
-    const HalfOrder = ~~((KeOrder - ClockOrder * 8) / 4)
+    const KeOrder = Math.trunc(KeRaw)
+    const ClockOrder = Math.trunc(KeRaw / 8)
+    const HalfOrder = Math.trunc((KeOrder - ClockOrder * 8) / 4)
     const QuarOrder = KeOrder - (ClockOrder * 8 + HalfOrder * 4)
-    const MinOrder = ~~(deci(KeRaw) * 15) % 15
+    const MinOrder = Math.trunc(deci(KeRaw) * 15) % 15
     const sum = (ClockOrder / 12 + (HalfOrder - 1) / 24 + QuarOrder / 96 + MinOrder / 1440) * 86400
-    const SecOrder = ~~(DeciRaw * 864 - sum)
+    const SecOrder = Math.trunc(DeciRaw * 864 - sum)
     return { ClockOrder, HalfOrder, QuarOrder, MinOrder, SecOrder }
 }
 const ClockQing = DeciRaw => { // 清代96刻
@@ -327,13 +327,13 @@ export const BindNightClock = (DeciRaw, Rise, LightRange) => {
 }
 
 export const Deci2Stage = Deci => {
-    let Order12 = ~~Deci
+    let Order12 = Math.trunc(Deci)
     const Order4 = Order12
     let Order4B = Order12
     const Frac = Deci - Order4
-    const Twelve = ~~(Frac * 12)
-    const Four = ~~(Frac * 4)
-    const FourB = ~~((Frac + .125) * 4)
+    const Twelve = Math.trunc(Frac * 12)
+    const Four = Math.trunc(Frac * 4)
+    const FourB = Math.trunc((Frac + .125) * 4)
     if (Twelve === 11) {
         Order12++
     }

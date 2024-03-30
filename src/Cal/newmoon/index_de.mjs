@@ -130,7 +130,7 @@ export default (YearStart, YearEnd) => {
         if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`
         else Era = `公元前 ${1 - Y} 年 ${YearSc}`
         let YearInfo = `<span class='cal-name'>DE440/1</span> 距曆元${Y - 2000}年 `
-        YearInfo += ' ΔT = ' + ~~(deltaT(ThisYear.NewmJd[5]) * 86400) + ' ± ' + deltaTErrorEstimate(Y)[0] + ' 秒'
+        YearInfo += ' ΔT = ' + Math.trunc(deltaT(ThisYear.NewmJd[5]) * 86400) + ' ± ' + deltaTErrorEstimate(Y)[0] + ' 秒'
         return {
             Era, YearInfo, MonthPrint,
             NewmScPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,

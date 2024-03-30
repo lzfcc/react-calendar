@@ -369,9 +369,9 @@ const EcliMagni2 = (Status, isNewm, Name, Denom, NodeDenom, Solar25, Solar50, So
                 // Magni = 15 * (SynodicNodeDif50 - NodeDif) / SynodicNodeDif50 + Mcorr 
                 // 「以減望差，乃如月食法」
                 if ((Sd > Solar25 && Sd < Solar50) || Sd > Solar75) {
-                    Mcorr = 15 * (3 * ~~(SummsolsDif / HalfTermLeng) + 2 * (10 + NodeDif12)) / SynodicNodeDif50
+                    Mcorr = 15 * (3 * Math.trunc(SummsolsDif / HalfTermLeng) + 2 * (10 + NodeDif12)) / SynodicNodeDif50
                 } else {
-                    Mcorr = 15 * (3 * ~~(SummsolsDif / HalfTermLeng) + 2 * (10 + NodeDif12) + 2 * ~~(Solar25 - Sd % Solar50)) / SynodicNodeDif50
+                    Mcorr = 15 * (3 * Math.trunc(SummsolsDif / HalfTermLeng) + 2 * (10 + NodeDif12) + 2 * Math.trunc(Solar25 - Sd % Solar50)) / SynodicNodeDif50
                 }
                 Magni = 15 * (SynodicNodeDif50 - NodeDif) / SynodicNodeDif50 + Mcorr / Denom
             }
@@ -432,16 +432,17 @@ const EcliMagni2 = (Status, isNewm, Name, Denom, NodeDenom, Solar25, Solar50, So
 }
 const EcliLast2 = (Name, Magni, GreatDeci, AnomaAccum, Denom) => {
     let Last = 0
+    const MagniInt = Math.trunc(Magni)
     if (['Daye', 'Wuyin', 'WuyinB'].includes(Name)) {
         const LastList = [0, 3, 4, 5, 6, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 22, 22] // 月食刻數。最後加一個22，方便程序
-        Last = LastList[~~Magni] + deci(Magni) * (LastList[~~Magni + 1] - LastList[~~Magni])
+        Last = LastList[MagniInt] + deci(Magni) * (LastList[MagniInt + 1] - LastList[MagniInt])
     } else if (Name === 'Huangji') {
         // const LastList = [0, 19, 6, 8, 4, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 0] // 實在無法理解，暫時案麟德
         const LastList = [0, 1, 2, 3, 6, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 20, 20]
-        Last = LastList[~~Magni] + deci(Magni) * (LastList[~~Magni + 1] - LastList[~~Magni])
+        Last = LastList[MagniInt] + deci(Magni) * (LastList[MagniInt + 1] - LastList[MagniInt])
     } else if (['Linde', 'LindeB'].includes(Name)) {
         const LastList = [0, 1, 2, 3, 6, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 20, 20]
-        Last = LastList[~~Magni] + deci(Magni) * (LastList[~~Magni + 1] - LastList[~~Magni])
+        Last = LastList[MagniInt] + deci(Magni) * (LastList[MagniInt + 1] - LastList[MagniInt])
         const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(AnomaAccum, Name) // 紀元：食甚加時入轉算外損益率。應朒者依其損益，應朏者益減損加其副
         Last *= 1 + MoonTcorrDif / TheDenom / Denom // 舊唐「以乘所入變增減率，總法而一，應速：增損減加，應遲：依其增減副」
     }
@@ -1042,7 +1043,7 @@ const EcliMagni3 = (Name, Type, isNewm, isYin, Denom, Sidereal50, Node50, MoonAc
         }
     } else {
         if (Name === 'Chongxuan') {
-            Last = 2000 - MoonAcrVList[~~AcrAnomaAccum] * 10 / 13.37
+            Last = 2000 - MoonAcrVList[Math.trunc(AcrAnomaAccum)] * 10 / 13.37
             MoonLimit1 = Last * (isYin ? .41 : .34)
             MoonLimitDenom = 1480 - MoonLimit1
             Magni = TheNodeDif < MoonLimit1 ? MagniMax : MagniPortion * (1480 - TheNodeDif) / MoonLimitDenom
@@ -1072,6 +1073,7 @@ const EcliMagni3 = (Name, Type, isNewm, isYin, Denom, Sidereal50, Node50, MoonAc
 
 const EcliLast3 = (Name, Type, isNewm, Last, Magni, TheNodeDif, GreatDeci, Tcorr, AvgTcorr, isDescend, isYin, TheNotEcli, Denom, Anoma, MoonAcrVList, AcrAnomaAccum, AvgAnomaAccum, Anoma50, MoonLimit1, MoonLimitNone, SunLimitYang, SunLimitYin, YinYangBorder) => {
     let StartDeci = 0, EndDeci = 0
+    const AcrAnomaAccumInt = Math.trunc(AcrAnomaAccum)
     if (Magni) {
         if (['Dayan', 'Wuji', 'Tsrengyuan', 'Xuanming'].includes(Name)) {
             if (Name === 'Dayan') {
@@ -1100,7 +1102,7 @@ const EcliLast3 = (Name, Type, isNewm, Last, Magni, TheNodeDif, GreatDeci, Tcorr
             Last *= 1 + MoonTcorrDif / TheDenom / Denom // 「應朒者，依其損益；應朓者，損加益減其副」
         } else if (Name === 'Chongxuan') {
             if (isNewm) {
-                Last = 1800 - MoonAcrVList[~~AcrAnomaAccum] * 9 / 13.37 // 日食泛用刻是月食的0.9 f(2674)=0
+                Last = 1800 - MoonAcrVList[AcrAnomaAccumInt] * 9 / 13.37 // 日食泛用刻是月食的0.9 f(2674)=0
                 Last *= Magni / 100000
             } else { // 月全食
                 Last /= Magni === 10 ? 10000 : 1
@@ -1122,9 +1124,9 @@ const EcliLast3 = (Name, Type, isNewm, Last, Magni, TheNodeDif, GreatDeci, Tcorr
                     Last = 417 - (1052 - TheNotEcli) ** 2 / 2654
                 }
             }
-            Last *= 1337.5 / MoonAcrVList[~~(AcrAnomaAccum / Anoma * 248)] // 平離963,963/72=13.375
+            Last *= 1337.5 / MoonAcrVList[Math.trunc(AcrAnomaAccum / Anoma * 248)] // 平離963,963/72=13.375
         } else if (Name === 'Yingtian') {
-            let AcrAnomaAccumHalfInt = ~~(AcrAnomaAccum % Anoma50)
+            let AcrAnomaAccumHalfInt = Math.trunc(AcrAnomaAccum % Anoma50)
             const Plus = AcrAnomaAccum > Anoma50 ? 14 : 0
             AcrAnomaAccumHalfInt += Plus
             Last = Magni * 133700 / MoonAcrVList[AcrAnomaAccumHalfInt]
@@ -1150,20 +1152,20 @@ const EcliLast3 = (Name, Type, isNewm, Last, Magni, TheNodeDif, GreatDeci, Tcorr
         }
         else if (['Chongtian', 'Guantian'].includes(Name)) { // 藤豔輝《崇天曆的日食推步術》
             const tmp = TheNodeDif / (TheNodeDif < SunLimitYang ? SunLimitYang : SunLimitYin)
-            Last = .09 * Denom * tmp * (2 - tmp) * 1337 / MoonAcrVList[~~AcrAnomaAccum]
+            Last = .09 * Denom * tmp * (2 - tmp) * 1337 / MoonAcrVList[AcrAnomaAccumInt]
         } else if (Type === 9) {
             const LastMaxSun = Math.round(Denom * 583 / 7290)
-            const LastDenomSunYin = ~~((SunLimitYin ** 2 / LastMaxSun) / 100) * 100 // 紀元算出來是31715.268，要00結尾
-            const LastDenomSunYang = ~~((SunLimitYang ** 2 / LastMaxSun) / 100) * 100
+            const LastDenomSunYin = Math.trunc((SunLimitYin ** 2 / LastMaxSun) / 100) * 100 // 紀元算出來是31715.268，要00結尾
+            const LastDenomSunYang = Math.trunc((SunLimitYang ** 2 / LastMaxSun) / 100) * 100
             const LastMaxMoon = Math.round(Denom * 656 / 7290)
-            const LastDenomMoon = ~~((MoonLimitNone ** 2 / (Denom * 656 / 7290)) / 100) * 100
+            const LastDenomMoon = Math.trunc((MoonLimitNone ** 2 / (Denom * 656 / 7290)) / 100) * 100
             if (isNewm) Last = isYin ? LastMaxSun - TheNodeDif ** 2 / LastDenomSunYin : LastMaxSun - TheNodeDif ** 2 / LastDenomSunYang
             else Last = LastMaxMoon - TheNodeDif ** 2 / LastDenomMoon
             const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif((AvgAnomaAccum + Tcorr + AvgTcorr) % Anoma, Name) // 食甚加時入轉算外損益率。應朒者依其損益，應朏者益減損加其副
             Last *= 1 + MoonTcorrDif / TheDenom / Denom
         } else if (Type === 10) {
-            if (isNewm) Last = Magni * (30 - Magni) * 2450 / MoonAcrVList[~~AcrAnomaAccum]
-            else Last = Magni * (35 - Magni) * 2100 / MoonAcrVList[~~AcrAnomaAccum]
+            if (isNewm) Last = Magni * (30 - Magni) * 2450 / MoonAcrVList[AcrAnomaAccumInt]
+            else Last = Magni * (35 - Magni) * 2100 / MoonAcrVList[AcrAnomaAccumInt]
         } else if (Type === 11) {
             Last = Math.sqrt(((isNewm ? 20 : 30) - Magni) * Magni)
                 * (['Datong', 'Datong2'].includes(Name) && !isNewm ? .00492 : .00574)
@@ -1231,7 +1233,7 @@ const Eclipse3 = (AvgNodeAccum, AvgAnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, R
             Tcorr0 = AvgTcorr * MoonTcorrDif / TheDenom / Denom
             AvgGreatDeci = (AvgDeci + AvgTcorr + Tcorr0 + 1) % 1 // 紀元食甚泛餘 // 注意小數點加上修正變成負的情況，比如0.1退成了0.9
         } else {
-            Tcorr0 = AvgTcorr * 1337 / MoonAcrVList[~~AcrAnomaAccum]
+            Tcorr0 = AvgTcorr * 1337 / MoonAcrVList[Math.trunc(AcrAnomaAccum)]
             AvgGreatDeci = (AvgDeci + Tcorr0 + 1) % 1 // 大明是加經朔
         }
         AvgGreatNoonDif = Math.abs(.5 - AvgGreatDeci)

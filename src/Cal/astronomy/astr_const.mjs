@@ -37,7 +37,7 @@ export const BindSolarChange = year => {
     const SolarTongtian = parseFloat((365.2425 - .021167 / 12000 * year1).toPrecision(10))
     const SolarChangeTongtian = parseFloat((sign1 * .0127 / 12000 * year1 ** 2).toPrecision(10))
     const SolarShoushi = parseFloat((365.2425 - 2 * 1e-6 * year2).toPrecision(10))
-    const SolarChangeShoushiRaw = parseFloat((-~~(year2 / 100) / 10000).toPrecision(10))
+    const SolarChangeShoushiRaw = parseFloat((-Math.trunc(year2 / 100) / 10000).toPrecision(10))
     const SolarChangeShoushi = parseFloat((sign2 * -SolarChangeShoushiRaw * year2).toPrecision(10))
     const SolarWannian = parseFloat((365.2425 - 1.75 * 1e-6 * year2).toPrecision(10))
     const SolarChangeWannian = parseFloat((sign1 * 8.75 * 1e-7 * year2 ** 2).toPrecision(10))
@@ -149,5 +149,3 @@ const MingtianNode = () => {
 // console.log(test2(91341235, 365.24362139917695474, 29.5305898491083676))  // 紀元15.03210011886921
 // console.log(1776 / 7290)
 // 也就是說，積年九千萬年，能保持小數點後5位精度，只能說剛好勉強夠用
-// console.log(~~-1.8) // -1
-// console.log(Math.floor(-1.8)) // -2

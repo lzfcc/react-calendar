@@ -18,10 +18,10 @@ export default (Name, Y) => {
     const TermLeng = Solar / 12 // 每個中氣相隔的日數
     const ZhengSd = ZhengNum - OriginMonNum // 年首和正月的差
     let OriginYear = Y - OriginAd // 上元積年（算上）
-    const JupiterSc = Name === 'Taichu' ? ScList[(~~(OriginYear % 1728 * 145 / 144) + OriginYearSc) % 60] : '' // 三統曆太歲
-    const JiOrder = ~~(OriginYear % YuanRange / JiRange) // 入第幾紀
+    const JupiterSc = Name === 'Taichu' ? ScList[(Math.trunc(OriginYear % 1728 * 145 / 144) + OriginYearSc) % 60] : '' // 三統曆太歲
+    const JiOrder = Math.trunc(OriginYear % YuanRange / JiRange) // 入第幾紀
     const BuYear = OriginYear % YuanRange % JiRange % BuRange + 1 // 入蔀（統）第幾年
-    const BuOrder = ~~(OriginYear % YuanRange % JiRange / BuRange) // 入第幾蔀（統）
+    const BuOrder = Math.trunc(OriginYear % YuanRange % JiRange / BuRange) // 入第幾蔀（統）
     const BuScOrder = (1 + BuOrder * BuSkip + (BuScConst || 0)) % 60 // 蔀（統）的干支序號
     const SolsAccumRaw = (BuYear - 1) * Solar + (SolsOriginDif || 0) + SolsConst + DayConst // 冬至積日
     const SolsAccumMod = (SolsAccumRaw % 60 + 60) % 60
@@ -33,9 +33,9 @@ export default (Name, Y) => {
     let isLeapAvgThis = LeapSurAvgThis >= parseFloat((12 / 19).toPrecision(11)) // 是否有閏月
     let isLeapAvgPrev = LeapSurAvgPrev >= parseFloat((12 / 19).toPrecision(11))
     let isLeapAvgNext = LeapSurAvgNext >= parseFloat((12 / 19).toPrecision(11))
-    let LeapNumAvgThis = isLeapAvgThis ? ~~(parseFloat(((1 - LeapSurAvgThis) * 228 / 7).toPrecision(12))) : 0 // 閏餘法今年閏月
-    let LeapNumAvgPrev = isLeapAvgPrev ? ~~(parseFloat(((1 - LeapSurAvgPrev) * 228 / 7).toPrecision(12))) : 0
-    let LeapNumAvgNext = isLeapAvgNext ? ~~(parseFloat(((1 - LeapSurAvgNext) * 228 / 7).toPrecision(12))) : 0
+    let LeapNumAvgThis = isLeapAvgThis ? Math.trunc(parseFloat(((1 - LeapSurAvgThis) * 228 / 7).toPrecision(12))) : 0 // 閏餘法今年閏月
+    let LeapNumAvgPrev = isLeapAvgPrev ? Math.trunc(parseFloat(((1 - LeapSurAvgPrev) * 228 / 7).toPrecision(12))) : 0
+    let LeapNumAvgNext = isLeapAvgNext ? Math.trunc(parseFloat(((1 - LeapSurAvgNext) * 228 / 7).toPrecision(12))) : 0
     // 固定冬至法
     let LeapSurAvgFix = 0, isLeapAvgFix = 0, isAdvance = 0, isPost = 0
     if (!isTermLeap) {
@@ -79,17 +79,17 @@ export default (Name, Y) => {
     const NewmAvgBare = [], NewmAvgRaw = [], NewmInt = [], NewmAvgSc = [], NewmSd = [], NewmAvgDeci = [], NewmEqua = [], SyzygyAvgRaw = [], SyzygyAvgMod = [], SyzygyOrderMod = [], SyzygyDeci = []
     let SyzygySc = []
     for (let i = 0; i <= 14; i++) { // 本來是1
-        NewmAvgBare[i] = parseFloat(((~~((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - 1) * Lunar + SolsConst + DayConst).toPrecision(14))
+        NewmAvgBare[i] = parseFloat(((Math.trunc((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - 1) * Lunar + SolsConst + DayConst).toPrecision(14))
         NewmAvgRaw[i] = NewmAvgBare[i] + BuScOrder
-        NewmInt[i] = ~~NewmAvgRaw[i]
+        NewmInt[i] = Math.trunc(NewmAvgRaw[i])
         NewmAvgSc[i] = ScList[(NewmInt[i] % 60 + 60) % 60]
         NewmAvgDeci[i] = (NewmAvgRaw[i] - NewmInt[i]).toFixed(4).slice(2, 6)
         NewmSd[i] = NewmAvgBare[i] - SolsAccumRaw
         if (MansionRaw) NewmEqua[i] = mansion(Name, Y, undefined, NewmSd[i]).Equa
-        // NewmJd[i] = Math.round(parseFloat((JdOrigin + (~~((Math.round(parseFloat((JdSols + Y * Solar).toPrecision(14))) - JdOrigin) / Lunar) + ZhengNum + i - 1) * Lunar).toPrecision(14)))
-        SyzygyAvgRaw[i] = parseFloat(((~~((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - .5) * Lunar + SolsConst).toPrecision(14)) + BuScOrder
+        // NewmJd[i] = Math.round(parseFloat((JdOrigin + (Math.trunc((Math.round(parseFloat((JdSols + Y * Solar).toPrecision(14))) - JdOrigin) / Lunar) + ZhengNum + i - 1) * Lunar).toPrecision(14)))
+        SyzygyAvgRaw[i] = parseFloat(((Math.trunc((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - .5) * Lunar + SolsConst).toPrecision(14)) + BuScOrder
         SyzygyAvgMod[i] = (SyzygyAvgRaw[i] % 60 + 60) % 60
-        SyzygyOrderMod[i] = ~~SyzygyAvgMod[i]
+        SyzygyOrderMod[i] = Math.trunc(SyzygyAvgMod[i])
         SyzygySc[i] = ScList[SyzygyOrderMod[i]]
         SyzygyDeci[i] = (SyzygyAvgMod[i] - SyzygyOrderMod[i]).toFixed(4).slice(2, 6)
     }
@@ -98,8 +98,8 @@ export default (Name, Y) => {
     if (EcliNumer) {
         EcliAccum = EcliRange * deci((OriginYear % EcliNumer) * (Solar / Lunar) / EcliRange)
         for (let k = 1; k <= 3; k++) {
-            // NewmAvgSc[~~(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
-            SyzygySc[~~(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
+            // NewmAvgSc[Math.trunc(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
+            SyzygySc[Math.trunc(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
         } // 四分要看具體時刻，如果在晝則望，在夜則望前一日
     }
     // 中氣
@@ -111,7 +111,7 @@ export default (Name, Y) => {
             TermAvgBare[i] = SolsAccumRaw + (i + ZhengNum - 1) * TermLeng
             TermAvgRaw[i] = TermAvgBare[i] + BuScOrder
             TermAvgMod[i] = ((TermAvgRaw[i]) % 60 + 60) % 60
-            TermOrderMod[i] = ~~TermAvgMod[i]
+            TermOrderMod[i] = Math.trunc(TermAvgMod[i])
             TermName[i] = TermNameList[(i + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
@@ -126,7 +126,7 @@ export default (Name, Y) => {
             TermAvgBare[i] = SolsAccumRaw + (i + ZhengNum - 1) * TermLeng
             TermAvgRaw[i] = TermAvgBare[i] + BuScOrder
             TermAvgMod[i] = parseFloat((((TermAvgRaw[i]) % 60 + 60) % 60).toPrecision(12))
-            TermOrderMod[i] = ~~TermAvgMod[i]
+            TermOrderMod[i] = Math.trunc(TermAvgMod[i])
             TermName[i] = TermNameList[(i + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
@@ -154,7 +154,7 @@ export default (Name, Y) => {
             TermAvgBare[i] = SolsAccumRaw + (i + ZhengNum - 2) * TermLeng
             TermAvgRaw[i] = TermAvgBare[i] + BuScOrder
             TermAvgMod[i] = ((TermAvgRaw[i]) % 60 + 60) % 60
-            TermOrderMod[i] = ~~TermAvgMod[i]
+            TermOrderMod[i] = Math.trunc(TermAvgMod[i])
             TermName[i] = TermNameList[(i - 1 + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = (TermAvgMod[i] - TermOrderMod[i]).toFixed(4).slice(2, 6)

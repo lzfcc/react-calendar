@@ -39,8 +39,8 @@ export default (Name, Y) => {
         // Lunar = CloseOriginYear ? (SolarRaw + SolarChangeAccum / CloseOriginYear - 10.5 / Denom) / (SolarRaw / LunarRaw) : LunarRaw
         LunarChangeAccum = -10.5 * CloseOriginYear / Denom
     } else if (['Shoushi', 'Shoushi2'].includes(Name)) {
-        // Solar = parseFloat((SolarRaw - (~~((CloseOriginYear + 1) / 100) / 10000)).toPrecision(10))
-        Solar = +(SolarRaw - ~~((CloseOriginYear + 1) / 100) * .0001).toFixed(4)
+        // Solar = parseFloat((SolarRaw - (Math.trunc((CloseOriginYear + 1) / 100) / 10000)).toPrecision(10))
+        Solar = +(SolarRaw - Math.trunc((CloseOriginYear + 1) / 100) * .0001).toFixed(4)
     } else if (Name === 'Wannian') {
         // 置曆元所距年積算為汎距，來加往減元紀為定距，以朞實乘之，四約，為積日，不滿，退除為刻，是名汎積。定距自相乘，七之八而一，所得滿百萬為日，不滿為刻及分秒，〔帶半秒已上者收作一秒〕是名節氣歲差，用減汎積，餘為定積。
         // Solar = parseFloat((SolarRaw - (Y - 1281) * 1.75 * 1e-6).toPrecision(10))       
@@ -55,7 +55,7 @@ export default (Name, Y) => {
     let JiSkip = 0, JiOrder = 0, JiYear = 0, JiScOrder = 0
     if (JiRange) {
         JiSkip = Math.round(Solar * JiRange % 60)
-        JiOrder = ~~(OriginYear % YuanRange / JiRange) // 入第幾紀
+        JiOrder = Math.trunc(OriginYear % YuanRange / JiRange) // 入第幾紀
         JiYear = OriginYear % YuanRange % JiRange + 1 // 入紀年
         JiScOrder = (1 + JiOrder * JiSkip) % 60
     }
@@ -140,7 +140,7 @@ export default (Name, Y) => {
             let Tcorr1 = 0
             if (Anoma) {
                 AnomaAccum[i] = +((FirstAnomaAccum + (ZhengSd + i - 1) * SynodicAnomaDif + (isNewm ? 0 : Lunar / 2)) % Anoma).toFixed(fixed) // 上元積年幾千萬年，精度只有那麼多了，再多的話誤差更大
-                AnomaAccumMidn[i] = ~~AnomaAccum[i]
+                AnomaAccumMidn[i] = Math.trunc(AnomaAccum)[i]
                 const TcorrBindFunc = AutoTcorr(AnomaAccum[i], Sd[i], Name)
                 if (Type <= 4) {
                     Tcorr[i] = TcorrBindFunc.Tcorr1
@@ -184,12 +184,12 @@ export default (Name, Y) => {
                 TermAvgSd[i] = (i + ZhengSd - 1) * TermLeng
                 TermAvgRaw[i] = SolsAccum + TermAvgSd[i]
                 const tmp = fm60(TermAvgRaw[i] + isExcl + ScConst)
-                TermSc[i] = ScList[~~tmp]
+                TermSc[i] = ScList[Math.trunc(tmp)]
                 TermDeci[i] = fix(deci(tmp))
                 Term1AvgSd[i] = (i + ZhengSd - 1.5) * TermLeng
                 Term1AvgRaw[i] = SolsAccum + Term1AvgSd[i]
                 const tmp1 = fm60(Term1AvgRaw[i] + isExcl + ScConst)
-                Term1Sc[i] = ScList[~~tmp1]
+                Term1Sc[i] = ScList[Math.trunc(tmp1)]
                 Term1Deci[i] = fix(deci(tmp1))
                 if (Type >= 5 && AcrTermList) {
                     // 定中氣
@@ -200,7 +200,7 @@ export default (Name, Y) => {
                     TermAcrSd[i] = AcrTermList[(TermNum3 + 24) % 24] + Plus
                     TermAcrRaw[i] = SolsAccum + TermAcrSd[i] // 定氣距冬至+中積                
                     const tmp2 = fm60(TermAcrRaw[i] + isExcl + ScConst)
-                    TermAcrSc[i] = ScList[~~tmp2]
+                    TermAcrSc[i] = ScList[Math.trunc(tmp2)]
                     TermAcrDeci[i] = fix(deci(tmp2), 3)
                     // 定節氣
                     const TermNum2 = 2 * (i + ZhengSd - 1) - 1
@@ -210,7 +210,7 @@ export default (Name, Y) => {
                     Term1AcrSd[i] = AcrTermList[(TermNum2 + 24) % 24] + Plus1
                     Term1AcrRaw[i] = SolsAccum + Term1AcrSd[i] // 定氣距冬至+中積                
                     const tmp3 = fm60(Term1AcrRaw[i] + isExcl + ScConst)
-                    Term1AcrSc[i] = ScList[~~tmp3]
+                    Term1AcrSc[i] = ScList[Math.trunc(tmp3)]
                     Term1AcrDeci[i] = fix(deci(tmp3), 3)
                 }
                 if (MansionRaw) {
@@ -245,7 +245,7 @@ export default (Name, Y) => {
             }
             if (Node) {
                 NodeAccum[i] = +((FirstNodeAccum + (ZhengSd + i - 1) * Lunar + (isNewm ? 0 : SynodicNodeDif50)) % Node).toFixed(fixed)
-                NodeAccumMidn[i] = ~~NodeAccum[i]
+                NodeAccumMidn[i] = Math.trunc(NodeAccum[i])
             }
             NodeAccumMidn[i] += NewmPlus // 給曆書用，不知道這樣可不可以
             if (Tcorr1) {
@@ -257,7 +257,7 @@ export default (Name, Y) => {
         if (isNewm) {
             const NewmRaw = isAcr ? AcrRaw : AvgRaw
             for (let i = 1; i <= 12; i++) {
-                if ((~~TermAvgRaw[i] < ~~NewmRaw[i + 1]) && (~~TermAvgRaw[i + 1] >= ~~NewmRaw[i + 2])) {
+                if ((Math.trunc(TermAvgRaw[i]) < Math.trunc(NewmRaw[i + 1])) && (Math.trunc(TermAvgRaw[i + 1]) >= Math.trunc(NewmRaw[i + 2]))) {
                     LeapNumTerm = i // 閏Leap月，第Leap+1月爲閏月
                     break
                 }

@@ -213,54 +213,10 @@ const PrintEph = result => {
  * @param {*} isAuto
  * @param {*} list
  */
-//  export const outputFile = (mode, start, end, isAuto, list) => {
-//     let printData = []
-//     start = ~~start
-//     end = ~~end
-//     if (mode === 1) { // 朔望氣
-//         list.forEach(Name => {
-//             // let Year = start
-//             CalNewm(Name, start, end).forEach((result, k) => {
-//                 // Year = start + k
-//                 const Era = result.Era
-//                 printData[k] = printData[k] || [Era]
-//                 printData[k].push(PrintNewm(result))
-//             })
-//         })
-//         if (isAuto) {
-//             const overlaps = OverlapCalendars(start, end)
-//             Object.entries(overlaps).forEach(([Name, ranges]) => {
-//                 for (const range of ranges) {
-//                     for (let year = range[0]; year <= range[1]; year++) {
-//                         const k = year - start
-//                         if (printData[k][Name]) {
-//                             continue
-//                         }
-//                         const result = CalNewm(Name, year)
-//                         const Era = result.Era
-//                         printData[k] = printData[k] || [Era]
-//                         printData[k].push(PrintNewm(result))
-//                     }
-//                 }
-//             })
-//         }
-//     } else {
-//         list.forEach(Name => {
-//             // let Year = start
-//             CalEph(Name, start, end).forEach((result, k) => {
-//                 // Year = start + k
-//                 // const Era = result.Era
-//                 printData[k] = printData[k] || []
-//                 printData[k].push(PrintEph(result))
-//             })
-//         })
-//     }
-//     return printData
-// }
 export const outputFile = (mode, start, end, isAuto, listRaw) => {
     const printData = []
-    start = ~~start
-    end = ~~end
+    start = Math.trunc(start)
+    end = Math.trunc(end)
     if (mode === 1) { // 朔望氣
         let k = 0
         for (let Year = start; Year <= end; Year++) {
@@ -293,33 +249,11 @@ export const outputFile = (mode, start, end, isAuto, listRaw) => {
  * @param {*} isAuto
  * @param {*} list
  */
-// export const outputNewmWeb = (start, end, isAuto, list) => {
-//     const outputNewmWeb = []
-//     start = ~~start
-//     end = ~~end
-//     list.forEach(Name => {
-//         let Year = start
-//         CalNewm(Name, start, end).forEach((result, k) => {
-//             Year = start + k
-//             outputNewmWeb[k] = outputNewmWeb[k] || []
-//             result.id = Name + Year // 给每个item一个唯一id在前端正确缓存高度
-//             outputNewmWeb[k].push(result)
-//         })
-//     })
-//     if (isAuto) {
-//         for (let Year = start; Year <= end; Year++) {
-//             const AutoCals = AutoCal(Year)
-//             AutoCals.forEach(Name => {
-//                 outputNewmWeb[k].push(CalNewm(Name, Year))
-//             })
-//         }
-//     }
-//     return outputNewmWeb
-// }
+
 export const outputNewmWeb = (start, end, isAuto, listRaw) => {
     const data = []
-    start = ~~start
-    end = ~~end
+    start = Math.trunc(start)
+    end = Math.trunc(end)
     listRaw = Array.isArray(listRaw) ? listRaw : [listRaw]
     listRaw = listRaw.filter(i => i && i.trim()) // 去除空字符串
     let k = 0
@@ -342,8 +276,8 @@ export const outputNewmWeb = (start, end, isAuto, listRaw) => {
 
 export const outputNewmWeb_DE = (start, end) => {
     const data = []
-    start = ~~start
-    end = ~~end
+    start = Math.trunc(start)
+    end = Math.trunc(end)
     let k = 0
     for (let Year = start; Year <= end; Year++) {
         const result = CalNewm_DE(Year)[0]

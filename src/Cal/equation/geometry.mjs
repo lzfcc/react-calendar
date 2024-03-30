@@ -288,7 +288,7 @@ export const Hushigeyuan_Ex_Print = (GongRaw, e) => {
     } = Hushigeyuan_Ex(GongRaw, e)
     Print = Print.concat({
         title: '弧矢割圓',
-        data: [GeyuanB.toFixed(6), GeyuanB1.toFixed(6), ~~((GeyuanB - WestB) / WestB * 10000), GeyuanA.toFixed(6), GeyuanA1.toFixed(6), ~~((GeyuanA - WestA) / WestA * 10000), GeyuanLat.toFixed(6), ~~((GeyuanLat - WestLat) / WestLat * 10000)]
+        data: [GeyuanB.toFixed(6), GeyuanB1.toFixed(6), Math.trunc((GeyuanB - WestB) / WestB * 10000), GeyuanA.toFixed(6), GeyuanA1.toFixed(6), Math.trunc((GeyuanA - WestA) / WestA * 10000), GeyuanLat.toFixed(6), Math.trunc((GeyuanLat - WestLat) / WestLat * 10000)]
     })
     return Print
 }

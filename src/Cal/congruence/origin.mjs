@@ -95,7 +95,7 @@ export const Sunzi = InputRaw => {
             while (ci - 1 - Num2 >= 0) {
                 const gcd = GcdLcm(Ding[ci], Ding[ci - 1 - Num2]).gcd
                 const rRawDif = Math.abs(rRaw[ci] - rRaw[ci - 1 - Num2])
-                if (rRawDif / gcd !== ~~(rRawDif / gcd)) {
+                if (rRawDif / gcd !== Math.trunc(rRawDif / gcd)) {
                     throw (new Error('【大衍總數｜定母】' + Ding[ci] + ',' + Ding[ci - 1 - Num2] + '不滿足 (a,b)|c，無解！'))
                 }
                 Num2++
@@ -137,20 +137,20 @@ export const Sunzi = InputRaw => {
 
 ///////// 解二元一次不定方程
 export const IndetermEqua1 = (a, b, z) => { // 二元一次不定方程
-    a = ~~a
-    b = ~~b
-    z = ~~z
+    a = Math.trunc(a)
+    b = Math.trunc(b)
+    z = Math.trunc(z)
     if (a < 0 && b < 0) {
         a = -a
         b = -b
         z = -z
     }
     const gcd = GcdLcm(a, b).gcd
-    if (gcd > 1 && (z / gcd === ~~(z / gcd))) {
+    if (gcd > 1 && (z / gcd === Math.trunc(z / gcd))) {
         a /= gcd
         b /= gcd
         z /= gcd
-    } else if (gcd > 1 && (z / gcd !== ~~(z / gcd))) {
+    } else if (gcd > 1 && (z / gcd !== Math.trunc(z / gcd))) {
         throw (new Error('不滿足有解的充要條件！'))
     }
     const tmp = b
@@ -160,7 +160,7 @@ export const IndetermEqua1 = (a, b, z) => { // 二元一次不定方程
         a = tmp
         isExchange = 1
     }
-    const u = ~~(CongruenceModulo(a, b).Result)
+    const u = Math.trunc(CongruenceModulo(a, b).Result)
     let x = []
     let y = []
     x[0] = (u * z % b) // x≡ u * z(mod b)
@@ -178,25 +178,25 @@ export const IndetermEqua1 = (a, b, z) => { // 二元一次不定方程
 
 // 秦九韶調日法
 export const IndetermEqua = (a, b, z) => { // a彊母b弱母
-    a = ~~a
-    b = ~~b
-    z = ~~z
+    a = Math.trunc(a)
+    b = Math.trunc(b)
+    z = Math.trunc(z)
     if (a < 0 && b < 0) {
         a = -a
         b = -b
         z = -z
     }
-    const SmallNumer = b - ~~(CongruenceModulo(a, b).Result)
+    const SmallNumer = b - Math.trunc(CongruenceModulo(a, b).Result)
     const BigNumer = (1 + a * SmallNumer) / b
     const gcd = GcdLcm(a, b).gcd
-    if (gcd > 1 && (z / gcd === ~~(z / gcd))) {
+    if (gcd > 1 && (z / gcd === Math.trunc(z / gcd))) {
         a /= gcd
         b /= gcd
         z /= gcd
-    } else if (gcd > 1 && (z / gcd !== ~~(z / gcd))) {
+    } else if (gcd > 1 && (z / gcd !== Math.trunc(z / gcd))) {
         throw (new Error('【秦調日法】不滿足有解的充要條件！'))
     }
-    const u = ~~(CongruenceModulo(a, b).Result)
+    const u = Math.trunc(CongruenceModulo(a, b).Result)
     let x = []
     let y = []
     x[0] = (u * z % b) // x≡ u * z(mod b)

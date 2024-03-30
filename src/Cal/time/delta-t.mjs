@@ -122,9 +122,9 @@ export function deltaTErrorEstimate(y) {
     if (!Array.isArray(y)) y = [y];
     return y.map((val) => {
         if (val < ytab[0]) {
-            return ~~(k1 * Math.pow(val - 1875, 2)) // Fix: changed from 1825 to 1875
+            return Math.trunc(k1 * Math.pow(val - 1875, 2)) // Fix: changed from 1825 to 1875
         } else if (val >= ytab[nytab - 1]) {
-            return ~~(k2 * Math.pow(val - 1875, 2)) // Fix: changed from 1825 to 1875
+            return Math.trunc(k2 * Math.pow(val - 1875, 2)) // Fix: changed from 1825 to 1875
         } else {
             const index = searchSorted(ytab, val) - 1;
             return eps_tab[index >= 0 ? index : 0]; // Fix: to avoid undefined if index is -1

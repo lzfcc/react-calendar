@@ -2,7 +2,7 @@ import { multiply, divide, add } from 'mathjs'
 import { precessionMx } from './precession.mjs'
 import { nutaMx } from './nutation.mjs'
 import { B, calXV, r1, x2LonLat } from '../newmoon/main_vsop.mjs'
-import { MansionNameList } from '../parameter/constant.mjs'
+import { MansionNameList, Parsec, R2D, cDay } from '../parameter/constant.mjs'
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 const DistRaDec =
     [[73.3676, 4.911602797273790, -0.4710779252596740], // 角
@@ -140,10 +140,6 @@ const LingtaiVelList = LingtaiList.map(index => VelList[index])
 const YixiangPosList = YixiangList.map(index => PosList[index])
 const YixiangVelList = YixiangList.map(index => VelList[index])
 
-const R2D = 57.2957795130823208767981548
-const cDay = 25902068371.2
-const AU = 149597870.7 // km
-const Parsec = 30856775814899.2582629 // 206264.806247 * AU
 // 與古曆的deg2Mansion區別在於現代的不從角0起算，直接給出每宿經度
 const deg2MansionModern = (Deg, AccumObj, fixed) => {
     const SortedList = Object.entries(AccumObj).sort((a, b) => a[1] - b[1])

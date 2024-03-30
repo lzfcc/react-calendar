@@ -465,7 +465,8 @@ a = [0, ...a]
 
 3-27 前端 `1.08` webpack打包文件分成古曆和DE曆表兩個。實現切換tab不清空之前的表單。不過古曆的worker打包文件從250k變成500k，奇怪。
 
-3-30 前端 重新整理文件層級。react更改程序入口：`node_modules/react-scripts/config/paths.js`。
+3-30 前端 重新整理文件層級。react更改程序入口：`node_modules/react-scripts/config/paths.js`。把212個`~~`改成了`Math.trunc`
 
 `react-window-dynamic-list` 不再維護了，不支持 react 18，想換 `react-window ` 和 `react-window-infinite-loader`。想更新庫，但失敗，終端 `Failed to parse source map from`，找了半天看到 [這篇](https://github.com/remarkjs/remark-gfm/issues/59)， 原來是因為升級了`"remark-gfm": "^4.0.0"`。
 
+終於知道干支為什麼不能從0開始了。上元積年%完之後得到的數如果是1，那就是甲子。古代沒有0就是從1開始。我剛才全部改成從0開始，最後發現還不得不處處添加一個-1，很麻煩

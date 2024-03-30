@@ -76,7 +76,7 @@ export const Jd2DatePrint = Jd => {
         yy = Math.abs(year) + 1
         yy = '前 ' + yy;
     }
-    const Week = Math.round((Math.round(Jd) % 7 + 8) % 7.1);
+    const Week = Math.round(Jd) % 7
     const WeekName = WeekList1[Week]
     const Sc = ScList[ScOrder] + '(' + ScOrder + ')'
     return '公元 ' + year + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + generateTimeString(h, m, s, ms) + ' ｜ 星期' + WeekName + ' ｜ ' + Sc

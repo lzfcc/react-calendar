@@ -852,8 +852,8 @@ export const MonScaleNameList = [
   "黃鐘",
   "大呂",
 ];
-export const WeekList = "日月火水木金土日"; // 回回不用甲子，用七曜。
-export const WeekList1 = "日一二三四五六日";
+export const WeekList = "月火水木金土日"; // 回回不用甲子，用七曜。
+export const WeekList1 = "一二三四五六日";
 export const NumList = [
   "〇",
   "一",

@@ -140,7 +140,7 @@ export default (Name, Y) => {
             let Tcorr1 = 0
             if (Anoma) {
                 AnomaAccum[i] = +((FirstAnomaAccum + (ZhengSd + i - 1) * SynodicAnomaDif + (isNewm ? 0 : Lunar / 2)) % Anoma).toFixed(fixed) // 上元積年幾千萬年，精度只有那麼多了，再多的話誤差更大
-                AnomaAccumMidn[i] = Math.trunc(AnomaAccum)[i]
+                AnomaAccumMidn[i] = Math.trunc(AnomaAccum[i])
                 const TcorrBindFunc = AutoTcorr(AnomaAccum[i], Sd[i], Name)
                 if (Type <= 4) {
                     Tcorr[i] = TcorrBindFunc.Tcorr1

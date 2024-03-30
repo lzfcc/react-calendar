@@ -1,5 +1,5 @@
 import React from 'react'
-import { OctaveCent } from '../Cal/guqin'
+import { OctaveCent } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

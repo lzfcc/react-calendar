@@ -1,5 +1,5 @@
 import React from 'react'
-import { FretPitch } from '../Cal/guqin'
+import { FretPitch } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ export default class Converter extends React.Component {
     return (
       <div className='ans table2' style={{ whiteSpace: "nowrap" }}>
         <div className='rowline'>
-        <h3>按音</h3>
+          <h3>按音</h3>
           <table>
             <tr>
               <th></th>
@@ -103,7 +103,7 @@ export default class Converter extends React.Component {
           </table>
         </div>
         <div className='rowline'>
-        <h3>泛音</h3>
+          <h3>泛音</h3>
           <table>
             <tr>
               <th></th>

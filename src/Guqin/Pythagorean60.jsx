@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pythagorean60 } from '../Cal/guqin'
+import { Pythagorean60 } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

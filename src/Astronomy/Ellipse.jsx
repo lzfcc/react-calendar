@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindCorrEllipse } from '../Cal/astronomy_bind'
+import { bindCorrEllipse } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

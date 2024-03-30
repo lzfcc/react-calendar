@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindEquaEclp } from '../Cal/astronomy_bind'
+import { bindEquaEclp } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

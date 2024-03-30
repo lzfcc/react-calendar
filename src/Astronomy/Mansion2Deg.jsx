@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindMansion2Deg } from '../Cal/astronomy_bind'
+import { bindMansion2Deg } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

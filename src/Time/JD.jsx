@@ -1,5 +1,5 @@
 import React from "react"
-import { Jd2DatePrint } from '../Cal/time_jd2date'
+import { Jd2DatePrint } from '../Cal/time/jd2date.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)

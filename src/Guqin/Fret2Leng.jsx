@@ -1,5 +1,5 @@
 import React from 'react'
-import { Fret2LengPrint } from '../Cal/guqin'
+import { Fret2LengPrint } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

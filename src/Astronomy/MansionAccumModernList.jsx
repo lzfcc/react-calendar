@@ -1,7 +1,7 @@
 import React from 'react'
 import MenuSelect from '../MenuSelect'
-import { NameMansionList } from '../Cal/para_constant'
-import { bindMansionAccumModernList } from '../Cal/astronomy_bind'
+import { NameMansionList } from '../Cal/parameter/constant.mjs'
+import { bindMansionAccumModernList } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

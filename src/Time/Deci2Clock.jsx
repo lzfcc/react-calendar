@@ -1,5 +1,5 @@
 import React from "react"
-import { BindClock1 } from "../Cal/time_decimal2clock"
+import { BindClock1 } from "../Cal/time/decimal2clock.mjs"
 export default class a extends React.Component {
   constructor(props) {
     super(props)

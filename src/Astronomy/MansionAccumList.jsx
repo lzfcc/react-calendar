@@ -1,7 +1,7 @@
 import React from 'react'
-import { NameDayList } from '../Cal/para_constant'
+import { NameDayList } from '../Cal/parameter/constant.mjs'
 import MenuSelect from '../MenuSelect'
-import { bindMansionAccumList } from '../Cal/astronomy_bind'
+import { bindMansionAccumList } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ export default class Converter extends React.Component {
     }
     return (
       <div className='ans table2'>
-        <h3>黃道宿鈐</h3>
+        <h3>極黃宿鈐</h3>
         <p>冬至日躔黃道 {(this.state.SolsEclpPrint)}</p>
         <table>
           {this.state.EclpAccumPrint.map(row => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { polyfit } from "../Cal/equa_sn";
+import { polyfit } from "../Cal/equation/sn.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

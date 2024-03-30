@@ -1,5 +1,5 @@
 import React from 'react'
-import { Leng2Fret } from '../Cal/guqin'
+import { Leng2Fret } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

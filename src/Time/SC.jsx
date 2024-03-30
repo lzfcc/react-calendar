@@ -1,5 +1,5 @@
 import React from "react"
-import { YearScConvert } from '../Cal/time_era'
+import { YearScConvert } from '../Cal/time/era.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)

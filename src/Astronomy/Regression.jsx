@@ -1,5 +1,5 @@
 import React from 'react'
-import { Regression } from '../Cal/astronomy_west.mjs'
+import { Regression } from '../Cal/astronomy/west.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React from "react"
-import { Date2Jd } from '../Cal/time_jd2date'
+import { Date2Jd } from '../Cal/time/jd2date.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)

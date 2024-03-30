@@ -1,5 +1,5 @@
 import React from "react";
-import { RoundL2HPrint } from "../Cal/equa_geometry";
+import { RoundL2HPrint } from "../Cal/equation/geometry.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

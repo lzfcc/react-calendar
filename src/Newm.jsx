@@ -1,5 +1,5 @@
 import React from 'react'
-import { NameList } from './Cal/para_constant'
+import { NameList } from './Cal/parameter/constant.mjs'
 import MenuSelect from './MenuSelect'
 import DynamicList, { createCache } from 'react-window-dynamic-list'
 import ReactMarkdown from 'react-markdown'

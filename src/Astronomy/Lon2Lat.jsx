@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindLon2Lat } from '../Cal/astronomy_bind'
+import { bindLon2Lat } from '../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

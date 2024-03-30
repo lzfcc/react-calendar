@@ -1,5 +1,5 @@
 import React from 'react'
-import { EqualTemp } from '../Cal/guqin'
+import { EqualTemp } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

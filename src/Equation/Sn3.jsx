@@ -1,5 +1,5 @@
 import React from "react";
-import { Sn3 } from "../Cal/equa_sn";
+import { Sn3 } from "../Cal/equation/sn.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

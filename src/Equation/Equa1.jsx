@@ -1,5 +1,5 @@
 import React from "react";
-import { HighEqua1 } from "../Cal/equa_high";
+import { HighEqua1 } from "../Cal/equation/high.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

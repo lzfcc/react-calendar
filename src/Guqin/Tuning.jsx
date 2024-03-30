@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tuning } from '../Cal/guqin'
+import { Tuning } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

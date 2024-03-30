@@ -1,5 +1,5 @@
 import React from "react"
-import { Deci2Stage } from "../Cal/time_decimal2clock"
+import { Deci2Stage } from "../Cal/time/decimal2clock.mjs"
 export default class a extends React.Component {
   constructor(props) {
     super(props)

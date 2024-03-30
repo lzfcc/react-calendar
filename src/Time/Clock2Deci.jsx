@@ -1,5 +1,5 @@
 import React from "react"
-import { Clock2Deci } from "../Cal/time_decimal2clock"
+import { Clock2Deci } from "../Cal/time/decimal2clock.mjs"
 export default class a extends React.Component {
   constructor(props) {
     super(props)
@@ -57,7 +57,7 @@ export default class a extends React.Component {
       <div>
         {this.input()}
         <button onClick={this.handle} className="button4-1">
-        clock2decimal
+          clock2decimal
         </button>
         {this.result()}
       </div>

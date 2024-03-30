@@ -1,5 +1,5 @@
 import React from "react"
-import { EraConvert } from '../Cal/time_era'
+import { EraConvert } from '../Cal/time/era.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)

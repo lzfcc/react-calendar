@@ -1,5 +1,5 @@
 import React from "react";
-import { MeasureSols } from "../Cal/equa_sn";
+import { MeasureSols } from "../Cal/equation/sn.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

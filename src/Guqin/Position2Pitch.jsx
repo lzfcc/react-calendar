@@ -1,5 +1,5 @@
 import React from 'react'
-import { Position2Pitch } from '../Cal/guqin'
+import { Position2Pitch } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

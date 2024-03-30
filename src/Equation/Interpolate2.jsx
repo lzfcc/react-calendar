@@ -1,5 +1,5 @@
 import React from "react";
-import { Interpolate2_big } from "../Cal/equa_sn";
+import { Interpolate2_big } from "../Cal/equation/sn.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

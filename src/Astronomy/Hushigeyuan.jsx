@@ -1,5 +1,5 @@
 import React from "react";
-import { Hushigeyuan_Ex_Print } from "../Cal/equa_geometry";
+import { Hushigeyuan_Ex_Print } from "../Cal/equation/geometry.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);

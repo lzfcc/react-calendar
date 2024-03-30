@@ -1,13 +1,13 @@
 import React from 'react'
 import Newm from './Newm'
 import Newm_DE from './Newm_DE'
-import Day from './Day'
-import Modulo from './Modulo'
+import Ephemeris from './Ephemeris'
+import Congruence from './Congruence'
 import Equation from './Equation'
 import Astronomy from './Astronomy'
 import Time from './Time'
 import Guqin from './Guqin'
-import Hexo from './Hexo'
+import Hexagram from './Hexagram'
 import Intro from './Intro'
 
 export default class App extends React.Component {
@@ -66,10 +66,10 @@ export default class App extends React.Component {
           <Newm_DE />
         </div>
         <div style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Day />
+          <Ephemeris />
         </div>
         <div style={{ display: activeTab === 3 ? 'block' : 'none' }}>
-          <Modulo />
+          <Congruence />
         </div>
         <div style={{ display: activeTab === 4 ? 'block' : 'none' }}>
           <Equation />
@@ -84,7 +84,7 @@ export default class App extends React.Component {
           <Guqin />
         </div>
         <div style={{ display: activeTab === 8 ? 'block' : 'none' }}>
-          <Hexo />
+          <Hexagram />
         </div>
         <div style={{ display: activeTab === 9 ? 'block' : 'none' }}>
           <Intro />

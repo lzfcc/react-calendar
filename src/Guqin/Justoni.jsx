@@ -1,5 +1,5 @@
 import React from 'react'
-import { Justoni } from '../Cal/guqin'
+import { Justoni } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -43,7 +43,7 @@ export default class Converter extends React.Component {
           <tr>
             <th></th>
             <th>黃鐘C</th>
-            <th>林鐘G</th>            
+            <th>林鐘G</th>
             <th>太簇D</th>
             <th>南呂A</th>
             <th>姑洗E</th>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Meantone } from '../Cal/guqin'
+import { Meantone } from '../Cal/guqin/guqin.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {

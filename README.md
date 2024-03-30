@@ -459,11 +459,13 @@ a = [0, ...a]
 
 3-24 `2.10` 增加VSOP和ELP2000曆表的朔閏！！
 
-3-26 `2.11` 增加DE440/1曆表朔閏。
+3-26 `2.11` 增加DE440/1曆表朔閏！
 
-3-27 前端 `1.08` webpack打包文件分成古曆和DE曆表兩個。實現切換tab不清空之前的表單。
+3-30 `2.12` 增加現代天文學二十八宿計算。
 
-3-30 前端 重新整理文件層級。react更改程序入口：`node_modules/react-scripts/config/paths.js`
+3-27 前端 `1.08` webpack打包文件分成古曆和DE曆表兩個。實現切換tab不清空之前的表單。不過古曆的worker打包文件從250k變成500k，奇怪。
+
+3-30 前端 重新整理文件層級。react更改程序入口：`node_modules/react-scripts/config/paths.js`。
 
 `react-window-dynamic-list` 不再維護了，不支持 react 18，想換 `react-window ` 和 `react-window-infinite-loader`。想更新庫，但失敗，終端 `Failed to parse source map from`，找了半天看到 [這篇](https://github.com/remarkjs/remark-gfm/issues/59)， 原來是因為升級了`"remark-gfm": "^4.0.0"`。
 

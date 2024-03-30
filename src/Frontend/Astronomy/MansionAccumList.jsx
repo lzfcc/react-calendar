@@ -28,7 +28,7 @@ export default class Converter extends React.Component {
     }
     return (
       <div className='ans table2'>
-        <h3>極黃宿鈐</h3>
+        <h3>極黃或黃道宿鈐</h3>
         <p>冬至日躔黃道 {(this.state.SolsEclpPrint)}</p>
         <table>
           {this.state.EclpAccumPrint.map(row => {

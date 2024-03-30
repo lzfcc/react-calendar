@@ -1,7 +1,7 @@
 import { multiply, divide, add } from 'mathjs'
 import { precessionMx } from './precession.mjs'
 import { nutaMx } from './nutation.mjs'
-import { B, calXV, r1, vec2dist, x2LonLat } from '../newmoon/main_vsop.mjs'
+import { B, calXV, r1, x2LonLat } from '../newmoon/main_vsop.mjs'
 import { MansionNameList } from '../parameter/constant.mjs'
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 const DistRaDec =
@@ -196,10 +196,10 @@ export const mansionModern = (Jd, Name) => {
         const X01 = add(X00, XSRawParsec) // =r-rE=r+rS 視差修正之後
         const X02 = multiply(NP, X01) // 歲差章動變化之後
         // 計算太陽所在宿度需要考慮週日光行差嗎？加上的話就是 (Beta=NPVE+Vspin)/c
-        const X02mod = vec2dist(X02.toArray())
+        const X02mod = Math.hypot(...X02.toArray())
         const n = divide(X02, X02mod) // 單位向量
         const n_B = add(n, Beta).toArray()
-        const n1 = divide(n_B, vec2dist(n_B))
+        const n1 = divide(n_B, Math.hypot(...n_B))
         const XEqua = multiply(n1, X02mod) // 光行差修正之後
         const XEclp = multiply(r1(Nutation.Obliq), XEqua).toArray() // 乘法順序不能變！
         EquaAccumList[MansionNameList[i]] = (x2LonLat(XEqua).Lon * R2D + 360) % 360

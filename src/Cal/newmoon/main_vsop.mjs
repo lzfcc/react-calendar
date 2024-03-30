@@ -66,8 +66,6 @@ export const B = matrix([
     [7.078279478e-8, .99999999999999695, 3.306041454e-8],
     [-8.056149173e-8, -3.306040884e-8, .999999999999996208]])
 
-
-// console.log(vec2dist([50708955572.54189, 138483686282.94858, 26896482.33861856]))
 export const x2LonLat = X => {
     // X = X.flat(Infinity)
     const Lon = Math.atan2(X[1], X[0])
@@ -75,28 +73,21 @@ export const x2LonLat = X => {
     const Lat = Math.atan2(X[2], sqr(X[0] ** 2 + X[1] ** 2))
     return { Lon, Lat }
 }
-// 向量求模
-export const vec2dist = arr => {
-    // const sum = arr.reduce((sum, current) => sum + current ** 2, 0);
-    // const sum = big.pow(arr[0][0], 2).add(big.pow(arr[1][0], 2)).add(big.pow(arr[2][0], 2))
-    const sum = arr[0] ** 2 + arr[1] ** 2 + arr[2] ** 2
-    return sqr(sum)
-}
 // 求徑向速度
 const radialV = (X, V) => {
-    const R = vec2dist(X)
+    const R = Math.hypot(...X)
     const Vr = (V[0] * X[0] + V[1] * X[1] + V[2] * X[2]) / R
     return Vr
 }
 // 光行時修正retarded time推遲時。t - |X(tr)-XE(t)| / c 然後迭代算出。近似公式t - |X(t)-XE(t)|
-const lightTimeCorr = (t0, X) => t0 - vec2dist(X) / cDay
+const lightTimeCorr = (t0, X) => t0 - Math.hypot(...X) / cDay
 
 // 光行差 見廖育棟文檔
 // n′ = γ−1n + β + (n·β)β / (1 + γ−1)
 //      / (1 + β·n)
 const lightAber = (X, V) => {
-    const Xmod = vec2dist(X)
-    const v = vec2dist(V)
+    const Xmod = Math.hypot(...X)
+    const v = Math.hypot(...V)
     const n = (divide(X, Xmod)) // 單位向量
     const Vverse = multiply(V, -1)
     const Beta = (divide(Vverse, cDay))
@@ -107,7 +98,7 @@ const lightAber = (X, V) => {
     const n1 = divide(add(tmp1, tmp2), tmp3)
     // 近似公式：相差很小
     // const tmp4 = add(n, Beta)
-    // const tmp5 = vec2dist(add(n, Beta))
+    // const tmp5 = Math.hypot(...add(n, Beta))
     // const n1a = divide(tmp4, tmp5)
     return multiply(n1, Xmod)
 }

@@ -2,9 +2,9 @@ import big from "decimal.js";
 import frc from "fraction.js";
 import nzh from "nzh/hk.js";
 import Para from "./para_calendars.mjs";
-import { LonHigh2Flat } from "./newm_shixian.mjs";
+import { LonHigh2Flat, fmod } from "./newm_shixian.mjs";
 import { autoEquaEclp } from "./astronomy_bind.mjs";
-import { starEclp2Equa } from "./astronomy_west.mjs";
+import { eclp2Equa } from "./astronomy_west.mjs";
 
 big.config({
   precision: 64,
@@ -1147,8 +1147,8 @@ export const degAccumList = (Name, Y) => {
     const StarEquaLon = LonHigh2Flat(Sobliq, StarEclpLon)
     for (let i = 0; i < 28; i++) {
       const MansionLon = (EclpAccumListArr[i] + StarEclpLon) % 360 // 某星黃經   
-      // EquaAccumListArr[i] = ((starEclp2Equa(Sobliq, MansionLon, EclpLatJiazi[i]).EquaLon + MansionConst + 90 + 360) % 360) // 這是以前錯的
-      const MansionEquaLon = starEclp2Equa(Sobliq, MansionLon, EclpLatJiazi[i]).EquaLon
+      // EquaAccumListArr[i] = ((eclp2Equa(Sobliq, MansionLon, EclpLatJiazi[i]).EquaLon + MansionConst + 90 + 360) % 360) // 這是以前錯的
+      const MansionEquaLon = eclp2Equa(Sobliq, MansionLon, EclpLatJiazi[i]).EquaLon
       EquaAccumListArr[i] = ((MansionEquaLon - StarEquaLon + 360) % 360)
     }
     const adj = EquaAccumListArr[0] - 360
@@ -1175,23 +1175,15 @@ export const degAccumList = (Name, Y) => {
       }
       const OriginDeg = EquaAccumList[MansionRaw[0]] + MansionRaw[1] // 曆元宿度積度
       const Accum = OriginYear * Solar + (MansionConst || 0)
-      const SolsDeg = ((Accum + OriginDeg) % Sidereal + Sidereal) % Sidereal
+      const SolsDeg = fmod(Accum + OriginDeg, Sidereal)
       // 參考紀元曆「求二十八宿黃道度」以及《中國古代曆法》p506
-      const EquaSdList = EquaAccumList.slice()
       for (let i = 0; i < 28; i++) {
-        EquaSdList[i] = (EquaSdList[i] - SolsDeg + Sidereal) % Sidereal
-      }
-      const Equa2EclpDif = []
-      for (let i = 0; i < 28; i++) {
-        Equa2EclpDif[i] = autoEquaEclp(EquaSdList[i], Name).Equa2EclpDif
-      }
-      for (let i = 0; i < 28; i++) {
-        EclpAccumList[i] = EquaAccumList[i] + Equa2EclpDif[i]
+        const EquaSd = (EquaAccumList[i] - SolsDeg + Sidereal) % Sidereal // 距冬至赤道度
+        EclpAccumList[i] = EquaAccumList[i] + autoEquaEclp(EquaSd, Name).Equa2EclpDif // 極黃
       }
       const adj = EclpAccumList[0] - Sidereal
       for (let i = 0; i < 28; i++) {
-        EclpAccumList[i] = (EclpAccumList[i] - adj + Sidereal) % Sidereal
-        EclpAccumList[i] = +(EclpAccumList[i]).toFixed(3)
+        EclpAccumList[i] = +((EclpAccumList[i] - adj + Sidereal) % Sidereal).toFixed(3)
       }
     } else { // 麟德以前還沒發明算黃道宿鈐的方法
       if (Y >= 1281) EclpListRaw = EclpDegShoushi

@@ -7,14 +7,14 @@ import {
 } from './astronomy_formula.mjs'
 import { Hushigeyuan, HushigeyuanMoon } from './equa_geometry.mjs'
 import {
-    EquaEclpWest, sunRise, Lon2DialWest, ConstWest, starEclp2Ceclp, starEclp2Equa, testEclpEclpDif,
+    EquaEclpWest, sunRise, Lon2DialWest, ConstWest, eclp2Ceclp, eclp2Equa, testEclpEclpDif, equa2Ceclp, equa2Eclp,
 } from './astronomy_west.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS, ShoushiXianV } from './astronomy_acrv.mjs'
 import { NameList, degAccumList, MansionNameList, MansionNameListQing } from './para_constant.mjs'
 import { AutoEclipse } from './astronomy_eclipse.mjs'
 import { deg2Mansion, mansion2Deg, mansion, mansionQing } from './astronomy_other.mjs'
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from './para_auto-constant.mjs'
-import { GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from './newm_shixian.mjs'
+import { FlatLon2FlatLat, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from './newm_shixian.mjs'
 import { mansionModern } from './eph/mansion.mjs'
 const Gong2Lon = Gong => (Gong + 270) % 360
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cos(x* .2243) +  6.964 *sin(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
@@ -347,14 +347,34 @@ export const bindEquaEclp = (GongRaw, Jd) => {
 }
 export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
     Sobliq = +Sobliq, Lon = +Lon, Lat = +Lat
-    const { EquaLon, EquaLat } = starEclp2Equa(Sobliq, Lon, Lat)
-    const Ceclp = starEclp2Ceclp(Sobliq, Lon, Lat)
+    const { CeclpLon, CeclpLat, EquaLon, EquaLat } = eclp2Ceclp(Sobliq, Lon, Lat)
     const DifMax = testEclpEclpDif(Sobliq, Lat)
-    let Dif = Ceclp - Lon
-    if (Dif > 180) Dif -= 360
-    Dif = +Dif.toFixed(5)
-    return { EquaLon, EquaLat: +EquaLat.toFixed(5), Ceclp, Dif, DifMax }
+    let CeclpLonDif = CeclpLon - Lon
+    let EquaLonDif = EquaLon - Lon
+    if (CeclpLonDif > 180) CeclpLonDif -= 360
+    if (EquaLonDif > 180) EquaLonDif -= 360
+    const CeclpLatDif = CeclpLat - Lat
+    const EquaLatDif = EquaLat - Lat
+    let Print = [], Print2 = []
+    Print = Print.concat({ title: '赤道', data: [EquaLon.toFixed(8), EquaLonDif.toFixed(4), EquaLat.toFixed(8), EquaLatDif.toFixed(4)] })
+    Print = Print.concat({ title: '極黃', data: [CeclpLon.toFixed(8), CeclpLonDif.toFixed(4), CeclpLat.toFixed(8), CeclpLatDif.toFixed(4)] })
+    Print = Print.concat({ title: '黃道', data: [Lon, '-', Lat, '-'] })
+
+    const { Lon: EclpLon2, Lat: EclpLat2 } = equa2Eclp(Sobliq, Lon, Lat)
+    const { CeclpLon: CeclpLon2, CeclpLat: CeclpLat2 } = equa2Ceclp(Sobliq, Lon, Lat)
+    let CeclpLonDif2 = CeclpLon2 - Lon
+    let EclpLonDif2 = EclpLon2 - Lon
+    if (CeclpLonDif2 > 180) CeclpLonDif2 -= 360
+    if (EclpLonDif2 > 180) EclpLonDif2 -= 360
+    const CeclpLatDif2 = CeclpLat2 - Lat
+    const EclpLatDif2 = EclpLat2 - Lat
+    Print2 = Print2.concat({ title: '赤道', data: [Lon, '-', Lat, '-'] })
+    Print2 = Print2.concat({ title: '極黃', data: [CeclpLon2.toFixed(8), CeclpLonDif2.toFixed(4), CeclpLat2.toFixed(8), CeclpLatDif2.toFixed(4)] })
+    Print2 = Print2.concat({ title: '黃道', data: [EclpLon2.toFixed(8), EclpLonDif2.toFixed(4), EclpLat2.toFixed(8), EclpLatDif2.toFixed(4)] })
+    return { Print, Print2, DifMax }
 }
+// console.log(bindStarEclp2Equa(23.5, 10, 10))
+
 export const bindLon2Lat = (Sd, SolsDeci) => {
     Sd = +Sd
     SolsDeci = +('.' + SolsDeci)
@@ -598,9 +618,28 @@ export const bindMansionAccumModernList = (Name, Jd) => {
         EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3)
         EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3)
     }
+    EclpAccumPrint[4] = ['下爲古度'], EquaAccumPrint[4] = ['下爲古度']
+    const p = 360 / 365.25
+    for (let i = 5; i < 9; i++) {
+        EclpAccumPrint.push([])
+        EquaAccumPrint.push([])
+        let EclpSum = 0, EquaSum = 0
+        for (let j = 0; j < 7; j++) {
+            const index = (i - 5) * 7 + j
+            EclpSum += EclpList[index] / p
+            EquaSum += EquaList[index] / p
+        }
+        for (let j = 0; j < 7; j++) {
+            const index = (i - 5) * 7 + j
+            EclpAccumPrint[i].push(EclpSortedList[index][0] + ' ' + (EclpSortedList[index][1] / p).toFixed(4) + `　\n${NumList[index]} ` + (EclpList[index] / p).toFixed(5))
+            EquaAccumPrint[i].push(EquaSortedList[index][0] + ' ' + (EquaSortedList[index][1] / p).toFixed(4) + `　\n${NumList[index]} ` + (EquaList[index] / p).toFixed(5))
+        }
+        EclpAccumPrint[i][8] = DirList[i - 5] + EclpSum.toFixed(3)
+        EquaAccumPrint[i][8] = DirList[i - 5] + EquaSum.toFixed(3)
+    }
     return { EclpAccumPrint, EquaAccumPrint, SolsEclpPrint: SolsEclpMansion, SolsEquaPrint: SolsEquaMansion }
 }
-// console.log(bindMansionAccumModernList(2424222))
+// console.log(bindMansionAccumModernList('Chongzhen', 2424222))
 export const autoMoonLat = (NodeAccum, Name) => {
     let { Type, Sidereal } = Para[Name]
     // Solar = Solar || SolarRaw

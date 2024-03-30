@@ -13,7 +13,7 @@ import CalNewm from './newm_index.mjs'
 import { mansionQing, midstarQing } from './astronomy_other.mjs'
 import { Jd2Date } from './time_jd2date.mjs'
 import { ClockWest } from './time_decimal2clock.mjs'
-import { starEclp2Equa } from './astronomy_west.mjs'
+import { eclp2Equa } from './astronomy_west.mjs'
 export const D2 = (Name, YearStart, YearEnd) => {
     YearEnd = YearEnd || YearStart
     const Main = (Name, Y) => {
@@ -79,7 +79,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
                 Rise[i][k] = ClockWest(Rise[i][k]) + ' ' + ClockWest(1 - Rise[i][k], false)
                 MoonEclp[i][k] = deg2Hms(MoonLon) + mansionQing(Name, Y, MoonGong).Eclp
                 MoonEclpLat[i][k] = Lat2NS(MoonLat)
-                const Func3 = starEclp2Equa(Sobliq, MoonLon, MoonLat)
+                const Func3 = eclp2Equa(Sobliq, MoonLon, MoonLat)
                 MoonEqua[i][k] = deg2Hms(Func3.EquaLon) + mansionQing(Name, Y, Lon2Gong(Func3.EquaLon), true).Equa
                 MoonEquaLat[i][k] = Lat2NS(Func3.EquaLat)
                 const { MoonRise: MoonRiseTmp, MoonSet: MoonSetTmp } = moonRiseQing(RiseLat, Func3.EquaLon, Func3.EquaLat, SEquaLon)

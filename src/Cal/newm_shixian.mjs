@@ -1,26 +1,26 @@
 // 可參考廖育棟的時憲曆日月氣朔網站 http://ytliu.epizy.com/Shixian/index_chinese.html ，有一分很漂亮的公式說明。
 import Para from './para_calendars.mjs'
-import { ScList, deci, fix } from './para_constant.mjs'
+import { ScList, big, deci, fix } from './para_constant.mjs'
 import { mansionQing } from './astronomy_other.mjs'
 import { clockQingB } from './time_decimal2clock.mjs'
-import { starEclp2Equa } from './astronomy_west.mjs'
+import { eclp2Equa } from './astronomy_west.mjs'
 const abs = X => Math.abs(X)
 const sign = X => Math.sign(X)
 const pi = Math.PI
-const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m
+export const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m 
 // console.log(fmod(-370, 360)) // 350
-const d2r = d => d * .0174532925199432957692369 // pi / 180
-const r2d = r => r * 57.2957795130823208767981548 // 180 / pi
-const sin = X => Math.sin(d2r(X))//.toFixed(8) // 數理精蘊附八線表用的是七位小數
+const R2D = 57.2957795130823208767981548 // 180 / pi
+const D2R = .0174532925199432957692369
+const sin = X => Math.sin(D2R * X)//.toFixed(8) // 數理精蘊附八線表用的是七位小數
 const sin2 = X => 2 * sin(X / 2) // 通弦
-const cos = X => Math.cos(d2r(X)) //.toFixed(8)
-const tan = X => Math.tan(d2r(X))//.toFixed(8)
-const cot = X => (1 / Math.tan(d2r(X)))//.toFixed(8)
-const vsin = X => (1 - Math.cos(d2r(X)))//.toFixed(8) // 正矢
-const asin = X => r2d(Math.asin(X))//.toFixed(8)
-const acos = X => r2d(Math.acos(X))//.toFixed(8)
-const atan = X => r2d(Math.atan(X))//.toFixed(8)
-const acot = X => (90 - r2d(Math.atan(X)))//.toFixed(8)
+const cos = X => Math.cos(D2R * X) //.toFixed(8)
+const tan = X => Math.tan(D2R * X)//.toFixed(8)
+const cot = X => (1 / Math.tan(D2R * X))//.toFixed(8)
+const vsin = X => (1 - Math.cos(D2R * X))//.toFixed(8) // 正矢
+const asin = X => R2D * Math.asin(X)//.toFixed(8)
+const acos = X => R2D * Math.acos(X)//.toFixed(8)
+const atan = X => R2D * Math.atan(X)//.toFixed(8)
+const acot = X => (90 - R2D * Math.atan(X))//.toFixed(8)
 const avsin = X => acos(1 - X)
 const sqr = X => Math.sqrt(X)
 const t = X => fmod(X, 360) //(X % 360 + 360) % 360
@@ -34,14 +34,18 @@ const f4 = X => X % 360 % 180 < 90 ? 1 : -1
 export const Lon2Gong = Lon => (Lon + 90) % 360
 export const Gong2Lon = Gong => (Gong + 270) % 360
 export const LonHigh2Flat = (e, X) => ~~(Math.ceil(X / 90) / 2) * 180 + atan(cos(e) * tan(X)) // 傾角、經度，用於黃轉赤，白轉黃
+// export const LonHigh2Flat = (e, X) => ~~(Math.ceil(X / 90) / 2) * 180 + big(R2D).mul(big.atan(big.mul(big.cos(big(D2R).mul(e)), big.tan(big(D2R).mul(X))))).toNumber()
 export const GongHigh2Flat = (e, X) => Lon2Gong(LonHigh2Flat(e, Gong2Lon(X)))
 const LonHigh2FlatB = (Lat, X) => acos(cos(X) / cos(Lat)) // 已知黃經赤緯求赤經
+// const LonHigh2FlatB = (Lat, X) => big.acos(big.div(big.cos(big(D2R).mul(X)), big.cos(big(D2R).mul(Lat)))).toNumber()
 export const LonFlat2High = (e, X) => Math.ceil(Math.ceil(X / 90) / 2) * 180 - 90 - atan(cos(e) * cot(X)) // 赤轉黃，黃轉白
+// export const LonFlat2High = (e, X) => Math.ceil(Math.ceil(X / 90) / 2) * 180 - 90 - big.atan(big.mul(big.cos(big(D2R).mul(e)), big.cot(big(D2R).mul(X)))).toNumber() // 赤轉黃，黃轉白
+// console.log(LonFlat2High(23.4916666666667,73.80638)) // 考成卷八葉37算例
 export const GongFlat2High = (e, X) => Lon2Gong(LonFlat2High(e, Gong2Lon(X)))
 export const HighLon2FlatLat = (e, X) => asin(sin(e) * sin(X)) // 月距正交轉黃緯
-// console.log(LonHigh2Flat(23.4916666666667, 15))
-// console.log(LonFlat2High(23.4916666666667,73.80638)) // 考成卷八葉37算例
-// const LowLon2LowLat = (e, X) => atan(tan(e) * sin(X)) // 求赤經高弧交角用到這個的變形
+// export const HighLon2FlatLat = (e, X) => big.asin(big.mul(big.sin(bid(D2R).mul(e)), big.sinbig(D2R).mul(X))).toNumber() // 月距正交轉黃緯
+export const FlatLon2FlatLat = (e, X) => atan(tan(e) * sin(X)) // 求赤經高弧交角用到這個的變形，求極黃緯也要用這個
+// export const FlatLon2FlatLat = (e, X) => big.atan(big.mul(big.tan(big(D2R).mul(e)), big.sinbig(D2R).mul(X))).toNumber() // 求赤經高弧交角用到這個的變形，求極黃緯也要用這個
 // const LowLat2HighLon = (e, X) => // 已知太陽赤緯轉黃經
 // console.log(LonHigh2Flat(23.5,15))
 // console.log(HighLon2FlatLat(23 + 29 / 60,112.28487818))
@@ -111,6 +115,10 @@ const BaC_Sph = (B, C, a) => acos(sin(B) * sin(C) * cos(a) - cos(B) * cos(C))
 // console.log(BaC_Sph(72.8488888889,90,LonHigh2Flat(72.8488888889, 90 - abs(62.06444444444)))) //19.255410907734177
 // 斜弧三角形已知兩邊和夾角求另一邊
 export const aCb_Sph = (a, b, C) => { // 納白爾公式 https://wenku.baidu.com/view/145cd0f4b84cf7ec4afe04a1b0717fd5360cb2f1.html
+    // const tanAPlBDiv2 = cos((a - b) / 2) / cos((a + b) / 2) * cot(C / 2)
+    // const tanAMiBDiv2 = sin((a - b) / 2) / sin((a + b) / 2) * cot(C / 2)
+    // const tancdiv2 = cos(atan(tanAPlBDiv2)) / cos(atan(tanAMiBDiv2)) * tan((a + b) / 2)
+    // return atan(tancdiv2) * 2
     const tanAPlBDiv2 = cos((a - b) / 2) / cos((a + b) / 2) * cot(C / 2)
     const tanAMiBDiv2 = sin((a - b) / 2) / sin((a + b) / 2) * cot(C / 2)
     const tancdiv2 = cos(atan(tanAPlBDiv2)) / cos(atan(tanAMiBDiv2)) * tan((a + b) / 2)
@@ -222,10 +230,7 @@ export const corrRingC = (Orb, c) => { // 第谷本輪均輪模型。省略了�
     return { Corr, d }
 }
 // console.log(corrRingC(198 + 40 / 60 + 57.4 / 3600, .)) // -0°38′48.49″=0.6468027778 // https://zhuanlan.zhihu.com/p/511793561
-// const distEllipse = (T, c) => { 錯的
-//     const a = 1, b2 = a ** 2 - c ** 2
-//     return b2 / (a - c * d2r(cos(T)))
-// }
+
 // 後編《月離算法》求日地距離
 const distEllipseA = (Orb, c) => { // 作垂線成兩勾股法，見以角求積。已知橢圓某點角度、橢圓倍兩心差，求距地心長度。日在辛，地在甲，另一焦點丙，延長辛甲到壬，丙壬⊥辛壬。甲辛=x，(2-x)^2=h^2+(a+x)^2。
     const c2 = c * 2
@@ -285,9 +290,9 @@ const corrEllipse0A = (TRaw, c) => { // 見日躔數理以角求積，實行-->�
     return S / S0 * 360
 }
 const corrEllipse0 = (T, c) => { // 輸入
-    T = d2r(T)
+    T = D2R * T
     const E = 2 * Math.atan(sqr((1 - c) / (1 + c)) * Math.tan(T / 2)) // 真近點角轉偏近點角
-    return r2d(E - c * Math.sin(E)) + (T > pi ? 360 : 0)
+    return R2D * (E - c * Math.sin(E)) + (T > pi ? 360 : 0)
 }
 // console.log(corrEllipse0A(31, .2))
 // console.log(corrEllipse0(211, .2))
@@ -358,12 +363,12 @@ export const corrEllipseD1 = (OrbRaw, c) => { // 見石雲里《历象考成后�
     if (c < .025) OrbRaw = (OrbRaw + 180) % 360 // 太陽
     const Orb = t2(OrbRaw)
     const Aor1 = qiexianA(c, a, t1(OrbRaw)) // ∠CJS
-    const Arc1 = d2r(Aor1) // JQ弧=∠JCQ≒∠CJS
+    const Arc1 = D2R * Aor1 // JQ弧=∠JCQ≒∠CJS
     const l1 = sqr(a ** 2 + c ** 2 + 2 * a * c * cos(t2(OrbRaw))) // SJ
     const Arc3 = (Arc1 - Math.sin(Arc1)) / l1 // ∠SJN ≒ sin∠SJN =SN/SJ=(NT-ST)/SJ，棋瀚案：其中NT-ST=JQ-JW，把整個值放大了一點，JQ-JW=∠JCQ-sin∠JCQ，而∠JCQ≒CJS之後把∠JCQ縮小了一點，所以一放一縮，大致NT-ST=∠CJS-sin∠CJS。又再進行一次近似∠SJN ≒ sin∠SJN
-    const Ar3 = r2d(Arc3)
+    const Ar3 = R2D * Arc3
     // 為何不增加一步sin變角？
-    // const Ar3 = r2d(Math.asin(Arc3)) // 沒啥區別，多餘
+    // const Ar3 = R2D*Math.asin(Arc3) // 沒啥區別，多餘
     const Aor2 = Orb - Aor1 + Ar3 // ∠QCR
     const Ar4 = qiexianA(a, c, t1(Aor2)) // ∠QSC
     const Aacr = atan(tan(Ar4) * b / a)
@@ -383,7 +388,7 @@ export const corrEllipseD2 = (OrbRaw, c) => { // 月離曆理葉28初均。可�
 // 又見《數》頁135；武家璧《大衍曆日躔表的數學結構及其內插法》日躔差=真近點角V-平近點交角M。V=M+2*e*sinM+1.25*e**2*sin2M   均數極值2e（弧度）。
 export const corrEllipse = (OrbD, c) => {
     if (c > .025) OrbD = (OrbD + 180) % 360 // 太陰遠地點起算
-    const Orb = d2r(OrbD) // 注意：一定要全部換成弧度！
+    const Orb = D2R * OrbD // 注意：一定要全部換成弧度！
     let D = Orb < pi ? c : -c
     let E = Orb
     const delta = E => (Orb - E + c * Math.sin(E)) / (1 - c * Math.cos(E))
@@ -392,7 +397,7 @@ export const corrEllipse = (OrbD, c) => {
         D = delta(E)
     }
     // tanF=sqrt(1-e^2)sin(E)/(cosE-e)
-    const F = r2d(Math.atan((sqr(1 - c ** 2) * Math.sin(E)) / (Math.cos(E) - c)))
+    const F = R2D * (Math.atan((sqr(1 - c ** 2) * Math.sin(E)) / (Math.cos(E) - c)))
     return (F - OrbD + 180) % 90
 
 }
@@ -408,7 +413,7 @@ const vEllipse = (c, Name, Orb) => { // 輸入真近點角，得瞬時速度// h
     const mu = v0 ** 2 * a ** 3 // μ=GM
     const r = distEllipse(Orb, c) // 日地距離
     const v2 = mu * (2 / r - 1 / a)
-    return r2d(sqr(v2))
+    return R2D * sqr(v2)
 }
 // console.log(vEllipse(.0169, 'Guimao', 0))
 const sunCorrQing = (Name, Sorb) => {
@@ -1015,7 +1020,7 @@ export const N4 = (Name, Y) => {
         const Dif2 = sign(Dif) * abs(LonHigh2Flat(Mobliq0116, GreatWhitelongi) - GreatWhitelongi) // 黃白升度差。食甚距時加者亦爲加
         const GreatMLon = (AcrSunLon + Dif + Dif2 + 180) % 360 // 加減食甚距弧（是Dif嗎？？），再加黃白升度差
         const GreatMLat = HighLon2FlatLat(Mobliq0116, GreatWhitelongi)
-        const { EquaLon: GreatMEquaLon, EquaLat: GreatMEquaLat } = starEclp2Equa(Sobliq, GreatMLon, GreatMLat)
+        const { EquaLon: GreatMEquaLon, EquaLat: GreatMEquaLat } = eclp2Equa(Sobliq, GreatMLon, GreatMLat)
         return { Start: fix(deci(GreatSmd - T_StartGreat)), End: fix(deci(GreatSmd + T_StartGreat)), Great: fix(deci(GreatSmd)), Magni, GreatMLon, GreatMLat, GreatMEquaLon, GreatMEquaLat }
     }
     const moonEcliGuimao = NowSmd => {

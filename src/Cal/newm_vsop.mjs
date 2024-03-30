@@ -16,6 +16,7 @@ const pi = Math.PI
 const pi2 = 6.283185307179586476925287
 const d2r = d => d * .0174532925199432957692369 // pi / 180
 const R2D = 57.2957795130823208767981548 // 180 / pi
+const D2R = .0174532925199432957692369
 const c = 299792.458
 const cDay = 25902068371.2
 const sqr = X => Math.sqrt(X)
@@ -58,13 +59,6 @@ export const r3 = g => matrix([
     [-Math.sin(g), Math.cos(g), 0],
     [0, 0, 1]
 ])
-// 位置矢量
-const I = (Lon, Lat) => transpose([
-    Math.cos(Lat) * Math.cos(Lon),
-    Math.cos(Lat) * Math.sin(Lon),
-    Math.sin(Lat)
-])
-// const aa = multiply(transpose(I(40, 5)), I(40, 5)) //  I·IT=1
 
 // 參考架偏差矩陣 frame bias matrix
 export const B = matrix([

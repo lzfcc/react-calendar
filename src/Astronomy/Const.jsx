@@ -14,7 +14,7 @@ export default class Converter extends React.Component {
     return (
       <span className='year-select'>
         <span>儒略日</span>
-        <input className='width2'
+        <input className='width4'
           value={this.state.c}
           onChange={e => {
             this.setState({ c: e.currentTarget.value });
@@ -49,7 +49,7 @@ export default class Converter extends React.Component {
       <div>
         <h3>天文常數</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-5'>每年都在變</button><span className='Deci64'>.64</span>
+        <button onClick={this.handle} className='button4-5'>每年都在變</button>
         {this.result()}
       </div>
     )

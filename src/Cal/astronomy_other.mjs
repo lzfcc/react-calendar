@@ -2,7 +2,7 @@ import Para from './para_calendars.mjs'
 import { autoEquaEclp, autoRise } from './astronomy_bind.mjs'
 import { MansionNameList, degAccumList } from './para_constant.mjs'
 import { AutoMoonAvgV, AutoLightRange } from './para_auto-constant.mjs'
-import { GongFlat2High, GongHigh2Flat, LonHigh2Flat, twilight } from './newm_shixian.mjs'
+import { GongFlat2High, GongHigh2Flat, LonHigh2Flat, fmod, twilight } from './newm_shixian.mjs'
 
 export const mansion2Deg = (Mansion, AccumList) => {
     let Print = 0
@@ -63,7 +63,7 @@ export const mansion = (Name, Y, EclpGong, Sd) => {
     const OriginDeg = EquaAccumList[MansionRaw[0]] + MansionRaw[1] // 曆元宿度積度
     //////// 黃道度
     const OriginAccum = OriginYear * Solar + (MansionConst || 0)
-    const SolsEquaDeg = isPrecession ? ((OriginAccum + OriginDeg) % Sidereal + Sidereal) % Sidereal : OriginDeg // 赤道冬至。算例參《古曆新探》p85
+    const SolsEquaDeg = isPrecession ? fmod(OriginAccum + OriginDeg, Sidereal) : OriginDeg // 赤道冬至。算例參《古曆新探》p85
     const SolsEquaMansion = deg2Mansion(SolsEquaDeg, EquaAccumList, 10)
     const SolsMansionName = SolsEquaMansion.slice(0, 1)
     const SolsEquaMansionDeg = +SolsEquaMansion.slice(1)
@@ -103,7 +103,7 @@ export const mansionQing = (Name, Y, Gong, isEqua) => {
     const { StarVy, Sobliq, MansionConst, CloseOriginAd, MansionOriginAd } = Para[Name]
     const { EclpAccumList, EquaAccumList, Exchange } = degAccumList(Name, Y)
     const Precession = StarVy * (Y - (MansionOriginAd || CloseOriginAd))
-    const SolsEclpDeg = ((MansionConst - Precession) % 360 + 360) % 360 // 冬至黃道宿積度（宿的度量體系）從角0度開始，冬至在多少度
+    const SolsEclpDeg = fmod(MansionConst - Precession, 360)  // 冬至黃道宿積度（宿的度量體系）從角0度開始，冬至在多少度
     // 此處照抄古曆，只是黃赤互換
     const SolsEclpMansion = deg2Mansion(SolsEclpDeg, EclpAccumList, undefined, true, Exchange)
     const SolsMansionName = SolsEclpMansion.slice(0, 1)

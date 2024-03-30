@@ -1,20 +1,24 @@
 import { big, frc } from './para_constant.mjs'
 import { Frac2FalseFrac, DeciFrac2IntFrac } from './equa_math.mjs'
-import { Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat, aCb_Sph } from './newm_shixian.mjs'
+import { FlatLon2FlatLat, Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat, aCb_Sph } from './newm_shixian.mjs'
 import { Date2Jd, Jd2Date } from './time_jd2date.mjs'
+import { r1, x2LonLat } from './newm_vsop.mjs'
+import { multiply } from 'mathjs'
 const pi = Math.PI //big.acos(-1)
 // const d2r = degree => big(degree).mul(pi).div(180)
 // const r2d = degree => big(degree).mul(180).div(pi)
+const R2D = 57.2957795130823208767981548 // 180 / pi
+const D2R = .0174532925199432957692369
 const abs = X => Math.abs(X)
 const d2r = d => d * pi / 180
 const r2d = r => r * 180 / pi
-const sin = X => Math.sin(d2r(X))//.toFixed(8) // 數理精蘊附八線表用的是七位小數
-const cos = X => Math.cos(d2r(X)) //.toFixed(8)
-const tan = X => Math.tan(d2r(X))//.toFixed(8)
-const cot = X => (1 / Math.tan(d2r(X)))//.toFixed(8)
-const asin = X => r2d(Math.asin(X))//.toFixed(8)
-const acos = X => r2d(Math.acos(X))//.toFixed(8)
-const atan = X => r2d(Math.atan(X))//.toFixed(8)
+const sin = X => Math.sin(D2R * X)//.toFixed(8) // 數理精蘊附八線表用的是七位小數
+const cos = X => Math.cos(D2R * X) //.toFixed(8)
+const tan = X => Math.tan(D2R * X)//.toFixed(8)
+const cot = X => (1 / Math.tan(D2R * X))//.toFixed(8)
+const asin = X => R2D * Math.asin(X)//.toFixed(8)
+const acos = X => R2D * Math.acos(X)//.toFixed(8)
+const atan = X => R2D * Math.atan(X)//.toFixed(8)
 const t1 = X => abs(180 - X % 360)
 // const tanliufenyi = (Deg, h) => {
 //     Deg = d2r(Deg)
@@ -246,31 +250,76 @@ export const HighLon2FlatLatWest = (GongRaw, Jd) => { // 根據當年的黃赤�
     const Lon = (GongRaw * 360 / Sidereal + 270) % 360
     return HighLon2FlatLat(e, Lon)
 }
+/**
+ * 位置矢量
+ * @param {*} Lon ⚠️角度deg
+ * @param {*} Lat ⚠️角度deg
+ * @returns 
+ */
+const xyz = (Lon, Lat) => [
+    cos(Lat) * cos(Lon),
+    cos(Lat) * sin(Lon),
+    sin(Lat)
+]
+// const aa = multiply(transpose(I(40, 5)), I(40, 5)) //  I·IT=1
 
 /**
- * 如果不用big，精度只有5位數
+ * 
  * @param {*} Sobliq 黃赤大距
  * @param {*} Lon 黃經
  * @param {*} Lat 黃緯
  * @returns 
  */
-export const starEclp2Equa = (Sobliq, Lon, Lat) => { // 黃赤大距、黃經、黃緯
+export const eclp2Equa = (Sobliq, Lon, Lat) => {
     const Gong = Lon2Gong(Lon)
     const EquaLat = 90 - aCb_Sph(Sobliq, 90 - Lat, t1(Gong)) // 赤緯
-    let A = +(acos(
+    let A = acos(
         (cos(90 - Lat) - cos(Sobliq) * cos(90 - EquaLat)) /
-        (sin(Sobliq) * sin(90 - EquaLat)))).toFixed(5)  // cosA=(cosa-cosb·cosc)/(sinb·sinc)
+        (sin(Sobliq) * sin(90 - EquaLat)))  // cosA=(cosa-cosb·cosc)/(sinb·sinc)
     A = A || 180
     return {
-        EquaLon: +(Gong2Lon(Gong < 180 ? A : 360 - A)).toFixed(5),
-        EquaLat: +EquaLat.toFixed(10)
+        EquaLon: Gong2Lon(Gong < 180 ? A : 360 - A),
+        EquaLat
     }
 }
-export const starEclp2Ceclp = (Sobliq, Lon, Lat) => +(LonFlat2High(Sobliq, starEclp2Equa(Sobliq, Lon, Lat).EquaLon)).toFixed(5)  // 黃道經緯轉古代極黃經
+// console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60)) // 考成卷十六恆星曆理算例:赤經緯23度41分58秒=23.6994444444，求得赤緯8度5分4秒=8.08444444444
+const eclp2Equa_Matrix = (Sobliq, Lon, Lat) => {
+    const Ieclp = xyz(Lon, Lat)
+    const Iequa = multiply(r1(D2R * -Sobliq), Ieclp).toArray()
+    const { Lon: EquaLon, Lat: EquaLat } = x2LonLat(Iequa)
+    return { EquaLon: (EquaLon * R2D + 360) % 360, EquaLat: EquaLat * R2D }
+}
+export const equa2Eclp = (Sobliq, EquaLon, EquaLat) => {
+    const Iequa = xyz(EquaLon, EquaLat)
+    const Ieclp = multiply(r1(D2R * Sobliq), Iequa).toArray()
+    const { Lon, Lat } = x2LonLat(Ieclp)
+    return { Lon: (Lon * R2D + 360) % 360, Lat: Lat * R2D }
+}
+// console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60))
+// console.log(eclp2Equa_Geom(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60))
+// 赤道經緯轉古代極黃經緯
+export const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
+    return {
+        CeclpLon: LonFlat2High(Sobliq, EquaLon),
+        CeclpLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon)
+    }
+}
+/**
+ * 黃道經緯轉古代極黃經緯
+ * @param {*} Sobliq 
+ * @param {*} Lon 黃經
+ * @param {*} Lat 黃緯
+ */
+export const eclp2Ceclp = (Sobliq, Lon, Lat) => {
+    const { EquaLon, EquaLat } = eclp2Equa(Sobliq, Lon, Lat)
+    const { CeclpLon, CeclpLat } = equa2Ceclp(Sobliq, EquaLon, EquaLat)
+    return { CeclpLon, CeclpLat, EquaLon, EquaLat }
+}
+// console.log(eclp2Ceclp(23.5, 10, 10))
 export const testEclpEclpDif = (Sobliq, Lat) => { // 看極黃經和黃經差多少
     const Dif = []
     for (let i = 0; i < 180; i++) {
-        Dif[i] = (starEclp2Ceclp(Sobliq, i, Lat) - i) % 360
+        Dif[i] = (eclp2Ceclp(Sobliq, i, Lat).CeclpLon - i) % 360
         if (Dif[i] > 180) Dif[i] -= 360
         Dif[i] = +Dif[i].toFixed(5)
     }
@@ -281,9 +330,7 @@ export const testEclpEclpDif = (Sobliq, Lat) => { // 看極黃經和黃經差多
     return Print
 }
 // console.log(testEclpEclpDif(23.5, 20))
-// console.log(starEclp2Ceclp(23.5, 5, 10))
-// console.log(starEclp2Equa(23.5, 1, 10))
-// console.log(starEclp2Equa(23 + 29.5 / 60, 27 + 10 / 60, 29 + 22 / 60)) // 考成卷十六恆星曆理算例:赤經緯23度41分58秒=23.6994444444，8度5分4秒=8.08444444444
+
 
 /**
  * 一天之内太阳高度角的变化速率如何计算？ - Pjer https://www.zhihu.com/question/25909220/answer/1026387602 一年中太阳直射点在地球上的移动速度是多少？ - 黄诚赟的回答 https://www.zhihu.com/question/335690936/answer/754032487「太阳直射点的纬度变化不是匀速的，春分秋分最大，夏至冬至最小。」
@@ -348,7 +395,7 @@ export const Lon2DialWest = (Sobliq, f, l) => {
 }
 const Lat = () => { // 由《周髀算经》推算观测地 的纬度有三种数据可用，一是夏至日影一尺六寸，二是冬至日影一丈三尺五寸，三是北极 高度一丈三寸。
     let x = 30.1
-    const scale = x => Math.tan(d2r(x - 23.958428)) / Math.tan(d2r(x + 23.958428)) // 前2300年黃赤交角
+    const scale = x => Math.tan(D2R * (x - 23.958428)) / Math.tan(D2R * (x + 23.958428)) // 前2300年黃赤交角
     const norm = 1.6 / 13.5
     const eps = 1e-8
     while (x < 45) {
@@ -363,9 +410,9 @@ const Lat = () => { // 由《周髀算经》推算观测地 的纬度有三种�
 // ε黃赤交角 Φ 黃白交角
 const MoonLonWest_BACKUP = (EclpRaw, Jd) => { // 統一360度
     const Eclp = EclpRaw //(EclpRaw + 90) % 360
-    const v0 = d2r(Eclp) // 距冬至轉換成距離春分的黃經
-    const I = d2r(5.1453) // 授時黃白大距6
-    const E = d2r(ConstWest(Jd).e) // 授時黃赤大距23.9
+    const v0 = D2R * Eclp // 距冬至轉換成距離春分的黃經
+    const I = D2R * 5.1453 // 授時黃白大距6
+    const E = D2R * ConstWest(Jd).e // 授時黃赤大距23.9
     const cosE = big.cos(E) // .9
     const tank = big.tan(I).div(big.sin(E)) // tank .22
     // const k = tank.atan() // k正交極數 12.7

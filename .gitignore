@@ -27,6 +27,5 @@ yarn-error.log*
 output1.md
 output.md
 
-public/main_ancient.js
-public/main_de.js
-public/main_vsop.js
+public/worker_ancient.min.js
+public/worker_modern.min.js

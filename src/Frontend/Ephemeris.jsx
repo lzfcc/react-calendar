@@ -28,7 +28,7 @@ export default class Day extends React.Component {
   }
 
   componentDidMount() {
-    this.worker = new Worker('main_ancient.js');
+    this.worker = new Worker('worker_ancient.min.js');
     this.worker.addEventListener('message', ({ data }) => {
       this.setState({ output: data, loading: false });
     });
@@ -178,7 +178,7 @@ export default class Day extends React.Component {
         YearEnd
       })
     }
-    callWorker('Day')
+    callWorker("Eph")
   }
 
   renderInput() {

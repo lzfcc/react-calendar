@@ -49,7 +49,7 @@ export default class Newm extends React.Component {
   }
 
   componentDidMount() {
-    this.worker = new Worker('main_de.js');
+    this.worker = new Worker('worker_modern.min.js');
     this.worker.addEventListener('message', ({ data }) => {
       if (data instanceof Blob) { // 约定：存为文件时 web worker 发送 Blob 对象
         this.setState({ output: [] });
@@ -151,7 +151,7 @@ export default class Newm extends React.Component {
         ...this.state
       })
     }
-    callWorker('display')
+    callWorker("Newm")
   }
 
   renderTableList() {

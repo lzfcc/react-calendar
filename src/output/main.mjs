@@ -1,6 +1,6 @@
 import CalNewm from '../Cal/newmoon/index.mjs'
 import CalNewm_DE from '../Cal/newmoon/index_de.mjs'
-import CalDay from '../Cal/ephemeris/index.mjs'
+import CalEph from '../Cal/ephemeris/index.mjs'
 import Para from '../Cal/parameter/calendars.mjs'
 
 const AutoCal = year => {
@@ -75,7 +75,7 @@ const PrintNewm = result => {
     return Print + `\n`
 }
 
-const PrintDay = result => {
+const PrintEph = result => {
     const { Era, YearGod, YearColor, MonInfo, MonColor, DayAccum, MonName, Sc, Jd, Nayin, Week, Equa, Eclp,
         Lat, Rise, Duskstar, Dial, MoonEclp, MoonEclpLat, HouName, FiveName, HexagramName, ManGod, Luck,
     } = result
@@ -247,11 +247,11 @@ const PrintDay = result => {
 //     } else {
 //         list.forEach(Name => {
 //             // let Year = start
-//             CalDay(Name, start, end).forEach((result, k) => {
+//             CalEph(Name, start, end).forEach((result, k) => {
 //                 // Year = start + k
 //                 // const Era = result.Era
 //                 printData[k] = printData[k] || []
-//                 printData[k].push(PrintDay(result))
+//                 printData[k].push(PrintEph(result))
 //             })
 //         })
 //     }
@@ -277,9 +277,9 @@ export const outputFile = (mode, start, end, isAuto, listRaw) => {
         }
     } else {
         listRaw.forEach(Name => {
-            CalDay(Name, start, end).forEach((result, k) => {
+            CalEph(Name, start, end).forEach((result, k) => {
                 printData[k] = printData[k] || []
-                printData[k].push(PrintDay(result))
+                printData[k].push(PrintEph(result))
             })
         })
     }
@@ -357,8 +357,8 @@ export const outputNewmWeb_DE = (start, end) => {
 }
 
 /**
- * 将 CalDay 输出转换成以月日维度的输出。lzfcc 2021清明節寫了整整一個下午
- * CalDay：{
+ * 将 CalEph 输出转换成以月日维度的输出。lzfcc 2021清明節寫了整整一個下午
+ * CalEph：{
         Equa: [Array(31), Array(30),...] (length = 13)
         Duskstar: [Array(31), Array(30),...] (length = 13)
     }
@@ -380,7 +380,7 @@ export const outputNewmWeb_DE = (start, end) => {
  * @param {*} CalInfo 
  * @returns 
  */
-const DayView = CalInfo => {
+const ephView = CalInfo => {
     const Day = []
     Object.entries(CalInfo).forEach(([key, monthValue]) => {
         for (let i = 1; i < CalInfo.Sc.length; i++) {
@@ -397,13 +397,13 @@ const DayView = CalInfo => {
     })
     return Day
 }
-export const outputDayWeb = (year, Name) => {
-    const [result] = CalDay(Name, year)
+export const outputEphWeb = (year, Name) => {
+    const [result] = CalEph(Name, year)
     const { Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor, ...OtherResult
     } = result
     return {
         Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor,
-        DayData: DayView(OtherResult)
+        DayData: ephView(OtherResult)
     }
 }
-// console.log(outputDayWeb(1730, 'Guimao'))
+// console.log(outputEphWeb(1730, 'Guimao'))

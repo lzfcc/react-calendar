@@ -1,18 +1,18 @@
-import { outputNewmWeb, outputFile, outputDayWeb } from './main.mjs'
+import { outputNewmWeb, outputFile, outputEphWeb } from './main.mjs'
 
 export default addEventListener("message", (event) => {
   const { eventName, YearStart, YearEnd, isAuto, calendars } = event.data;
   let data = null;
-  if (eventName === "print") {
+  if (eventName === "Print") {
     data = outputFile(1, YearStart, YearEnd, isAuto, calendars);
     postMessage(new Blob([data]));
   }
-  if (eventName === "display") {
+  if (eventName === "Newm") {
     const data = outputNewmWeb(YearStart, YearEnd, isAuto, calendars);
     postMessage(data);
   }
-  if (eventName === "Day") {
-    data = outputDayWeb(YearStart, calendars[0]);
+  if (eventName === "Eph") {
+    data = outputEphWeb(YearStart, calendars[0]);
     postMessage(data);
   }
 });

@@ -64,7 +64,7 @@ export default class Newm extends React.Component {
   }
 
   componentDidMount() {
-    this.worker = new Worker('main_ancient.js');
+    this.worker = new Worker('worker_ancient.min.js');
     this.worker.addEventListener('message', ({ data }) => {
       if (data instanceof Blob) { // 约定：存为文件时 web worker 发送 Blob 对象
         this.setState({ output: [] });
@@ -228,15 +228,15 @@ export default class Newm extends React.Component {
       })
     }
     if (this.downloadRef && this.downloadRef.checked) {
-      callWorker('print');
+      callWorker("Print");
       return;
     }
     if (this.state.calendars.length * (YearEnd - YearStart) > 400) {
       alert('內容過多，爲避免瀏覽器展示性能問題，將自動下載.md文件到本地');
-      callWorker('print');
+      callWorker("Print");
       return;
     }
-    callWorker('display')
+    callWorker("Newm")
   }
 
   // renderLoading() {

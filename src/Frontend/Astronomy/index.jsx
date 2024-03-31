@@ -10,7 +10,6 @@ import BindLon2Lat from './Lon2Lat'
 import StarEqua from './StarEqua'
 import MoonLon from './MoonLon'
 import Const from './Const'
-// import Deciaml2Angle from './Deciaml2Angle'
 import SunEclipse from './SunEclipse'
 import MoonEclipse from './MoonEclipse'
 import Node2Cycle from './Node'
@@ -20,7 +19,6 @@ import Round from './Round'
 import Round1 from './Round1'
 import Round2 from './Round2'
 import Hushigeyuan from './Hushigeyuan'
-// import Heron from './Heron'
 import SolarChange from './SolarChange'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -63,7 +61,6 @@ export default class Astronomy extends React.Component {
           <p></p>
           <Round1 />
           <Hushigeyuan />
-          {/* <Heron /> */}
           <h2>月行</h2>
           <MoonLon />
           <h2>交食</h2>
@@ -73,7 +70,6 @@ export default class Astronomy extends React.Component {
           <Node2Cycle />
           <Regression />
           <h2>現代天文計算</h2>
-          {/* <Deciaml2Angle /> */}
           <Const />
           <SolarChange />
         </section>

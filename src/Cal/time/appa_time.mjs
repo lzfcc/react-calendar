@@ -7,14 +7,16 @@ import { deltaT, deltaTError } from "./delta-t.mjs"
 import { jd2Date } from "./jd2date.mjs";
 
 // 廖育棟 Calculations in Star Charts
-// α⊙ is Sun’s right ascension. ∆ψ is the nutation in longitude given by equation(30), εA is the mean obliquity of the ecliptic given by equation(28), and λ is observer’s(east) longitude.
+// Sidereal time is defined as the hour angle of the vernal equinox. α⊙ is Sun’s right ascension. ∆ψ is the nutation in longitude given by equation(30), εA is the mean obliquity of the ecliptic given by equation(28), and λ is observer’s(east) longitude.
 // 平恆星時（平春分點的時角）與視恆星時（真春分點的時角）之差：Ee, equation of the equinoxes. 平春分點：只算了歲差，真春分點：算了歲差和章動。
-// 用 CIO取代春分點的地位，TIO取代Greenwich子午線，ERA取代恆星時。ERA需要實測。
+// 用 CIO取代春分點的地位，TIO取代Greenwich子午線， Earth Rotation Angle (ERA) 取代恆星時。ERA需要實測。
 // ERA(Dᴜ)=θ(Dᴜ) = 2π(0.7790572732640 + 1.00273781191135448Dᴜ)，其中Dᴜ=julian UT1 date -2451545
 // GAST=GMST+Ee,GMST=θ-Eprec。Eprec(T)累積歲差=−0′′.014506−4612′′.16534T−1′′.3915817T^2+4′′.4×10−7T^3+2′′.9956×10−5T^4。T：J2000儒略世紀。根據圖像，-200<T<200
 // Ee =∆ψcosεA
+
+// A sidereal day is approximately 86164.0905 seconds (23 h 56 min 4.0905s)
 /**
- * 視恆星時LAST
+ * 視恆星時LAST。但要注意，這個公式只是近似，有效期是前後幾百年，再遠一些誤差就很大了。
  * @param {*} Jd TT儒略日
  * @param {*} Longitude 地理經度°
  */
@@ -63,7 +65,9 @@ export const eot = (Jd_UT1, Longitude) => {
     const Jd = Jd_UT1 + DeltaT // TT
     const { LAST, LASolar } = solarTime(Jd, Longitude)
     const LMSolar = (12 + deci(Jd_UT1) * 24 + Longitude / 15) % 24
-    const EOT = (LASolar - LMSolar + (LASolar - LMSolar > 23 ? 24 : 0)) % 24
+    let EOT = LASolar - LMSolar
+    if (EOT > 23) EOT -= 24
+    else if (EOT < -23) EOT += 24
     return { LAST, EOT, LASolar, LMSolar, Jd, DeltaT }
 }
 export const eotPrint = (Jd_UT1, Longitude) => {
@@ -80,6 +84,6 @@ export const eotPrint = (Jd_UT1, Longitude) => {
         EOTPrint: (EOT > 0 ? '+' : '-') + deci2hms(EOT / 24).hms
     }
 }
-// console.log(eot(3221521.8, 116.428))
+// console.log(eot(2457754.5, 0))
 // const eprec = T => (-0.014506 - 4612.16534 * T - 1.3915817 * T ** 2 + 4.4e-7 * T ** 3 + 2.9956e-5 * T ** 4)
 // console.log(eprec(-10))

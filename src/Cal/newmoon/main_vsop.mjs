@@ -134,7 +134,7 @@ export const calPos_vsop = (Planet, Jd) => {
     const P = precessionMx(T) // 歲差矩陣 P(t)
     const NP = multiply(N, P)
     const R1Eps = rr1(Obliq)
-    // ⚠️此處注意，分析曆表的座標是黃道，所以必須要先轉成赤道，與廖育棟文檔上的順序不太相同。排查了一個下午終於找到問題了
+    // ⚠️分析曆表的座標是黃道，所以必須要先轉成赤道，與廖育棟文檔上的順序不太相同。排查了一個下午終於找到問題了
     const Equa = multiply(NP, multiply(transpose(R1Eps), X2000)).toArray()
     const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray()
     const Eclp = multiply(R1Eps, Equa).toArray()

@@ -1,8 +1,6 @@
 import { ListPAll, ListPSheleAll } from '../parameter/hexa.mjs'
 import { HexoSub2, HexoSub3 } from '../hexagram/sub.mjs'
 import { big } from '../parameter/constant.mjs'
-
-// import { re } from "mathjs";
 // 阶乘
 const F = (n) => {
   let result = 1;

@@ -6,9 +6,6 @@ import {
     Equa2EclpFormula, latFormula, dialFormula, MoonLatFormula, MoonLonFormula, riseFormula
 } from '../astronomy/formula.mjs'
 import { Hushigeyuan, HushigeyuanMoon } from '../equation/geometry.mjs'
-import {
-    sunRise, Lon2DialWest, eclp2Ceclp, testEclpEclpDif, equa2Ceclp, equa2Eclp,
-} from '../astronomy/pos_convert.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS, ShoushiXianV } from '../astronomy/acrv.mjs'
 import { NameList, degAccumList, MansionNameList, MansionNameListQing } from '../parameter/constant.mjs'
 import { AutoEclipse } from '../astronomy/eclipse.mjs'
@@ -16,6 +13,8 @@ import { deg2Mansion, mansion2Deg, mansion, mansionQing } from '../astronomy/man
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from '../parameter/auto-constant.mjs'
 import { FlatLon2FlatLat, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat, corrEllipse, corrEllipseB1, corrEllipseC, corrEllipseD1, corrEllipseD2, corrRingA, corrRingC } from '../newmoon/main_shixian.mjs'
 import { mansionModern } from '../modern/mansion.mjs'
+import { Lon2DialWest, eclp2Ceclp, equa2Ceclp, equa2Eclp, sunRise, testEclpEclpDif } from './pos_convert_modern.mjs'
+// sunRise, Lon2DialWest, eclp2Ceclp, testEclpEclpDif, equa2Ceclp, equa2Eclp,
 const Gong2Lon = Gong => (Gong + 270) % 360
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cos(x* .2243) +  6.964 *sin(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {  // Name預留給誤差分析程序，否則不用

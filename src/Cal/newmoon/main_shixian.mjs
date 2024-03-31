@@ -1,6 +1,6 @@
 // 可參考廖育棟的時憲曆日月氣朔網站 http://ytliu.epizy.com/Shixian/index_chinese.html ，有一分很漂亮的公式說明。
 import Para from '../parameter/calendars.mjs'
-import { D2R, R2D, pi, ScList, big, deci, fix } from '../parameter/constant.mjs'
+import { D2R, R2D, pi, ScList, deci, fix } from '../parameter/constant.mjs'
 import { mansionQing } from '../astronomy/mansion.mjs'
 import { clockQingB } from '../time/decimal2clock.mjs'
 import { eclp2Equa } from '../astronomy/pos_convert.mjs'

@@ -1,38 +1,10 @@
 import { ScList, WeekList1 } from '../parameter/constant.mjs'
+import { deci2hms } from './decimal2clock.mjs'
 /**
  * 把儒略日轉換成儒略曆或格里高利曆 ported from https://ytliu0.github.io/ChineseCalendar/Julian.js by 廖育棟
  * @param {array} Jd 儒略日
  */
-export const generateTimeString = (h, m, s, ms) => {
-    let hString = h.toString()
-    let mString = m.toString()
-    let sString = s.toString()
-    let msString = ''
-    if (hString.length < 2) {
-        hString = '0' + hString
-    }
-    if (mString.length < 2) {
-        mString = '0' + mString
-    }
-    if (sString.length < 2) {
-        sString = '0' + sString
-    }
-    if (ms) {
-        msString = ms.toString()
-        if (msString.length < 2) {
-            msString = '0' + msString
-        }
-        msString = '.' + msString
-        //     msString = ms.toString()
-        //     if (msString.length < 2) {
-        //         msString = '00' + msString
-        //     } else if (msString.length < 3) {
-        //         msString = '0' + msString
-        //     }
-    }
-    return hString + ':' + mString + ':' + sString + msString
-}
-export const Jd2Date = Jd => {
+export const jd2Date = Jd => {
     let b = 0, c = 0, d = 0, e = 0, f = 0
     if (Jd < 2299161) { // Julian calendar
         b = 0
@@ -54,23 +26,19 @@ export const Jd2Date = Jd => {
         mm--
         dd = 31
     }
-    const FracOfDay = Jd - Math.round(Jd) + 0.5;
-    const Hour = FracOfDay * 24;
-    const h = Math.floor(Hour);
-    const m = Math.floor((Hour - h) * 60);
-    const s = Math.floor((Hour - h - m / 60) * 3600);
-    let ms = Math.floor((((Hour - h - m / 60) * 3600) - Math.floor((Hour - h - m / 60) * 3600)) * 100); // 本來毫秒應該*1000
+    const DayFrac = Jd - Math.round(Jd) + 0.5
+    const { hm, hms, hmsms } = deci2hms(DayFrac)
     const ScOrder = Math.round((Math.round(Jd) % 60 + 110) % 60.1);
-    return { year, mm, dd, h, m, s, ms, ScOrder } // 組成一個數組或者對象居然很耗費時間，用了0.6ms
+    return { year, mm, dd, hm, hms, hmsms, ScOrder }
 }
 // console.log(extractFirstTwoDigits('46262'))
 // const Start = performance.now()
-// console.log(Jd2Date(2460393.12264).year)
+// console.log(jd2Date(2460393.12264).year)
 // const End = performance.now()
 // console.log(End - Start)
-export const Jd2DatePrint = Jd => {
+export const Jd2DatePrint = (Jd, Longitude) => {
     Jd = +Jd
-    const { year, mm, dd, h, m, s, ms, ScOrder } = Jd2Date(Jd)
+    const { year, mm, dd, ScOrder } = jd2Date(Jd + Longitude / 360)
     let yy = year
     if (year <= 0) {
         yy = Math.abs(year) + 1
@@ -79,9 +47,9 @@ export const Jd2DatePrint = Jd => {
     const Week = Math.round(Jd) % 7
     const WeekName = WeekList1[Week]
     const Sc = ScList[ScOrder] + '(' + ScOrder + ')'
-    return '公元 ' + year + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + generateTimeString(h, m, s, ms) + ' ｜ 星期' + WeekName + ' ｜ ' + Sc
+    return '公元 ' + year + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + ' 星期' + WeekName + ' ' + Sc
 }
-export const Date2Jd = (yy, mm, dd, h, m, s, ms) => {
+export const date2Jd = (yy, mm, dd, h, m, s, ms) => {
     yy = parseInt(yy), mm = parseInt(mm), dd = parseInt(dd), h = parseInt(h), m = parseInt(m), s = parseInt(s), ms = parseInt(ms)
     mm = mm || 1, dd = dd || 1, h = h || 0, m = m || 0, s = s || 0, ms = ms || 0
     if (mm > 12 || dd > 31 || h > 23 || s > 59 || ms > 999) {

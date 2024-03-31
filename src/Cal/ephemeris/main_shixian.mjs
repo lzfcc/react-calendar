@@ -11,8 +11,8 @@ import {
 import { sunQing, moonQing, LonHigh2Flat, HighLon2FlatLat, sunRiseQing, twilight, deg2Hms, Lat2NS, GongHigh2Flat, Lon2Gong, moonRiseQing } from '../newmoon/main_shixian.mjs'
 import CalNewm from '../newmoon/index.mjs'
 import { mansionQing, midstarQing } from '../astronomy/mansion.mjs'
-import { Jd2Date } from '../time/jd2date.mjs'
-import { ClockWest } from '../time/decimal2clock.mjs'
+import { jd2Date } from '../time/jd2date.mjs'
+import { deci2hms } from '../time/decimal2clock.mjs'
 import { eclp2Equa } from '../astronomy/pos_convert.mjs'
 export const D2 = (Name, YearStart, YearEnd) => {
     YearEnd = YearEnd || YearStart
@@ -74,25 +74,25 @@ export const D2 = (Name, YearStart, YearEnd) => {
                 Rise[i][k] = sunRiseQing(Sobliq, RiseLat, SunLon)
                 const TwilightLeng = twilight(Sobliq, RiseLat, SunLon)
                 const Func2 = midstarQing(Name, Y, SunLon, SunLonMor, Rise[i][k])
-                Morningstar[i][k] = ClockWest(Rise[i][k] - TwilightLeng, false) + ' ' + Func2.Morningstar
-                Duskstar[i][k] = ClockWest(1 - Rise[i][k] + TwilightLeng, false) + ' ' + Func2.Duskstar
-                Rise[i][k] = ClockWest(Rise[i][k]) + ' ' + ClockWest(1 - Rise[i][k], false)
+                Morningstar[i][k] = deci2hms(Rise[i][k] - TwilightLeng).hm + ' ' + Func2.Morningstar
+                Duskstar[i][k] = deci2hms(1 - Rise[i][k] + TwilightLeng).hm + ' ' + Func2.Duskstar
+                Rise[i][k] = deci2hms(Rise[i][k]).hms + ' ' + deci2hms(1 - Rise[i][k]).hm
                 MoonEclp[i][k] = deg2Hms(MoonLon) + mansionQing(Name, Y, MoonGong).Eclp
                 MoonEclpLat[i][k] = Lat2NS(MoonLat)
                 const Func3 = eclp2Equa(Sobliq, MoonLon, MoonLat)
                 MoonEqua[i][k] = deg2Hms(Func3.EquaLon) + mansionQing(Name, Y, Lon2Gong(Func3.EquaLon), true).Equa
                 MoonEquaLat[i][k] = Lat2NS(Func3.EquaLat)
                 const { MoonRise: MoonRiseTmp, MoonSet: MoonSetTmp } = moonRiseQing(RiseLat, Func3.EquaLon, Func3.EquaLat, SEquaLon)
-                MoonRise[i][k] = ClockWest(MoonRiseTmp) + ' ' + ClockWest(MoonSetTmp, false)
+                MoonRise[i][k] = deci2hms(MoonRiseTmp).hms + ' ' + deci2hms(MoonSetTmp).hm
                 NodeMapo[i][k] = deg2Hms(Node) + deg2Hms(Mapo)
                 ///////////具注曆////////////
                 const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn) % 60
                 Sc[i][k] = ScList[ScOrder]
                 Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SmdMidn + 2)
-                const date = Jd2Date(Jd[i][k])
+                const date = jd2Date(Jd[i][k])
                 Jd[i][k] += ' ' + date.mm + '.' + date.dd
-                const MansionOrder = (MansionDaySolsmor + DayAccum) % 28
-                const WeekOrder = (MansionDaySolsmor + DayAccum + 3) % 7
+                const MansionOrder = (MansionDaySolsmor + DayAccum - 1) % 28
+                const WeekOrder = (MansionDaySolsmor + DayAccum + 2) % 7
                 Week[i][k] = WeekList[WeekOrder] + WeekList1[WeekOrder] + MansionNameList[MansionOrder] + MansionAnimalNameList[MansionOrder]
                 Sc[i][k] = NumList[k] + '日' + Sc[i][k]
             }

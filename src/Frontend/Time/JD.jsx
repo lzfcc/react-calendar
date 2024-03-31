@@ -1,20 +1,31 @@
 import React from "react"
 import { Jd2DatePrint } from '../../Cal/time/jd2date.mjs'
+import { eotPrint } from '../../Cal/time/appa_time.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      a: 2421321.8,
+      b: 116.428
     }
     this.handle = this.handle.bind(this)
   }
 
   input() {
     return (
-      <span className="year-select width4">
-        <input
+      <span className="year-select">
+        <span>UT1儒略日</span>
+        <input className="width4"
           value={this.state.a}
           onChange={e => {
             this.setState({ a: e.currentTarget.value });
+          }}
+        />
+        <span>地理經度</span>
+        <input className="width3"
+          value={this.state.b}
+          onChange={e => {
+            this.setState({ b: e.currentTarget.value });
           }}
         />
       </span>
@@ -23,20 +34,24 @@ export default class a extends React.Component {
 
   handle() {
     try {
-      const Result = Jd2DatePrint(this.state.a);
-      this.setState({ output: Result });
+      const Date = Jd2DatePrint(this.state.a, this.state.b);
+      const { LASTPrint, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms } = eotPrint(this.state.a, this.state.b)
+      this.setState({ Date, LASTPrint, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms });
     } catch (e) {
       alert(e.message);
     }
   }
 
   result() {
-    if (!this.state.output) {
+    if (!this.state.Date) {
       return null;
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
-        <p>{this.state.output}</p>
+        <p>{this.state.Date}</p>
+        <p>平太陽時 {this.state.LMSolarPrint} 真太陽時 {this.state.LASolarPrint} 時差 {this.state.EOTPrint}</p>
+        <p>ΔT = {this.state.DeltaT} ± {this.state.DeltaTErr}s, TT儒略日 {this.state.Jd} {this.state.TThms}</p>
+        <p>真恆星時 {this.state.LASTPrint} </p>
       </div>
     );
   }
@@ -44,7 +59,7 @@ export default class a extends React.Component {
   render() {
     return (
       <div>
-        <h3>儒略日 ⇌ 日期</h3>
+        <h3>儒略日 ⇌ 日期、恆星時、太陽時</h3>
         {this.input()}
         <button onClick={this.handle} className="button4-8">
           JD2date

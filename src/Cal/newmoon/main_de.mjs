@@ -1,6 +1,6 @@
 import { ScList } from '../parameter/constant.mjs'
 import { deltaT } from '../time/delta-t.mjs'
-import { Jd2Date, generateTimeString } from '../time/jd2date.mjs'
+import { jd2Date } from '../time/jd2date.mjs'
 import NewmList from '../modern/newm_de44_list.mjs'
 import SyzygyList from '../modern/syzygy_de44_list.mjs'
 import TermList from '../modern/term_de44_list.mjs'
@@ -46,10 +46,10 @@ export const N6 = Y => {
             //////// 平朔望   
             AcrJd[i] = isNewm ? NewmList[AcrChouJdIndex + i] : SyzygyList[AcrChouSyzygyJdIndex + i]
             const UT18Jd = AcrJd[i] - deltaT(AcrJd[i]) + 8 / 24
-            const UT18JdDate = Jd2Date(UT18Jd)
+            const UT18JdDate = jd2Date(UT18Jd)
             UT18Sc[i] = ScList[UT18JdDate.ScOrder]
             UT18Mmdd[i] = UT18JdDate.mm + '-' + UT18JdDate.dd
-            UT18Deci[i] = generateTimeString(UT18JdDate.h, UT18JdDate.m, UT18JdDate.s, Y < 1600 ? '' : UT18JdDate.ms)
+            UT18Deci[i] = Y < 1600 ? UT18JdDate.hms : UT18JdDate.hmsms
             //////// 節氣
             if (isNewm) {
                 const NewmFunc = mansionModern(AcrJd[i])
@@ -58,20 +58,20 @@ export const N6 = Y => {
                 // 中氣
                 AcrTermJd[i] = TermList[AcrChouTermJdIndex + i - 1]
                 const UT18TermJd = AcrTermJd[i] + 8 / 24 - deltaT(AcrTermJd[i])
-                const UT18TermJdDate = Jd2Date(UT18TermJd)
+                const UT18TermJdDate = jd2Date(UT18TermJd)
                 TermAcrSc[i] = ScList[UT18TermJdDate.ScOrder]
                 TermAcrMmdd[i] = UT18TermJdDate.mm + '-' + UT18TermJdDate.dd
-                TermAcrDeci[i] = generateTimeString(UT18TermJdDate.h, UT18TermJdDate.m, UT18TermJdDate.s, Y < 1600 ? '' : UT18TermJdDate.ms)
+                TermAcrDeci[i] = Y < 1600 ? UT18TermJdDate.hms : UT18TermJdDate.hmsms
                 const TermFunc = mansionModern(AcrTermJd[i])
                 TermEclp[i] = TermFunc.Eclp
                 TermEqua[i] = TermFunc.Equa
                 // 節氣
                 const AcrTerm1Jd = Term1List[AcrChouTerm1JdIndex + i - 1]
                 const UT18Term1Jd = AcrTerm1Jd + 8 / 24 - deltaT(AcrTerm1Jd)
-                const UT18Term1JdDate = Jd2Date(UT18Term1Jd)
+                const UT18Term1JdDate = jd2Date(UT18Term1Jd)
                 Term1AcrSc[i] = ScList[UT18Term1JdDate.ScOrder]
                 Term1AcrMmdd[i] = UT18Term1JdDate.mm + '-' + UT18Term1JdDate.dd
-                Term1AcrDeci[i] = generateTimeString(UT18Term1JdDate.h, UT18Term1JdDate.m, UT18Term1JdDate.s, Y < 1600 ? '' : UT18Term1JdDate.ms)
+                Term1AcrDeci[i] = Y < 1600 ? UT18Term1JdDate.hms : UT18Term1JdDate.hmsms
                 const Term1Func = mansionModern(AcrTerm1Jd)
                 Term1Eclp[i] = Term1Func.Eclp
                 Term1Equa[i] = Term1Func.Equa
@@ -111,4 +111,4 @@ export const N6 = Y => {
         NewmJd, AvgSolsJd
     }
 }
-// console.log(N6(2024))
+// console.log(N6(1024))

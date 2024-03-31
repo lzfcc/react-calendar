@@ -1,6 +1,6 @@
 import { pi, D2R, R2D, big } from '../parameter/constant.mjs'
 import { FlatLon2FlatLat, Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat, aCb_Sph } from '../newmoon/main_shixian.mjs'
-import { r1, x2LonLat } from '../newmoon/main_vsop.mjs'
+import { rr1, x2LonLat } from '../newmoon/main_vsop.mjs'
 import { multiply } from 'mathjs'
 import { constModern } from './astr_const.mjs'
 // import { mat3, vec3 } from 'gl-matrix'
@@ -57,13 +57,13 @@ export const eclp2Equa = (Sobliq, Lon, Lat) => {
 // console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60)) // 考成卷十六恆星曆理算例:赤經緯23度41分58秒=23.6994444444，求得赤緯8度5分4秒=8.08444444444
 const eclp2Equa_Matrix = (Sobliq, Lon, Lat) => {
     const Ieclp = xyz(Lon, Lat)
-    const Iequa = multiply(r1(D2R * -Sobliq), Ieclp).toArray()
+    const Iequa = multiply(rr1(D2R * -Sobliq), Ieclp).toArray()
     const { Lon: EquaLon, Lat: EquaLat } = x2LonLat(Iequa)
     return { EquaLon: (EquaLon * R2D + 360) % 360, EquaLat: EquaLat * R2D }
 }
 export const equa2Eclp = (Sobliq, EquaLon, EquaLat) => {
     const Iequa = xyz(EquaLon, EquaLat)
-    const Ieclp = multiply(r1(D2R * Sobliq), Iequa).toArray()
+    const Ieclp = multiply(rr1(D2R * Sobliq), Iequa).toArray()
     const { Lon, Lat } = x2LonLat(Ieclp)
     return { Lon: (Lon * R2D + 360) % 360, Lat: Lat * R2D }
 }

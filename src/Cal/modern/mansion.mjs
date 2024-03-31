@@ -1,7 +1,7 @@
 import { multiply, divide, add } from 'mathjs'
 import { precessionMx } from './precession.mjs'
 import { nutaMx } from './nutation.mjs'
-import { B, calXV, r1, x2LonLat } from '../newmoon/main_vsop.mjs'
+import { B, calXV_vsop, rr1, x2LonLat } from '../newmoon/main_vsop.mjs'
 import { MansionNameList, Parsec, R2D, cDay } from '../parameter/constant.mjs'
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 const DistRaDec =
@@ -177,12 +177,12 @@ export const mansionModern = (Jd, Name) => {
     const Nutation = nutaMx(T)
     const NP = multiply(precessionMx(T), Nutation.N)
     const NPB = multiply(NP, B)
-    const { X: XSEclpRaw, V: VSEclpRaw } = calXV('Sun', Jd) // VSOP算出來的是黃道
-    const XSRaw = multiply(r1(-Nutation.Obliq), XSEclpRaw)
-    const VSRaw = multiply(r1(-Nutation.Obliq), VSEclpRaw)
+    const { X: XSEclpRaw, V: VSEclpRaw } = calXV_vsop('Sun', Jd) // VSOP算出來的是黃道
+    const XSRaw = multiply(rr1(-Nutation.Obliq), XSEclpRaw)
+    const VSRaw = multiply(rr1(-Nutation.Obliq), VSEclpRaw)
     const VE = multiply(multiply(NP, VSRaw), -1)
     const XS = multiply(NPB, XSRaw)
-    const XSEclp = multiply(r1(Nutation.Obliq), XS) // 乘法順序不能變！！要不然transpose()也沒用
+    const XSEclp = multiply(rr1(Nutation.Obliq), XS) // 乘法順序不能變！！要不然transpose()也沒用
     const SunEclpLon = (x2LonLat(XSEclp.toArray()).Lon * R2D + 360) % 360
     const SunEquaLon = (x2LonLat(XS.toArray()).Lon * R2D + 360) % 360
     const Beta = divide(VE, cDay)
@@ -197,7 +197,7 @@ export const mansionModern = (Jd, Name) => {
         const n_B = add(n, Beta).toArray()
         const n1 = divide(n_B, Math.hypot(...n_B))
         const XEqua = multiply(n1, X02mod) // 光行差修正之後
-        const XEclp = multiply(r1(Nutation.Obliq), XEqua).toArray() // 乘法順序不能變！
+        const XEclp = multiply(rr1(Nutation.Obliq), XEqua).toArray() // 乘法順序不能變！
         EquaAccumList[MansionNameList[i]] = (x2LonLat(XEqua).Lon * R2D + 360) % 360
         EclpAccumList[MansionNameList[i]] = (x2LonLat(XEclp).Lon * R2D + 360) % 360
     }

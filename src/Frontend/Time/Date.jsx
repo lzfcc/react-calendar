@@ -1,5 +1,5 @@
 import React from "react"
-import { Date2Jd } from '../../Cal/time/jd2date.mjs'
+import { date2Jd } from '../../Cal/time/jd2date.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)
@@ -73,7 +73,7 @@ export default class a extends React.Component {
 
   handle() {
     try {
-      const Print = Date2Jd(this.state.yy, this.state.mm, this.state.dd, this.state.h, this.state.m, this.state.s, this.state.ms);
+      const Print = date2Jd(this.state.yy, this.state.mm, this.state.dd, this.state.h, this.state.m, this.state.s, this.state.ms);
       this.setState({ output: Print });
     } catch (e) {
       alert(e.message);

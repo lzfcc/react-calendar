@@ -1,4 +1,4 @@
-import { Date2Jd, Jd2Date } from '../time/jd2date.mjs'
+import { date2Jd, jd2Date } from '../time/jd2date.mjs'
 
 /**
  * deltaT=TT-UT1 ,  -1999 to +3000 // https://eclipse.gsfc.nasa.gov/SEcat5/deltatpoly.html
@@ -65,8 +65,8 @@ const TT2UT1_Old = (year, month) => {
 
 // 廖育棟 [DeltaT](https://github.com/ytliu0/DeltaT) 的 Python 代碼
 export const deltaT = Jd => {
-    const Year = Jd2Date(Jd).year
-    const y = (Jd - Date2Jd(Year)) / 365.2425 + Year
+    const Year = jd2Date(Jd).year
+    const y = (Jd - date2Jd(Year)) / 365.2425 + Year
     const c1 = 1.007739546148514 // chosen to make DeltaT continuous at y = -720
     const c2 = -150.3150351029286 // chosen to make DeltaT continuous at y = 2022
     const integrated_lod = (y, C) => {
@@ -97,7 +97,7 @@ export const deltaT = Jd => {
 // }
 // // console.log(gmst(1))
 
-export function deltaTErrorEstimate(y) {
+export function deltaTError(y) {
     // Table for estimating the errors in Delta T for years in [-2000, 2500] based on http://astro.ukho.gov.uk/nao/lvm/
     const ytab = [-2000, -1600, -900, -720, -700, -600, -500, -400, -300, -200, -100, 0, 100, 200, 300, 400, 500, 700, 800, 900, 1000, 1620, 1660, 1670, 1680, 1730, 1770, 1800, 1802, 1805, 1809, 1831, 1870, 2022.5, 2024.5, 2025, 2030, 2040, 2050, 2100, 2200, 2300, 2400, 2500]
     const eps_tab = [1080, 720, 360, 180, 170, 160, 150, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 25, 20, 15, 20, 15, 10, 5, 2, 1, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05, 0.1, 0.2, 1, 2, 4, 6, 10, 20, 30, 50, 100]
@@ -131,4 +131,4 @@ export function deltaTErrorEstimate(y) {
         }
     });
 }
-// console.log(deltaTErrorEstimate(-2020))
+// console.log(deltaTError(-2020))

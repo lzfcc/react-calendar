@@ -5,7 +5,7 @@
 import { transpose, multiply, matrix, subtract, divide, add, chain } from 'mathjs'
 import { D2R, R2D, cDay, ScList, pi, pi2 } from '../parameter/constant.mjs'
 import { deltaT } from '../time/delta-t.mjs'
-import { Jd2Date, generateTimeString } from '../time/jd2date.mjs'
+import { jd2Date } from '../time/jd2date.mjs'
 import { deg2Hms } from './main_shixian.mjs'
 import { precessionMx } from '../modern/precession.mjs'
 import { nutaMx } from '../modern/nutation.mjs'
@@ -16,7 +16,7 @@ const sqr = X => Math.sqrt(X)
 const r2dfix = X => deg2Hms(X * R2D)
 
 // 計算位置、速度
-export const calXV = (Planet, Jd) => {
+export const calXV_vsop = (Planet, Jd) => {
     let X = [], V = []
     if (Planet === 'Moon') {
         X = elp2000(Jd)
@@ -35,19 +35,19 @@ export const calXV = (Planet, Jd) => {
     // return { X: [[X[0]], [X[1]], [X[2]]], V: [[V[0]], [V[1]], [V[2]]] } // 返回GCRS位置、速度
     return { X, V }
 }
-// console.log(calXV('Mercury', 2424111))
+// console.log(calXV_vsop('Mercury', 2424111))
 // 以下分別為R1 R2 R3 ，分別爲x, y, z軸旋轉矩陣。輸入弧度
-export const r1 = a => matrix([
+export const rr1 = a => matrix([
     [1, 0, 0],
     [0, Math.cos(a), Math.sin(a)],
     [0, -Math.sin(a), Math.cos(a)]
 ])
-export const r2 = b => matrix([
+export const rr2 = b => matrix([
     [Math.cos(b), 0, -Math.sin(b)],
     [0, 1, 0],
     [Math.sin(b), 0, Math.cos(b)]
 ])
-export const r3 = g => matrix([
+export const rr3 = g => matrix([
     [Math.cos(g), Math.sin(g), 0],
     [-Math.sin(g), Math.cos(g), 0],
     [0, 0, 1]
@@ -113,18 +113,18 @@ const lightAber = (X, V) => {
     //     [SPs, CPs * CEpA, CPs * SEpA],
     //     [0, -SEpA, CEpA]
     // ])
-    // const R1EpsN = multiply(r3(-DeltaPsi), r1(ObliqAvg))    
+    // const R1EpsN = multiply(rr3(-DeltaPsi), rr1(ObliqAvg))    
     // const tmp = chain(R1EpsN).multiply(P).multiply(B).done()
  * @param {*} Planet 
  * @param {*} Jd 
  * @returns 
  */
-const calPos = (Planet, Jd) => {
+export const calPos_vsop = (Planet, Jd) => {
     const T = (Jd - 2451545) / 36525 // 儒略世紀
-    const { X: Xreal, V: Vreal } = calXV(Planet, Jd) // 實際位置
+    const { X: Xreal, V: Vreal } = calXV_vsop(Planet, Jd) // 實際位置
     const Jdr = lightTimeCorr(Jd, Xreal) // 推遲時
     const X = lightAber(Xreal, Vreal) // 光行差修正後的位置。這樣精確的算法和近似公式其實幾乎沒有區別，只相差5e-12rad
-    const { V: Vraw } = calXV(Planet, Jdr) // 視位置
+    const { V: Vraw } = calXV_vsop(Planet, Jdr) // 視位置
     const RadialV = radialV(X, Vraw)
     const V = divide(Vraw, 1 + RadialV / cDay)
     const X2000 = multiply(B, X)
@@ -133,7 +133,7 @@ const calPos = (Planet, Jd) => {
     const { N, Obliq } = nutaMx(T)
     const P = precessionMx(T) // 歲差矩陣 P(t)
     const NP = multiply(N, P)
-    const R1Eps = r1(Obliq)
+    const R1Eps = rr1(Obliq)
     // ⚠️此處注意，分析曆表的座標是黃道，所以必須要先轉成赤道，與廖育棟文檔上的順序不太相同。排查了一個下午終於找到問題了
     const Equa = multiply(NP, multiply(transpose(R1Eps), X2000)).toArray()
     const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray()
@@ -147,23 +147,21 @@ const calPos = (Planet, Jd) => {
     Lon = (Lon + pi2) % pi2
     return { EquaLon, EquaLat, Lon, Lat, Lon1 }
 }
-
-// console.log(calPos('Sun', 2095147.609028 - 0.333333)) // 1024-3-15 2:37 Lon: '1°8′34″', LonRaw: '13°34′49″
-// console.log(calPos('Sun', 2460389.9625 - 0.333333)) // 2024-3-20 11:06 Lon: '359°59′55″', LonRaw: '0°18′37″
+// console.log(calPos_vsop('Sun', 2095178.05080473))
 // const startTime = performance.now();
-// console.log(calPos('Sun', 2433323))
+// console.log(calPos_vsop('Sun', 2433323))
 // const endTime = performance.now();
 // console.log(endTime - startTime) // 4.2ms一次
 
 // 如果用以下完整的黃赤轉換，赤轉黃，需要I需要輸入赤經、赤緯。黃轉赤，I需要輸入黃經、0
 // const equa2Eclp = (Obliq, EquaLon) => {
-//     const i = multiply(r1(Obliq), I(EquaLon, d2r(15.6152533)))
+//     const i = multiply(rr1(Obliq), I(EquaLon, d2r(15.6152533)))
 //     const { Lon, Lat } = x2LonLat(i)
 //     return { Lon, Lat }
 // }
 // console.log(equa2Eclp(d2r(23.5), d2r(40)))
 // const ec2Eq = (Obliq, EcLon) => {
-//     const i = multiply(r1(-Obliq), I(EcLon, 0))
+//     const i = multiply(rr1(-Obliq), I(EcLon, 0))
 //     const { Lon, Lat } = x2LonLat(i)
 //     return { Lon, Lat }
 // }
@@ -191,7 +189,7 @@ export const N5 = Y => {
             const AvgSd = ChouSd + (i + (isNewm ? 0 : .5)) * Lunar // 各月平朔望到冬至次日子正日分
             const AvgJd = AvgSd + AvgSolsJd
             const delta = Jd => {
-                const Sun = calPos('Sun', Jd), Moon = calPos('Moon', Jd)
+                const Sun = calPos_vsop('Sun', Jd), Moon = calPos_vsop('Moon', Jd)
                 let a = Sun.Lon - Moon.Lon - (isNewm ? 0 : pi)
                 const b = Moon.Lon1 - Sun.Lon1
                 if (a < -7 / 4 * pi) a += pi2
@@ -204,10 +202,10 @@ export const N5 = Y => {
                 D = delta(AcrJd[i])
             }
             const UT18Jd = AcrJd[i] - deltaT(Y) + 8 / 24
-            const UT18JdDate = Jd2Date(UT18Jd)
+            const UT18JdDate = jd2Date(UT18Jd)
             UT18Sc[i] = ScList[UT18JdDate.ScOrder]
-            UT18Deci[i] = generateTimeString(UT18JdDate.h, UT18JdDate.m, UT18JdDate.s)
-            const FuncEclp = calPos('Sun', AcrJd[i])
+            UT18Deci[i] = UT18JdDate.hms
+            const FuncEclp = calPos_vsop('Sun', AcrJd[i])
             Eclp[i] = r2dfix(FuncEclp.Lon)
             Equa[i] = r2dfix(FuncEclp.EquaLon)
             //////// 節氣
@@ -217,7 +215,7 @@ export const N5 = Y => {
                 const AvgTermSd = (i + 1) * TermLeng
                 const AvgTermJd = AvgTermSd + AvgSolsJd
                 const delta = Jd => {
-                    const Sun = calPos('Sun', Jd)
+                    const Sun = calPos_vsop('Sun', Jd)
                     let a = TermLon - Sun.Lon
                     if (a < -7 / 4 * pi) a += pi2
                     const b = Sun.Lon1
@@ -230,17 +228,17 @@ export const N5 = Y => {
                     D = delta(AcrTermJd[i])
                 }
                 const UT18TermJd = AcrTermJd[i] + 8 / 24 - deltaT(Y)
-                const UT18TermJdDate = Jd2Date(UT18TermJd)
+                const UT18TermJdDate = jd2Date(UT18TermJd)
                 TermAcrSc[i] = ScList[UT18TermJdDate.ScOrder]
-                TermAcrDeci[i] = generateTimeString(UT18TermJdDate.h, UT18TermJdDate.m, UT18TermJdDate.s)
-                const FuncTermEclp = calPos('Sun', AcrTermJd[i])
+                TermAcrDeci[i] = UT18TermJdDate.hms
+                const FuncTermEclp = calPos_vsop('Sun', AcrTermJd[i])
                 TermEqua[i] = r2dfix(FuncTermEclp.EquaLon)
                 // 節氣
                 const Term1Lon = D2R * (((2 * i + 1) * 15 + 270) % 360)
                 const AvgTerm1Sd = (i + .5) * TermLeng
                 const AvgTerm1Jd = AvgTerm1Sd + AvgSolsJd
                 const delta1 = Jd => {
-                    const Sun = calPos('Sun', Jd)
+                    const Sun = calPos_vsop('Sun', Jd)
                     let a = Term1Lon - Sun.Lon
                     if (a < -7 / 4 * pi) a += pi2
                     const b = Sun.Lon1
@@ -252,10 +250,10 @@ export const N5 = Y => {
                     D1 = delta1(AcrTerm1Jd)
                 }
                 const UT18Term1Jd = AcrTerm1Jd + 8 / 24 - deltaT(Y)
-                const UT18Term1JdDate = Jd2Date(UT18Term1Jd)
+                const UT18Term1JdDate = jd2Date(UT18Term1Jd)
                 Term1AcrSc[i] = ScList[UT18Term1JdDate.ScOrder]
-                Term1AcrDeci[i] = generateTimeString(UT18Term1JdDate.h, UT18Term1JdDate.m, UT18Term1JdDate.s)
-                const FuncTerm1Eclp = calPos('Sun', AcrTerm1Jd)
+                Term1AcrDeci[i] = UT18TermJdDate.hms
+                const FuncTerm1Eclp = calPos_vsop('Sun', AcrTerm1Jd)
                 Term1Equa[i] = r2dfix(FuncTerm1Eclp.EquaLon)
             }
         }

@@ -1,4 +1,4 @@
-import { r1, r3 } from '../newmoon/main_vsop.mjs'
+import { rr1, rr3 } from '../newmoon/main_vsop.mjs'
 import { MMS2R, S2R, pi2 } from '../parameter/constant.mjs'
 import NutaList from './nutation_list.mjs'
 import NutaList1 from './nutation_list1.mjs'
@@ -189,7 +189,7 @@ export const nutaMx = T => {
     const ObliqAvg = obliqAvg(T) * S2R
     const Obliq = ObliqAvg + NutaObliq // 黃赤交角，單位弧度
     // 章動矩陣 N = R1(−ε)R3(−∆ψ)R1(εA)
-    const N = chain(r1(-Obliq)).multiply(r3(-NutaEclp)).multiply(r1(ObliqAvg)).done()
+    const N = chain(rr1(-Obliq)).multiply(rr3(-NutaEclp)).multiply(rr1(ObliqAvg)).done()
     return { N, Obliq }
 }
 // console.log(nutaMx((2475656.1 - 2451545) / 36525).Obliq)

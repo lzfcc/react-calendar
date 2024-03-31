@@ -1,7 +1,6 @@
-import { r1, r3 } from '../newmoon/main_vsop.mjs'
+import { rr1, rr3 } from '../newmoon/main_vsop.mjs'
 import { matrix, chain } from 'mathjs'
-const pi2 = 6.283185307179586476925287
-const S2R = 4.848136811095359935899141e-6
+import { S2R, pi2 } from '../parameter/constant.mjs'
 
 /**
  * 
@@ -9,12 +8,12 @@ const S2R = 4.848136811095359935899141e-6
  * @returns IAU2006歲差矩陣 P
  */
 const precessionMx_IAU2006 = T => {
-    const Ep0 = s2r(84381.406)
-    const PsA = s2r(5038.481507 * T - 1.0790069 * T ** 2 - .00114045 * T ** 3 + .000132851 * T ** 4 - 9.51e-8 * T ** 5) // 單位秒''
-    const OmA = s2r(84381.406 - .025754 * T + .0512623 * T ** 2 - .00772503 * T ** 3 - 4.67e-7 * T ** 4 + 3.337e-7 * T ** 5)
-    const ChA = s2r(10.556403 * T - 2.3814292 * T ** 2 - .00121197 * T ** 3 + .000170663 * T ** 4 - 5.6e-8 * T ** 5)
+    const Ep0 = S2R * 84381.406
+    const PsA = S2R * (5038.481507 * T - 1.0790069 * T ** 2 - .00114045 * T ** 3 + .000132851 * T ** 4 - 9.51e-8 * T ** 5) // 單位秒''
+    const OmA = S2R * (84381.406 - .025754 * T + .0512623 * T ** 2 - .00772503 * T ** 3 - 4.67e-7 * T ** 4 + 3.337e-7 * T ** 5)
+    const ChA = S2R * (10.556403 * T - 2.3814292 * T ** 2 - .00121197 * T ** 3 + .000170663 * T ** 4 - 5.6e-8 * T ** 5)
     // 直接用矩陣算
-    const aa = chain(r3(ChA)).multiply(r1(-OmA)).multiply(r3(-PsA)).multiply(r1(Ep0)).done()
+    const aa = chain(rr3(ChA)).multiply(rr1(-OmA)).multiply(rr3(-PsA)).multiply(rr1(Ep0)).done()
     return aa
     // 展開計算法
     // const S1 = Math.sin(Ep0) // sinε0

@@ -16,7 +16,7 @@ import {
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from '../astronomy/acrv.mjs'
 import { mansion, midstar } from '../astronomy/mansion.mjs'
 import { AutoNineOrbit } from '../astronomy/nineorbits.mjs'
-import { Jd2Date } from '../time/jd2date.mjs'
+import { jd2Date } from '../time/jd2date.mjs'
 import { AutoMoonAvgV } from '../parameter/auto-constant.mjs'
 
 const abs = x => Math.abs(x)
@@ -263,7 +263,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 const ScOrder = (ZhengScOrder + DayAccum) % 60
                 Sc[i][k] = ScList[ScOrder]
                 Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SdInt + 1)
-                const date = Jd2Date(Jd[i][k])
+                const date = jd2Date(Jd[i][k])
                 Jd[i][k] += ' ' + date.mm + '.' + date.dd
                 const Stem = StemList.indexOf(Sc[i][k][0])
                 const Branch = BranchList.indexOf(Sc[i][k][1])
@@ -271,8 +271,8 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 // 順序不一樣！立春1，驚蟄2，清明3，立夏4，芒種5，小暑6，立秋7，白露8，寒露9，立冬10，大雪11，小寒12
                 const JieDifInt = Math.trunc((SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar)
                 if (Type >= 6) {
-                    const WeekOrder = Math.round(((NewmInt[i - 1] + k - 1) % 7 + 5 + (WeekConst || 0)) % 7.1)
-                    const MansionOrder = Math.round((((NewmInt[i - 1] + k - 1) % 28 + 23 + (MansionDayConst || 0)) + 28) % 28.1)
+                    const WeekOrder = (NewmInt[i - 1] + k + 3 + (WeekConst || 0)) % 7
+                    const MansionOrder = ((NewmInt[i - 1] + k + 21 + (MansionDayConst || 0))) % 28
                     Week[i][k] = WeekList[WeekOrder] + MansionNameList[MansionOrder] + MansionAnimalNameList[MansionOrder]
                 }
                 for (let j = HouOrder; j < 90; j++) { // 氣候 
@@ -387,4 +387,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
     }
     return result
 }
-// console.log(D1('Shoushi', 2500))
+// console.log(D1('Jiyuan', 1111))

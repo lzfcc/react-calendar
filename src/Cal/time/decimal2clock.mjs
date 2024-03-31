@@ -3,24 +3,34 @@ import {
     BranchList, HalfList, StemList, QuarList, TwelveList, TwelveListHuangji, TwelveListWuyin, TwentyfourList, FourList, big, nzh, deci,
 } from '../parameter/constant.mjs'
 
-export const ClockWest = (Deci, isS) => {
-    let h = Math.trunc(Deci * 24)
-    let m = Math.trunc((Deci - h / 24) * 24 * 60)
-    let s = Math.trunc((Deci - h / 24 - m / 24 / 60) * 86400)
-    h = h.toString()
-    m = m.toString()
-    s = s.toString()
-    if (h.length < 2) {
-        h = '0' + h
+export const deci2hms = Deci => {
+    Deci = Math.abs(Deci) % 1
+    const H = Deci * 24
+    const h = Math.trunc(H)
+    const HFrac = deci(H)
+    const M = HFrac * 60
+    const m = Math.trunc(M)
+    const MFrac = deci(M)
+    const S = MFrac * 60
+    const s = Math.trunc(S)
+    const SFrac = deci(S)
+    const MS10 = SFrac * 100  // 本來毫秒應該*1000，這是10ms
+    const ms10 = Math.trunc(MS10)
+    let hStr = h.toString()
+    let mStr = m.toString()
+    let sStr = s.toString()
+    let ms10Str = ms10.toString()
+    if (hStr.length < 2) hStr = '0' + hStr
+    if (mStr.length < 2) mStr = '0' + mStr
+    if (sStr.length < 2) sStr = '0' + sStr
+    if (ms10Str.length < 2) ms10Str = '0' + ms10Str
+    return {
+        hm: hStr + ':' + mStr,
+        hms: hStr + ':' + mStr + ':' + sStr,
+        hmsms: hStr + ':' + mStr + ':' + sStr + '.' + ms10Str
     }
-    if (m.length < 2) {
-        m = '0' + m
-    }
-    if (s.length < 2) {
-        s = '0' + s
-    }
-    return isS === false ? h + ':' + m : h + ':' + m + ':' + s
 }
+
 
 const ClockWeijin = (Deci, Name) => {
     const { Type } = Para[Name]
@@ -156,7 +166,7 @@ export const BindClock1 = Deci => {
     Deci = +('.' + Deci)
     let Print = [{
         title: '現代',
-        data: ClockWest(Deci)
+        data: deci2hms(Deci).hmsms
     }]
     Deci *= 100 + 1e-12
     Print = Print.concat(

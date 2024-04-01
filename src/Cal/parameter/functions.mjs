@@ -63,6 +63,7 @@ export const fix = (x, n) => {
   const a = (x * 100).toFixed(n || 2)
   return (+a < 10 ? '0' : '') + a
 }
+export const r2dfix = x => x * R2D.toFixed(2)
 // const debounce = (fn, delay) => {
 //   let timer = 100; // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
 //   return (...args) => {

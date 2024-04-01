@@ -5,11 +5,8 @@
 import {
   transpose,
   multiply,
-  matrix,
   subtract,
   divide,
-  add,
-  chain,
 } from "mathjs";
 import { ScList } from "../parameter/constants.mjs";
 import { deltaT } from "../time/delta-t.mjs";
@@ -23,14 +20,10 @@ import {
   lightAber,
   lightTimeCorr,
   radialV,
-  rr1,
   xyz2lonlat,
-} from "../astronomy/pos_convert_modern.mjs";
-import { D2R, R2D, cDay, pi, pi2, abs } from "../parameter/functions.mjs";
-import { deg2Hms } from "../astronomy/pos_convert.mjs";
-
-
-const r2dfix = (X) => deg2Hms(X * R2D);
+  rr1
+} from "../astronomy/pos_functions.mjs";
+import { D2R, cDay, pi, pi2, abs, r2dfix } from "../parameter/functions.mjs";
 
 // 計算位置、速度
 export const calXV_vsop = (Planet, Jd) => {
@@ -154,11 +147,9 @@ export const N5 = (Y) => {
     const TermAcrSc = [];
     const TermAcrDeci = [];
     const TermEqua = [];
-    const TermEclp = [];
     const Term1AcrSc = [];
     const Term1AcrDeci = [];
     const Term1Equa = [];
-    const Term1Eclp = [];
     // 西曆推朔望的思路和古曆不一樣，需要求得平朔望當日子正日月實行，兩者相較，得實朔望與平朔望是否在同一日，確定實朔望在哪一天，再算當日與次日子正實行，求得實朔望泛時。
     for (let i = 0; i <= 14; i++) {
       /// ///// 平朔望

@@ -1,13 +1,23 @@
-import { rr1, rr3 } from '../astronomy/pos_convert_modern.mjs'
 import { MMS2R, S2R, pi2 } from '../parameter/functions.mjs'
 // import NutaList from './nutation_list.mjs'
 import NutaList1 from './nutation_list1.mjs'
 const { nals_t, cls_t, napl_t, cpl_t } = NutaList1
-import { chain } from 'mathjs'
+import { chain, matrix } from 'mathjs'
 
 const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m
 export const obliqAvg = T => 84381.406 - 46.836769 * T - .0001831 * T ** 2 + .00200340 * T ** 3 - .000000576 * T ** 4 - .0000000434 * T ** 5
-
+const rr1 = (a) =>
+    matrix([
+        [1, 0, 0],
+        [0, Math.cos(a), Math.sin(a)],
+        [0, -Math.sin(a), Math.cos(a)],
+    ]);
+const rr3 = (g) =>
+    matrix([
+        [Math.cos(g), Math.sin(g), 0],
+        [-Math.sin(g), Math.cos(g), 0],
+        [0, 0, 1],
+    ]);
 
 /**
  * 計算章動需要用到的基本輻角

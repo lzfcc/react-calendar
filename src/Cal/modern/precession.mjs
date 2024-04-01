@@ -1,39 +1,38 @@
-import { matrix, chain } from 'mathjs'
+import { matrix } from 'mathjs'
 import { S2R, pi2 } from '../parameter/functions.mjs'
-import { rr1, rr3 } from '../astronomy/pos_convert_modern.mjs'
 /**
  * 
  * @param {*} T
  * @returns IAU2006歲差矩陣 P
  */
-const precessionMx_IAU2006 = T => {
-    const Ep0 = S2R * 84381.406
-    const PsA = S2R * (5038.481507 * T - 1.0790069 * T ** 2 - .00114045 * T ** 3 + .000132851 * T ** 4 - 9.51e-8 * T ** 5) // 單位秒''
-    const OmA = S2R * (84381.406 - .025754 * T + .0512623 * T ** 2 - .00772503 * T ** 3 - 4.67e-7 * T ** 4 + 3.337e-7 * T ** 5)
-    const ChA = S2R * (10.556403 * T - 2.3814292 * T ** 2 - .00121197 * T ** 3 + .000170663 * T ** 4 - 5.6e-8 * T ** 5)
-    // 直接用矩陣算
-    const aa = chain(rr3(ChA)).multiply(rr1(-OmA)).multiply(rr3(-PsA)).multiply(rr1(Ep0)).done()
-    return aa
-    // 展開計算法
-    // const S1 = Math.sin(Ep0) // sinε0
-    // const C1 = Math.cos(Ep0) // cosε0
-    // const S2 = Math.sin(-PsA)
-    // const C2 = Math.cos(-PsA)
-    // const S3 = Math.sin(-OmA)
-    // const C3 = Math.cos(-OmA)
-    // const S4 = Math.sin(ChA)
-    // const C4 = Math.cos(ChA)
-    // const P11 = C4 * C2 - S2 * S4 * C3
-    // const P12 = C4 * S2 * C1 + S4 * C3 * C2 * C1 - S1 * S4 * S3
-    // const P13 = C4 * S2 * S1 + S4 * C3 * C2 * S1 + C1 * S4 * S3
-    // const P21 = -S4 * C2 - S2 * C4 * C3
-    // const P22 = -S4 * S2 * C1 + C4 * C3 * C2 * C1 - S1 * C4 * S3
-    // const P23 = -S4 * S2 * S1 + C4 * C3 * C2 * S1 + C1 * C4 * S3
-    // const P31 = S2 * S3
-    // const P32 = -S3 * C2 * C1 - S1 * C3
-    // const P33 = -S3 * C2 * S1 + C3 * C1
-    // const P = P11 + P12 + P13 + P21 + P22 + P23 + P31 + P32 + P33
-}
+// const precessionMx_IAU2006 = T => {
+//     const Ep0 = S2R * 84381.406
+//     const PsA = S2R * (5038.481507 * T - 1.0790069 * T ** 2 - .00114045 * T ** 3 + .000132851 * T ** 4 - 9.51e-8 * T ** 5) // 單位秒''
+//     const OmA = S2R * (84381.406 - .025754 * T + .0512623 * T ** 2 - .00772503 * T ** 3 - 4.67e-7 * T ** 4 + 3.337e-7 * T ** 5)
+//     const ChA = S2R * (10.556403 * T - 2.3814292 * T ** 2 - .00121197 * T ** 3 + .000170663 * T ** 4 - 5.6e-8 * T ** 5)
+//     // 直接用矩陣算
+//     const aa = chain(rr3(ChA)).multiply(rr1(-OmA)).multiply(rr3(-PsA)).multiply(rr1(Ep0)).done()
+//     return aa
+//     // 展開計算法
+//     // const S1 = Math.sin(Ep0) // sinε0
+//     // const C1 = Math.cos(Ep0) // cosε0
+//     // const S2 = Math.sin(-PsA)
+//     // const C2 = Math.cos(-PsA)
+//     // const S3 = Math.sin(-OmA)
+//     // const C3 = Math.cos(-OmA)
+//     // const S4 = Math.sin(ChA)
+//     // const C4 = Math.cos(ChA)
+//     // const P11 = C4 * C2 - S2 * S4 * C3
+//     // const P12 = C4 * S2 * C1 + S4 * C3 * C2 * C1 - S1 * S4 * S3
+//     // const P13 = C4 * S2 * S1 + S4 * C3 * C2 * S1 + C1 * S4 * S3
+//     // const P21 = -S4 * C2 - S2 * C4 * C3
+//     // const P22 = -S4 * S2 * C1 + C4 * C3 * C2 * C1 - S1 * C4 * S3
+//     // const P23 = -S4 * S2 * S1 + C4 * C3 * C2 * S1 + C1 * C4 * S3
+//     // const P31 = S2 * S3
+//     // const P32 = -S3 * C2 * C1 - S1 * C3
+//     // const P33 = -S3 * C2 * S1 + C3 * C1
+//     // const P = P11 + P12 + P13 + P21 + P22 + P23 + P31 + P32 + P33
+// }
 
 // 以下為移植自 https://dreamalligator.github.io/vondrak/。源碼 https://github.com/dreamalligator/vondrak，/vondrak/__init__.py 文件
 function pxp(a, b) {

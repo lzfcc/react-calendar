@@ -1,6 +1,6 @@
 import {
     big
-} from '../parameter/constant.mjs'
+} from '../parameter/functions.mjs'
 
 export const ContinuedFrac = (a, b) => { // https://chaoli.club/index.php/2756/0
     let gcd = big.abs(a)

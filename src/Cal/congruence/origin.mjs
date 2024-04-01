@@ -1,4 +1,4 @@
-import { big } from '../parameter/constant.mjs'
+import { big } from '../parameter/functions.mjs'
 import { CongruenceModulo } from '../congruence/qiuyi.mjs'
 import { GcdLcm, GcdLcmGroup, FracLcm1 } from '../congruence/gcdlcm.mjs'
 import { isSame, Frac2FalseFrac, Deci2Int } from '../equation/math.mjs'

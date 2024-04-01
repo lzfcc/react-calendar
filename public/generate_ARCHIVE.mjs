@@ -1,6 +1,7 @@
 import Para from '../parameter/calendars.mjs'
 import { Interpolate1 } from '../equation/sn.mjs'
-import { NameList, deci } from '../parameter/constant.mjs'
+import { NameList } from '../parameter/constants.mjs'
+import { deci } from './functions.mjs'
 
 // import { Interpolate2 } from '../equation/sn.mjs'
 // import { Interpolate1_big } from '../equation/sn.mjs'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { NameDayList } from '../../Cal/parameter/constant.mjs'
+import { NameDayList } from '../../Cal/parameter/constants.mjs'
 import MenuSelect from '../MenuSelect'
 import { bindMansionAccumList } from '../../Cal/astronomy/bind.mjs'
 

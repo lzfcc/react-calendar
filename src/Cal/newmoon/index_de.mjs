@@ -1,5 +1,5 @@
-import { N6 } from './main_de.mjs'
-import { TermNameList, Term1NameList, ScList, MonNumList1 } from '../parameter/constant.mjs'
+import { N6 } from './newm_de.mjs'
+import { TermNameList, Term1NameList, ScList, MonNumList1 } from '../parameter/constants.mjs'
 import { deltaT, deltaTError } from '../time/delta-t.mjs'
 // const Index = (YearStart, YearEnd) => {
 export default (YearStart, YearEnd) => {

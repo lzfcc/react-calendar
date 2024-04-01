@@ -1,5 +1,5 @@
 import { N5 } from '../newmoon/vsop.mjs'
-import { TermNameList, Term1NameList, ScList, NameList, MonNumList1, } from '../parameter/constant.mjs'
+import { TermNameList, Term1NameList, ScList, NameList, MonNumList1, } from '../parameter/constants.mjs'
 import { deltaT, deltaTError } from '../time/delta-t.mjs'
 // const Index = (YearStart, YearEnd) => {
 export default (YearStart, YearEnd) => {

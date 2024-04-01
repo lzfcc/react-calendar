@@ -1,12 +1,14 @@
-import N1 from './main_quar.mjs'
-import N2 from './main.mjs'
-// import N3 from './main_huihui.mjs'
-import { N4 } from './main_shixian.mjs'
+import N1 from './newm_quar.mjs'
+import N2 from './newm.mjs'
+// import N3 from './newm_huihui.mjs'
+import { N4 } from './newm_shixian.mjs'
 import Para from '../parameter/calendars.mjs'
-import { TermNameList, Term1NameList, ScList, ThreeList, NameList, MonNumList1, MonNumListChuA, MonNumListChuB, fix } from '../parameter/constant.mjs'
+import { TermNameList, Term1NameList, ScList, ThreeList, NameList, MonNumList1, MonNumListChuA, MonNumListChuB } from '../parameter/constants.mjs'
 import { AutoEclipse } from '../astronomy/eclipse.mjs'
-import { autoRise } from '../astronomy/bind.mjs'
-import { AutoRangeEcli } from '../parameter/auto-constant.mjs'
+import { autoRise } from '../astronomy/auto.mjs'
+import { AutoRangeEcli } from '../parameter/auto_consts.mjs'
+import { fix } from '../parameter/functions.mjs'
+
 // const Index = (Name, YearStart, YearEnd) => {
 export default (Name, YearStart, YearEnd) => {
     const Bind = Name => {

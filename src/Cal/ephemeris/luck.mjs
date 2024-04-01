@@ -14,7 +14,7 @@ import {
     Hexagram8List,
     FourauspiciousList,
     NumList
-} from '../parameter/constant.mjs'
+} from '../parameter/constants.mjs'
 
 export const YearGodConvert = (a, b, YearScOrder, YuanYear) => { // 干，支，干支
     const MaleGong = Math.round(((7 - YuanYear) % 9 + 9) % 9.1) // 男女九宮算法用《象吉通書》，見《黑水城出土元代曆日研究》

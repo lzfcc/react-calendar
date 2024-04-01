@@ -1,4 +1,4 @@
-import { big, frc } from '../parameter/constant.mjs'
+import { big, frc } from '../parameter/functions.mjs'
 import { Frac2FalseFrac, DeciFrac2IntFrac } from '../equation/math.mjs'
 
 export const constModern = Jd => { // 儒略世紀：36525日。我下面索性將100年作爲儒略世紀，要不然太麻煩

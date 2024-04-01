@@ -1,6 +1,6 @@
 import {
     big
-} from '../parameter/constant.mjs'
+} from '../parameter/functions.mjs'
 // const CongruenceModulo = function (aRaw, bRaw) { // 大衍求一術：奇數 * x ≡ 1 (mod 592)，求 x。 https://zhuanlan.zhihu.com/p/272302805 
 //     //   L1=1 | a奇數
 //     //   -----+-----

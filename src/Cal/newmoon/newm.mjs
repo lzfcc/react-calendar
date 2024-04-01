@@ -1,8 +1,9 @@
 import Para from '../parameter/calendars.mjs'
-import { ScList, deci, fix } from '../parameter/constant.mjs'
+import { ScList } from '../parameter/constants.mjs'
 import { AutoDifAccum, AutoTcorr } from '../astronomy/acrv.mjs'
 import { mansion } from '../astronomy/mansion.mjs'
 import { AutoNewmPlus, AutoSyzygySub } from '../astronomy/dayadjust.mjs'
+import { deci, fix } from '../parameter/functions.mjs'
 
 // console.log(13.17639477138888-385.81673571944444/29.530593)
 const fmod = (X, m) => X - Math.floor(X / m) * m

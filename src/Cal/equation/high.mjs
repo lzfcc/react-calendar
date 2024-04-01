@@ -1,4 +1,4 @@
-import { big } from '../parameter/constant.mjs'
+import { big } from '../parameter/functions.mjs'
 
 // function myMax(z, ...args) {
 //     let ans = -Infinity

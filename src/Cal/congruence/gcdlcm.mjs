@@ -1,4 +1,4 @@
-import { big } from '../parameter/constant.mjs'
+import { big } from '../parameter/functions.mjs'
 
 // 兩個數的gcd, lcm
 export const GcdLcm = (a, b) => {

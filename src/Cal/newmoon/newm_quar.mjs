@@ -1,6 +1,7 @@
-import { ScList, TermNameList, deci } from '../parameter/constant.mjs'
+import { ScList, TermNameList } from '../parameter/constants.mjs'
 import Para from '../parameter/calendars.mjs'
 import { mansion, midstar } from '../astronomy/mansion.mjs'
+import { deci } from '../parameter/functions.mjs'
 
 export default (Name, Y) => {
     const { Lunar, Solar, SolsOriginDif, SolsOriginMon,

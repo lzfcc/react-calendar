@@ -1,5 +1,5 @@
-import { big } from '../parameter/constant.mjs'
-import { Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat } from '../newmoon/main_shixian.mjs'
+import { big } from '../parameter/functions.mjs'
+import { Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat } from '../astronomy/pos_convert.mjs'
 
 const pi = big.acos(-1)
 const r2d = degree => big(degree).mul(180).div(pi)
@@ -303,7 +303,7 @@ export const HushigeyuanMoon = (NodeEclp, MoonNodeEclpDif) => { // v黃白正交
     const Sidereal25 = Sidereal / 4
     const e = 23.9  // 黃赤大距
     const I = 6 // 黃白大距
-    const k = 14.66 // 正交極數：二至白赤正交與黃白正交的距離。白赤大距6，黃赤大距23.9，三角函數得14.73: tan(k)=tan6/sin23.9
+    const k = 14.66 // 正交極數：二至白赤正交與黃白正交的距離。白赤大距6，黃赤大距23.9，三角函數得14.73: tand(k)=tan6/sin23.9
     const NodeEclpHalf = NodeEclp % Sidereal50
     const v0 = Sidereal25 - Math.abs(NodeEclp - Sidereal25) // NodeEclpRev。黃白正交到二至的距離，黃白正交在回歸年中的位置：正交在二至後初末限，冬至距正交積度
     const d = v0 * k / Sidereal25 // 定差EH

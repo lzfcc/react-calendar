@@ -1,4 +1,4 @@
-import { big } from '../parameter/constant.mjs'
+import { big } from '../parameter/functions.mjs'
 
 // console.log(big.div(big.acos(-1), 648000).toString())
 // const a = input => {

@@ -1,4 +1,4 @@
-import { ScList } from '../parameter/constant.mjs'
+import { ScList } from '../parameter/constants.mjs'
 import { deltaT } from '../time/delta-t.mjs'
 import { jd2Date } from '../time/jd2date.mjs'
 import NewmList from '../modern/newm_de44_list.mjs'

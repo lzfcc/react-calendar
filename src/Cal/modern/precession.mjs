@@ -1,7 +1,6 @@
-import { rr1, rr3 } from '../newmoon/main_vsop.mjs'
 import { matrix, chain } from 'mathjs'
-import { S2R, pi2 } from '../parameter/constant.mjs'
-
+import { S2R, pi2 } from '../parameter/functions.mjs'
+import { rr1, rr3 } from '../astronomy/pos_convert_modern.mjs'
 /**
  * 
  * @param {*} T

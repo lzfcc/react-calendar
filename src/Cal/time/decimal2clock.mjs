@@ -1,7 +1,8 @@
 import Para from '../parameter/calendars.mjs'
 import {
-    BranchList, HalfList, StemList, QuarList, TwelveList, TwelveListHuangji, TwelveListWuyin, TwentyfourList, FourList, big, nzh, deci,
-} from '../parameter/constant.mjs'
+    BranchList, HalfList, StemList, QuarList, TwelveList, TwelveListHuangji, TwelveListWuyin, TwentyfourList, FourList
+} from '../parameter/constants.mjs'
+import { big, nzh, deci } from '../parameter/functions.mjs'
 
 export const deci2hms = Deci => {
     Deci = Math.abs(Deci) % 1

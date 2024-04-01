@@ -4,20 +4,22 @@ import {
     WeekList, MansionNameList, MansionAnimalNameList,
     ManGodList, JianchuList, HuangheiList, YuanList,
     HalfTermNameList, HouListA, HouListB, Hexagram64ListA, Hexagram64ListB, HexagramSymbolListA, HexagramSymbolListB, FiveList2,
-    nzh, NumList, MonNumList1, deci
-} from '../parameter/constant.mjs'
+    NumList, MonNumList1
+} from '../parameter/constants.mjs'
+
 import {
     YearGodConvert, YearColorConvert, MonColorConvert, WangwangConvert, FubaoConvert, LsStarConvert, BloodConvert, TouringGodConvert
 } from '../ephemeris/luck.mjs'
 import CalNewm from '../newmoon/index.mjs'
 import {
     autoEquaEclp, autoMoonLon, autoMoonLat, autoLat, autoRise, autoDial
-} from '../astronomy/bind.mjs'
+} from '../astronomy/auto.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from '../astronomy/acrv.mjs'
 import { mansion, midstar } from '../astronomy/mansion.mjs'
 import { AutoNineOrbit } from '../astronomy/nineorbits.mjs'
 import { jd2Date } from '../time/jd2date.mjs'
-import { AutoMoonAvgV } from '../parameter/auto-constant.mjs'
+import { AutoMoonAvgV } from '../parameter/auto_consts.mjs'
+import { deci, nzh } from '../parameter/functions.mjs'
 
 const abs = x => Math.abs(x)
 export const D1 = (Name, YearStart, YearEnd) => {

@@ -1,4 +1,4 @@
-import { big, frc } from '../parameter/constant.mjs'
+import { big, frc } from '../parameter/functions.mjs'
 import { Frac2FalseFrac, BigFrc } from '../equation/math.mjs'
 class Interval {
     constructor(cate = 0, pitch = 'C', half = 0, comma = 0, freq = '1') {

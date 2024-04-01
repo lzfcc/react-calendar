@@ -119,7 +119,7 @@ export const elp2000 = Jd => {
                 + data[i].B2 * corrections.deltaGamma
                 + data[i].B3 * corrections.deltaE
                 + data[i].B4 * corrections.deltaep;
-            // A sin(i_1 D + i_2l' + i_3l + i_4F)
+            // A sind(i_1 D + i_2l' + i_3l + i_4F)
             sum += A * Math.sin((data[i].i1 * delArgs.D
                 + data[i].i2 * delArgs.LP
                 + data[i].i3 * delArgs.L
@@ -144,7 +144,7 @@ export const elp2000 = Jd => {
                 + data[i].B2 * corrections.deltaGamma
                 + data[i].B3 * corrections.deltaE
                 + data[i].B4 * corrections.deltaep;
-            // A cos(i_1 D + i_2l' + i_3l + i_4F)
+            // A cosd(i_1 D + i_2l' + i_3l + i_4F)
             sum += A * Math.cos((data[i].i1 * delArgs.D
                 + data[i].i2 * delArgs.LP
                 + data[i].i3 * delArgs.L
@@ -166,7 +166,7 @@ export const elp2000 = Jd => {
     function computeNonPlanetary(precession, delArgs, data) {
         let sum = 0.0;
         for (let i = 0; i < data.length; i++) {
-            // A sin(i_1\zeta + i_2 D + i_3 l' + i_4 l + i_5 F + \phi)
+            // A sind(i_1\zeta + i_2 D + i_3 l' + i_4 l + i_5 F + \phi)
             sum += data[i].A * Math.sin((data[i].i1 * precession
                 + data[i].i2 * delArgs.D
                 + data[i].i3 * delArgs.LP
@@ -190,7 +190,7 @@ export const elp2000 = Jd => {
     function computePlanetary1(planetaryArgs, delArgs, data) {
         let sum = 0.0;
         for (let i = 0; i < data.length; i++) {
-            // A sin(i_1 Me + i_2 V + i_3 T + i_4 Ma + i_5 J + i_6 S + i_7 U + i_8 N 
+            // A sind(i_1 Me + i_2 V + i_3 T + i_4 Ma + i_5 J + i_6 S + i_7 U + i_8 N 
             //     + i_9 D + i_10 L + i_11 F + \phi)
             // Important : \phi is in degrees
             sum += data[i].A * Math.sin((data[i].i1 * planetaryArgs[0]

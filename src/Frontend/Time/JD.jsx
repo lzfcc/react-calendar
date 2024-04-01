@@ -1,6 +1,6 @@
 import React from "react"
 import { Jd2DatePrint } from '../../Cal/time/jd2date.mjs'
-import { eotPrint } from '../../Cal/time/appa_time.mjs'
+import { eotPrint } from '../../Cal/astronomy/pos_convert_modern.mjs'
 export default class a extends React.Component {
   constructor(props) {
     super(props)

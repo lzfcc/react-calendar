@@ -1,4 +1,4 @@
-import { ScList, WeekList1 } from '../parameter/constant.mjs'
+import { ScList, WeekList1 } from '../parameter/constants.mjs'
 import { deci2hms } from './decimal2clock.mjs'
 /**
  * 把儒略日轉換成儒略曆或格里高利曆 ported from https://ytliu0.github.io/ChineseCalendar/Julian.js by 廖育棟

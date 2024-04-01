@@ -1,5 +1,5 @@
 import Para from '../parameter/calendars.mjs'
-import { AutoMoonAvgV } from '../parameter/auto-constant.mjs'
+import { AutoMoonAvgV } from '../parameter/auto_consts.mjs'
 
 export const AutoNineOrbit = (NodeAccum, Sd, Name) => { // 月行九道法
     const { Type, SolarRaw, Node, LunarRaw } = Para[Name]

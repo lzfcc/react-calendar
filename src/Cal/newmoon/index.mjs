@@ -99,11 +99,11 @@ export default (Name, YearStart, YearEnd) => {
                 TermName[LeapNumTerm + 1] = '无中'
                 TermSc[LeapNumTerm + 1] = ''
                 TermDeci[LeapNumTerm + 1] = ''
-                TermAcrSc[LeapNumTerm + 1] = ''
-                TermAcrDeci[LeapNumTerm + 1] = ''
-                TermNowDeci[LeapNumTerm + 1] = ''
-                TermEqua[LeapNumTerm + 1] = ''
-                TermEclp[LeapNumTerm + 1] = ''
+                if (ThisYear.TermAcrSc) TermAcrSc[LeapNumTerm + 1] = ''
+                if (ThisYear.TermAcrDeci) TermAcrDeci[LeapNumTerm + 1] = ''
+                if (ThisYear.TermNowDeci) TermNowDeci[LeapNumTerm + 1] = ''
+                if (ThisYear.TermEqua) TermEqua[LeapNumTerm + 1] = ''
+                if (ThisYear.TermEclp) TermEclp[LeapNumTerm + 1] = ''
                 for (let i = LeapNumTerm + 2; i <= 13; i++) {
                     TermName[i] = Term1NameList[(i + 2) % 12]
                     // 上下互換位置
@@ -231,35 +231,37 @@ export default (Name, YearStart, YearEnd) => {
         }
         const NewmEquaPrint = NewmEqua ? NewmSlice(NewmEqua) : undefined
         const NewmEclpPrint = NewmEclp ? NewmSlice(NewmEclp) : undefined
-        const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)        
+        const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)
         const SyzygyDeciPrint = NewmSlice(ThisYear.SyzygyDeci)
         const NewmNowlineDeciPrint = ThisYear.NewmNowlineDeci ? NewmSlice(ThisYear.NewmNowlineDeci) : undefined
         const SyzygyNowlineDeciPrint = ThisYear.SyzygyNowlineDeci ? NewmSlice(ThisYear.SyzygyNowlineDeci) : undefined
         let NewmDeciPrint = [], TermNamePrint = [], TermScPrint = [], TermDeciPrint = [], TermAcrScPrint = [], TermAcrDeciPrint = [], TermNowDeciPrint = [], TermEquaPrint = [], TermEclpPrint = [], TermDuskstarPrint = [], Term1NamePrint = [], Term1ScPrint = [], Term1DeciPrint = [], Term1EquaPrint = [], Term1EclpPrint = [], Term1AcrDeciPrint = [], Term1NowDeciPrint = [], Term1AcrScPrint = []
         TermNamePrint = TermSlice(TermName)
         Term1NamePrint = Term1Name[2] ? TermSlice(Term1Name) : []
-        if (TermSc[2]) {
+        if ((TermSc || []).length) {
             TermScPrint = TermSlice(TermSc)
             TermDeciPrint = TermSlice(TermDeci)
         }
-        if (Term1Sc[2]) {
+        if ((Term1Sc || []).length) {
             Term1ScPrint = TermSlice(Term1Sc)
             Term1DeciPrint = TermSlice(Term1Deci)
         }
-        if (TermAcrSc[2]) {
+        if ((TermAcrSc || []).length) {
             TermAcrScPrint = TermSlice(TermAcrSc)
             TermAcrDeciPrint = TermSlice(TermAcrDeci)
             Term1AcrScPrint = TermSlice(Term1AcrSc)
             Term1AcrDeciPrint = TermSlice(Term1AcrDeci)
         }
-        if (TermNowDeci[2]) {
+        if ((TermNowDeci || []).length) {
             TermNowDeciPrint = TermSlice(TermNowDeci)
             Term1NowDeciPrint = TermSlice(Term1NowDeci)
         }
-        TermEquaPrint = TermEqua[2] ? TermSlice(TermEqua) : undefined
-        Term1EquaPrint = Term1Equa[2] ? TermSlice(Term1Equa) : undefined
-        TermEclpPrint = TermEclp[2] ? TermSlice(TermEclp) : undefined
-        Term1EclpPrint = Term1Eclp[2] ? TermSlice(Term1Eclp) : undefined
+        if ((TermEqua || []).length) {
+            TermEquaPrint = TermSlice(TermEqua)
+            Term1EquaPrint = TermSlice(Term1Equa)
+            TermEclpPrint = TermSlice(TermEclp)
+            Term1EclpPrint = TermSlice(Term1Eclp)
+        }
         TermDuskstarPrint = TermDuskstar[2] ? TermSlice(TermDuskstar) : undefined
         ////////// 調用交食模塊。由於隋系交食需要用月份，所以必須要切了之後才能用，傳一堆參數，很惡心
         let SunEcli = [], MoonEcli = [], NewmNodeAccumPrint = [], NewmNodeAccumMidnPrint = [], NewmAnomaAccumPrint = [], NewmAnomaAccumMidnPrint = []

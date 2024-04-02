@@ -1,16 +1,14 @@
-import { add, chain, divide, matrix, multiply, subtract } from "mathjs";
+import { multiply, subtract } from "mathjs";
 import {
   D2R,
   R2D,
   H2R,
-  sqr,
   sind,
   cosd,
   tand,
   cotd,
   asind,
   acosd,
-  cDay,
 } from "../parameter/functions.mjs";
 import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";

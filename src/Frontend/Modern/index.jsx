@@ -1,5 +1,6 @@
 import React from 'react'
 import Newm_DE from './Newm_DE'
+import Eph from './Eph'
 import Position from './Position'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -22,11 +23,14 @@ export default class Astronomy extends React.Component {
     const { md } = this.state
     return (
       <>
+        <section>
+          <Newm_DE />
+        </section>
         <section className='modulo'>
           <Position />
         </section>
-        <section>
-          <Newm_DE />
+        <section >
+          <Eph />
         </section>
         <hr />
         <article>

@@ -1,6 +1,7 @@
 import CalNewm from '../Cal/newmoon/index.mjs'
 import CalNewm_DE from '../Cal/newmoon/index_de.mjs'
 import CalEph from '../Cal/ephemeris/index.mjs'
+import CalEph_Modern from '../Cal/ephemeris/eph_modern.mjs'
 import Para from '../Cal/parameter/calendars.mjs'
 
 const AutoCal = year => {
@@ -340,4 +341,13 @@ export const outputEphWeb = (year, Name) => {
         DayData: ephView(OtherResult)
     }
 }
-// console.log(outputEphWeb(1730, 'Guimao'))
+
+export const outputEphModernWeb = (year, Longitude, Latitude) => {
+    const [result] = CalEph_Modern(year, undefined, Longitude, Latitude)
+    const { Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor, ...OtherResult
+    } = result
+    return {
+        Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor,
+        DayData: ephView(OtherResult)
+    }
+}

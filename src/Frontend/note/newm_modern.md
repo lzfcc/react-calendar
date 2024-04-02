@@ -45,3 +45,11 @@
 - [ephem.js](https://github.com/THRASTRO/ephem.js/) 各種各樣的 VSOP、ELP。
 - 計算DE曆表的[jplephem](https://pypi.org/project/jplephem/)庫，以及功能豐富的skyfield庫。
 - [Astronomy and numerical software source codes](http://www.moshier.net/#Cephes)
+
+GB/T 33661-2017《农历的编算和颁行》第四節《農曆的編排規則》有五條：
+
+1. 以北京时间为标准时间。
+2. 朔日为农历月的第一个农历日。
+3. 包含节气冬至在内的农历月为农历十一月。
+4. 若从某个农历十一月开始到下一个农历十一月（不含）之间有13 个农历月，则需要置闰。置闰规则为：取其中最先出现的一个不包含中气的农历月为农历闰月。
+5. 农历十一月之后第2个（不计闰月）农历月为农历年的起始月。

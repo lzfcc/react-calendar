@@ -162,7 +162,7 @@ const YixiangPosList = YixiangList.map((index) => PosList[index]);
 const YixiangVelList = YixiangList.map((index) => VelList[index]);
 
 // 與古曆的deg2Mansion區別在於現代的不從角0起算，直接給出每宿經度
-const deg2MansionModern = (Deg, AccumObj, fixed) => {
+export const deg2MansionModern = (Deg, AccumObj, fixed) => {
     const SortedList = Object.entries(AccumObj).sort((a, b) => a[1] - b[1]);
     let index = -1;
     let Solsindex = -1;

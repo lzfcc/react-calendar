@@ -72,7 +72,7 @@ export const calXV_vsop = (Planet, Jd) => {
     //     [0, -SEpA, CEpA]
     // ])
     // const R1EpsN = multiply(rr3(-DeltaPsi), rr1(ObliqAvg))    
-    // const tmp = chain(R1EpsN).multiply(P).multiply(Fbmx).done()
+    // const Tmp = chain(R1EpsN).multiply(P).multiply(Fbmx).done()
  * @param {*} Planet 
  * @param {*} Jd 
  * @returns 
@@ -134,19 +134,18 @@ export const bindPos_vsop = Jd => {
         // const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray();
         const Eclp = multiply(R1Eps, Equa).toArray();
         // const Eclp1 = multiply(R1Eps, Equa1).toArray();
-        const { Lon: EquaLontmp, Lat: EquaLattmp } = xyz2lonlat(Equa);
-        EquaLon[i] = (EquaLontmp + pi2) % pi2;
-        EquaLat[i] = EquaLattmp
-        const { Lon: Lontmp, Lat: Lattmp } = xyz2lonlat(Eclp);
-        EclpLon[i] = (Lontmp + pi2) % pi2;
-        EclpLat[i] = Lattmp
-        const { CeclpLon: CeclpLontmp, CeclpLat: CeclpLattmp } = equa2Ceclp(Obliq, EquaLon[i], EquaLat[i])
-        CeclpLon[i] = CeclpLontmp // deg
-        CeclpLat[i] = CeclpLattmp
+        const { Lon: EquaLonTmp, Lat: EquaLatTmp } = xyz2lonlat(Equa);
+        EquaLon[i] = (EquaLonTmp + pi2) % pi2;
+        EquaLat[i] = EquaLatTmp
+        const { Lon: LonTmp, Lat: LatTmp } = xyz2lonlat(Eclp);
+        EclpLon[i] = (LonTmp + pi2) % pi2;
+        EclpLat[i] = LatTmp
+        const { CeclpLon: CeclpLonTmp, CeclpLat: CeclpLatTmp } = equa2Ceclp(Obliq, EquaLon[i], EquaLat[i])
+        CeclpLon[i] = CeclpLonTmp // deg
+        CeclpLat[i] = CeclpLatTmp
     }
-    return { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat }
+    return { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, Obliq }
 }
-
 export const bindPos_vsop_Print = (Jd_UT1, Longitude) => {
     Jd_UT1 = +Jd_UT1 - +Longitude / 360 // 0時區
     const Jd = Jd_UT1 + deltaT(Jd_UT1) // TT

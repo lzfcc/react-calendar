@@ -102,6 +102,7 @@ export default (YearStart, YearEnd) => {
         ////////////下爲調整輸出////////////
         const MonthPrint = MonthName.slice(1)
         const NewmScPrint = NewmSlice(ThisYear.NewmSc)
+        const NewmJdPrint = NewmSlice(ThisYear.NewmJd)
         const NewmMmddPrint = NewmSlice(ThisYear.NewmMmdd)
         const NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
         const NewmEquaPrint = NewmSlice(NewmEqua)
@@ -133,8 +134,8 @@ export default (YearStart, YearEnd) => {
         let YearInfo = `<span class='cal-name'>DE440/1</span> 距曆元${Y - 2000}年 `
         YearInfo += ' ΔT = ' + Math.trunc(deltaT(ThisYear.NewmJd[5]) * 86400) + ' ± ' + deltaTError(Y)[0] + ' 秒'
         return {
-            Era, YearInfo, MonthPrint,
-            NewmScPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
+            Era, YearInfo, MonthPrint, LeapNumTerm,
+            NewmScPrint, NewmJdPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
             SyzygyScPrint, SyzygyMmddPrint, SyzygyDeciPrint,
             Term1NamePrint, Term1AcrScPrint, Term1AcrMmddPrint, Term1AcrDeciPrint, Term1NowDeciPrint, Term1EclpPrint, Term1EquaPrint,
             TermNamePrint, TermAcrScPrint, TermAcrMmddPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint,

@@ -996,7 +996,12 @@ hr {
 .Eclp,
 .EclpMansion,
 .MoonEclp,
-.MoonMansion {
+.MoonMansion,
+.SaturnEclp,
+.JupiterEclp,
+.MarsEclp,
+.VenusEclp,
+.MercuryEclp {
   color: var(--letteryellow);
 }
 

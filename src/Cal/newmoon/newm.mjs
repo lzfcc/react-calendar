@@ -316,4 +316,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnomaAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('Dayan', 1000))
+// console.log(cal('Shoushi', -2158))

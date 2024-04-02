@@ -35,7 +35,7 @@ import { mansionQing, midstarQing } from "../astronomy/mansion.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { nzh } from "../parameter/functions.mjs";
-import { sunQing ,moonQing } from "../newmoon/newm_shixian.mjs";
+import { sunQing, moonQing } from "../newmoon/newm_shixian.mjs";
 
 export const D2 = (Name, YearStart, YearEnd) => {
   YearEnd = YearEnd || YearStart;
@@ -199,9 +199,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
           `${deci2hms(MoonRiseTmp).hms} ${deci2hms(MoonSetTmp).hm}`;
         NodeMapo[i][k] = deg2Hms(Node) + deg2Hms(Mapo);
         /// ////////具注曆////////////
-        const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn) % 60;
+        const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn - 1) % 60;
         Sc[i][k] = ScList[ScOrder];
-        Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SmdMidn + 2);
+        Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SmdMidn + 1);
         const date = jd2Date(Jd[i][k]);
         Jd[i][k] += ` ${date.mm}.${date.dd}`;
         const MansionOrder = (MansionDaySolsmor + DayAccum - 1) % 28;
@@ -250,4 +250,4 @@ export const D2 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D2('Guimao', 200))
+// console.log(D2('Guimao', 2001))

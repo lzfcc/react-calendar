@@ -231,7 +231,7 @@ export default (Name, YearStart, YearEnd) => {
         }
         const NewmEquaPrint = NewmEqua ? NewmSlice(NewmEqua) : undefined
         const NewmEclpPrint = NewmEclp ? NewmSlice(NewmEclp) : undefined
-        const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)
+        const SyzygyScPrint = NewmSlice(ThisYear.SyzygySc)        
         const SyzygyDeciPrint = NewmSlice(ThisYear.SyzygyDeci)
         const NewmNowlineDeciPrint = ThisYear.NewmNowlineDeci ? NewmSlice(ThisYear.NewmNowlineDeci) : undefined
         const SyzygyNowlineDeciPrint = ThisYear.SyzygyNowlineDeci ? NewmSlice(ThisYear.SyzygyNowlineDeci) : undefined
@@ -323,11 +323,11 @@ export default (Name, YearStart, YearEnd) => {
                         }
                     }
                 }
-                for (let i = 0; i < NewmDeciPrint.length; i++) {
-                    NewmDeciPrint[i] = fix(NewmDeciPrint[i])
-                    NewmAvgDeciPrint[i] = fix(NewmAvgDeciPrint[i])
-                    SyzygyDeciPrint[i] = fix(SyzygyDeciPrint[i], 3)
-                }
+            }
+            for (let i = 0; i < NewmDeciPrint.length; i++) {
+                NewmDeciPrint[i] = fix(NewmDeciPrint[i])
+                NewmAvgDeciPrint[i] = fix(NewmAvgDeciPrint[i])
+                SyzygyDeciPrint[i] = fix(SyzygyDeciPrint[i], 3)
             }
         } else if (Type === 13) {
             SunEcli = ThisYear.SunEcli
@@ -434,4 +434,4 @@ export default (Name, YearStart, YearEnd) => {
     }
     return result
 }
-// console.log(Index('Datong', 2020, 2020))
+// console.log(Index('Wangshuozhi', 2020, 2020))

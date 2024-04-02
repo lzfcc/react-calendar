@@ -133,7 +133,7 @@ export default (Name, Y) => {
             AvgRaw[i] = +(FirstAccum + (ZhengSd + i - (isNewm ? 1 : .5)) * Lunar).toFixed(fixed)
             AvgInt[i] = Math.floor(AvgRaw[i])
             AvgSc[i] = ScList[fm60(AvgInt[i] + 1 + ScConst)]
-            AvgDeci[i] = fix(deci(AvgRaw[i]))
+            AvgDeci[i] = deci(AvgRaw[i])
             Sd[i] = ((ZhengSd + i - (isNewm ? 1 : .5)) * Lunar + FirstAccum - SolsAccum + Solar) % Solar
             let Tcorr1 = 0
             if (Anoma) {
@@ -157,11 +157,11 @@ export default (Name, Y) => {
                 AcrInt[i] = Math.floor(AcrRaw[i])
                 if (Type <= 4) {
                     Deci[i] = deci(AcrRaw[i])
-                    Deci1[i] = Deci[i]
+                    Deci1[i] = fix(Deci[i])
                 } else if (Type < 11) {
                     Deci[i] = deci(AcrRaw[i])
                     Deci2[i] = fix(Deci[i], 3)
-                    if (Tcorr1) Deci1[i] = deci(AvgRaw[i] + Tcorr1)
+                    if (Tcorr1) Deci1[i] = fix(deci(AvgRaw[i] + Tcorr1))
                 } else if (Type === 11) {
                     Deci[i] = deci(AcrRaw[i])
                     Deci3[i] = fix(Deci[i], 3)
@@ -247,10 +247,7 @@ export default (Name, Y) => {
                 NodeAccum[i] = +((FirstNodeAccum + (ZhengSd + i - 1) * Lunar + (isNewm ? 0 : SynodicNodeDif50)) % Node).toFixed(fixed)
                 NodeAccumMidn[i] = Math.trunc(NodeAccum[i])
             }
-            NodeAccumMidn[i] += NewmPlus // 給曆書用，不知道這樣可不可以
-            if (Tcorr1) {
-                Deci1[i] = fix(Deci1[i], 3)
-            }
+            NodeAccumMidn[i] += NewmPlus // 給曆書用，不知道這樣可不可以            
         }
         let LeapNumTerm = 0
         //////// 置閏
@@ -319,4 +316,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnomaAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('TaiyiKaiyuan', 1598))
+// console.log(cal('Wangshuozhi', 1598))

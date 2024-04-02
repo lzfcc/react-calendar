@@ -157,14 +157,14 @@ export default (Name, Y) => {
                 AcrInt[i] = Math.floor(AcrRaw[i])
                 if (Type <= 4) {
                     Deci[i] = deci(AcrRaw[i])
-                    Deci1[i] = fix(Deci[i])
+                    Deci1[i] = Deci[i]
                 } else if (Type < 11) {
                     Deci[i] = deci(AcrRaw[i])
-                    Deci2[i] = fix(Deci[i], 3)
-                    if (Tcorr1) Deci1[i] = fix(deci(AvgRaw[i] + Tcorr1))
+                    Deci2[i] = Deci[i]
+                    if (Tcorr1) Deci1[i] = deci(AvgRaw[i] + Tcorr1)
                 } else if (Type === 11) {
                     Deci[i] = deci(AcrRaw[i])
-                    Deci3[i] = fix(Deci[i], 3)
+                    Deci3[i] = Deci[i]
                 }
             } else Deci[i] = AvgDeci[i]
             AcrSd[i] = Sd[i] + Tcorr[i] // 授時：定朔入曆=經朔入盈缩历+加減差
@@ -316,4 +316,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnomaAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('Wangshuozhi', 1598))
+// console.log(cal('Dayan', 1000))

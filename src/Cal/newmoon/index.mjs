@@ -70,27 +70,27 @@ export default (Name, YearStart, YearEnd) => {
             for (let i = 1; i <= 13; i++) {
                 TermName[i] = TermNameList[(i + 2) % 12]
                 Term1Name[i] = Term1NameList[(i + 2) % 12]
-                if (ThisYear.TermSc) {
+                if ((ThisYear.TermSc || []).length) {
                     TermSc[i] = ThisYear.TermSc[i]
                     TermDeci[i] = ThisYear.TermDeci[i]
                     Term1Sc[i] = ThisYear.Term1Sc[i]
                     Term1Deci[i] = ThisYear.Term1Deci[i]
                 }
-                if (ThisYear.TermAcrSc) {
+                if ((ThisYear.TermAcrDeci || []).length) {
                     TermAcrSc[i] = ThisYear.TermAcrSc[i]
                     TermAcrDeci[i] = ThisYear.TermAcrDeci[i]
                     Term1AcrSc[i] = ThisYear.Term1AcrSc[i]
                     Term1AcrDeci[i] = ThisYear.Term1AcrDeci[i]
                 }
-                if (ThisYear.TermNowDeci) {
+                if ((ThisYear.TermNowDeci || []).length) {
                     TermNowDeci[i] = ThisYear.TermNowDeci[i]
                     Term1NowDeci[i] = ThisYear.Term1NowDeci[i]
                 }
-                if (ThisYear.TermEqua) {
+                if ((ThisYear.TermEqua || []).length) {
                     TermEqua[i] = ThisYear.TermEqua[i]
                     Term1Equa[i] = ThisYear.Term1Equa[i]
                 }
-                if (ThisYear.TermEclp) {
+                if ((ThisYear.TermEclp || []).length) {
                     TermEclp[i] = ThisYear.TermEclp[i]
                     Term1Eclp[i] = ThisYear.Term1Eclp[i]
                 }
@@ -99,36 +99,36 @@ export default (Name, YearStart, YearEnd) => {
                 TermName[LeapNumTerm + 1] = '无中'
                 TermSc[LeapNumTerm + 1] = ''
                 TermDeci[LeapNumTerm + 1] = ''
-                if (ThisYear.TermAcrSc) TermAcrSc[LeapNumTerm + 1] = ''
-                if (ThisYear.TermAcrDeci) TermAcrDeci[LeapNumTerm + 1] = ''
-                if (ThisYear.TermNowDeci) TermNowDeci[LeapNumTerm + 1] = ''
-                if (ThisYear.TermEqua) TermEqua[LeapNumTerm + 1] = ''
-                if (ThisYear.TermEclp) TermEclp[LeapNumTerm + 1] = ''
+                if ((ThisYear.TermAcrSc || []).length) TermAcrSc[LeapNumTerm + 1] = ''
+                if ((ThisYear.TermAcrDeci || []).length) TermAcrDeci[LeapNumTerm + 1] = ''
+                if ((ThisYear.TermNowDeci || []).length) TermNowDeci[LeapNumTerm + 1] = ''
+                if ((ThisYear.TermEqua || []).length) TermEqua[LeapNumTerm + 1] = ''
+                if ((ThisYear.TermEclp || []).length) TermEclp[LeapNumTerm + 1] = ''
                 for (let i = LeapNumTerm + 2; i <= 13; i++) {
                     TermName[i] = Term1NameList[(i + 2) % 12]
                     // 上下互換位置
                     Term1Name[i] = TermNameList[(i + 1) % 12]
-                    if (ThisYear.TermSc) {
+                    if ((ThisYear.TermSc || []).length) {
                         TermSc[i] = ThisYear.Term1Sc[i]
                         TermDeci[i] = ThisYear.Term1Deci[i]
                         Term1Sc[i] = ThisYear.TermSc[i - 1]
                         Term1Deci[i] = ThisYear.TermDeci[i - 1]
                     }
-                    if (ThisYear.Term1AcrSc) {
+                    if ((ThisYear.Term1AcrSc || []).length) {
                         TermAcrSc[i] = ThisYear.Term1AcrSc[i]
                         TermAcrDeci[i] = ThisYear.Term1AcrDeci[i]
                         Term1AcrSc[i] = ThisYear.TermAcrSc[i - 1]
                         Term1AcrDeci[i] = ThisYear.TermAcrDeci[i - 1]
                     }
-                    if (ThisYear.TermNowDeci) {
+                    if ((ThisYear.TermNowDeci || []).length) {
                         TermNowDeci[i] = ThisYear.Term1NowDeci[i]
                         Term1NowDeci[i] = ThisYear.TermNowDeci[i - 1]
                     }
-                    if (ThisYear.TermEqua) {
+                    if ((ThisYear.TermEqua || []).length) {
                         TermEqua[i] = ThisYear.Term1Equa[i]
                         Term1Equa[i] = ThisYear.TermEqua[i - 1]
                     }
-                    if (ThisYear.TermEclp) {
+                    if ((ThisYear.TermEclp || []).length) {
                         TermEclp[i] = ThisYear.Term1Eclp[i]
                         Term1Eclp[i] = ThisYear.TermEclp[i - 1]
                     }
@@ -138,13 +138,13 @@ export default (Name, YearStart, YearEnd) => {
                 Term1Name[1] = '无節'
                 Term1Sc[1] = ''
                 Term1Deci[1] = ''
-                if (ThisYear.Term1AcrSc) {
+                if ((ThisYear.Term1AcrSc || []).length) {
                     Term1AcrSc[1] = ''
                     Term1AcrDeci[1] = ''
                 }
-                if (ThisYear.Term1NowDeci) Term1NowDeci[1] = ''
-                if (ThisYear.Term1Equa) Term1Equa[1] = ''
-                if (ThisYear.Term1Eclp) Term1Eclp[1] = ''
+                if ((ThisYear.Term1NowDeci || []).length) Term1NowDeci[1] = ''
+                if ((ThisYear.Term1Equa || []).length) Term1Equa[1] = ''
+                if ((ThisYear.Term1Eclp || []).length) Term1Eclp[1] = ''
             }
         }
         // 月序
@@ -246,7 +246,7 @@ export default (Name, YearStart, YearEnd) => {
             Term1ScPrint = TermSlice(Term1Sc)
             Term1DeciPrint = TermSlice(Term1Deci)
         }
-        if ((TermAcrSc || []).length) {
+        if ((TermAcrDeci || []).length) {
             TermAcrScPrint = TermSlice(TermAcrSc)
             TermAcrDeciPrint = TermSlice(TermAcrDeci)
             Term1AcrScPrint = TermSlice(Term1AcrSc)
@@ -328,6 +328,9 @@ export default (Name, YearStart, YearEnd) => {
             }
             for (let i = 0; i < NewmDeciPrint.length; i++) {
                 NewmDeciPrint[i] = fix(NewmDeciPrint[i])
+                if ((NewmDeci1Print || []).length) NewmDeci1Print[i] = fix(NewmDeci1Print[i])
+                if ((NewmDeci2Print || []).length) NewmDeci2Print[i] = fix(NewmDeci2Print[i], 3)
+                if ((NewmDeci3Print || []).length) NewmDeci3Print[i] = fix(NewmDeci3Print[i], 3)
                 NewmAvgDeciPrint[i] = fix(NewmAvgDeciPrint[i])
                 SyzygyDeciPrint[i] = fix(SyzygyDeciPrint[i], 3)
             }
@@ -436,4 +439,4 @@ export default (Name, YearStart, YearEnd) => {
     }
     return result
 }
-// console.log(Index('Wangshuozhi', 2020, 2020))
+// console.log(Index('Daming', 2020, 2020))

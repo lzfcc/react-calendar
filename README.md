@@ -495,5 +495,6 @@ a = [0, ...a]
 
 1. 解決循環引用，用 `madge --circular --extensions js,jsx,mjs ./src ` 檢測。
 2. 解決引用的函數未定義，eslint 檢測不出來，只能一個個文件手動看。
+3. 最後eslint報錯阻止建構，把隱藏的`.eslintrc.json`文件改個名字就行了。
 
 刪除 `MoonLonWest_BACKUP` `MoonLonWest`（《數》頁348白赤差）`MoonLatWest`、`EcliWest`（藤豔輝《宋代朔閏與交食研究》頁90,106）

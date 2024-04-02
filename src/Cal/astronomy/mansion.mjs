@@ -676,6 +676,7 @@ export const deg2Mansion = (Deg, AccumList, fixed) => {
 export const mansion = (Name, Y, EclpGong, Sd) => {
     const { Type, SolarRaw, MansionConst, MansionRaw, OriginAd, CloseOriginAd } =
         Para[Name];
+    if (!MansionRaw) return
     let { Sidereal, Solar } = Para[Name];
     const isPrecession = !!Sidereal; // 有歲差的曆法
     const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y);

@@ -39,7 +39,7 @@ export const NameList = {
   Xuanshi: "玄始(擬)", // 趙𢾺，梁趙曆
   Yuanjia: "元嘉",
   Daming: "大明",
-  Liangwu: "明克讓(擬大同代)", // 梁武帝大同曆
+  // Liangwu: "明克讓(擬大同代)", // 梁武帝大同曆
   Tsrengguang: "正光",
   Xinghe: "興和",
   Tianbao: "天保",

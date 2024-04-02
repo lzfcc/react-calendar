@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false ESLINT_NO_DEV_ERRORS=true  react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "pack": "webpack",

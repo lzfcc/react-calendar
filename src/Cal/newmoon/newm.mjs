@@ -3,11 +3,8 @@ import { ScList } from '../parameter/constants.mjs'
 import { AutoDifAccum, AutoTcorr } from '../astronomy/acrv.mjs'
 import { mansion } from '../astronomy/mansion.mjs'
 import { AutoNewmPlus, AutoSyzygySub } from '../astronomy/dayadjust.mjs'
-import { deci, fix } from '../parameter/functions.mjs'
+import { deci, fix, fmod, fm60 } from '../parameter/functions.mjs'
 
-// console.log(13.17639477138888-385.81673571944444/29.530593)
-const fmod = (X, m) => X - Math.floor(X / m) * m
-const fm60 = X => fmod(X, 60)
 // const cal = (Name, Y) => {
 export default (Name, Y) => {
     const { Type, isAcr, isNewmPlus, Sidereal, SolarNumer, LunarNumer, Denom, Anoma, Node, AcrTermList,
@@ -136,7 +133,7 @@ export default (Name, Y) => {
             AvgRaw[i] = +(FirstAccum + (ZhengSd + i - (isNewm ? 1 : .5)) * Lunar).toFixed(fixed)
             AvgInt[i] = Math.floor(AvgRaw[i])
             AvgSc[i] = ScList[fm60(AvgInt[i] + 1 + ScConst)]
-            AvgDeci[i] = deci(AvgRaw[i])
+            AvgDeci[i] = fix(deci(AvgRaw[i]))
             Sd[i] = ((ZhengSd + i - (isNewm ? 1 : .5)) * Lunar + FirstAccum - SolsAccum + Solar) % Solar
             let Tcorr1 = 0
             if (Anoma) {
@@ -178,10 +175,12 @@ export default (Name, Y) => {
                     NewmPlus = Func.NewmPlus
                     NewmPlusPrint = Func.Print
                 }
-                const Func = mansion(Name, Y,
-                    Type >= 5 ? AcrSd[i] + AutoDifAccum(0, AcrSd[i], Name).SunDifAccum : undefined, AcrSd[i])
-                Equa[i] = Func.Equa // 授時：定朔加時定積度=定朔加時中積（即定朔入曆）+盈縮差
-                Eclp[i] = Func.Eclp
+                if (MansionRaw) {
+                    const Func = mansion(Name, Y,
+                        Type >= 5 ? AcrSd[i] + AutoDifAccum(0, AcrSd[i], Name).SunDifAccum : undefined, AcrSd[i])
+                    Equa[i] = Func.Equa // 授時：定朔加時定積度=定朔加時中積（即定朔入曆）+盈縮差
+                    Eclp[i] = Func.Eclp
+                }
                 TermAvgSd[i] = (i + ZhengSd - 1) * TermLeng
                 TermAvgRaw[i] = SolsAccum + TermAvgSd[i]
                 const tmp = fm60(TermAvgRaw[i] + isExcl + ScConst)
@@ -320,4 +319,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnomaAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('Wuji', 1598))
+// console.log(cal('TaiyiKaiyuan', 1598))

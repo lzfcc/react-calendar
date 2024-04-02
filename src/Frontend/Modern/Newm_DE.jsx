@@ -1,9 +1,5 @@
 import React from 'react'
 import DynamicList, { createCache } from 'react-window-dynamic-list'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import gfm from 'remark-gfm'
-import md1 from './note/newm_de.md';
 const TableRowNameMap = {
   MonthPrint: ' ',
   NewmScPrint: '定朔',
@@ -40,12 +36,6 @@ export default class Newm extends React.Component {
       output: '',
       md: ''
     };
-  }
-
-  UNSAFE_componentWillMount() {
-    fetch(md1)
-      .then(res => res.text())
-      .then(text => this.setState({ md: text }))
   }
 
   componentDidMount() {
@@ -160,7 +150,7 @@ export default class Newm extends React.Component {
       return null
     }
     return (
-      <section className='main-render'>
+      <div className='main-render'>
         <DynamicList
           height={(window.innerHeight) * 0.98}
           width={(window.innerWidth) * 0.93}
@@ -182,7 +172,7 @@ export default class Newm extends React.Component {
             )
           }}
         </DynamicList>
-      </section>
+      </div>
     );
   }
 
@@ -198,18 +188,14 @@ export default class Newm extends React.Component {
   }
 
   render() {
-    const { md } = this.state
     return (
       <>
         <div className='calendar-select'>
+          <h2>DE440/1 朔閏表</h2>
           {this.renderInput()}
           <button onClick={this.handleRetrieve} className='button1'>密合天行</button>
         </div>
-        {this.renderTableList()}
-        <hr />
-        <article>
-          <ReactMarkdown rehypePlugins={[rehypeRaw, gfm]} children={md} />
-        </article>
+        {this.renderTableList()}        
       </>
     )
   }

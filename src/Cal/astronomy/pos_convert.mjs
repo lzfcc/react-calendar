@@ -120,7 +120,7 @@ export const abc_Sph = (a, b, c) => {
 export const sunRiseQing = (Sobliq, RiseLat, Lon) =>
   0.25 +
   (Lon < 180 ? -1 : 1) *
-    (asind(tand(abs(HighLon2FlatLat(Sobliq, Lon)) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
+  (asind(tand(abs(HighLon2FlatLat(Sobliq, Lon)) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
 export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
   const MSDif = (MEquaLon - SEquaLon + 360) % 360;
   const Dif =
@@ -148,8 +148,13 @@ export const deg2Hms = (deg) => {
   const m = Math.trunc(60 * Deci);
   const s = Math.trunc(3600 * Deci - 60 * m);
   // const ss = Math.round(216000 * Deci - 3600 * m - 60 * s)
-  return `${Math.trunc(deg)}°${m}′${s}″`; // + ss
+  let mStr = m.toString()
+  let sStr = s.toString()
+  if (mStr.length < 2) mStr = '0' + mStr
+  if (sStr.length < 2) sStr = '0' + sStr
+  return `${Math.trunc(deg)}°${mStr}′${sStr}″`; // + ss
 };
+
 export const Lat2NS = (X) => (X > 0 ? "N" : "S") + deg2Hms(Math.abs(X));
 // 切線分外角法，見梅文鼎三角法舉要卷二。兩邊的輸入順序無所謂。已知邊角邊，求另外兩角。
 
@@ -195,7 +200,7 @@ export const eclp2Equa = (Sobliq, Lon, Lat) => {
   const EquaLat = 90 - aCb_Sph(Sobliq, 90 - Lat, t1(Gong)); // 赤緯
   let A = acosd(
     (cosd(90 - Lat) - cosd(Sobliq) * cosd(90 - EquaLat)) /
-      (sind(Sobliq) * sind(90 - EquaLat)),
+    (sind(Sobliq) * sind(90 - EquaLat)),
   ); // cosA=(cosa-cosb·cosc)/(sinb·sinc)
   A = A || 180;
   return {

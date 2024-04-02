@@ -1273,6 +1273,7 @@ export const bindMoonEclipse = (
 };
 // console.log(bindMoonEclipse(1.1, 22, 22, 22))
 
+
 const ErrPrint_SunTcorr = (Name, AnomaAccum) => {
   const SunTcorrErr = [];
   for (let i = 1; i <= 182; i++) {

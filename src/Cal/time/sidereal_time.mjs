@@ -2,7 +2,7 @@
 // A sidereal day is approximately 86164.0905 seconds (23 h 56 min 4.0905s)
 
 import { nutation, obliqAvg } from "../modern/nutation.mjs";
-import { calPos_vsop } from "../newmoon/newm_vsop.mjs";
+import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { R2H, S2R, deci, fmod, pi2 } from "../parameter/functions.mjs";
 import { deci2hms } from "./decimal2clock.mjs";
 import { deltaT, deltaTError } from "./delta-t.mjs";

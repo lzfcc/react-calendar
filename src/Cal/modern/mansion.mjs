@@ -1,10 +1,10 @@
 import { multiply, divide, add } from "mathjs";
 import { precessionMx } from "./precession.mjs";
 import { nutaMx } from "./nutation.mjs";
-import { calXV_vsop } from "../newmoon/newm_vsop.mjs";
 import { MansionNameList } from "../parameter/constants.mjs";
 import { Fbmx, rr1, xyz2lonlat } from "../astronomy/pos_functions.mjs";
 import { Parsec, R2D, cDay } from "../parameter/functions.mjs";
+import { calXV_vsop } from "./vsop_elp.mjs";
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 // 由AT-HYG算出來的數據和廖育棟的有點點區別。以下直接取自廖育棟的starCharts/brightStars.js
 // 獲取brightStars.js信息的代碼

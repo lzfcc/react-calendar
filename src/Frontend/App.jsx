@@ -1,6 +1,6 @@
 import React from 'react'
 import Newm from './Newm'
-import Newm_DE from './Newm_DE'
+import Modern from './Modern'
 import Ephemeris from './Ephemeris'
 import Congruence from './Congruence'
 import Equation from './Equation'
@@ -63,7 +63,7 @@ export default class App extends React.Component {
           <Newm />
         </div>
         <div style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <Newm_DE />
+          <Modern />
         </div>
         <div style={{ display: activeTab === 2 ? 'block' : 'none' }}>
           <Ephemeris />

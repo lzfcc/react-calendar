@@ -12,7 +12,7 @@ import {
   acosd,
   cDay,
 } from "../parameter/functions.mjs";
-import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High } from "./pos_convert.mjs";
+import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { lonlat2xyz, rr1, xyz2lonlat } from "./pos_functions.mjs";
 
@@ -35,6 +35,13 @@ export const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
   return {
     CeclpLon: LonFlat2High(Sobliq, EquaLon),
     CeclpLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon),
+  };
+};
+export const ceclp2Equa = (Sobliq, CeclpLon, CeclpLat) => {
+  const EquaLon= LonHigh2Flat(Sobliq, CeclpLon)
+  return {
+    EquaLon,
+    EquaLat: CeclpLat + FlatLon2FlatLat(Sobliq, EquaLon),
   };
 };
 /**

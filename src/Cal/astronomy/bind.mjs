@@ -39,6 +39,7 @@ import {
   Lon2DialWest,
   eclp2Ceclp,
   equa2Ceclp,
+  ceclp2Equa,
   equa2Eclp,
   sunRise,
   testEclpEclpDif,
@@ -370,6 +371,7 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
   const EquaLatDif = EquaLat - Lat;
   let Print = [];
   let Print2 = [];
+  let Print3 = [];
   Print = Print.concat({
     title: "赤道",
     data: [
@@ -421,7 +423,35 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       EclpLatDif2.toFixed(4),
     ],
   });
-  return { Print, Print2, DifMax };
+
+  const { EquaLon: EquaLon3, EquaLat: EquaLat3 } = ceclp2Equa(Sobliq, Lon, Lat)
+  const { Lon: EclpLon3, Lat: EclpLat3 } = equa2Eclp(Sobliq, EquaLon3, EquaLat3);
+  let EquaLonDif3 = EquaLon3 - Lon;
+  let EclpLonDif3 = EclpLon3 - Lon;
+  if (EquaLonDif3 > 180) EquaLonDif3 -= 360;
+  if (EclpLonDif3 > 180) EclpLonDif3 -= 360;
+  const EquaLatDif3 = EquaLat3 - Lat;
+  const EclpLatDif3 = EclpLat3 - Lat;
+  Print3 = Print3.concat({ title: "赤道", data: [EquaLon3.toFixed(8), EquaLonDif3.toFixed(4), EquaLat3.toFixed(8), EquaLatDif3.toFixed(4)] });
+  Print3 = Print3.concat({
+    title: "極黃",
+    data: [
+      Lon,
+      '-',
+      Lat,
+      '-',
+    ],
+  });
+  Print3 = Print3.concat({
+    title: "黃道",
+    data: [
+      EclpLon3.toFixed(8),
+      EclpLonDif3.toFixed(4),
+      EclpLat3.toFixed(8),
+      EclpLatDif3.toFixed(4),
+    ],
+  });
+  return { Print, Print2, DifMax, Print3 };
 };
 // console.log(bindStarEclp2Equa(23.5, 10, 10))
 

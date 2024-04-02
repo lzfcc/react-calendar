@@ -71,9 +71,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const YearColor = YearColorConvert(YuanYear);
     // const ZhengMonScOrder = Math.round((YearStem * 12 - 9) % 60.1) // 正月月建
     const ZhengMonScOrder = (YearStem * 12 - 9) % 60;
-    const SolsJdAsm = 2086292 + Math.trunc(365.2422 * (Y - 1000));
-    let AsmRealDif = ((Sols - (SolsJdAsm + 50)) % 60) + 60;
-    AsmRealDif -= Math.sign(AsmRealDif) * 60;
+    const SmJd = 2086292 + (Solar * (Y - 1000)) + 1
     const MonName = [];
     const MonInfo = [];
     const MonColor = [];
@@ -201,7 +199,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
         /// ////////具注曆////////////
         const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn - 1) % 60;
         Sc[i][k] = ScList[ScOrder];
-        Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SmdMidn + 1);
+        const JdTmp = Math.trunc(SmJd + SmdMidn)
+        const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder
+        Jd[i][k] = JdTmp - (JdScDif > 50 ? JdScDif - 60 : (JdScDif < -50 ? JdScDif + 60 : JdScDif));
         const date = jd2Date(Jd[i][k]);
         Jd[i][k] += ` ${date.mm}.${date.dd}`;
         const MansionOrder = (MansionDaySolsmor + DayAccum - 1) % 28;

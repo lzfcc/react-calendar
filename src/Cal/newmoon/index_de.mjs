@@ -53,20 +53,21 @@ export default (YearStart, YearEnd) => {
                 TermName[i] = Term1NameList[(i + 2) % 12]
                 // 上下互換位置
                 Term1Name[i] = TermNameList[(i + 1) % 12]
-                if (ThisYear.Term1AcrSc) {
-                    TermAcrSc[i] = ThisYear.Term1AcrSc[i]
-                    TermAcrDeci[i] = ThisYear.Term1AcrDeci[i]
-                    Term1AcrSc[i] = ThisYear.TermAcrSc[i - 1]
-                    Term1AcrDeci[i] = ThisYear.TermAcrDeci[i - 1]
-                }
+                TermAcrSc[i] = ThisYear.Term1AcrSc[i]
+                TermAcrMmdd[i] = ThisYear.Term1AcrMmdd[i]
+                TermAcrDeci[i] = ThisYear.Term1AcrDeci[i]
+                TermEqua[i] = ThisYear.Term1Equa[i]
+                TermEclp[i] = ThisYear.Term1Eclp[i]
+                Term1AcrSc[i] = ThisYear.TermAcrSc[i - 1]
+                Term1AcrDeci[i] = ThisYear.TermAcrDeci[i - 1]
+                Term1AcrMmdd[i] = ThisYear.TermAcrMmdd[i - 1]
+                Term1Equa[i] = ThisYear.TermEqua[i - 1]
+                Term1Eclp[i] = ThisYear.TermEclp[i - 1]
                 if (ThisYear.TermNowDeci) {
                     TermNowDeci[i] = ThisYear.Term1NowDeci[i]
                     Term1NowDeci[i] = ThisYear.TermNowDeci[i - 1]
                 }
-                TermEqua[i] = ThisYear.Term1Equa[i]
-                Term1Equa[i] = ThisYear.TermEqua[i - 1]
-                TermEclp[i] = ThisYear.Term1Eclp[i]
-                Term1Eclp[i] = ThisYear.TermEclp[i - 1]
+
             }
         }
         if (PrevYear.LeapNumTerm) {

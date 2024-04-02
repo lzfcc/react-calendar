@@ -143,14 +143,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const YearColor = YearColorConvert(YuanYear)
         // const ZhengMonScOrder = Math.round((YearStem * 12 - 9) % 60.1) // 正月月建        
         const ZhengMonScOrder = (YearStem * 12 - 9) % 60
-        const SolsJdAsm = 2086292 + Math.trunc(365.2422 * (Y - 1000)) // 設公元1000年前冬至12月16日2086292乙酉(22)爲曆元，到當年假想冬至的標準儒略日
-        const SolsErr = (Solar - 365.2422) * (Y - CloseOriginAd) // 從曆元開始冬至比理論大約差了那麼多。這個是為了校驗，不直接參與運算
-        let AsmRealDif = ((SolsAccum + (ScConst || 0)) - (SolsJdAsm + 50)) % 60
-        if (abs(abs(AsmRealDif - SolsErr) - 60) > 6) {
-            if (abs(AsmRealDif - SolsErr + 60) < 6) AsmRealDif += 60 // 如果是-59，就要變成1
-        } else {
-            if (abs(AsmRealDif - SolsErr - 60) < 6) AsmRealDif -= 60  // 如果是59，就要變成-1
-        }
+        const SolsJd = 1903671 + Solar * (Y - 500) //  499 年 12 月 20 日  星期一 甲辰(41)
         const MonName = [], MonInfo = [], MonColor = [], Sc = [], Jd = [], Nayin = [], Week = [], Equa = [], Eclp = [], Duskstar = [], MoonEclp = [], MoonEclpLat = [], Rise = [], Dial = [], Lat = [], HouName = [], HexagramName = [], FiveName = [], ManGod = [], Luck = []
         let DayAccum = 0, JieAccum = 0, SummsolsDayAccum = 0, AutumnDayAccum = 0 // 各節積日。夏至積日，立秋積日
         let JianchuDayAccum = ZhengSdInt // 建除
@@ -264,7 +257,9 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 ///////////具注曆////////////
                 const ScOrder = (ZhengScOrder + DayAccum) % 60
                 Sc[i][k] = ScList[ScOrder]
-                Jd[i][k] = parseInt(SolsJdAsm + AsmRealDif + SdInt + 1)
+                const JdTmp = Math.trunc(SolsJd + SdMidn)
+                const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder
+                Jd[i][k] = JdTmp - (JdScDif > 50 ? JdScDif - 60 : (JdScDif < -50 ? JdScDif + 60 : JdScDif));
                 const date = jd2Date(Jd[i][k])
                 Jd[i][k] += ' ' + date.mm + '.' + date.dd
                 const Stem = StemList.indexOf(Sc[i][k][0])
@@ -389,4 +384,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
     }
     return result
 }
-// console.log(D1('Jiyuan', 1111))
+// console.log(D1('Easthan', 9006))

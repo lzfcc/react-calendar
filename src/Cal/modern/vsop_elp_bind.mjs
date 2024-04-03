@@ -64,12 +64,20 @@ export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
     }
     return { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat, Obliq }
 }
-export const bindPos_vsop_Print = (Jd_UT1, Longitude, Latitude, h) => {
+/**
+ * 
+ * @param {*} Jd_UT10 0時區UT1
+ * @param {*} Longitude 
+ * @param {*} Latitude 
+ * @param {*} h 
+ * @returns 
+ */
+export const bindPos_vsop_Print = (Jd_UT10, Longitude, Latitude, h) => {
     Longitude = +Longitude
     Latitude = +Latitude
     h = +h
-    Jd_UT1 = +Jd_UT1 - Longitude / 360 // 0時區
-    const Jd = Jd_UT1 + deltaT(Jd_UT1) // TT
+    Jd_UT10 = +Jd_UT10
+    const Jd = Jd_UT10 + deltaT(Jd_UT10) // TT
     const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(Jd, Longitude, Latitude, h)
     const Print = []
     for (let i = 0; i < PlanetList.length; i++) {

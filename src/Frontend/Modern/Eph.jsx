@@ -154,6 +154,8 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>旦</p>
+                <p>昏</p>
               </div></td>
               {row}
               <td style={{ minWidth: '1.5em' }}><div>
@@ -194,6 +196,8 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>旦</p>
+                <p>昏</p>
               </div></td></tr>
           ))}
         </table>
@@ -307,11 +311,12 @@ export default class Day extends React.Component {
   render() {
     return (
       <>
-        <h2>VSOP87 ELP2000 曆書</h2>
+        <h2>VSOP87 ELP2000 年曆</h2>
         {this.renderInput()}
         {this.renderCalendar()}
         <button onClick={this.handleRetrieve} className='button2'>七政黃赤經緯</button>
-        <p><span className='Hori'>灰色：地平座標</span> <span className='Equa'>紅色：赤道</span> <span className='Ceclp'>黑色：極黃</span> <span className='Eclp'>黃色：黃道</span></p>
+        <p><span className='Hori'>灰色：地平座標</span> <span className='Equa'>紅色：赤道</span> <span className='Ceclp'>黑色：極黃</span> <span className='Eclp'>黃色：黃道</span>
+          <span className='Morningstar'>綠色：晨昏矇影、昏旦中星、日出日入</span></p>
         <article>
           <ul>
             <li>南京 [N32.061°, E118.791°, 100m] 雞鳴山北極閣</li>

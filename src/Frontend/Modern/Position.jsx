@@ -16,7 +16,7 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>UT1儒略日</span>
+        <span>UT1+0儒略日</span>
         <input className='width4'
           value={this.state.a}
           onChange={e => {

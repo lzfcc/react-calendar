@@ -91,17 +91,17 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         Pos[i] = []
       for (
         let k = 1;
-        k <= Math.trunc(NewmUT1Jd[i]) - Math.trunc(NewmUT1Jd[i - 1]);
+        k <= Math.trunc(NewmUT1Jd[i] - .5) - Math.trunc(NewmUT1Jd[i - 1] - .5);
         k++
       ) {
         DayAccum++;
         const DeltaT = deltaT(NewmUT1Jd[i - 1] + 15) // 本月DeltaT        
         const LocalMidnUT1Jd = Math.trunc(NewmUT1Jd[i - 1] - .5 + k - 1) + .5 // 儒略日半夜是0.5，所以先-.5再+.5
         Jd[i][k] = LocalMidnUT1Jd + .5
-        const LocalMidnTT = LocalMidnUT1Jd + DeltaT - Longitude / 360
+        const MidnTTJd = LocalMidnUT1Jd + DeltaT - Longitude / 360
         /// ///////天文曆///////////
-        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(LocalMidnTT, Longitude, Latitude, h)
-        const SunEclpLatNoon = calPos_vsop('Sun', LocalMidnTT + .5).EquaLat
+        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(MidnTTJd, Longitude, Latitude, h)
+        const SunEclpLatNoon = calPos_vsop('Sun', MidnTTJd + .5).EquaLat
         const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數
         const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)

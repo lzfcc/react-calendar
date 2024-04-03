@@ -73,24 +73,25 @@ const solarTime = (Jd, Longitude) => {
 // console.log(solarTime(2432224, 0))
 /**
  * 求時差（視太陽時平太陽時之差）
- * @param {*} Jd_UT1 UT1
+ * @param {*} Jd_UT10 0時區UT1
  * @param {*} Longitude
  * @returns in hour
  */
-export const eot = (Jd_UT1, Longitude) => {
-    Jd_UT1 = +Jd_UT1;
+export const eot = (Jd_UT10, Longitude) => {
+    Jd_UT10 = +Jd_UT10;
     Longitude = +Longitude || 0;
-    const DeltaT = deltaT(Jd_UT1);
-    const Jd = Jd_UT1 + DeltaT; // TT
+    const DeltaT = deltaT(Jd_UT10);
+    const Jd = Jd_UT10 + DeltaT; // TT
     const { LAST, LASolar } = solarTime(Jd, Longitude);
-    const LMSolar = (12 + deci(Jd_UT1) * 24 + Longitude / 15) % 24;
+    const LMSolar = (12 + deci(Jd_UT10) * 24 + Longitude / 15) % 24;
     let EOT = LASolar - LMSolar;
     if (EOT > 23) EOT -= 24;
     else if (EOT < -23) EOT += 24;
     return { LAST, EOT, LASolar, LMSolar, Jd, DeltaT };
 };
-export const eotPrint = (Jd_UT1, Longitude) => {
-    const { LAST, EOT, LASolar, LMSolar, Jd, DeltaT } = eot(Jd_UT1, Longitude);
+
+export const eotPrint = (Jd_UT10, Longitude) => {
+    const { LAST, EOT, LASolar, LMSolar, Jd, DeltaT } = eot(Jd_UT10, Longitude);
     const DeltaTErr = deltaTError(jd2Date(Jd).year);
     return {
         LASTPrint: deci2hms(LAST / 24).hmsms,

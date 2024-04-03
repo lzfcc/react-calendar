@@ -36,6 +36,12 @@ export const jd2Date = Jd => {
 // console.log(jd2Date(2460393.12264).year)
 // const End = performance.now()
 // console.log(End - Start)
+/**
+ * 
+ * @param {*} Jd 0時區
+ * @param {*} Longitude 地理經度
+ * @returns 
+ */
 export const Jd2DatePrint = (Jd, Longitude) => {
     Jd = +Jd
     const { year, mm, dd, ScOrder } = jd2Date(Jd + Longitude / 360)

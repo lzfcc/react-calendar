@@ -123,25 +123,26 @@ export const topocentric = (X, LASTrad, Latitude, h) => {
 // cosacosA = sinδcosφ − cosδcosHsinφ
 // cosasinA = −cosδsinH
 //     sina = sinδsinφ + cosδcosHcosφ
-const horizontal = (X, Jd, Longitude, Latitude, h) => {
+export const horizontal = (X, Jd, Longitude, Latitude, h) => {
   const LASTrad = siderealTime(Jd, Longitude) * H2R;
   const {
-    Lon: alpha,
-    Lat: delta,
-  } = topocentric(X, LASTrad, Longitude, Latitude, h);
-  const H = LASTrad - alpha;
+    Lon: TopoLon,
+    Lat: TopoLat,
+    X1
+  } = topocentric(X, LASTrad, Latitude, h);
+  const H = LASTrad - TopoLon;
   const f = Latitude * D2R;
-  const s1 = Math.sin(delta);
+  const s1 = Math.sin(TopoLat);
   const s2 = Math.sin(f);
   const s3 = Math.sin(H);
-  const c1 = Math.cos(delta);
+  const c1 = Math.cos(TopoLat);
   const c2 = Math.cos(f);
   const c3 = Math.cos(H);
   const x = s1 * c2 - c1 * c3 * s2;
   const y = -c1 * s3;
   const z = s1 * s2 + c1 * c3 * c2;
-  const { Lon, Lat } = xyz2lonlat([x, y, z]);
-  return { Lon, Lat };
+  const { Lon: HoriLon, Lat: HoriLat } = xyz2lonlat([x, y, z]);
+  return { HoriLon, HoriLat, TopoLon, TopoLat, X1 };
 };
 
 /**

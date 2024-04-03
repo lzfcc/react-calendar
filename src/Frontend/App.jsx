@@ -13,7 +13,7 @@ import Intro from './Intro'
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.tabTitles = ['朔閏表', '現代曆表', '曆書', '同餘', '招差', '天文', '時間', '琴律', '筮占', '簡介']
+    this.tabTitles = ['朔閏表', '曆書', '現代曆表', '同餘', '招差', '天文', '時間', '琴律', '筮占', '簡介']
     this.state = {
       activeTab: 9,
       tabsData: {
@@ -61,12 +61,12 @@ export default class App extends React.Component {
       <div>
         <div style={{ display: activeTab === 0 ? 'block' : 'none' }}>
           <Newm />
-        </div>
+        </div>        
         <div style={{ display: activeTab === 1 ? 'block' : 'none' }}>
-          <Modern />
+          <Ephemeris />
         </div>
         <div style={{ display: activeTab === 2 ? 'block' : 'none' }}>
-          <Ephemeris />
+          <Modern />
         </div>
         <div style={{ display: activeTab === 3 ? 'block' : 'none' }}>
           <Congruence />

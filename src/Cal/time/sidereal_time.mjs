@@ -5,7 +5,7 @@ import { multiply } from "mathjs";
 import { nutation, obliqAvg } from "../modern/nutation.mjs";
 import { precessionMx } from "../modern/precession.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
-import { R2H, S2R, deci, fmod, pi2 } from "../parameter/functions.mjs";
+import { R2H, S2R, big, deci, fmod } from "../parameter/functions.mjs";
 import { deci2hms } from "./decimal2clock.mjs";
 import { deltaT, deltaTError } from "./delta-t.mjs";
 import { jd2Date } from "./jd2date.mjs";
@@ -24,6 +24,8 @@ import { xyz2lonlat } from "../astronomy/pos_functions.mjs";
  * @param {*} Longitude 地理經度°
  */
 export const siderealTime = (Jd, Longitude) => {
+    const pi2 = '6.28318530717958647692528676655900576839433879875021164194988918'
+    const R2H = '3.81971863420548805845321032094034468882703149777095476994401626'
     const T = (Jd - 2451545) / 36525; // TT儒略世紀
     const Equinox = multiply(precessionMx(T), [1, 0, 0]).toArray()
     const Eprec = -xyz2lonlat(Equinox).Lon // 我直接用完整的岁差矩阵来算，不用拟合公式
@@ -38,9 +40,15 @@ export const siderealTime = (Jd, Longitude) => {
     const DeltaPsi = nutation(T).NutaEclp;
     const EpsAvg = obliqAvg(T) * S2R;
     const Ee = DeltaPsi * Math.cos(EpsAvg);
-    const Theta = pi2 * (0.779057273264 + 1.00273781191135448 * Jd2000_UT1);
-    const GAST = Theta - Eprec + Ee;
-    return fmod(GAST * R2H + Longitude / 15, 24);
+    // UT1 is defined by this equation:
+    // const Theta = pi2 * (0.779057273264 + 1.00273781191135448 * Jd2000_UT1);
+    // const GAST = Theta - Eprec + Ee;
+    // const LAST = fmod(GAST * R2H + Longitude / 15, 24)
+    const Theta = big(pi2).mul(
+        big(0.779057273264).add(big('1.00273781191135448').mul(Jd2000_UT1)));
+    const GAST = big(Theta).sub(Eprec).add(Ee);
+    const LAST = fmod(big(GAST).mul(R2H).add(Longitude / 15).toNumber(), 24)
+    return LAST
 };
 // console.log(siderealTime(2451545 + 365.2422 * 2000, 120))
 // 真太陽時 t⊙ =12h+H⊙，太陽時角H⊙=LAST−α⊙（太陽赤經），正午H⊙=0h, t⊙=12h
@@ -85,14 +93,14 @@ export const eotPrint = (Jd_UT1, Longitude) => {
     const { LAST, EOT, LASolar, LMSolar, Jd, DeltaT } = eot(Jd_UT1, Longitude);
     const DeltaTErr = deltaTError(jd2Date(Jd).year);
     return {
-        LASTPrint: deci2hms(LAST / 24).hms,
-        LASolarPrint: deci2hms(LASolar / 24).hms,
+        LASTPrint: deci2hms(LAST / 24).hmsms,
+        LASolarPrint: deci2hms(LASolar / 24).hmsms,
         LMSolarPrint: deci2hms(LMSolar / 24).hmsms,
         DeltaT: Math.trunc(DeltaT * 86400),
         DeltaTErr,
         Jd: Jd.toFixed(6),
         TThms: deci2hms(Jd - Math.round(Jd) + 0.5 + Longitude / 360).hmsms,
-        EOTPrint: (EOT > 0 ? "+" : "-") + deci2hms(EOT / 24).hms,
+        EOTPrint: (EOT > 0 ? "+" : "-") + deci2hms(EOT / 24).hmsms,
     };
 };
 // console.log(eot(2457754.5, 0))

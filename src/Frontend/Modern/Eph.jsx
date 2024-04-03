@@ -1,15 +1,17 @@
 import React from 'react'
+import MenuSelect from '../MenuSelect'
+import { MansionSystemList } from '../../Cal/parameter/constants.mjs'
 
 export default class Day extends React.Component {
   constructor(props) {
     super(props);
     this.handleRetrieve = this.handleRetrieve.bind(this);
     this.state = {
-      calendars: [],
       YearStart: '',
       Longitude: 116.428,
       Latitude: 39.906,
       h: 0.06,
+      MansionSystem: 'Shi',
       output: null,
       loading: false,
       showMonth: 0,
@@ -121,7 +123,9 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>月</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -129,7 +133,9 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>木</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -137,11 +143,14 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>金</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>水</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -154,7 +163,9 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>月</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -162,7 +173,9 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>木</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -170,11 +183,14 @@ export default class Day extends React.Component {
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>金</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
+                <p>&nbsp;</p>
                 <p>水</p>
+                <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
@@ -224,6 +240,7 @@ export default class Day extends React.Component {
     const Longitude = this.state.Longitude
     const Latitude = this.state.Latitude
     const h = this.state.h
+    const MansionSystem = this.state.MansionSystem
     const callWorker = eventName => {
       this.setState({ loading: true });
       this.worker.postMessage({
@@ -232,7 +249,8 @@ export default class Day extends React.Component {
         YearStart,
         Longitude,
         Latitude,
-        h
+        h,
+        MansionSystem
       })
     }
     callWorker("Eph")
@@ -269,26 +287,39 @@ export default class Day extends React.Component {
             this.setState({ h: e.currentTarget.value });
           }}
         />
-        <span>km</span>
+        <span>km 宿度體系</span>
       </span>
     );
   }
-
+  renderCalendar() {
+    let cals = MansionSystemList
+    return (
+      <span className='calendar-select'>
+        <MenuSelect
+          calMap={cals}
+          onSelect={selected => {
+            this.setState({ MansionSystem: selected })
+          }}
+        />
+      </span>
+    );
+  }
   render() {
     return (
       <>
         <h2>VSOP87 ELP2000 曆書</h2>
         {this.renderInput()}
+        {this.renderCalendar()}
         <button onClick={this.handleRetrieve} className='button2'>七政黃赤經緯</button>
-        <p><span className='Equa'>紅色：赤道</span> <span className='Ceclp'>黑色：極黃</span> <span className='Eclp'>黃色：黃道</span></p>
+        <p><span className='Hori'>灰色：地平座標</span> <span className='Equa'>紅色：赤道</span> <span className='Ceclp'>黑色：極黃</span> <span className='Eclp'>黃色：黃道</span></p>
         <article>
           <ul>
             <li>南京 [N32.061°, E118.791°, 100m] 雞鳴山北極閣</li>
             <li>長安 [N34.282°, E108.964°, 405m] 假設在大明宮南門</li>
             <li>陽城縣 [N34.404°, E113.141°, 265m] 登封告成鎭周公測景臺</li >
-            <li>洛陽 [N34.696°, E112.626°, 154m] 靈臺遗址，在今偃师县岗上村与大郊寨之間</li>
+            <li>洛陽靈臺 [N34.696°, E112.626°, 154m] 偃师县岗上村与大郊寨之間</li>
             <li>浚儀縣岳臺 [N34.813°, E114.295°, 75m] 開封演武莊</li>
-            <li>大都 [N39.906, E116.428, 60] 建國門觀象臺</li>
+            <li>大都 [N39.906, E116.428, 60m] 建國門觀象臺</li>
           </ul>
         </article>
         {this.renderDayTableList()}

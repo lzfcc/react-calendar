@@ -1,6 +1,6 @@
 import React from 'react'
 import MenuSelect from '../MenuSelect'
-import { NameMansionList } from '../../Cal/parameter/constants.mjs'
+import { MansionSystemList } from '../../Cal/parameter/constants.mjs'
 import { bindMansionAccumModernList } from '../../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
@@ -27,7 +27,7 @@ export default class Converter extends React.Component {
       return null
     }
     return (
-      <div className='ans table2'>        
+      <div className='ans table2'>
         <h3>赤道宿鈐</h3>
         <p>冬至日躔赤道 {(this.state.SolsEquaPrint)}</p >
         <table>
@@ -71,7 +71,7 @@ export default class Converter extends React.Component {
     )
   }
   renderCalendar() {
-    let cals = NameMansionList
+    let cals = MansionSystemList
     return (
       <span className='calendar-select'>
         <MenuSelect

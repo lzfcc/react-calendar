@@ -186,7 +186,7 @@ export const deg2MansionModern = (Deg, AccumObj, fixed) => {
     const SolsMansion =
         SortedList[Solsindex][0] +
         (270 - SortedList[Solsindex][1]).toFixed(fixed || 6);
-    return { Mansion: Name + MansionDeg.toFixed(fixed || 2), SolsMansion };
+    return { Mansion: Name + MansionDeg.toFixed(fixed || 3), SolsMansion };
 };
 
 //根據廖育棟文檔14.3 14.4 

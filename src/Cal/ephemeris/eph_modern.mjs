@@ -28,7 +28,7 @@ const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
  * @returns 
  */
 // export const D3 = (YearStart, YearEnd, Longitude, Latitude, h) => {
-export default (YearStart, YearEnd, Longitude, Latitude, h) => {
+export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
   YearEnd = YearEnd || YearStart;
   const Main = (Y) => {
     const {
@@ -94,18 +94,14 @@ export default (YearStart, YearEnd, Longitude, Latitude, h) => {
         k <= Math.trunc(NewmUT1Jd[i]) - Math.trunc(NewmUT1Jd[i - 1]);
         k++
       ) {
-        DayAccum++; // 這個位置不能變
+        DayAccum++;
         const DeltaT = deltaT(NewmUT1Jd[i - 1] + 15) // 本月DeltaT        
-        const LocalMidnJdUT1 = Math.trunc(NewmUT1Jd[i - 1] + k - 1) + .5
-        Jd[i][k] = LocalMidnJdUT1 + .5
-        const LocalMidnTT = LocalMidnJdUT1 + DeltaT
+        const LocalMidnUT1Jd = Math.trunc(NewmUT1Jd[i - 1] - .5 + k - 1) + .5 // 儒略日半夜是0.5，所以先-.5再+.5
+        Jd[i][k] = LocalMidnUT1Jd + .5
+        const LocalMidnTT = LocalMidnUT1Jd + DeltaT - Longitude / 360
         /// ///////天文曆///////////
-        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat } = bindTopo_vsop(LocalMidnTT, Longitude, Latitude, h)
+        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(LocalMidnTT, Longitude, Latitude, h)
         const SunEclpLatNoon = calPos_vsop('Sun', LocalMidnTT + .5).EquaLat
-        let MansionSystem = 'Yixiang'
-        if (Y < 1628) {
-          MansionSystem = 'Shi'
-        }
         const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數
         const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
@@ -114,7 +110,9 @@ export default (YearStart, YearEnd, Longitude, Latitude, h) => {
           const EquaMansion = deg2MansionModern(EquaLon[j] * R2D, EquaAccumList).Mansion;
           const CeclpMansion = deg2MansionModern(CeclpLon[j], CeclpAccumList).Mansion;
           const EclpMansion = deg2MansionModern(EclpLon[j] * R2D, EclpAccumList).Mansion;
-          Pos[i][k] += `<p class="Equa">` + (EquaLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[j] * R2D) + `</p>`
+          Pos[i][k] +=
+            `<p class="Hori">` + (HoriLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(HoriLat[j] * R2D) + `</p>`
+            + `<p class="Equa">` + (EquaLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[j] * R2D) + `</p>`
             + `<p>` + CeclpLon[j].toFixed(4) + ' ' + Lat2NS(CeclpLat[j]) + `</p>`
             + `<p class="Eclp">` + (EclpLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EclpLat[j] * R2D) + `</p>`
             + `<p><span class="Equa">` + EquaMansion + `</span>`

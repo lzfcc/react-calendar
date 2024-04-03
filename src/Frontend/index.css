@@ -996,12 +996,7 @@ hr {
 .Eclp,
 .EclpMansion,
 .MoonEclp,
-.MoonMansion,
-.SaturnEclp,
-.JupiterEclp,
-.MarsEclp,
-.VenusEclp,
-.MercuryEclp {
+.MoonMansion {
   color: var(--letteryellow);
 }
 
@@ -1033,6 +1028,7 @@ hr {
   margin: 0 .1em;
 }
 
+.Hori,
 .NodeMapo,
 .ManGod {
   color: var(--gray);

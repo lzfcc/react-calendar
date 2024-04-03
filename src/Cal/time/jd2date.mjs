@@ -47,7 +47,7 @@ export const Jd2DatePrint = (Jd, Longitude) => {
     const Week = Math.round(Jd) % 7
     const WeekName = WeekList1[Week]
     const Sc = ScList[ScOrder] + '(' + ScOrder + ')'
-    return '公元 ' + year + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + ' 星期' + WeekName + ' ' + Sc
+    return '公元 ' + yy + ' 年 ' + mm + ' 月 ' + dd + ' 日 ' + ' 星期' + WeekName + ' ' + Sc
 }
 export const date2Jd = (yy, mm, dd, h, m, s, ms) => {
     yy = parseInt(yy), mm = parseInt(mm), dd = parseInt(dd), h = parseInt(h), m = parseInt(m), s = parseInt(s), ms = parseInt(ms)

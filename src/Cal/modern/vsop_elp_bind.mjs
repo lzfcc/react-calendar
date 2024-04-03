@@ -13,7 +13,7 @@ import {
 } from "../astronomy/pos_functions.mjs";
 import { H2R, R2D, pi2 } from "../parameter/functions.mjs";
 import { FlatLon2FlatLat, Lat2NS, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
-import { topocentric } from "../astronomy/pos_convert_modern.mjs";
+import { horizontal, topocentric } from "../astronomy/pos_convert_modern.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
 
@@ -36,7 +36,7 @@ export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
     const P = precessionMx(T); // 歲差矩陣 P(t)
     const NP = multiply(N, P);
     const R1Eps = rr1(Obliq);
-    const EquaLon = [], EquaLat = [], EclpLon = [], EclpLat = [], CeclpLon = [], CeclpLat = []
+    const EquaLon = [], EquaLat = [], EclpLon = [], EclpLat = [], CeclpLon = [], CeclpLat = [], HoriLon = [], HoriLat = []
     for (let i = 0; i < PlanetList.length; i++) {
         const { X: Xreal, V: Vreal } = calXV_vsop(PlanetList[i], Jd); // 實際位置    
         // const Jdr = lightTimeCorr(Jd, Xreal); // 推遲時
@@ -49,10 +49,11 @@ export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
         const Equa = multiply(NP, multiply(transpose(R1Eps), X2000)).toArray();
         // const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray();        
         // const Eclp1 = multiply(R1Eps, Equa1).toArray();
-        const LASTrad = siderealTime(Jd, Longitude) * H2R;
-        const { Lon: EquaLonTmp, Lat: EquaLatTmp, X1 } = topocentric(Equa, LASTrad, Latitude, h)
+        const { TopoLon: EquaLonTmp, TopoLat: EquaLatTmp, HoriLon: HoriLonTmp, HoriLat: HoriLatTmp, X1 } = horizontal(Equa, Jd, Longitude, Latitude, h)
         EquaLon[i] = (EquaLonTmp + pi2) % pi2;
         EquaLat[i] = EquaLatTmp
+        HoriLon[i] = HoriLonTmp
+        HoriLat[i] = HoriLatTmp
         const Eclp = multiply(R1Eps, X1).toArray();
         const { Lon: LonTmp, Lat: LatTmp } = xyz2lonlat(Eclp)
         EclpLon[i] = (LonTmp + pi2) % pi2;
@@ -61,7 +62,7 @@ export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
         CeclpLon[i] = CeclpLonTmp // deg
         CeclpLat[i] = CeclpLatTmp
     }
-    return { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, Obliq }
+    return { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat, Obliq }
 }
 export const bindPos_vsop_Print = (Jd_UT1, Longitude, Latitude, h) => {
     Longitude = +Longitude
@@ -69,7 +70,7 @@ export const bindPos_vsop_Print = (Jd_UT1, Longitude, Latitude, h) => {
     h = +h
     Jd_UT1 = +Jd_UT1 - Longitude / 360 // 0時區
     const Jd = Jd_UT1 + deltaT(Jd_UT1) // TT
-    const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat } = bindTopo_vsop(Jd, Longitude, Latitude, h)
+    const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(Jd, Longitude, Latitude, h)
     const Print = []
     for (let i = 0; i < PlanetList.length; i++) {
         Print[i] = {
@@ -80,7 +81,9 @@ export const bindPos_vsop_Print = (Jd_UT1, Longitude, Latitude, h) => {
                 deg2Hms(CeclpLon[i]), // deg
                 Lat2NS(CeclpLat[i]),
                 deg2Hms(EclpLon[i] * R2D),
-                Lat2NS(EclpLat[i] * R2D)
+                Lat2NS(EclpLat[i] * R2D),
+                deg2Hms(HoriLon[i] * R2D),
+                Lat2NS(HoriLat[i] * R2D)
             ]
         }
     }

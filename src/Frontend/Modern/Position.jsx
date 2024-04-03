@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindPos_vsop_Print } from '../../Cal/modern/vsop_elp.mjs'
+import { bindPos_vsop_Print } from '../../Cal/modern/vsop_elp_bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -67,12 +67,14 @@ export default class Converter extends React.Component {
         <table>
           <tr>
             <th></th>
-            <th>赤經</th>
-            <th>赤緯</th>
-            <th>極黃經</th>
-            <th>極黃緯</th>
-            <th>黃經</th>
-            <th>黃緯</th>
+            <th>視赤經</th>
+            <th>視赤緯</th>
+            <th>視極黃經</th>
+            <th>視極黃緯</th>
+            <th>視黃經</th>
+            <th>視黃緯</th>
+            <th>地平經</th>
+            <th>地平緯</th>
           </tr>
           {(this.state.Print1 || []).map(row => {
             return (

@@ -1,28 +1,40 @@
 
 // A sidereal day is approximately 86164.0905 seconds (23 h 56 min 4.0905s)
 
+import { multiply } from "mathjs";
 import { nutation, obliqAvg } from "../modern/nutation.mjs";
+import { precessionMx } from "../modern/precession.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { R2H, S2R, deci, fmod, pi2 } from "../parameter/functions.mjs";
 import { deci2hms } from "./decimal2clock.mjs";
 import { deltaT, deltaTError } from "./delta-t.mjs";
 import { jd2Date } from "./jd2date.mjs";
+import { xyz2lonlat } from "../astronomy/pos_functions.mjs";
 
+// 廖育棟 Calculations in Star Charts
+// Sidereal time is defined as the hour angle of the vernal equinox. α⊙ is Sun’s right ascension. ∆ψ is the nutation in longitude given by equation(30), εA is the mean obliquity of the ecliptic given by equation(28), and λ is observer’s(east) longitude.
+// 平恆星時（平春分點的時角）與視恆星時（真春分點的時角）之差：Ee, equation of the equinoxes. 平春分點：只算了歲差，真春分點：算了歲差和章動。
+// 用 CIO取代春分點的地位，TIO取代Greenwich子午線， Earth Rotation Angle (ERA) 取代恆星時。ERA需要實測。
+// ERA(Dᴜ)=θ(Dᴜ) = 2π(0.7790572732640 + 1.00273781191135448Dᴜ)，其中Dᴜ=julian UT1 date -2451545
+// GAST=GMST+Ee,GMST=θ-Eprec。Eprec(T)累積歲差=−0′′.014506−4612′′.16534T−1′′.3915817T^2+4′′.4×10−7T^3+2′′.9956×10−5T^4。T：J2000儒略世紀。根據圖像，-200<T<200
+// Ee =∆ψcosεA
 /**
- * 視恆星時LAST。但要注意，這個公式只是近似，有效期是前後幾百年，再遠一些誤差就很大了。
+ * 視恆星時LAST。根据图像，有效范围是+-700年
  * @param {*} Jd TT儒略日
  * @param {*} Longitude 地理經度°
  */
 export const siderealTime = (Jd, Longitude) => {
-    const T = (Jd - 2451545) / 365250; // TT儒略世紀
+    const T = (Jd - 2451545) / 36525; // TT儒略世紀
+    const Equinox = multiply(precessionMx(T), [1, 0, 0]).toArray()
+    const Eprec = -xyz2lonlat(Equinox).Lon // 我直接用完整的岁差矩阵来算，不用拟合公式
     const Jd2000_UT1 = Jd - deltaT(Jd) - 2451545;
-    const Eprec =
-        (-0.014506 -
-            4612.16534 * T -
-            1.3915817 * T ** 2 +
-            4.4e-7 * T ** 3 +
-            2.9956e-5 * T ** 4) *
-        S2R;
+    // const Eprec =
+    //     (-0.014506 -
+    //         4612.16534 * T -
+    //         1.3915817 * T ** 2 +
+    //         4.4e-7 * T ** 3 +
+    //         2.9956e-5 * T ** 4) *
+    //     S2R;
     const DeltaPsi = nutation(T).NutaEclp;
     const EpsAvg = obliqAvg(T) * S2R;
     const Ee = DeltaPsi * Math.cos(EpsAvg);
@@ -30,7 +42,7 @@ export const siderealTime = (Jd, Longitude) => {
     const GAST = Theta - Eprec + Ee;
     return fmod(GAST * R2H + Longitude / 15, 24);
 };
-// console.log(siderealTime(2051555.2, 120))
+// console.log(siderealTime(2451545 + 365.2422 * 2000, 120))
 // 真太陽時 t⊙ =12h+H⊙，太陽時角H⊙=LAST−α⊙（太陽赤經），正午H⊙=0h, t⊙=12h
 // equation of time(EOT) =t⊙ −tm, tm = UT1 + λ
 // EOT is independent of the observer’s location if the geocentric right ascension is used for α⊙

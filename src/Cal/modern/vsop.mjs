@@ -7,7 +7,7 @@ const PlanetList = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn'];
 export const vsop87XV = (target, Jd) => {
     const List = VsopList[target];
     let pos = [0, 0, 0], vel = [0, 0, 0]
-    const T = (Jd - 2451545) / 365250;
+    const T = (Jd - 2451545) / 365250; // 居然是儒略千年？？？orbit.js就这样
     for (let indDim = 0; indDim < 3; indDim++) {
         for (let indPower = 0; indPower < 6; indPower++) {
             const coeffs = List[indDim][indPower];

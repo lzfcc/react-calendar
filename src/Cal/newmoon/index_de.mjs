@@ -1,8 +1,8 @@
 import { N6 } from './newm_de.mjs'
 import { TermNameList, Term1NameList, ScList, MonNumList1 } from '../parameter/constants.mjs'
 import { deltaT, deltaTError } from '../time/delta-t.mjs'
-// const Index = (YearStart, YearEnd) => {
-export default (YearStart, YearEnd) => {
+// const Index = (YearStart, YearEnd, Longitude) => {
+export default (YearStart, YearEnd, Longitude) => {
     const Memo = []
     const calculate = Y => {
         const [PrevYear, ThisYear] = Memo
@@ -102,7 +102,7 @@ export default (YearStart, YearEnd) => {
         ////////////下爲調整輸出////////////
         const MonthPrint = MonthName.slice(1)
         const NewmScPrint = NewmSlice(ThisYear.NewmSc)
-        const NewmJdPrint = NewmSlice(ThisYear.NewmJd)
+        const NewmUT1JdPrint = NewmSlice(ThisYear.NewmUT1Jd)
         const NewmMmddPrint = NewmSlice(ThisYear.NewmMmdd)
         const NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
         const NewmEquaPrint = NewmSlice(NewmEqua)
@@ -132,25 +132,25 @@ export default (YearStart, YearEnd) => {
         if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`
         else Era = `公元前 ${1 - Y} 年 ${YearSc}`
         let YearInfo = `<span class='cal-name'>DE440/1</span> 距曆元${Y - 2000}年 `
-        YearInfo += ' ΔT = ' + Math.trunc(deltaT(ThisYear.NewmJd[5]) * 86400) + ' ± ' + deltaTError(Y)[0] + ' 秒'
+        YearInfo += ' ΔT = ' + Math.trunc(deltaT(ThisYear.NewmUT1Jd[5]) * 86400) + ' ± ' + deltaTError(Y)[0] + ' 秒'
         return {
             Era, YearInfo, MonthPrint, LeapNumTerm,
-            NewmScPrint, NewmJdPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
+            NewmScPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint, NewmUT1JdPrint,
             SyzygyScPrint, SyzygyMmddPrint, SyzygyDeciPrint,
             Term1NamePrint, Term1AcrScPrint, Term1AcrMmddPrint, Term1AcrDeciPrint, Term1NowDeciPrint, Term1EclpPrint, Term1EquaPrint,
             TermNamePrint, TermAcrScPrint, TermAcrMmddPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint,
         }
     }
-    Memo[0] = N6(YearStart - 1) // 去年
-    Memo[1] = N6(YearStart) // 今年
+    Memo[0] = N6(YearStart - 1, Longitude) // 去年
+    Memo[1] = N6(YearStart, Longitude) // 今年
     const result = []
     YearEnd = YearEnd === undefined ? YearStart : YearEnd
     for (let Y = YearStart; Y <= YearEnd; Y++) {
-        Memo[2] = N6(Y + 1) // 明年
+        Memo[2] = N6(Y + 1, Longitude) // 明年
         result.push(calculate(Y))
         Memo[0] = Memo[1] // 数组滚动，避免重复运算
         Memo[1] = Memo[2]
     }
     return result
 }
-// console.log(Index('DE441', 2020, 2020))
+// console.log(Index(2024, 2024, 116))

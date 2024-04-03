@@ -5,6 +5,7 @@ import { MansionNameList } from "../parameter/constants.mjs";
 import { Fbmx, rr1, xyz2lonlat } from "../astronomy/pos_functions.mjs";
 import { Parsec, R2D, cDay } from "../parameter/functions.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
+import { equa2Ceclp } from "../astronomy/pos_convert_modern.mjs";
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 // 由AT-HYG算出來的數據和廖育棟的有點點區別。以下直接取自廖育棟的starCharts/brightStars.js
 // 獲取brightStars.js信息的代碼
@@ -188,27 +189,21 @@ export const deg2MansionModern = (Deg, AccumObj, fixed) => {
     return { Mansion: Name + MansionDeg.toFixed(fixed || 2), SolsMansion };
 };
 
-/**
- * 根據廖育棟文檔14.3 14.4
- * @param {*} T 儒略世紀
- * @param {*} Deg 根據T算VSOP太陽黃經
- */
-export const mansionModern = (Jd, Name) => {
+//根據廖育棟文檔14.3 14.4 
+export const mansionModernList = (Jd, Name) => {
     Name = Name || "Yixiang";
     const EclpAccumList = {};
     const EquaAccumList = {};
+    const CeclpAccumList = {}
     const T = (Jd - 2451545) / 36525;
-    const Nutation = nutaMx(T);
-    const NP = multiply(precessionMx(T), Nutation.N);
+    const { N, Obliq } = nutaMx(T);
+    const NP = multiply(precessionMx(T), N);
     const NPB = multiply(NP, Fbmx);
     const { X: XSEclpRaw, V: VSEclpRaw } = calXV_vsop("Sun", Jd); // VSOP算出來的是黃道
-    const XSRaw = multiply(rr1(-Nutation.Obliq), XSEclpRaw);
-    const VSRaw = multiply(rr1(-Nutation.Obliq), VSEclpRaw);
-    const VE = multiply(multiply(NP, VSRaw), -1);
+    const XSRaw = multiply(rr1(-Obliq), XSEclpRaw);
     const XS = multiply(NPB, XSRaw);
-    const XSEclp = multiply(rr1(Nutation.Obliq), XS); // 乘法順序不能變！！要不然transpose()也沒用
-    const SunEclpLon = (xyz2lonlat(XSEclp.toArray()).Lon * R2D + 360) % 360;
-    const SunEquaLon = (xyz2lonlat(XS.toArray()).Lon * R2D + 360) % 360;
+    const VSRaw = multiply(rr1(-Obliq), VSEclpRaw);
+    const VE = multiply(multiply(NP, VSRaw), -1);
     const Beta = divide(VE, cDay);
     for (let i = 0; i < 28; i++) {
         const XSRawParsec = divide(XSRaw, Parsec);
@@ -224,25 +219,49 @@ export const mansionModern = (Jd, Name) => {
         const n_B = add(n, Beta).toArray();
         const n1 = divide(n_B, Math.hypot(...n_B));
         const XEqua = multiply(n1, X02mod); // 光行差修正之後
-        const XEclp = multiply(rr1(Nutation.Obliq), XEqua).toArray(); // 乘法順序不能變！
-        EquaAccumList[MansionNameList[i]] = (xyz2lonlat(XEqua).Lon * R2D + 360) % 360;
+        const XEclp = multiply(rr1(Obliq), XEqua).toArray(); // 乘法順序不能變！
+        const EquaLon = (xyz2lonlat(XEqua).Lon * R2D + 360) % 360;
+        EquaAccumList[MansionNameList[i]] = EquaLon
+        CeclpAccumList[MansionNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
         EclpAccumList[MansionNameList[i]] = (xyz2lonlat(XEclp).Lon * R2D + 360) % 360;
     }
+    return {
+        EclpAccumList,
+        EquaAccumList,
+        CeclpAccumList,
+        XS,
+        Obliq
+    };
+};
+export const mansionModern = (Jd, Name) => {
+    Name = Name || "Yixiang";
+    const { EclpAccumList, EquaAccumList, CeclpAccumList, XS, Obliq } = mansionModernList(Jd, Name)
+    const XSEclp = multiply(rr1(Obliq), XS); // 乘法順序不能變！！要不然transpose()也沒用
+    const SunEclpLon = (xyz2lonlat(XSEclp.toArray()).Lon * R2D + 360) % 360;
+    const SunEquaLon = (xyz2lonlat(XS.toArray()).Lon * R2D + 360) % 360;
+    const SunCeclpLon = equa2Ceclp(Obliq * R2D, SunEquaLon, 0).CeclpLon
     const { Mansion: Eclp, SolsMansion: SolsEclpMansion } = deg2MansionModern(
         SunEclpLon,
-        EclpAccumList,
+        EclpAccumList
     );
     const { Mansion: Equa, SolsMansion: SolsEquaMansion } = deg2MansionModern(
         SunEquaLon,
-        EquaAccumList,
+        EquaAccumList
+    );
+    const { Mansion: Ceclp, SolsMansion: SolsCeclpMansion } = deg2MansionModern(
+        SunCeclpLon,
+        CeclpAccumList
     );
     return {
         Eclp,
         Equa,
+        Ceclp,
         EclpAccumList,
         EquaAccumList,
+        CeclpAccumList,
         SolsEclpMansion,
         SolsEquaMansion,
+        SolsCeclpMansion
     };
 };
 // const S = performance.now()

@@ -1,36 +1,23 @@
-import Para from "../parameter/calendars.mjs";
 import {
-  NameList,
   ScList,
   StemList,
   BranchList,
   WeekList,
-  WeekList1,
   MansionNameList,
-  MansionAnimalNameList,
   YuanList,
   NumList,
   MonNumList1,
 } from "../parameter/constants.mjs";
 import { YearGodConvert, YearColorConvert, MonColorConvert } from "./luck.mjs";
-import {
-  eclp2Equa,
-  LonHigh2Flat,
-  HighLon2FlatLat,
-  sunRiseQing,
-  twilight,
-  deg2Hms,
-  Lon2Gong,
-} from "../astronomy/pos_convert.mjs";
-
+import { sunRise, twilight } from "../astronomy/pos_convert.mjs";
 import CalNewm from "../newmoon/index_de.mjs";
-import { midstarQing } from "../astronomy/mansion.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { R2D, nzh } from "../parameter/functions.mjs";
-import { mansionModern } from "../modern/mansion.mjs";
-import { bindPos_vsop } from "../modern/vsop_elp.mjs";
-import { sunRise } from "../astronomy/pos_convert_modern.mjs";
+import { deg2MansionModern, mansionModernList } from "../modern/mansion.mjs";
+import { calPos_vsop } from "../modern/vsop_elp.mjs";
+import { deltaT } from "../time/delta-t.mjs";
+import { bindTopo_vsop } from "../modern/vsop_elp_bind.mjs";
 const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
 /**
  * 
@@ -40,14 +27,14 @@ const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
  * @param {*} Latitude 地理緯度
  * @returns 
  */
-// export const D3= (YearStart, YearEnd, Longitude, Latitude) => {
-export default (YearStart, YearEnd, Longitude, Latitude) => {
+// export const D3 = (YearStart, YearEnd, Longitude, Latitude, h) => {
+export default (YearStart, YearEnd, Longitude, Latitude, h) => {
   YearEnd = YearEnd || YearStart;
   const Main = (Y) => {
     const {
       LeapNumTerm,
-      NewmJdPrint: NewmJd
-    } = CalNewm(Y)[0];
+      NewmUT1JdPrint: NewmUT1Jd
+    } = CalNewm(Y, Y, Longitude)[0];
     /// ////
     const YearScOrder = (((Y - 3) % 60) + 60) % 60;
     const YearSc = ScList[YearScOrder];
@@ -71,20 +58,12 @@ export default (YearStart, YearEnd, Longitude, Latitude) => {
     const Sc = [];
     const Jd = [];
     const Week = [];
-    const Equa = [];
-    const Eclp = [];
+    const Pos = [];
     const Rise = [];
     const Morningstar = [];
-    const Lat = [];
     const Duskstar = [];
-    const MoonEclp = [];
-    const MoonEclpLat = [];
-    const MoonEqua = [];
-    const MoonEquaLat = [];
-    const SaturnEclp = [], SaturnEqua = [], JupiterEclp = [], JupiterEqua = [], MarsEclp = [], MarsEqua = [], VenusEclp = [], VenusEqua = [], MercuryEclp = [], MercuryEqua = []
     let DayAccum = 0;
-    for (let i = 1; i <= 12 + (LeapNumTerm > 0 ? 1 : 0); i++) {
-      // 有閏就13
+    for (let i = 1; i <= 12 + (LeapNumTerm > 0 ? 1 : 0); i++) { // 有閏就13
       let NoleapMon = i;
       if (LeapNumTerm > 0) {
         if (i >= LeapNumTerm + 1) NoleapMon = i - 1;
@@ -93,7 +72,7 @@ export default (YearStart, YearEnd, Longitude, Latitude) => {
       if (LeapNumTerm > 0 && i === LeapNumTerm + 1)
         MonName[i] = `閏${MonNumList1[LeapNumTerm]}月`;
       MonName[i] +=
-        Math.trunc(NewmJd[i]) - Math.trunc(NewmJd[i - 1]) === 29
+        Math.trunc(NewmUT1Jd[i]) - Math.trunc(NewmUT1Jd[i - 1]) === 29
           ? "小"
           : "大";
       const MonColorFunc = MonColorConvert(
@@ -106,53 +85,46 @@ export default (YearStart, YearEnd, Longitude, Latitude) => {
       (Sc[i] = []),
         (Jd[i] = []),
         (Week[i] = []),
-        (Eclp[i] = []),
-        (Equa[i] = []),
         (Rise[i] = []),
         (Morningstar[i] = []),
-        (Lat[i] = []),
         (Duskstar[i] = []),
-        (MoonEclp[i] = []),
-        (MoonEclpLat[i] = []),
-        (MoonEqua[i] = []),
-        (MoonEquaLat[i] = []),
-        SaturnEclp[i] = [],
-        SaturnEqua[i] = [],
-        JupiterEclp[i] = [],
-        JupiterEqua[i] = [],
-        MarsEclp[i] = [],
-        MarsEqua[i] = [],
-        VenusEclp[i] = [],
-        VenusEqua[i] = [],
-        MercuryEclp[i] = [],
-        MercuryEqua[i] = []
+        Pos[i] = []
       for (
         let k = 1;
-        k <= Math.trunc(NewmJd[i]) - Math.trunc(NewmJd[i - 1]);
+        k <= Math.trunc(NewmUT1Jd[i]) - Math.trunc(NewmUT1Jd[i - 1]);
         k++
       ) {
         DayAccum++; // 這個位置不能變
-        Jd[i][k] = Math.trunc(NewmJd[i]) + k - 1
+        const DeltaT = deltaT(NewmUT1Jd[i - 1] + 15) // 本月DeltaT        
+        const LocalMidnJdUT1 = Math.trunc(NewmUT1Jd[i - 1] + k - 1) + .5
+        Jd[i][k] = LocalMidnJdUT1 + .5
+        const LocalMidnTT = LocalMidnJdUT1 + DeltaT
         /// ///////天文曆///////////
-        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, Obliq } = bindPos_vsop(Jd[i][k])
-        // const PlanetList = ['Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury']
-        Eclp[i][k] = CeclpLon[0].toFixed(4) + ' ' + Lat2NS(CeclpLat[0])
-        Equa[i][k] = (EquaLon[0] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[0] * R2D)
-        Rise[i][k] = sunRise(Obliq * R2D, Latitude, EclpLon[0] * R2D)
-        // const TwilightLeng = twilight(Obliq * R2D, Latitude, EclpLon[0] * R2D);
-        MoonEclp[i][k] = CeclpLon[1].toFixed(4) + ' ' + Lat2NS(CeclpLat[1])
-        MoonEqua[i][k] = (EquaLon[1] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[1] * R2D)
-        SaturnEclp[i][k] = CeclpLon[2].toFixed(4) + ' ' + Lat2NS(CeclpLat[2])
-        SaturnEqua[i][k] = (EquaLon[2] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[2] * R2D)
-        JupiterEclp[i][k] = CeclpLon[3].toFixed(4) + ' ' + Lat2NS(CeclpLat[3])
-        JupiterEqua[i][k] = (EquaLon[3] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[3] * R2D)
-        MarsEclp[i][k] = CeclpLon[4].toFixed(4) + ' ' + Lat2NS(CeclpLat[4])
-        MarsEqua[i][k] = (EquaLon[4] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[4] * R2D)
-        VenusEclp[i][k] = CeclpLon[5].toFixed(4) + ' ' + Lat2NS(CeclpLat[5])
-        VenusEqua[i][k] = (EquaLon[5] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[5] * R2D)
-        MercuryEclp[i][k] = CeclpLon[6].toFixed(4) + ' ' + Lat2NS(CeclpLat[6])
-        MercuryEqua[i][k] = (EquaLon[6] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[6] * R2D)
-        /// ////////具注曆////////////
+        const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat } = bindTopo_vsop(LocalMidnTT, Longitude, Latitude, h)
+        const SunEclpLatNoon = calPos_vsop('Sun', LocalMidnTT + .5).EquaLat
+        let MansionSystem = 'Yixiang'
+        if (Y < 1628) {
+          MansionSystem = 'Shi'
+        }
+        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數
+        const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
+        const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
+        Pos[i][k] = ``
+        for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度          
+          const EquaMansion = deg2MansionModern(EquaLon[j] * R2D, EquaAccumList).Mansion;
+          const CeclpMansion = deg2MansionModern(CeclpLon[j], CeclpAccumList).Mansion;
+          const EclpMansion = deg2MansionModern(EclpLon[j] * R2D, EclpAccumList).Mansion;
+          Pos[i][k] += `<p class="Equa">` + (EquaLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[j] * R2D) + `</p>`
+            + `<p>` + CeclpLon[j].toFixed(4) + ' ' + Lat2NS(CeclpLat[j]) + `</p>`
+            + `<p class="Eclp">` + (EclpLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EclpLat[j] * R2D) + `</p>`
+            + `<p><span class="Equa">` + EquaMansion + `</span>`
+            + `<span class="Ceclp">` + CeclpMansion + `</span>`
+            + `<span class="Eclp">` + EclpMansion + `</span></p>`
+        }
+        Morningstar[i][k] = deci2hms(Rise - TwilightLeng).hm + ' ' + deci2hms(Rise).hm
+        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Set + TwilightLeng).hm
+
+        ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
         const MansionOrder = (Jd[i][k] + 0) % 28;
         const WeekOrder = (Jd[i][k] + 0) % 7;
@@ -174,14 +146,9 @@ export default (YearStart, YearEnd, Longitude, Latitude) => {
       MonColor,
       Sc,
       Jd,
-      Eclp,
-      Equa,
-      // Morningstar,
-      // Rise,
-      // Duskstar,
-      MoonEclp,
-      MoonEqua,
-      SaturnEclp, SaturnEqua, JupiterEclp, JupiterEqua, MarsEclp, MarsEqua, VenusEclp, VenusEqua, MercuryEclp, MercuryEqua
+      Pos,
+      Morningstar,
+      Duskstar,
     };
   };
   const result = [];
@@ -190,4 +157,4 @@ export default (YearStart, YearEnd, Longitude, Latitude) => {
   }
   return result;
 };
-// console.log(D3(2001, 2001, 116.428, 39.5))
+// console.log(D3(2024, 2024, 116.428, 39.5))

@@ -46,7 +46,7 @@ const printData = outputFile(1 - 316, -315, false, [ // mode, YearStart, YearEnd
     // 'Kaihuang', // 上北朝系
     // 'Yuanjia', 
     // 'Daming',
-    // 'Liangwu',
+    // 'Yukuo',
     // 'Zhangmengbin',
     // 'Liuxiaosun',
     // 'Daye',

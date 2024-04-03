@@ -4,22 +4,22 @@ const TableRowNameMap = {
   MonthPrint: ' ',
   NewmScPrint: '定朔',
   NewmMmddPrint: '公曆',
-  NewmDeciUT18Print: 'UT1+8',
+  NewmDeciUT18Print: 'UT1',
   NewmEquaPrint: '赤道',
   NewmEclpPrint: '黃道',
   SyzygyScPrint: '定望',
   SyzygyMmddPrint: '公曆',
-  SyzygyDeciPrint: 'UT1+8',
+  SyzygyDeciPrint: 'UT1',
   Term1NamePrint: '節氣',
   Term1AcrScPrint: '定氣',
   Term1AcrMmddPrint: '公曆',
-  Term1AcrDeciPrint: 'UT1+8',
+  Term1AcrDeciPrint: 'UT1',
   Term1EquaPrint: '赤道',
   Term1EclpPrint: '黃道',
   TermNamePrint: '節氣',
   TermAcrScPrint: '定氣',
   TermAcrMmddPrint: '公曆',
-  TermAcrDeciPrint: 'UT1+8',
+  TermAcrDeciPrint: 'UT1',
   TermEquaPrint: '赤道',
   TermEclpPrint: '黃道',
 }
@@ -34,6 +34,7 @@ export default class Newm extends React.Component {
       YearStart: '',
       YearEnd: '',
       output: '',
+      Longitude: 116.428,
       md: ''
     };
   }
@@ -80,8 +81,15 @@ export default class Newm extends React.Component {
               this.setState({ YearEnd: e.currentTarget.value });
             }}
           />
-          <span>年</span>
+          <span>年&nbsp;&nbsp;</span>
         </span>
+        <span>地理經度</span>
+        <input className='width3'
+          value={this.state.Longitude}
+          onChange={e => {
+            this.setState({ Longitude: e.currentTarget.value });
+          }}
+        />
       </span>
     );
   }
@@ -89,6 +97,7 @@ export default class Newm extends React.Component {
   handleRetrieve() {
     let YearStart = parseInt(this.state.YearStart);
     let YearEnd = parseInt(this.state.YearEnd);
+    const Longitude = parseFloat(this.state.Longitude)
     if (this.state.YearStart.length === 0 && this.state.YearEnd.length === 0) {
       const date = new Date();
       const year = date.getFullYear()
@@ -138,6 +147,7 @@ export default class Newm extends React.Component {
         eventName,
         YearStart,
         YearEnd,
+        Longitude,
         ...this.state
       })
     }
@@ -195,7 +205,7 @@ export default class Newm extends React.Component {
           {this.renderInput()}
           <button onClick={this.handleRetrieve} className='button1'>密合天行</button>
         </div>
-        {this.renderTableList()}        
+        {this.renderTableList()}
       </>
     )
   }

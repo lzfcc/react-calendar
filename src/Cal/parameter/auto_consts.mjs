@@ -185,7 +185,7 @@ export const AutoRangeEcli = (Name, Type) => { // 日出入前後多少不算日
     } else {
         RangeSunEcli = .125 // 其他的瞎填一個
     }
-    if (Type <= 3 || ['Yuanjia', 'Daming', 'Liangwu'].includes(Name)) {
+    if (Type <= 3 || ['Yuanjia', 'Daming', 'Yukuo'].includes(Name)) {
         RangeMoonEcli = .2 // 胡亂填，考慮到那時候沒有太陽修正，最多有0.2日差距
     } else if (Type <= 6) {
         RangeMoonEcli = .125 // 戊寅麟德

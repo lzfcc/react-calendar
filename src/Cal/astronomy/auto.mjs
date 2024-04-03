@@ -20,8 +20,6 @@ import { Hushigeyuan, HushigeyuanMoon } from "../equation/geometry.mjs";
 import { AutoDifAccum, AutoTcorr } from "./acrv.mjs";
 import { AutoMoonAvgV, AutoNodeCycle, AutoSolar } from "../parameter/auto_consts.mjs";
 
-// sunRise, Lon2DialWest, eclp2Ceclp, testEclpEclpDif, equa2Ceclp, equa2Eclp,
-
 export const autoEquaEclp = (Gong, Name) => {
   // 輸入度數而非距冬至時間 // 只有公式法的才有黃轉赤。表格的是直接取符號相反
   const { Type, Sidereal, Solar, SolarRaw } = Para[Name];
@@ -141,7 +139,7 @@ export const autoRise = (Sd, SolsDeci, Name) => {
     Corr = AutoDifAccum(0, SdNoon, Name).SunDifAccum;
   }
   const X = SdNoon + Corr;
-  if (["Daming", "Liangwu"].includes(Name)) {
+  if (["Daming", "Yukuo"].includes(Name)) {
     Rise = riseTable1(X, "Daming");
   } else if (["Daye", "Zhangmengbin", "Liuxiaosun"].includes(Name)) {
     Rise = riseTable1(X, "Daye");
@@ -202,7 +200,7 @@ export const autoDial = (Sd, SolsDeci, Name) => {
     Corr = AutoDifAccum(0, SdNoon, Name).SunDifAccum;
   }
   const X = SdNoon - Corr; // 這要反著來
-  if (["Daming", "Liangwu"].includes(Name)) {
+  if (["Daming", "Yukuo"].includes(Name)) {
     Dial = dialTable1(X, "Daming");
   } else if (["Daye", "Zhangmengbin", "Liuxiaosun"].includes(Name)) {
     Dial = dialTable1(X, "Daye");

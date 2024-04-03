@@ -36,7 +36,7 @@ export const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
   };
 };
 export const ceclp2Equa = (Sobliq, CeclpLon, CeclpLat) => {
-  const EquaLon= LonHigh2Flat(Sobliq, CeclpLon)
+  const EquaLon = LonHigh2Flat(Sobliq, CeclpLon)
   return {
     EquaLon,
     EquaLat: CeclpLat + FlatLon2FlatLat(Sobliq, EquaLon),
@@ -81,25 +81,6 @@ https://zh.wikipedia.org/zh-hk/%E5%A4%AA%E9%99%BD%E4%BD%8D%E7%BD%AE
 const hourA2ElevatA = (v, Lat, f) =>
   +asind(sind(f) * sind(Lat) + cosd(f) * cosd(Lat) * cosd(v)).toFixed(12);
 // console.log(hourA2ElevatA(0, 23.5, 23))
-/**
- * // https://zh.wikipedia.org/zh-hk/%E6%97%A5%E5%87%BA%E6%96%B9%E7%A8%8B%E5%BC%8F
-// cosw=-tanftand 。f緯度，d赤緯 w日出時角
-// =sina-sinfsind/cosfcosd 是考慮了視直徑、蒙氣差之後的。維基：a=.83
- * @param {*} l 黃經
- * @param {*} f 地理緯度
- * @param {*} Sobliq 黃赤交角
- * @returns 日出時刻
- */
-export const sunRise = (Sobliq, f, l) => {
-  const d = HighLon2FlatLat(Sobliq, l); // 赤緯
-  const w0 = acosd(-tand(f) * tand(d));
-  const t0 = ((180 - w0) / 360) * 100; // 未修正
-  const w = acosd((sind(-0.77) - sind(f) * sind(d)) / (cosd(f) * cosd(d)));
-  const t = ((180 - w) / 360) * 100; // 考慮蒙气差、視半徑
-  return { t0, t };
-};
-// console.log(sunRise(23.44, 39, 1))
-// console.log(sunRiseQing(23.44, 39, 1))
 
 // 廖育棟文檔8
 // Positions of celestial objects measured from Earth’s surface are called the topocentric position.
@@ -108,14 +89,12 @@ export const sunRise = (Sobliq, f, l) => {
 /**
  *
  * @param {*} X 地心座標
- * @param {*} Jd TT儒略日
- * @param {*} Longitude 地理經度°
+ * @param {*} LASTrad 恆星時
  * @param {*} Latitude 地理緯度°
  * @param {*} h 海拔km
  * @return topocentric座標
  */
-const topocentric = (X, Jd, Longitude, Latitude, h) => {
-  const LASTrad = siderealTime(Jd, Longitude) * H2R;
+export const topocentric = (X, LASTrad, Latitude, h) => {
   const f = Latitude * D2R;
   h = h || 0.1;
   if (h > 8) throw new Error("altitude in km!");
@@ -134,7 +113,7 @@ const topocentric = (X, Jd, Longitude, Latitude, h) => {
   const XL = [x, y, z];
   const X1 = subtract(X, XL);
   const { Lon, Lat } = xyz2lonlat(X1);
-  return { Lon, Lat, LASTrad };
+  return { X1, Lon, Lat, LASTrad };
 };
 
 // astronomical latitude, astronomical longitude 和geodetic latitude and longitude有幾秒的區別，此處沒有區分。
@@ -145,11 +124,11 @@ const topocentric = (X, Jd, Longitude, Latitude, h) => {
 // cosasinA = −cosδsinH
 //     sina = sinδsinφ + cosδcosHcosφ
 const horizontal = (X, Jd, Longitude, Latitude, h) => {
+  const LASTrad = siderealTime(Jd, Longitude) * H2R;
   const {
     Lon: alpha,
     Lat: delta,
-    LASTrad,
-  } = topocentric(X, Jd, Longitude, Latitude, h);
+  } = topocentric(X, LASTrad, Longitude, Latitude, h);
   const H = LASTrad - alpha;
   const f = Latitude * D2R;
   const s1 = Math.sin(delta);
@@ -177,13 +156,11 @@ const refraction = (a, P, T) =>
 
 /**
  *
- * @param {*} Sobliq 黃赤交角
  * @param {*} f 地理緯度
- * @param {*} l 黃經
+ * @param {*} d （正午？）赤緯
  * @returns dial length= h tand(zenith height)
  */
-export const Lon2DialWest = (Sobliq, f, l) => {
-  const d = HighLon2FlatLat(Sobliq, l); // 赤緯
+export const Lon2DialWest = (f, d) => {
   const h = 90 - Math.abs(f - d); // 正午太陽高度
   const z0 = f - d; // 眞天頂距=緯度-赤緯
   const r = 0.52; // 日視直徑0.53度。角半径=atand(1/2 d/D)

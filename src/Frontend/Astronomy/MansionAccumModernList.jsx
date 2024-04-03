@@ -15,8 +15,8 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { EclpAccumPrint, EquaAccumPrint, SolsEclpPrint, SolsEquaPrint } = bindMansionAccumModernList(this.state.calendars, this.state.Jd)
-      this.setState({ EclpAccumPrint, EquaAccumPrint, SolsEclpPrint, SolsEquaPrint })
+      const { EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint } = bindMansionAccumModernList(this.state.calendars, this.state.Jd)
+      this.setState({ EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint })
     } catch (e) {
       alert(e.message)
     }
@@ -27,11 +27,11 @@ export default class Converter extends React.Component {
       return null
     }
     return (
-      <div className='ans table2'>
-        <h3>黃道宿鈐</h3>
-        <p>冬至日躔黃道 {(this.state.SolsEclpPrint)}</p>
+      <div className='ans table2'>        
+        <h3>赤道宿鈐</h3>
+        <p>冬至日躔赤道 {(this.state.SolsEquaPrint)}</p >
         <table>
-          {this.state.EclpAccumPrint.map(row => {
+          {this.state.EquaAccumPrint.map(row => {
             return (
               <tr>
                 {row.map(d => {
@@ -41,10 +41,23 @@ export default class Converter extends React.Component {
             );
           })}
         </table>
-        <h3>赤道宿鈐</h3>
-        <p>冬至日躔赤道 {(this.state.SolsEquaPrint)}</p >
+        <h3>極黃宿鈐</h3>
+        <p>冬至日躔極黃 {(this.state.SolsCeclpPrint)}</p>
         <table>
-          {this.state.EquaAccumPrint.map(row => {
+          {this.state.CeclpAccumPrint.map(row => {
+            return (
+              <tr>
+                {row.map(d => {
+                  return <td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>
+                })}
+              </tr>
+            );
+          })}
+        </table>
+        <h3>黃道宿鈐</h3>
+        <p>冬至日躔黃道 {(this.state.SolsEclpPrint)}</p>
+        <table>
+          {this.state.EclpAccumPrint.map(row => {
             return (
               <tr>
                 {row.map(d => {

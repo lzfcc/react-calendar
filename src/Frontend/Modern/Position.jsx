@@ -6,7 +6,9 @@ export default class Converter extends React.Component {
     super(props)
     this.state = {
       a: 2421333,
-      b: 116.428
+      b: 116.428,
+      Latitude: 39.906,
+      h: 0.06
     }
     this.handle = this.handle.bind(this)
   }
@@ -28,13 +30,28 @@ export default class Converter extends React.Component {
             this.setState({ b: e.currentTarget.value });
           }}
         />
+        <span>緯度</span>
+        <input className='width3'
+          value={this.state.Latitude}
+          onChange={e => {
+            this.setState({ Latitude: e.currentTarget.value });
+          }}
+        />
+        <span>海拔</span>
+        <input className='width3'
+          value={this.state.h}
+          onChange={e => {
+            this.setState({ h: e.currentTarget.value });
+          }}
+        />
+        <span>km</span>
       </span>
     );
   }
 
   handle() {
     try {
-      const Print1 = bindPos_vsop_Print(this.state.a, this.state.b)
+      const Print1 = bindPos_vsop_Print(this.state.a, this.state.b, this.state.Latitude, this.state.h)
       this.setState({ Print1 })
     } catch (e) {
       alert(e.message)

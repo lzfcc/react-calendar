@@ -22,14 +22,13 @@ import {
   eclp2Equa,
   LonHigh2Flat,
   HighLon2FlatLat,
-  sunRiseQing,
   twilight,
   deg2Hms,
   Lat2NS,
   Lon2Gong,
   moonRiseQing,
+  sunRise
 } from "../astronomy/pos_convert.mjs";
-
 import CalNewm from "../newmoon/index.mjs";
 import { mansionQing, midstarQing } from "../astronomy/mansion.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
@@ -170,9 +169,10 @@ export const D2 = (Name, YearStart, YearEnd) => {
         const SEquaLon = LonHigh2Flat(Sobliq, SunLon);
         Equa[i][k] = deg2Hms(SEquaLon) + Func.Equa;
         // EquaMansion[i][k]
-        Lat[i][k] = Lat2NS(HighLon2FlatLat(Sobliq, SunLon));
-        Rise[i][k] = sunRiseQing(Sobliq, RiseLat, SunLon);
-        const TwilightLeng = twilight(Sobliq, RiseLat, SunLon);
+        Lat[i][k] = HighLon2FlatLat(Sobliq, SunLon)
+        Rise[i][k] = sunRise(RiseLat, Lat[i][k]).t0;
+        const TwilightLeng = twilight(RiseLat, Lat[i][k]);
+        Lat[i][k] = Lat2NS(Lat[i][k]);
         const Func2 = midstarQing(Name, Y, SunLon, SunLonMor, Rise[i][k]);
         Morningstar[i][k] =
           `${deci2hms(Rise[i][k] - TwilightLeng).hm} ${Func2.Morningstar}`;

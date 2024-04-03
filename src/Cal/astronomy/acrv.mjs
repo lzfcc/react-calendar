@@ -138,7 +138,7 @@ const SunTcorrTable = (Sd, Name) => {
         SunTcorrList[TermNum] +
         ((SunTcorrList[TermNum + 1] - SunTcorrList[TermNum]) *
           (Sd - AcrTermList[TermNum])) /
-          TermRange;
+        TermRange;
     } else {
       const D1 = SunTcorrList[TermNum + 1] - SunTcorrList[TermNum];
       const D2 = SunTcorrList[TermNum + 2] - SunTcorrList[TermNum + 1];
@@ -297,7 +297,7 @@ const MoonTcorrTable1 = (AnomaAccum, Name) => {
   let MoonDifAccum1 =
     MoonDifAccumList[AnomaAccumInt] +
     AnomaAccumFract *
-      (MoonDifAccumList[AnomaAccumInt + 1] - MoonDifAccumList[AnomaAccumInt]); //* MoonAcrAvgDifList[AnomaAccumInt]
+    (MoonDifAccumList[AnomaAccumInt + 1] - MoonDifAccumList[AnomaAccumInt]); //* MoonAcrAvgDifList[AnomaAccumInt]
   const SunAvgV = ZhangRange;
   let MoonTcorr1 = 0;
   if (
@@ -337,7 +337,7 @@ const MoonAcrSTable1 = (AnomaAccum, Name) => {
   const MoonAcrS =
     (MoonAcrSList[AnomaAccumInt] +
       AnomaAccumFract *
-        (MoonAcrSList[AnomaAccumInt + 1] - MoonAcrSList[AnomaAccumInt])) /
+      (MoonAcrSList[AnomaAccumInt + 1] - MoonAcrSList[AnomaAccumInt])) /
     ZhangRange;
   return MoonAcrS;
 };
@@ -747,7 +747,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       "Tianhe",
       "Daxiang",
       "Kaihuang",
-      "Liangwu",
+      "Yukuo",
       "Zhangmengbin",
       "Liuxiaosun",
       "Yisi",
@@ -770,7 +770,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       Tcorr1 = AutoTcorr(AnomaAccum, 0, "Tianbao").Tcorr1;
     } else if (Name === "Kaihuang") {
       Tcorr1 = AutoTcorr(AnomaAccum, 0, "Yuanjia").Tcorr1;
-    } else if (Name === "Liangwu") {
+    } else if (Name === "Yukuo") {
       Tcorr1 = AutoTcorr(AnomaAccum, 0, "Daming").Tcorr1;
     } else if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
       Tcorr1 = AutoTcorr(AnomaAccum, Sd, "Daye").Tcorr1;
@@ -932,7 +932,7 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
       "Tianhe",
       "Daxiang",
       "Kaihuang",
-      "Liangwu",
+      "Yukuo",
       "Zhangmengbin",
       "Liuxiaosun",
       "Yisi",
@@ -955,8 +955,8 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
       MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Tianbao").MoonDifAccum;
     } else if (Name === "Kaihuang") {
       MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Yuanjia").MoonDifAccum;
-    } else if (Name === "Liangwu") {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Liangwu").MoonDifAccum;
+    } else if (Name === "Yukuo") {
+      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Yukuo").MoonDifAccum;
     } else {
       if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
         DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Daye");
@@ -1018,7 +1018,7 @@ export const AutoMoonAcrS = (AnomaAccum, Name) => {
       "Tianhe",
       "Daxiang",
       "Kaihuang",
-      "Liangwu",
+      "Yukuo",
       "Zhangmengbin",
       "Liuxiaosun",
       "Yisi",
@@ -1046,7 +1046,7 @@ export const AutoMoonAcrS = (AnomaAccum, Name) => {
     } else if (Name === "Kaihuang") {
       MoonAcrS = MoonAcrSTable1(AnomaAccum, "Yuanjia");
       AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Yuanjia");
-    } else if (Name === "Liangwu") {
+    } else if (Name === "Yukuo") {
       MoonAcrS = MoonAcrSTable1(AnomaAccum, "Daming");
       AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Daming");
     } else if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {

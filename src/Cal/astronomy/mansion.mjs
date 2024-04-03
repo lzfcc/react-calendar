@@ -10,6 +10,7 @@ import {
     LonHigh2Flat,
     twilight,
     eclp2Equa,
+    HighLon2FlatLat,
 } from "./pos_convert.mjs";
 import { deci, fmod } from "../parameter/functions.mjs";
 
@@ -830,7 +831,7 @@ export const midstarQing = (Name, Y, LonTod, LonMor, Rise) => {
     );
     const SunVd = LonMor - LonTod;
     const SunEquaVd = LonHigh2Flat(Sobliq, LonMor) - LonHigh2Flat(Sobliq, LonTod);
-    const Twilight = twilight(Sobliq, RiseLat, (LonTod + SunVd / 2) % 360);
+    const Twilight = twilight(RiseLat, HighLon2FlatLat(Sobliq, (LonTod + SunVd / 2) % 360));
     const MorningstarTmp =
         (Rise - Twilight) * SunEquaVd - (0.5 - Rise + Twilight) * 360; // 考成上編中星時刻法沒有考慮地球公轉
     const DuskstarTmp =

@@ -275,13 +275,13 @@ export const outputNewmWeb = (start, end, isAuto, listRaw) => {
 }
 // console.log(outputNewmWeb(982, 984, true, []))
 
-export const outputNewmWeb_DE = (start, end) => {
+export const outputNewmWeb_DE = (start, end, Longitude) => {
     const data = []
     start = Math.trunc(start)
     end = Math.trunc(end)
     let k = 0
     for (let Year = start; Year <= end; Year++) {
-        const result = CalNewm_DE(Year)[0]
+        const result = CalNewm_DE(Year, Year, Longitude)[0]
         result.id = Year // 给每个item一个唯一id在前端正确缓存高度
         result.Count = 1
         data[k] = data[k] || []
@@ -342,8 +342,12 @@ export const outputEphWeb = (year, Name) => {
     }
 }
 
-export const outputEphModernWeb = (year, Longitude, Latitude) => {
-    const [result] = CalEph_Modern(year, undefined, Longitude, Latitude)
+export const outputEphModernWeb = (year, Longitude, Latitude, h) => {
+    year = +year
+    Longitude = +Longitude
+    Latitude = +Latitude
+    h = +h
+    const [result] = CalEph_Modern(year, undefined, Longitude, Latitude, h)
     const { Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor, ...OtherResult
     } = result
     return {

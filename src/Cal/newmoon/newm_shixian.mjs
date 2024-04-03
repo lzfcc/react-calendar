@@ -22,7 +22,7 @@ import {
   LonHigh2FlatB,
   deg2Hms,
   Lat2NS,
-  sunRiseQing,
+  sunRise
 } from "../astronomy/pos_convert.mjs";
 import {
   fix,
@@ -508,7 +508,7 @@ const moonJiazi = (
   const Jichou = R4 * sin2d(t2(MSDif2)); // 次輪月距日倍度之通弦。120：0.0407827。135：0.0306884。320：0.0278970
   const AngJichoujia = abs(
     AcrMorbTmp + // 均輪心距最卑之度=引數與半周相減
-      (flag1 * f4(MSDif) * t1(MSDif2)) / 2,
+    (flag1 * f4(MSDif) * t1(MSDif2)) / 2,
   ); // 加減月距日距象限度爲夾角。距象限90度和我的算式等效。
   // 初均減者：月距日過一三象限，加；不過象限或過二象限，減。
   // 初均加者：相反。若初均與均輪心距最卑相加不足減月距日距象限度，則轉減。若相加過半周，則與全周相減。110、120用加：84度22分19秒=84.3719444444。135、230用減：8度53分6秒=8.885。320、300：74度14分51秒=74.2475
@@ -620,7 +620,7 @@ const moonGuimao = (
   const Dif90 = t3(SunMoonApoDif) / 10;
   const Corr4Max =
     deci(Dif90) *
-      (Corr4MaxList[Math.trunc(Dif90) + 1] - Corr4MaxList[Math.trunc(Dif90)]) +
+    (Corr4MaxList[Math.trunc(Dif90) + 1] - Corr4MaxList[Math.trunc(Dif90)]) +
     Corr4MaxList[Math.trunc(Dif90)]; // 兩弦最大末均
   const Corr4 = -sind(AcrMSDif) * Corr4Max; // 末均。实月距日初宫至五宫为减，六宫至十一宫为加。
   const Whitegong = Acr1 + Corr2 + Corr3 + Corr4; // 白道實行moon's path
@@ -811,8 +811,8 @@ export const N4 = (Name, Y) => {
       const EclpmidGong =
         NoonEclpGong +
         (NoonEclpGong < 180 ? 1 : -1) *
-          (NoonEclpHigh > 90 ? -1 : 1) *
-          EclpmidSouDif; // 用時黃平象限宮度。算例167度3分52秒=167.06444444444
+        (NoonEclpHigh > 90 ? -1 : 1) *
+        EclpmidSouDif; // 用時黃平象限宮度。算例167度3分52秒=167.06444444444
       const SunEclpmidDif = abs(SunGong - EclpmidGong); // 用時太陽距黃平象限=月距限。算例壬子弧62度3分52秒=62.06444444444
       const SignEw = (SunGong - EclpmidGong + 360) % 360 < 180 ? 1 : -1; // 太陽黃經大於黃平象限宮度爲限東。大於0爲限東，小於0爲限西——我想了下應該這樣處理
       // const SignEw = Math.sign(SunEclpmidDif) // 限東為1，西-1
@@ -1104,7 +1104,7 @@ export const N4 = (Name, Y) => {
     } = distAppa(SmdAsm, DistrealAsm, AngArcAvgAsm); // 見符號4
     const AngHigharcAsm_DistappaAvg = abs(
       abs(AngWhiteHigharcAsm - AngWhiteHigharcAvg) +
-        (SunAvg.SunLon < 180 ? -1 : 1) * AngDistrealAvg,
+      (SunAvg.SunLon < 180 ? -1 : 1) * AngDistrealAvg,
     ); // 設時高弧交用時視距角
     let flag2 = 1;
     let flag4 = 1;
@@ -1134,14 +1134,14 @@ export const N4 = (Name, Y) => {
     } = distAppa(SmdAcr0, DistrealAcr0, AngArcAvgAcr0); // 真時對視距角法與設時同
     const AngHigharcAcr0_DistappaAsm = abs(
       abs(AngWhiteHigharcAcr0 - AngWhiteHigharcAsm) +
-        flag3(
-          AngWhiteHigharcAcr0,
-          FlagDistrealAsm,
-          FlagDistrealAcr0,
-          AngWhiteHigharcAsm,
-          AngDistrealAsm,
-        ) *
-          AngDistrealAsm,
+      flag3(
+        AngWhiteHigharcAcr0,
+        FlagDistrealAsm,
+        FlagDistrealAcr0,
+        AngWhiteHigharcAsm,
+        AngDistrealAsm,
+      ) *
+      AngDistrealAsm,
     ); // 真時高弧交設時視距角
     if (FlagDistrealAcr0 === FlagDistrealAsm) flag4 = -1;
     const AngDistMovingAcr1 = t2(
@@ -1439,8 +1439,8 @@ export const N4 = (Name, Y) => {
       step +
       (fm360(SunLonBef - MoonLonBef) /
         (fm360(MoonLonAft - MoonLonBef) - fm360(SunLonAft - SunLonBef))) *
-        step *
-        2; // 一小時月距日實行
+      step *
+      2; // 一小時月距日實行
     return Math.trunc(Smd) + Deci; // 實朔實時距冬至次日的時間
   };
   const term = (i, isMid) => {
@@ -1693,7 +1693,7 @@ export const N4 = (Name, Y) => {
             : tmp < SunLimitYangAcr;
       else isEcli = tmp < MoonLimit;
       if (isEcli) {
-        Rise[i] = sunRiseQing(Sobliq, RiseLat, AcrSunLon);
+        Rise[i] = sunRise(RiseLat, HighLon2FlatLat(Sobliq, AcrSunLon)).t0;
         if (isNewm) {
           if (
             deci(NowSmd[i]) < Rise[i] - 5 / 96 ||
@@ -1759,7 +1759,7 @@ export const N4 = (Name, Y) => {
             AcrSunLon,
           );
       }
-    
+
       /// ///// 節氣
       if (isNewm) {
         const Func = term(i, true);
@@ -1806,22 +1806,20 @@ export const N4 = (Name, Y) => {
       if (Ecli[i]) {
         if (isNewm) {
           EcliPrint[i] = `<span class='eclipse'>S${NoleapMon}</span>`;
-          EcliPrint[i] += `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${
-            Ecli[i].Start
-          }甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(
-            1 - Rise[i],
-          )} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(
-            Ecli[i].GreatSEquaLon,
-          )} ${Lat2NS(Ecli[i].GreatSLat)}`;
+          EcliPrint[i] += `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
+            }甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(
+              1 - Rise[i],
+            )} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(
+              Ecli[i].GreatSEquaLon,
+            )} ${Lat2NS(Ecli[i].GreatSLat)}`;
         } else {
           EcliPrint[i] = `<span class='eclipse'>M${NoleapMon}</span>`;
-          EcliPrint[i] += `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${
-            Ecli[i].Start
-          }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(
-            Ecli[i].GreatMLon,
-          )} ${Lat2NS(Ecli[i].GreatMLat)} 赤道${deg2Hms(
-            Ecli[i].GreatMEquaLon,
-          )} ${Lat2NS(Ecli[i].GreatMEquaLat)}`;
+          EcliPrint[i] += `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
+            }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(
+              Ecli[i].GreatMLon,
+            )} ${Lat2NS(Ecli[i].GreatMLat)} 赤道${deg2Hms(
+              Ecli[i].GreatMEquaLon,
+            )} ${Lat2NS(Ecli[i].GreatMEquaLat)}`;
         }
         if (Ecli[i].Magni >= 99) {
           NowSc[i] += `<span class='eclipse-symbol'>●</span>`;

@@ -33,6 +33,7 @@ import {
   GongFlat2High,
   GongHigh2Flat,
   HighLon2FlatLat,
+  sunRise,
 } from "./pos_convert.mjs";
 import { mansionModern } from "../modern/mansion.mjs";
 import {
@@ -41,11 +42,9 @@ import {
   equa2Ceclp,
   ceclp2Equa,
   equa2Eclp,
-  sunRise,
   testEclpEclpDif,
 } from "./pos_convert_modern.mjs";
 import { autoEquaEclp, autoMoonLon, autoMoonLat, autoLat, autoRise, autoDial } from "./auto.mjs";
-// sunRise, Lon2DialWest, eclp2Ceclp, testEclpEclpDif, equa2Ceclp, equa2Eclp,
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {
@@ -503,11 +502,10 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
       } // 加上太陽改正
       const Gong = GongRaw * p;
       const Lon = Gong2Lon(Gong);
-      const GongMidn = GongMidnRaw * p;
-      const LonMidn = Gong2Lon(GongMidn);
-      const WestA = HighLon2FlatLat(Sobliq * p, Lon) / p; // 球面三角緯度
-      const WestB = sunRise(Sobliq * p, RiseLat || 34.284, LonMidn);
-      const WestC = Lon2DialWest(Sobliq * p, DialLat || 34.404, LonMidn);
+      let WestA = HighLon2FlatLat(Sobliq * p, Lon); // 球面三角緯度
+      const WestB = sunRise(RiseLat || 34.284, WestA);
+      const WestC = Lon2DialWest(DialLat || 34.404, WestA);
+      WestA /= p
       let LatPrint = "-";
       let LatErrPrint = "-";
       let SunrisePrint = "-";
@@ -523,8 +521,8 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
       LatErrPrint = (Lat - WestA).toFixed(4);
       if (RiseLat) {
         SunrisePrint = Rise.toFixed(4);
-        SunriseErrPrint1 = (Rise - WestB.t).toFixed(4);
-        SunriseErrPrint2 = (Rise - WestB.t0).toFixed(4);
+        SunriseErrPrint1 = (Rise - WestB.t * 100).toFixed(4);
+        SunriseErrPrint2 = (Rise - WestB.t0 * 100).toFixed(4);
       }
       if (DialLat) {
         DialPrint = Dial.toFixed(4);
@@ -799,11 +797,14 @@ export const bindMansionAccumModernList = (Name, Jd) => {
   const {
     EclpAccumList: EclpAccumListRaw,
     EquaAccumList: EquaAccumListRaw,
+    CeclpAccumList: CeclpAccumListRaw,
     SolsEclpMansion,
     SolsEquaMansion,
+    SolsCeclpMansion
   } = mansionModern(Jd, Name);
   const EclpAccumList = {};
   const EquaAccumList = {};
+  const CeclpAccumList = {}
   for (const Mansion in EclpAccumListRaw) {
     EclpAccumList[Mansion] =
       (EclpAccumListRaw[Mansion] - EclpAccumListRaw["角"] + 360) % 360;
@@ -812,31 +813,45 @@ export const bindMansionAccumModernList = (Name, Jd) => {
     EquaAccumList[Mansion] =
       (EquaAccumListRaw[Mansion] - EquaAccumListRaw["角"] + 360) % 360;
   }
+  for (const Mansion in CeclpAccumListRaw) {
+    CeclpAccumList[Mansion] =
+      (CeclpAccumListRaw[Mansion] - CeclpAccumListRaw["角"] + 360) % 360;
+  }
   const EclpSortedList = Object.entries(EclpAccumList).sort(
     (a, b) => a[1] - b[1],
   );
   const EquaSortedList = Object.entries(EquaAccumList).sort(
     (a, b) => a[1] - b[1],
   );
+  const CeclpSortedList = Object.entries(CeclpAccumList).sort(
+    (a, b) => a[1] - b[1],
+  );
   const EclpList = [];
   const EquaList = [];
+  const CeclpList = [];
   const EclpAccumPrint = [];
   const EquaAccumPrint = [];
+  const CeclpAccumPrint = [];
   for (let i = 0; i < 27; i++) {
     EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(6);
     EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(6);
+    CeclpList[i] = +(CeclpSortedList[i + 1][1] - CeclpSortedList[i][1]).toFixed(6);
   }
   EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(6);
   EquaList[27] = +(360 - EquaSortedList[27][1]).toFixed(6);
+  CeclpList[27] = +(360 - CeclpSortedList[27][1]).toFixed(6);
   for (let i = 0; i < 4; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
+    CeclpAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
+    let CeclpSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
       EclpSum += EclpList[index];
       EquaSum += EquaList[index];
+      CeclpSum += CeclpList[index];
     }
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
@@ -850,21 +865,30 @@ export const bindMansionAccumModernList = (Name, Jd) => {
           5,
         )}　\n${NumList[index]} ${EquaList[index]}`,
       );
+      CeclpAccumPrint[i].push(
+        `${CeclpSortedList[index][0]} ${CeclpSortedList[index][1].toFixed(
+          5,
+        )}　\n${NumList[index]} ${CeclpList[index]}`,
+      );
     }
     EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3);
+    CeclpAccumPrint[i][8] = DirList[i] + CeclpSum.toFixed(3);
   }
-  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]);
+  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CeclpAccumPrint[4] = ["下爲古度"]);
   const p = 360 / 365.25;
   for (let i = 5; i < 9; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
+    CeclpAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
+    let CeclpSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = (i - 5) * 7 + j;
       EclpSum += EclpList[index] / p;
       EquaSum += EquaList[index] / p;
+      CeclpSum += CeclpList[index] / p;
     }
     for (let j = 0; j < 7; j++) {
       const index = (i - 5) * 7 + j;
@@ -878,15 +902,23 @@ export const bindMansionAccumModernList = (Name, Jd) => {
           4,
         )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(5)}`,
       );
+      CeclpAccumPrint[i].push(
+        `${CeclpSortedList[index][0]} ${(CeclpSortedList[index][1] / p).toFixed(
+          4,
+        )}　\n${NumList[index]} ${(CeclpList[index] / p).toFixed(5)}`,
+      );
     }
     EclpAccumPrint[i][8] = DirList[i - 5] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i - 5] + EquaSum.toFixed(3);
+    CeclpAccumPrint[i][8] = DirList[i - 5] + CeclpSum.toFixed(3);
   }
   return {
     EclpAccumPrint,
     EquaAccumPrint,
+    CeclpAccumPrint,
     SolsEclpPrint: SolsEclpMansion,
     SolsEquaPrint: SolsEquaMansion,
+    SolsCeclpPrint: SolsCeclpMansion,
   };
 };
 // console.log(bindMansionAccumModernList('Chongzhen', 2424222))

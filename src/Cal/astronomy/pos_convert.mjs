@@ -117,10 +117,10 @@ export const abc_Sph = (a, b, c) => {
 };
 
 // https://zhuanlan.zhihu.com/p/265334815 清代日出公式推導
-export const sunRiseQing = (Sobliq, RiseLat, Lon) =>
+const sunRiseQing = (RiseLat, Lon, d) =>
   0.25 +
   (Lon < 180 ? -1 : 1) *
-  (asind(tand(abs(HighLon2FlatLat(Sobliq, Lon)) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
+  (asind(tand(abs(d) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
 export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
   const MSDif = (MEquaLon - SEquaLon + 360) % 360;
   const Dif =
@@ -132,13 +132,37 @@ export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
     MoonSet: deci(SetTmp + (12 * SetTmp) / 360),
   };
 };
-export const twilight = (Sobliq, RiseLat, SunLon) => {
+
+/**
+ * // https://zh.wikipedia.org/zh-hk/%E6%97%A5%E5%87%BA%E6%96%B9%E7%A8%8B%E5%BC%8F
+// cosw=-tanftand 。f緯度，d赤緯 w日出時角
+// =sina-sinfsind/cosfcosd 是考慮了視直徑、蒙氣差之後的。維基：a=.83
+* @param {*} f 地理緯度 
+* @param {*} d （正午？）赤緯 
+ * @returns 日出時刻 0.x日
+ */
+export const sunRise = (f, d) => {
+  const w0 = acosd(-tand(f) * tand(d));
+  const t0 = (180 - w0) / 360; // 未修正
+  const w = acosd((sind(-0.83) - sind(f) * sind(d)) / (cosd(f) * cosd(d)));
+  const t = (180 - w) / 360; // 考慮蒙气差、視半徑
+  const tSet = (180 + w) / 360; // 日落考慮蒙气差、視半徑
+  return { t0, t, tSet };
+};
+
+/**
+ * 
+ * @param {*} RiseLat 地理緯度
+ * @param {*} d 赤緯
+ * @returns 
+ */
+export const twilight = (RiseLat, d) => {
   // 民用曚影時長。應該也是用的正午太陽緯度
   const limit = 6; // 民用6度，天文18度
   const a = 90 + limit;
   const b = 90 - RiseLat; // 所在地北極距天頂
-  const c = 90 - HighLon2FlatLat(Sobliq, SunLon);
-  const Rise = sunRiseQing(Sobliq, RiseLat, SunLon);
+  const c = 90 - d;
+  const Rise = sunRise(RiseLat, d).t0;
   return abc_Sph(a, b, c) / 360 - (0.5 - Rise);
 };
 // console.log(twilight(23.4916666667, 39.9166666667, 270)) // 日出0.3090277778，曚影0.07083333333

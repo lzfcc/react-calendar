@@ -1927,7 +1927,7 @@ export const AutoEclipse = (
     // 這就不用%solar了，後面都模了的
     const { Type } = Para[Name];
     let Eclipse = {};
-    if (Type <= 3 || ["Yuanjia", "Daming", "Liangwu"].includes(Name)) {
+    if (Type <= 3 || ["Yuanjia", "Daming", "Yukuo"].includes(Name)) {
         Eclipse = Eclipse1(NodeAccum, Name);
     } else if (['Zhangmengbin', 'Liuxiaosun'].includes(Name)) {
         NodeAccum += AutoTcorr(AnomaAccum, AvgSd, 'Daye', NodeAccum).NodeAccumCorrA

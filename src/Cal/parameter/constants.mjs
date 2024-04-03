@@ -33,13 +33,13 @@ export const NameList = {
   Qianxiang: "乾象",
   // Huangchu: '黃初(擬)',
   Jingchu: "景初",
-  Liuzhi: "正曆(擬)", // 劉智正曆
-  Wangshuozhi: "通曆(擬)", // 王朔之通曆
+  Liuzhi: "劉智正曆(擬)",
+  Wangshuozhi: "王朔之通曆(擬)",
   Sanji: "三紀",
   Xuanshi: "玄始(擬)", // 趙𢾺，梁趙曆
   Yuanjia: "元嘉",
   Daming: "大明",
-  // Liangwu: "明克讓(擬大同代)", // 梁武帝大同曆
+  Yukuo: "虞𠠎大同(擬)", // 梁武帝大同曆
   Tsrengguang: "正光",
   Xinghe: "興和",
   Tianbao: "天保",
@@ -103,8 +103,8 @@ export const NameList = {
   // Wannian: '聖壽萬年',
   // Huangzhong: '黃鐘',
   // Huihui: '回回',
-  Xinfa: "新法曆書(待定)",
-  Yongnian: "康熙永年表(待定)",
+  Xinfa: "新法曆書(日食待定)",
+  Yongnian: "康熙永年表(日食待定)",
   Jiazi: "曆象考成",
   Guimao: "曆象考成後編",
 };

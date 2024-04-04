@@ -107,6 +107,7 @@ export const autoLat = (Sd, Name, isBare) => {
   }
   return Lat;
 };
+
 export const autoRise = (Sd, SolsDeci, Name) => {
   const { Type } = Para[Name];
   let { Solar, SolarRaw } = Para[Name];
@@ -230,94 +231,6 @@ export const autoDial = (Sd, SolsDeci, Name) => {
   return Dial;
 };
 
-export const autoMoonLat = (NodeAccum, Name) => {
-  const { Type } = Para[Name];
-  // Solar = Solar || SolarRaw
-  let MoonLat = {};
-  if (Type <= 3) {
-    MoonLat = MoonLatTable(NodeAccum, "Qianxiang");
-  } else if (Name === "Yuanjia") {
-    MoonLat = MoonLatTable(NodeAccum, Name);
-  } else if (Type === 4) {
-    MoonLat = MoonLatTable(NodeAccum, "Daming");
-  } else if (Type === 6) {
-    MoonLat = MoonLatTable(NodeAccum, "Huangji");
-  } else if (["Qintian", "Xuanming", "Zhide", "Dayan"].includes(Name)) {
-    MoonLat = MoonLatTable(NodeAccum, "Dayan");
-  } else if (Type === 7) {
-    MoonLat = MoonLatTable(NodeAccum, Name);
-  } else if (["Chongxuan", "Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
-    MoonLat = MoonLatFormula(NodeAccum, "Chongxuan");
-  } else if (["Chongtian"].includes(Name)) {
-    MoonLat = MoonLatFormula(NodeAccum, Name);
-  } else if (["Guantian", "Mingtian", "Fengyuan", "Zhantian"].includes(Name)) {
-    MoonLat = MoonLatFormula(NodeAccum, "Guantian");
-  } else if (Type === 9 || Type === 10) {
-    MoonLat = MoonLatFormula(NodeAccum, "Jiyuan");
-  }
-  const MoonEquaLat = MoonLat.EquaLat || 0;
-  const MoonEclpLat = MoonLat.Lat || 0; // MoonEquaLat - autoLat(SunEclpLon, .5, Name)
-  return { MoonEclpLat, MoonEquaLat };
-};
-// console.log(autoMoonLat(2, 'Tsrengyuan').MoonEclpLat)
-
-export const autoMoonLon = (NodeAccum, MoonEclp, Name) => {
-  let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
-  Solar = Solar || SolarRaw;
-  Sidereal = Sidereal || Solar;
-  const MoonAvgVd = AutoMoonAvgV(Name);
-  const Quadrant = Type === 11 ? Sidereal / 4 : AutoNodeCycle(Name) / 4;
-  // 正交月黃經。《數》頁351
-  // const tmp2 = Node - NewmNodeAccumPrint[i - 1] // 平交入朔
-  // const NodeAnomaAccum = (AnomaAccumNight + tmp2) % Anoma // 每日夜半平交入轉
-  const tmp3 = Node - NodeAccum; // 距後日
-  const tmp4 = tmp3 * MoonAvgVd; // 距後度
-  // let NodeSdDay = Sd + tmp3 // 每日夜半平交日辰，我定義的：夜半的下個正交距離冬至日數。這算出來又是做什麼的？？
-  const NodeEclp = (MoonEclp + tmp4) % Sidereal; // 正交距冬至度數 // 算出來好迷啊，莫名其妙
-  // const NodeSdMoonTcorr = AutoTcorr(NodeAnomaAccum, Sd, Name, NodeAccum).MoonTcorr // 遲加疾減
-  // NodeSdDay = (NodeSdDay + NodeSdMoonTcorr) % Solar // 正交日辰=平交日辰+月亮改正
-  const MoonNodeDif = MoonEclp - NodeEclp;
-  const MoonNodeDifHalf = MoonNodeDif % (Quadrant * 2);
-  const MoonNodeDifQuar = MoonNodeDif % Quadrant; // 所入初末限：置黃道宿積度，滿交象度（90多那個）去之，在半交象已下爲初限
-  const MoonNodeDifRev =
-    Quadrant / 2 - Math.abs(Quadrant / 2 - MoonNodeDifQuar);
-  let EclpWhiteDif = 0;
-  let EquaWhiteDif = 0;
-  let EquaLat = 0;
-  let EquaLon = 0;
-  let WhiteLon = 0;
-  if (Type === 6) {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Huangji");
-  } else if (Name === "Qintian") {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Qintian");
-  } else if (Type === 7 || Name === "Chongxuan") {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Dayan");
-  } else if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Yingtian");
-  } else if (["Guantian", "Fengyuan", "Zhantian"].includes(Name)) {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Guantian");
-  } else if (["Chongtian", "Mingtian"].includes(Name)) {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, Name);
-  } else if (Type === 9 || Type === 10) {
-    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Jiyuan");
-  } else if (Type === 11) {
-    const Func = HushigeyuanMoon(NodeEclp, MoonNodeDif);
-    EquaWhiteDif = Func.EquaWhiteDif;
-    EquaLat = Func.EquaLat;
-    EquaLon = Func.EquaLon;
-    WhiteLon = Func.WhiteLon;
-  }
-  const sign1 = MoonNodeDifHalf > Quadrant ? -1 : 1; // 距半交後正交前，以差數爲減；距正交後、半交前，以差數爲加
-  EclpWhiteDif *= sign1;
-  if (Type < 11) {
-    WhiteLon = MoonEclp + EclpWhiteDif;
-  }
-  return { NodeEclp, WhiteLon, EclpWhiteDif, EquaWhiteDif, EquaLon, EquaLat };
-};
-// console.log(autoMoonLon(234, 45, 4.11, 'Dayan'))
-
-
-
 // 《數》頁361 白道度是以黃道度、正交黃經的二元函數
 export const MoonLonFormula = (NodeEclpLon, MoonNodeDifRev, Name) => {
   // SunEclpLon, NodeAccum,  // 該日距冬至黃道度，入交日。不知是否應該加上日躔
@@ -406,3 +319,85 @@ export const MoonLatFormula = (NodeAccum, Name, AnomaAccum, Sd) => {
   return { Lat, Lat1 };
 };
 // console.log(MoonLatFormula(15, 'Jiyuan'))
+
+export const autoMoonLon = (NodeAccum, MoonWhiteLon, Name) => {
+  let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
+  Solar = Solar || SolarRaw;
+  Sidereal = Sidereal || Solar;
+  const MoonAvgVd = AutoMoonAvgV(Name);
+  const Quadrant = Type === 11 ? Sidereal / 4 : AutoNodeCycle(Name) / 4;
+  // 正交月黃經。《數》頁351
+  // const tmp2 = Node - NewmNodeAccumPrint[i - 1] // 平交入朔
+  // const NodeAnomaAccum = (AnomaAccumNight + tmp2) % Anoma // 每日夜半平交入轉
+  const tmp3 = Node - NodeAccum; // 距後日
+  const tmp4 = tmp3 * MoonAvgVd; // 距後度
+  // let NodeSdDay = Sd + tmp3 // 每日夜半平交日辰，我定義的：夜半的下個正交距離冬至日數。這算出來又是做什麼的？？
+  const NodeEclp = (MoonWhiteLon + tmp4) % Sidereal; // 正交距冬至度數 // 算出來好迷啊，莫名其妙
+  // const NodeSdMoonTcorr = AutoTcorr(NodeAnomaAccum, Sd, Name, NodeAccum).MoonTcorr // 遲加疾減
+  // NodeSdDay = (NodeSdDay + NodeSdMoonTcorr) % Solar // 正交日辰=平交日辰+月亮改正
+  const MoonNodeDif = MoonWhiteLon - NodeEclp;
+  const MoonNodeDifHalf = MoonNodeDif % (Quadrant * 2);
+  const MoonNodeDifQuar = MoonNodeDif % Quadrant; // 所入初末限：置黃道宿積度，滿交象度（90多那個）去之，在半交象已下爲初限
+  const MoonNodeDifRev =
+    Quadrant / 2 - Math.abs(Quadrant / 2 - MoonNodeDifQuar);
+  let EclpWhiteDif = 0;
+  let EquaWhiteDif = 0;
+  let EquaLat = 0;
+  let EquaLon = 0;
+  let EclpLon = 0;
+  let EclpLat = 0
+  if (Type === 6) {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Huangji");
+  } else if (Name === "Qintian") {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Qintian");
+  } else if (Type === 7 || Name === "Chongxuan") {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Dayan");
+  } else if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Yingtian");
+  } else if (["Guantian", "Fengyuan", "Zhantian"].includes(Name)) {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Guantian");
+  } else if (["Chongtian", "Mingtian"].includes(Name)) {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, Name);
+  } else if (Type === 9 || Type === 10) {
+    EclpWhiteDif = MoonLonFormula(NodeEclp, MoonNodeDifRev, "Jiyuan");
+  } else if (Type === 11) {
+    const Func = HushigeyuanMoon(NodeEclp, MoonNodeDif);
+    EquaWhiteDif = Func.EquaWhiteDif;
+    EquaLat = Func.EquaLat;
+    EquaLon = Func.EquaLon;
+    EclpLon = Func.WhiteLon;
+  }
+  const sign1 = MoonNodeDifHalf > Quadrant ? -1 : 1; // 距半交後正交前，以差數爲減；距正交後、半交前，以差數爲加
+  EclpWhiteDif *= sign1;
+  if (Type < 11) {
+    EclpLon = MoonWhiteLon + EclpWhiteDif;
+  }
+  let MoonLat = {};
+  if (Type < 11) {
+    if (Type <= 3) {
+      MoonLat = MoonLatTable(NodeAccum, "Qianxiang");
+    } else if (Name === "Yuanjia") {
+      MoonLat = MoonLatTable(NodeAccum, Name);
+    } else if (Type === 4) {
+      MoonLat = MoonLatTable(NodeAccum, "Daming");
+    } else if (Type === 6) {
+      MoonLat = MoonLatTable(NodeAccum, "Huangji");
+    } else if (["Qintian", "Xuanming", "Zhide", "Dayan"].includes(Name)) {
+      MoonLat = MoonLatTable(NodeAccum, "Dayan");
+    } else if (Type === 7) {
+      MoonLat = MoonLatTable(NodeAccum, Name);
+    } else if (["Chongxuan", "Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
+      MoonLat = MoonLatFormula(NodeAccum, "Chongxuan");
+    } else if (["Chongtian"].includes(Name)) {
+      MoonLat = MoonLatFormula(NodeAccum, Name);
+    } else if (["Guantian", "Mingtian", "Fengyuan", "Zhantian"].includes(Name)) {
+      MoonLat = MoonLatFormula(NodeAccum, "Guantian");
+    } else if (Type === 9 || Type === 10) {
+      MoonLat = MoonLatFormula(NodeAccum, "Jiyuan");
+    }
+    EquaLat = MoonLat.EquaLat;
+    EclpLat = MoonLat.Lat; // MoonEquaLat - autoLat(SunEclpLon, .5, Name)
+  }
+  return { NodeEclp, EclpLon, EclpWhiteDif, EquaWhiteDif, EquaLon, EquaLat, EclpLat };
+};
+// console.log(autoMoonLon(234, 45, 4.11, 'Dayan'))

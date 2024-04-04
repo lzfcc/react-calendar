@@ -18,6 +18,7 @@ import { deg2MansionModern, mansionModernList } from "../modern/mansion.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { deltaT } from "../time/delta-t.mjs";
 import { bindTopo_vsop } from "../modern/vsop_elp_bind.mjs";
+import { siderealTime } from "../time/sidereal_time.mjs";
 const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
 /**
  * 
@@ -27,9 +28,10 @@ const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
  * @param {*} Latitude 地理緯度
  * @returns 
  */
-// export const D3 = (YearStart, YearEnd, Longitude, Latitude, h) => {
+// export const D3 = (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
 export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
   YearEnd = YearEnd || YearStart;
+  MansionSystem = MansionSystem || 'Shi'
   const Main = (Y) => {
     const {
       LeapNumTerm,
@@ -102,11 +104,9 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         /// ///////天文曆///////////
         const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(MidnTTJd, Longitude, Latitude, h)
         const SunEclpLatNoon = calPos_vsop('Sun', MidnTTJd + .5).EquaLat
-        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數
-        const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
-        const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
+        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數        
         Pos[i][k] = ``
-        for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度          
+        for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度
           const EquaMansion = deg2MansionModern(EquaLon[j] * R2D, EquaAccumList).Mansion;
           const CeclpMansion = deg2MansionModern(CeclpLon[j], CeclpAccumList).Mansion;
           const EclpMansion = deg2MansionModern(EclpLon[j] * R2D, EclpAccumList).Mansion;
@@ -119,9 +119,16 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
             + `<span class="Ceclp">` + CeclpMansion + `</span>`
             + `<span class="Eclp">` + EclpMansion + `</span></p>`
         }
-        Morningstar[i][k] = deci2hms(Rise - TwilightLeng).hm + ' ' + deci2hms(Rise).hm
-        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Set + TwilightLeng).hm
-
+        const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
+        const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
+        const Morning = Rise - TwilightLeng
+        const Dusk = Set + TwilightLeng
+        const LASTMorning = siderealTime(MidnTTJd + Morning, Longitude) // 晨昏恆星時
+        const LASTDusk = siderealTime(MidnTTJd + Dusk, Longitude)
+        const MorningSouth = ((LASTMorning - 12) * 15 + 360) % 360 // 正南方距離春分的度數
+        const DuskSouth = ((LASTDusk - 12) * 15 + 360) % 360
+        Morningstar[i][k] = deg2MansionModern(MorningSouth, EquaAccumList, 2).Mansion + ' ' + deci2hms(Morning).hm + ' ' + deci2hms(Rise).hm
+        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + deg2MansionModern(DuskSouth, EquaAccumList, 2).Mansion
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
         const MansionOrder = (Jd[i][k] + 0) % 28;

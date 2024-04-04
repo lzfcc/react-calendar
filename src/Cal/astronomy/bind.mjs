@@ -44,7 +44,7 @@ import {
   equa2Eclp,
   testEclpEclpDif,
 } from "./pos_convert_modern.mjs";
-import { autoEquaEclp, autoMoonLon, autoMoonLat, autoLat, autoRise, autoDial } from "./auto.mjs";
+import { autoEquaEclp, autoMoonLon, autoLat, autoRise, autoDial } from "./auto.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {
@@ -675,7 +675,7 @@ export const bindMansionAccumList = (Name, Y) => {
   const NameList = Type === 13 ? MansionNameListQing : MansionNameList;
   let Func = {};
   if (Type === 13) Func = mansionQing(Name, Y, 0);
-  else Func = mansion(Name, Y, 0, 0);
+  else Func = mansion(Name, Y, 0);
   const { SolsEclpMansion, SolsEquaMansion } = Func;
   let SolsEclpPrint = "";
   let SolsEquaPrint = "";
@@ -923,13 +923,13 @@ export const bindMansionAccumModernList = (Name, Jd) => {
 };
 // console.log(bindMansionAccumModernList('Chongzhen', 2424222))
 
-export const bindMoonLonLat = (NodeAccum, MoonEclp) => {
+export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
-  MoonEclp = +MoonEclp;
+  MoonWhite = +MoonWhite;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  if (MoonEclp >= 365.246 || MoonEclp < 0)
+  if (MoonWhite >= 365.246 || MoonWhite < 0)
     throw new Error("請輸入一週天度內的度數");
   let Print = [];
   Print = Print.concat(
@@ -951,22 +951,21 @@ export const bindMoonLonLat = (NodeAccum, MoonEclp) => {
       "Shoushi",
     ].map((Name) => {
       let NodeSdDegPrint = "-";
-      let WhiteLonPrint = "-";
+      let EclpLonPrint = "-";
       let EquaLonPrint = "-";
       let EclpWhiteDifPrint = "-";
-      // let EclpEquaDifPrint = '-'
       let EquaWhiteDifPrint = "-";
       let LatPrint = "-";
       let EquaLatPrint = "-";
       const {
         NodeEclp,
-        EquaLon,
         EclpWhiteDif,
         EquaWhiteDif,
-        WhiteLon,
+        EquaLon,
+        EclpLon,
         EquaLat,
-      } = autoMoonLon(NodeAccum, MoonEclp, Name);
-      const { MoonEclpLat } = autoMoonLat(NodeAccum, Name);
+        EclpLat
+      } = autoMoonLon(NodeAccum, MoonWhite, Name)
       if (NodeEclp) {
         NodeSdDegPrint = NodeEclp.toFixed(4);
       }
@@ -974,12 +973,12 @@ export const bindMoonLonLat = (NodeAccum, MoonEclp) => {
         EquaLonPrint = EquaLon.toFixed(4);
         EquaWhiteDifPrint = EquaWhiteDif.toFixed(4);
       }
-      if (WhiteLon) {
-        WhiteLonPrint = WhiteLon.toFixed(4);
+      if (EclpLon) {
+        EclpLonPrint = EclpLon.toFixed(4);
         EclpWhiteDifPrint = EclpWhiteDif.toFixed(4);
       }
-      if (MoonEclpLat) {
-        LatPrint = MoonEclpLat.toFixed(4);
+      if (EclpLat) {
+        LatPrint = EclpLat.toFixed(4);
       }
       if (EquaLat) {
         EquaLatPrint = EquaLat.toFixed(4);
@@ -989,7 +988,7 @@ export const bindMoonLonLat = (NodeAccum, MoonEclp) => {
         data: [
           NodeSdDegPrint,
           EquaLonPrint,
-          WhiteLonPrint,
+          EclpLonPrint,
           EclpWhiteDifPrint,
           EquaWhiteDifPrint,
           LatPrint,

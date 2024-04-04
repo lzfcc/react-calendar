@@ -78,18 +78,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const Jd = [];
     const Nayin = [];
     const Week = [];
-    const Equa = [];
-    const Eclp = [];
-    const Rise = [];
     const Morningstar = [];
-    const Lat = [];
     const Duskstar = [];
-    const MoonEclp = [];
-    const MoonEclpLat = [];
-    const MoonEqua = [];
-    const MoonEquaLat = [];
-    const MoonRise = [];
-    const NodeMapo = [];
+    const Pos = []
     let DayAccum = 0;
     const JieAccum = 0; // 各節積日
     const JianchuDayAccum = NewmSmd[0]; // 建除
@@ -118,18 +109,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
         (Jd[i] = []),
         (Nayin[i] = []),
         (Week[i] = []),
-        (Eclp[i] = []),
-        (Equa[i] = []),
-        (Rise[i] = []),
         (Morningstar[i] = []),
-        (Lat[i] = []),
         (Duskstar[i] = []),
-        (MoonEclp[i] = []),
-        (MoonEclpLat[i] = []),
-        (MoonEqua[i] = []),
-        (MoonEquaLat[i] = []),
-        (MoonRise[i] = []),
-        (NodeMapo[i] = []);
+        Pos[i] = []
       for (
         let k = 1;
         k <= Math.trunc(NewmSmd[i]) - Math.trunc(NewmSmd[i - 1]);
@@ -163,55 +145,44 @@ export const D2 = (Name, YearStart, YearEnd) => {
           Speri,
           Sorb,
         );
-        const Func = mansionQing(Name, Y, SunGong);
-        Eclp[i][k] = deg2Hms(SunLon) + Func.Eclp;
-        // EclpMansion[i][k] =  // 注意：入宿度是轉換成了古度的
-        const SEquaLon = LonHigh2Flat(Sobliq, SunLon);
-        Equa[i][k] = deg2Hms(SEquaLon) + Func.Equa;
-        // EquaMansion[i][k]
-        Lat[i][k] = HighLon2FlatLat(Sobliq, SunLon)
-        Rise[i][k] = sunRise(RiseLat, Lat[i][k]).t0;
-        const TwilightLeng = twilight(RiseLat, Lat[i][k]);
-        Lat[i][k] = Lat2NS(Lat[i][k]);
-        const Func2 = midstarQing(Name, Y, SunLon, SunLonMor, Rise[i][k]);
-        Morningstar[i][k] =
-          `${deci2hms(Rise[i][k] - TwilightLeng).hm} ${Func2.Morningstar}`;
-        Duskstar[i][k] =
-          `${deci2hms(1 - Rise[i][k] + TwilightLeng).hm} ${Func2.Duskstar}`;
-        Rise[i][k] =
-          `${deci2hms(Rise[i][k]).hms} ${deci2hms(1 - Rise[i][k]).hm}`;
-        MoonEclp[i][k] = deg2Hms(MoonLon) + mansionQing(Name, Y, MoonGong).Eclp;
-        MoonEclpLat[i][k] = Lat2NS(MoonLat);
-        const Func3 = eclp2Equa(Sobliq, MoonLon, MoonLat);
-        MoonEqua[i][k] =
-          deg2Hms(Func3.EquaLon) +
-          mansionQing(Name, Y, Lon2Gong(Func3.EquaLon), true).Equa;
-        MoonEquaLat[i][k] = Lat2NS(Func3.EquaLat);
+        const FuncSun = mansionQing(Name, Y, SunGong);
+        const SunEquaLon = LonHigh2Flat(Sobliq, SunLon);
+        const SunLat = HighLon2FlatLat(Sobliq, SunLon)
+        const { EquaLon: MoonEquaLon, EquaLat: MoonEquaLat } = eclp2Equa(Sobliq, MoonLon, MoonLat);
         const { MoonRise: MoonRiseTmp, MoonSet: MoonSetTmp } = moonRiseQing(
           RiseLat,
-          Func3.EquaLon,
-          Func3.EquaLat,
-          SEquaLon,
+          MoonEquaLon,
+          MoonEquaLat,
+          SunEquaLon,
         );
-        MoonRise[i][k] =
-          `${deci2hms(MoonRiseTmp).hms} ${deci2hms(MoonSetTmp).hm}`;
-        NodeMapo[i][k] = deg2Hms(Node) + deg2Hms(Mapo);
+        Pos[i][k] =
+          `<p class="Equa">` + deg2Hms(SunEquaLon) + ' ' + Lat2NS(SunLat) + `</p>`
+          + `<p class="Eclp">` + deg2Hms(SunLon) + `</p>`
+          + `<p><span class="Equa">` + FuncSun.Equa + `</span> <span class="Eclp">` + FuncSun.Eclp + `</span></p>`
+          + `<p class="Equa">` + deg2Hms(MoonEquaLon) + ' ' + Lat2NS(MoonEquaLat) + `</p>`
+          + `<p class="Eclp">` + deg2Hms(MoonLon) + ' ' + Lat2NS(MoonLat) + `</p>`
+          + `<p><span class="Equa">` + mansionQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa + `</span> <span class="Eclp">` + mansionQing(Name, Y, MoonGong).Eclp + `</span></p>`
+          + `<p class="MoonRise">` + deci2hms(MoonRiseTmp).hm + ' ' + deci2hms(MoonSetTmp).hm + `</p>`
+          + `<p class="NodeMapo">` + deg2Hms(Node) + ' ' + deg2Hms(Mapo) + `</p>`
+        const TwilightLeng = twilight(RiseLat, SunLat);
+        const Rise = sunRise(RiseLat, SunLat).t0;
+        const FuncMidstar = midstarQing(Name, Y, SunLon, SunLonMor, Rise);
+        Morningstar[i][k] = `${FuncMidstar.Morningstar} ${deci2hms(Rise - TwilightLeng).hm} ${deci2hms(Rise).hm}`;
+        Duskstar[i][k] =
+          `${deci2hms(1 - Rise).hm} ${deci2hms(1 - Rise + TwilightLeng).hm} ${FuncMidstar.Duskstar}`;
         /// ////////具注曆////////////
         const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn - 1) % 60;
-        Sc[i][k] = ScList[ScOrder];
+        Sc[i][k] = `${NumList[k]}日${ScList[ScOrder]}`;
         const JdTmp = Math.trunc(SmJd + SmdMidn)
         const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder
         Jd[i][k] = JdTmp - (JdScDif > 50 ? JdScDif - 60 : (JdScDif < -50 ? JdScDif + 60 : JdScDif));
-        const date = jd2Date(Jd[i][k]);
-        Jd[i][k] += ` ${date.mm}.${date.dd}`;
         const MansionOrder = (MansionDaySolsmor + DayAccum - 1) % 28;
         const WeekOrder = (MansionDaySolsmor + DayAccum + 2) % 7;
-        Week[i][k] =
+        const date = jd2Date(Jd[i][k]);
+        Jd[i][k] += ' ' + date.mm + '.' + date.dd + ' ' +
           WeekList[WeekOrder] +
-          WeekList1[WeekOrder] +
           MansionNameList[MansionOrder] +
           MansionAnimalNameList[MansionOrder];
-        Sc[i][k] = `${NumList[k]}日${Sc[i][k]}`;
       }
     }
     DayAccum =
@@ -229,19 +200,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
       Sc,
       Jd,
       Nayin,
-      Week,
-      Eclp,
-      Equa,
-      Lat,
+      Pos,
       Morningstar,
-      Rise,
       Duskstar,
-      MoonEclp,
-      MoonEclpLat,
-      MoonEqua,
-      MoonEquaLat,
-      MoonRise,
-      NodeMapo,
     };
   };
   const result = [];

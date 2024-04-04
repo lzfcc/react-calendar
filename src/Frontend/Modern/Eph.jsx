@@ -25,204 +25,160 @@ export default class Day extends React.Component {
       this.setState({ output: data, loading: false });
     });
   }
+  renderYearColorTable(yearColor) {
+    return (
+      <table>
+        {yearColor.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((d, colIndex) => (
+              <td key={colIndex} dangerouslySetInnerHTML={{ __html: d }} />
+            ))}
+          </tr>
+        ))}
+      </table>
+    );
+  }
 
   renderDayTableList() {
-    if (!this.state.output) {
-      return null
+    const { output } = this.state;
+    if (!output) {
+      return null;
     }
-    const MonName = this.state.output.MonName
-    const MonInfo = this.state.output.MonInfo
-    const MonColor = this.state.output.MonColor
-    const list = this.state.output.DayData.slice(1)
-    // console.log(this.state.output.Era)
+
+    const { MonName, MonInfo, MonColor, DayData, Era, Title, DayAccum, YearGod, YearColor } = output;
+    const list = DayData.slice(1);
+
     if (!list.length) {
-      return null
+      return null;
     }
-    list.forEach((item, index) => {
-      item.id = index
-    })
+
     return (
-      <section className='day-render' style={{ whiteSpace: "pre-wrap" }}>
+      <section className='day-render'>
         <div className='daytitle-wrap'>
-          <h2><span className='daytitle-1'>{this.state.output.Era}</span><br />
-            {this.state.output.Title}
+          <h2>
+            <span className='daytitle-1'>{Era}</span><br />
+            {Title}
           </h2>
-          <p className='DayAccum'>{this.state.output.DayAccum}</p>
-          <p>{this.state.output.YearGod}</p>
-          <div className='YearColor'>
-            <table>
-              {(this.state.output.YearColor || []).map(row => {
-                return (
-                  <tr>
-                    {row.map(d => {
-                      return <td dangerouslySetInnerHTML={{ __html: d }}></td>
-                    })}
-                  </tr>
-                );
-              })}
-            </table>
-          </div>
+          <p className='DayAccum'>{DayAccum}</p>
+          <p>{YearGod}</p>
+          {YearColor && (
+            <div className='YearColor'>
+              {this.renderYearColorTable(YearColor)}
+            </div>
+          )}
         </div>
         <hr />
-        {list.map((info, index) => {
-          return (
-            <div className="single-cal">
-              <h3>{MonName[index + 1]}</h3>
-              <p dangerouslySetInnerHTML={{ __html: MonInfo[index + 1] }}></p>
+        {list.map((info, index) => (
+          <div className="single-cal" key={index}>
+            <h3>{MonName[index + 1]}</h3>
+            <p dangerouslySetInnerHTML={{ __html: MonInfo[index + 1] }}></p>
+            {MonColor[index + 1] && (
               <span className='YearColor'>
-                <table>
-                  {(MonColor[index + 1] || []).map(row => {
-                    return (
-                      <tr>
-                        {row.map(d => {
-                          return <td dangerouslySetInnerHTML={{ __html: d }}></td>
-                        })}
-                      </tr>
-                    );
-                  })}
-                </table>
+                {this.renderYearColorTable(MonColor[index + 1])}
               </span>
-              <div>
-                {this.RenderDayTableContent(index + 1, info)}
-              </div>
+            )}
+            <div>
+              {this.RenderDayTableContent(index + 1, info)}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </section>
     );
   }
 
-  RenderDayTableContent(month, info) {
-    const COL = 10
-    const rows = []
-    for (let k = 1; k < info.length; k++) {
-      const r = Math.floor((k - 1) / COL)
-      if (!rows[r]) {
-        rows[r] = []
-      }
-      rows[r].push(
-        (
-          <td
-            key={month + '-' + k}
-            className="day-table-cell"
-          >
-            {this.renderDayDetail(info, k)}
-          </td>
-        )
-      )
-    }
-    return (
-      <div className='day-table'>
-        <table>
-          {rows.map(row => (
-            <tr>
-              <td style={{ minWidth: '1.5em' }}><div>
-                <p class="Sc">&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>日</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>月</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>土</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>木</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>火</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>金</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>水</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>旦</p>
-                <p>昏</p>
-              </div></td>
-              {row}
-              <td style={{ minWidth: '1.5em' }}><div>
-                <p class="Sc">&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>日</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>月</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>土</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>木</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>火</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>金</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>水</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>旦</p>
-                <p>昏</p>
-              </div></td></tr>
-          ))}
-        </table>
-      </div>
-    )
+renderDayRow(startIndex, endIndex, month, info) {
+  const dayCells = [];
+  for (let k = startIndex; k <= endIndex; k++) {
+    dayCells.push(
+      <td key={`${month}-${k}`} className="day-table-cell">
+        {this.renderDayDetail(info, k)}
+      </td>
+    );
   }
+  return (
+    <tr key={`row-${startIndex}`}>
+      {this.renderSideColumn()}
+      {dayCells}
+      {this.renderSideColumn()}
+    </tr>
+  );
+}
 
+renderSideColumn() {
+  return (
+    <td style={{ minWidth: '1.5em' }}>
+      <p className="Sc">&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>日</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>月</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>土</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>木</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>火</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>金</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>水</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>旦</p>
+      <p>昏</p>
+    </td>
+  );
+}
+
+RenderDayTableContent(month, info) {
+  const COL = 10;
+  const rows = [];
+  const infoLength = info.length;
+  for (let k = 1; k < infoLength; k += COL) {
+    // Calculate the end index but ensure it does not exceed the info array length
+    const endIndex = Math.min(k + COL - 1, infoLength - 1);
+    rows.push(this.renderDayRow(k, endIndex, month, info));
+  }
+  return (
+    <div className="day-table">
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
+  );
+}
   renderDayDetail(info, day) {
-    // if (this.state.showMonth !== month || this.state.showDate !== day) {
-    //   return null
-    // }
+    // 过滤掉 'MonColor' 键
+    const filteredEntries = Object.entries(info[day]).filter(([key]) => key !== 'MonColor');
     return (
       <div>
-        {
-          Object.entries(info[day]).map(([key, value]) => {
-            if ({ key } === 'MonColor') { } else {
-              return (
-                /* {TableDayRowNameMap[key]}:  */
-                <p className={key} dangerouslySetInnerHTML={{ __html: value }}></p>
-              )
-            }
-          })
-        }
+        {filteredEntries.map(([key, value]) => (
+          // 假设 key 是唯一的，直接使用 key 作为 React 列表的 key
+          // 如果 key 不是唯一的，你需要找到一种方式来生成唯一的 key
+          <p key={key} className={key} dangerouslySetInnerHTML={{ __html: value }} />
+        ))}
       </div>
-    )
+    );
   }
 
   handleRetrieve() {

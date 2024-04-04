@@ -669,13 +669,12 @@ export const deg2Mansion = (Deg, AccumList, fixed) => {
  * 20240312改寫，增加黃道宿度
  * @param {*} Name 曆法名
  * @param {*} Y 冬至小分
- * @param {*} EclpGong 距冬至黃道實行度。有它就是有太陽盈縮積算法的
- * @param {*} Sd 距冬至時間。有它就是沒有太陽盈縮積算法的，與上面二選一。
+ * @param {*} EclpGong 距冬至黃道實行度
  * @param {*} SolsDeci 公元年
  * @returns
  */
-export const mansion = (Name, Y, EclpGong, Sd) => {
-    const { Type, SolarRaw, MansionConst, MansionRaw, OriginAd, CloseOriginAd } =
+export const mansion = (Name, Y, EclpGong) => {
+    const { SolarRaw, MansionConst, MansionRaw, OriginAd, CloseOriginAd } =
         Para[Name];
     if (!MansionRaw) return
     let { Sidereal, Solar } = Para[Name];
@@ -702,35 +701,25 @@ export const mansion = (Name, Y, EclpGong, Sd) => {
     const SolsEclpDeg = mansion2Deg(SolsEclpMansion, EclpAccumList);
     let EclpDeg = 0;
     let EquaDeg = 0;
-    if (Type >= 5) {
-        const EquaGong = autoEquaEclp(EclpGong, Name).Eclp2Equa;
-        const PrecessionFrac = isPrecession
-            ? (EquaGong / Sidereal) * (Sidereal - Solar)
-            : 0; // 一年之中的歲差
-        EclpDeg =
-            (SolsEclpDeg + EclpGong - autoEquaEclp(PrecessionFrac, Name).Equa2Eclp) %
-            Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
-        EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal;
-    } else {
-        // 沒有盈縮積的曆法
-        const PrecessionFrac = isPrecession
-            ? (Sd / Sidereal) * (Sidereal - Solar)
-            : 0; // 一年之中的歲差
-        EclpDeg =
-            (SolsEclpDeg + autoEquaEclp(Sd - PrecessionFrac, Name).Equa2Eclp) %
-            Sidereal;
-        EquaDeg = (SolsEquaDeg + Sd - PrecessionFrac) % Sidereal;
-    }
+    const EquaGong = autoEquaEclp(EclpGong, Name).Eclp2Equa;
+    const PrecessionFrac = isPrecession
+        ? (EquaGong / Sidereal) * (Sidereal - Solar)
+        : 0; // 一年之中的歲差
+    EclpDeg =
+        (SolsEclpDeg + EclpGong - autoEquaEclp(PrecessionFrac, Name).Equa2Eclp) %
+        Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
+    EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal;
     const Equa = deg2Mansion(EquaDeg, EquaAccumList);
     const Eclp = deg2Mansion(EclpDeg, EclpAccumList);
     return {
         Equa,
         Eclp,
+        EquaDeg,
         SolsEclpMansion: SolsMansionName + SolsEclpMansionDeg.toFixed(3),
         SolsEquaMansion: SolsMansionName + SolsEquaMansionDeg.toFixed(3),
     };
 };
-// console.log(mansion('Dayan', 1555, 0))
+// console.log(mansion('Dayan', 1555, 10).Equa)
 /**
  * 西曆日躔
  * @param {*} Name
@@ -798,7 +787,7 @@ export const mansionQing = (Name, Y, Gong, isEqua) => {
 export const midstar = (Name, Y, EclpGong, Sd, SolsDeci) => {
     const { Type, Sidereal } = Para[Name];
     const { EquaAccumList } = degAccumList(Name, Y);
-    const { EquaDeg } = mansion(Name, Y, EclpGong, Sd);
+    const { EquaDeg } = mansion(Name, Y, EclpGong);
     const LightRange = AutoLightRange(Name);
     const Rise = autoRise(Sd, SolsDeci, Name) / 100;
     const HalfLight = 0.5 - Rise + LightRange; // 半晝漏
@@ -811,7 +800,7 @@ export const midstar = (Name, Y, EclpGong, Sd, SolsDeci) => {
         Sidereal;
     const Duskstar = deg2Mansion(DuskstarDeg, EquaAccumList, 2);
     const Morningstar = deg2Mansion(MorningstarDeg, EquaAccumList, 2);
-    return `${Morningstar} ${Duskstar}`;
+    return { Morningstar, Duskstar }
 };
 export const midstarQing = (Name, Y, LonTod, LonMor, Rise) => {
     const {

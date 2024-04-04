@@ -142,7 +142,7 @@ export const horizontal = (X, Jd, Longitude, Latitude, h) => {
   const y = -c1 * s3;
   const z = s1 * s2 + c1 * c3 * c2;
   const { Lon: HoriLon, Lat: HoriLat } = xyz2lonlat([x, y, z]);
-  return { HoriLon, HoriLat, TopoLon, TopoLat, X1 };
+  return { HoriLon, HoriLat, TopoLon, TopoLat, X1, LASTrad };
 };
 
 /**

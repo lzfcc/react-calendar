@@ -245,7 +245,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
                     + `<p class="Equa">` + MoonEquaLon.toFixed(4) + + lat2NS(MoonEquaLat) + `</p>`
                     + `<p class="Ceclp">` + MoonLon.toFixed(4) + ' ' + lat2NS(MoonLat) + `</p>`
                     + `<p><span class="Equa">` + MoonEqua + `</span> <span class="Ceclp">` + MoonEclp + `</span></p>`
-                const FuncDusk = midstar(Name, Y, SunLon, SolsDeci)
+                const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci)
                 const Rise = autoRise(SdMidn, SolsDeci, Name)
                 const LightRange = AutoLightRange(Name) * 100
                 Morningstar[i][k] = FuncDusk.Morningstar + ' ' + (Rise - LightRange).toFixed(2) + ' ' + Rise.toFixed(2) + '刻'

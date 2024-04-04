@@ -35,8 +35,8 @@ export default class a extends React.Component {
   handle() {
     try {
       const Date = Jd2DatePrint(this.state.a, this.state.b);
-      const { LASTPrint, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms } = eotPrint(this.state.a, this.state.b)
-      this.setState({ Date, LASTPrint, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms });
+      const { LASTPrint, LASTPrint1, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms } = eotPrint(this.state.a, this.state.b)
+      this.setState({ Date, LASTPrint, LASTPrint1, LMSolarPrint, LASolarPrint, EOTPrint, Jd, DeltaT, DeltaTErr, TThms });
     } catch (e) {
       alert(e.message);
     }
@@ -51,7 +51,7 @@ export default class a extends React.Component {
         <p>{this.state.Date}</p>
         <p>平太陽時 {this.state.LMSolarPrint} 真太陽時 {this.state.LASolarPrint} 時差 {this.state.EOTPrint}</p>
         <p>ΔT = {this.state.DeltaT} ± {this.state.DeltaTErr}s, TT儒略日 {this.state.Jd} {this.state.TThms}</p>
-        <p>真恆星時 {this.state.LASTPrint} </p>
+        <p>真恆星時 {this.state.LASTPrint} = {this.state.LASTPrint1}</p>
       </div>
     );
   }

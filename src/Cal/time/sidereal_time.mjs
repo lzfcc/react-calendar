@@ -10,16 +10,18 @@ import { deci2hms } from "./decimal2clock.mjs";
 import { deltaT, deltaTError } from "./delta-t.mjs";
 import { jd2Date } from "./jd2date.mjs";
 import { xyz2lonlat } from "../astronomy/pos_functions.mjs";
+import { deg2Hms } from "../astronomy/pos_convert.mjs";
 
 // 廖育棟 Calculations in Star Charts
 // Sidereal time is defined as the hour angle of the vernal equinox. α⊙ is Sun’s right ascension. ∆ψ is the nutation in longitude given by equation(30), εA is the mean obliquity of the ecliptic given by equation(28), and λ is observer’s(east) longitude.
 // 平恆星時（平春分點的時角）與視恆星時（真春分點的時角）之差：Ee, equation of the equinoxes. 平春分點：只算了歲差，真春分點：算了歲差和章動。
 // 用 CIO取代春分點的地位，TIO取代Greenwich子午線， Earth Rotation Angle (ERA) 取代恆星時。ERA需要實測。
 // ERA(Dᴜ)=θ(Dᴜ) = 2π(0.7790572732640 + 1.00273781191135448Dᴜ)，其中Dᴜ=julian UT1 date -2451545
-// GAST=GMST+Ee,GMST=θ-Eprec。Eprec(T)累積歲差=−0′′.014506−4612′′.16534T−1′′.3915817T^2+4′′.4×10−7T^3+2′′.9956×10−5T^4。T：J2000儒略世紀。根據圖像，-200<T<200
+// GAST=GMST+Ee,GMST=θ-Eprec。Eprec(T)累積歲差=−0′′.014506−4612′′.16534T−1′′.3915817T^2+4′′.4×10−7T^3+2′′.9956×10−5T^4。
 // Ee =∆ψcosεA
+// wiki: As an example, the Astronomical Almanac for the Year 2017 gave the ERA at 0 h 1 January 2017 UT1 as 100° 37′ 12.4365″. The GAST was 6 h 43 m 20.7109 s. 我算得JdUT12457754.5 06:43:20.70 
 /**
- * 視恆星時LAST。根据图像，有效范围是+-700年
+ * 視恆星時LAST
  * @param {*} Jd TT儒略日
  * @param {*} Longitude 地理經度°
  */
@@ -95,6 +97,7 @@ export const eotPrint = (Jd_UT10, Longitude) => {
     const DeltaTErr = deltaTError(jd2Date(Jd).year);
     return {
         LASTPrint: deci2hms(LAST / 24).hmsms,
+        LASTPrint1: deg2Hms(LAST * 15),
         LASolarPrint: deci2hms(LASolar / 24).hmsms,
         LMSolarPrint: deci2hms(LMSolar / 24).hmsms,
         DeltaT: Math.trunc(DeltaT * 86400),

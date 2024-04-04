@@ -14,11 +14,10 @@ import CalNewm from "../newmoon/index_de.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { R2D, nzh } from "../parameter/functions.mjs";
-import { deg2MansionModern, mansionModernList } from "../modern/mansion.mjs";
+import { deg2MansionModern, mansionModernList, midstarModern } from "../modern/mansion.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { deltaT } from "../time/delta-t.mjs";
 import { bindTopo_vsop } from "../modern/vsop_elp_bind.mjs";
-import { siderealTime } from "../time/sidereal_time.mjs";
 const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
 /**
  * 
@@ -123,12 +122,8 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
         const Morning = Rise - TwilightLeng
         const Dusk = Set + TwilightLeng
-        const LASTMorning = siderealTime(MidnTTJd + Morning, Longitude) // 晨昏恆星時
-        const LASTDusk = siderealTime(MidnTTJd + Dusk, Longitude)
-        const MorningSouth = ((LASTMorning - 12) * 15 + 360) % 360 // 正南方距離春分的度數
-        const DuskSouth = ((LASTDusk - 12) * 15 + 360) % 360
-        Morningstar[i][k] = deg2MansionModern(MorningSouth, EquaAccumList, 2).Mansion + ' ' + deci2hms(Morning).hm + ' ' + deci2hms(Rise).hm
-        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + deg2MansionModern(DuskSouth, EquaAccumList, 2).Mansion
+        Morningstar[i][k] = midstarModern(MidnTTJd + Morning, Longitude, EquaAccumList) + ' ' + deci2hms(Morning).hm + ' ' + deci2hms(Rise).hm
+        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + mid starModern(MidnTTJd + Dusk, Longitude, EquaAccumList)
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
         const MansionOrder = (Jd[i][k] + 0) % 28;

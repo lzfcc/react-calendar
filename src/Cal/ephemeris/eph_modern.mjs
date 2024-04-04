@@ -123,7 +123,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         const Morning = Rise - TwilightLeng
         const Dusk = Set + TwilightLeng
         Morningstar[i][k] = midstarModern(MidnTTJd + Morning, Longitude, EquaAccumList) + ' ' + deci2hms(Morning).hm + ' ' + deci2hms(Rise).hm
-        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + mid starModern(MidnTTJd + Dusk, Longitude, EquaAccumList)
+        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + midstarModern(MidnTTJd + Dusk, Longitude, EquaAccumList)
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
         const MansionOrder = (Jd[i][k] + 0) % 28;

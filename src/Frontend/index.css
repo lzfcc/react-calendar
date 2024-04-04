@@ -238,14 +238,17 @@ p {
 }
 
 .section-select-container {
+  position: sticky;
+  top: 0;
   margin: 0em auto 5em;
-  padding: .3em 0;
+  padding: .5em 0;
+  border-radius: .5em;
   /* border-bottom: .2em solid var(--bggray); */
+  background: var(--bg);
 }
 
 .section-select {
   color: var(--gray);
-  /* text-shadow: 0.1em 0.1em 0.2em var(--bg); */
   letter-spacing: .1em;
   padding: .3em .45em;
   margin: 0 0;
@@ -254,12 +257,10 @@ p {
 }
 
 .section-select.active {
-  /* border-bottom: .2em solid var(--darkyellow); */
+  border: .2em solid var(--darkyellow);
   color: var(--black);
   font-weight: bold;
-  background: var(--yellow);
   border-radius: .5em;
-  box-shadow: 0 0 7px 0 var(--shallowgray);
 }
 
 .section-select:hover {

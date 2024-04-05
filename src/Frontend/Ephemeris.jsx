@@ -1,9 +1,6 @@
 import React from 'react'
 import { NameDayList } from '../Cal/parameter/constants.mjs'
 import MenuSelect from './MenuSelect'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import md1 from './note/day.md';
 
 export default class Day extends React.Component {
   constructor(props) {
@@ -18,15 +15,9 @@ export default class Day extends React.Component {
       loading: false,
       showMonth: 0,
       showDate: 0,
-      md: '',
     };
   }
-  UNSAFE_componentWillMount() {
-    fetch(md1)
-      .then(res => res.text())
-      .then(text => this.setState({ md: text }))
-  }
-
+  
   componentDidMount() {
     this.worker = new Worker('worker_ancient.min.js');
     this.worker.addEventListener('message', ({ data }) => {
@@ -257,7 +248,6 @@ export default class Day extends React.Component {
   }
 
   render() {
-    const { md } = this.state
     return (
       <>
         {this.renderCalendar()}
@@ -279,7 +269,7 @@ export default class Day extends React.Component {
         {this.renderDayTableList()}
         <hr />
         <article>
-          <ReactMarkdown rehypePlugins={[rehypeRaw]} children={md} />
+        
         </article>
       </>
     )

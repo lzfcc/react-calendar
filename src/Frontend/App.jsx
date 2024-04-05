@@ -8,14 +8,13 @@ import Astronomy from './Astronomy'
 import Time from './Time'
 import Guqin from './Guqin'
 import Hexagram from './Hexagram'
-import Intro from './Intro'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.tabTitles = ['朔閏表', '曆書', '現代曆表', '同餘', '招差', '天文', '時間', '琴律', '筮占', '簡介']
+    this.tabTitles = ['朔閏表', '曆書', '現代曆表', '同餘', '招差', '天文', '時間', '琴律', '筮占']
     this.state = {
-      activeTab: 9,
+      activeTab: 0,
       tabsData: {
         0: { output: '', loading: false }, // 初始状态为每个tab
         1: { output: '', loading: false },
@@ -26,7 +25,6 @@ export default class App extends React.Component {
         6: { output: '', loading: false },
         7: { output: '', loading: false },
         8: { output: '', loading: false },
-        9: { output: '', loading: false },
       },
     };
   }
@@ -86,10 +84,6 @@ export default class App extends React.Component {
         <div style={{ display: activeTab === 8 ? 'block' : 'none' }}>
           <Hexagram />
         </div>
-        <div style={{ display: activeTab === 9 ? 'block' : 'none' }}>
-          <Intro />
-        </div>
-
       </div>
     );
   }

@@ -10,24 +10,14 @@ import Interpolate2 from './Interpolate2'
 import Interpolate3 from './Interpolate3'
 import MeasureSols from './MeasureSols'
 // import Polyfit from './Polyfit'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import md1 from '../note/equation.md';
 
 export default class Equation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      md: ''
     };
   }
-  UNSAFE_componentWillMount() {
-    fetch(md1)
-      .then(res => res.text())
-      .then(text => this.setState({ md: text }))
-  }
   render() {
-    const { md } = this.state
     return (
       <>
         <section className='modulo'>
@@ -51,7 +41,7 @@ export default class Equation extends React.Component {
         </section>
         <hr />
         <article>
-          <ReactMarkdown rehypePlugins={[rehypeRaw]} children={md} />
+     
         </article>
       </>
     )

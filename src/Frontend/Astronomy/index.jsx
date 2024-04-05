@@ -20,25 +20,15 @@ import Round1 from './Round1'
 import Round2 from './Round2'
 import Hushigeyuan from './Hushigeyuan'
 import SolarChange from './SolarChange'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import gfm from 'remark-gfm'
-import md1 from '../note/astronomy.md';
 
 export default class Astronomy extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      md: ''
     };
   }
-  UNSAFE_componentWillMount() {
-    fetch(md1)
-      .then(res => res.text())
-      .then(text => this.setState({ md: text }))
-  }
+  
   render() {
-    const { md } = this.state
     return (
       <>
         <section className='modulo'>
@@ -75,7 +65,7 @@ export default class Astronomy extends React.Component {
         </section>
         <hr />
         <article>
-          <ReactMarkdown rehypePlugins={[rehypeRaw, gfm]} children={md} />
+         
         </article>
       </>
     )

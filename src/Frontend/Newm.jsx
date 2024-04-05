@@ -2,10 +2,7 @@ import React from 'react'
 import { NameList } from '../Cal/parameter/constants.mjs'
 import MenuSelect from './MenuSelect'
 import DynamicList, { createCache } from 'react-window-dynamic-list'
-import ReactMarkdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import gfm from 'remark-gfm'
-import md1 from './note/newm.md';
+
 const TableRowNameMap = {
   MonthPrint: ' ',
   NewmAvgScPrint: '平朔',
@@ -50,17 +47,8 @@ export default class Newm extends React.Component {
       calendars: [],
       YearStart: '',
       YearEnd: '',
-      // YearMode: '0',
       output: '',
-      // loading: false,
-      md: ''
     };
-  }
-
-  UNSAFE_componentWillMount() {
-    fetch(md1)
-      .then(res => res.text())
-      .then(text => this.setState({ md: text }))
   }
 
   componentDidMount() {
@@ -100,30 +88,6 @@ export default class Newm extends React.Component {
     return calString + dateString
   }
 
-  // renderMode() {
-  //   return (
-  //     <div
-  //       onChange={e => {
-  //         this.setState({ mode: e.target.value });
-  //       }}
-  //     >
-  //       <span>
-  //         <input type='radio' name='retrieve-mode' value='0'/>
-  //         <label for='0'>特定年</label>
-  //       </span>
-  //       <span>
-  //         <input type='radio' name='retrieve-mode' value='1' defaultChecked  />
-  //         <label for='1'>年區閒</label>
-  //       </span>
-  //     </div>
-  //   );
-  // }
-  // instance() {
-  //   return (
-  //     <div>
-  //       <TagPicker data={data3} groupBy="role" style={{ width: 300 }} />
-  //     </div>);
-  // }
   renderCalendar() {
     const cals = NameList
     return (
@@ -336,7 +300,6 @@ export default class Newm extends React.Component {
   }
 
   render() {
-    const { md } = this.state
     return (
       <>
         <div className='calendar-select'>
@@ -349,7 +312,7 @@ export default class Newm extends React.Component {
         {this.renderTableList()}
         <hr />
         <article>
-          <ReactMarkdown rehypePlugins={[rehypeRaw, gfm]} children={md} />
+          
         </article>
       </>
     )

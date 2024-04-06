@@ -271,8 +271,7 @@ RenderDayTableContent(month, info) {
         {this.renderInput()}
         {this.renderCalendar()}
         <button onClick={this.handleRetrieve} className='button2'>七政黃赤經緯</button>
-        <p><span className='Hori'>灰色：地平座標</span> <span className='Equa'>紅色：赤道</span> <span className='Ceclp'>黑色：極黃</span> <span className='Eclp'>黃色：黃道</span>
-          <span className='Morningstar'>綠色：晨昏矇影、昏旦中星、日出日入</span></p>
+        <p><span className='Hori'>灰色：地平座標</span>&nbsp;<span className='Equa'>紅色：赤道</span>&nbsp;<span className='Ceclp'>黑色：極黃</span>&nbsp;<span className='Eclp'>黃色：黃道</span>&nbsp;<span className='Morningstar'>綠色：晨昏矇影、昏旦中星、日出日入</span></p>
         <article>
           <ul>
             <li>南京 [N32.061°, E118.791°, 100m] 雞鳴山北極閣</li>

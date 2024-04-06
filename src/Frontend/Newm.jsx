@@ -1,7 +1,6 @@
 import React from 'react'
 import { NameList } from '../Cal/parameter/constants.mjs'
 import MenuSelect from './MenuSelect'
-import DynamicList, { createCache } from 'react-window-dynamic-list'
 
 const TableRowNameMap = {
   MonthPrint: ' ',
@@ -37,7 +36,6 @@ const TableRowNameMap = {
   TermEclpPrint: '黃道',
   TermDuskstarPrint: '旦昏中',
 }
-const heightCache = createCache();
 
 export default class Newm extends React.Component {
   constructor(props) {
@@ -48,6 +46,7 @@ export default class Newm extends React.Component {
       YearStart: '',
       YearEnd: '',
       output: '',
+      showTableList: false,
     };
   }
 
@@ -145,8 +144,8 @@ export default class Newm extends React.Component {
       return;
     }
     if (isAuto) {
-      if (YearStart < -721 || YearStart > 2499 || YearEnd < -721 || YearEnd > 2499) {
-        alert('Year range of AutoChoose mode: -721 to 2499');
+      if (YearStart < -721 || YearStart > 1913 || YearEnd < -721 || YearEnd > 1913) {
+        alert('Year range of AutoChoose mode: -721 to 1913');
         return;
       }
     } else {
@@ -195,12 +194,14 @@ export default class Newm extends React.Component {
       callWorker("Print");
       return;
     }
-    if (this.state.calendars.length * (YearEnd - YearStart) > 400) {
-      alert('內容過多，爲避免瀏覽器展示性能問題，將自動下載.md文件到本地');
-      callWorker("Print");
+    if (this.state.calendars.length * (YearEnd - YearStart) > 200) {
+      alert('內容過多，爲避免瀏覽器展示性能問題，請下載.md文件到本地');
       return;
     }
     callWorker("Newm")
+    this.setState({
+      showTableList: true
+    });
   }
 
   // renderLoading() {
@@ -235,58 +236,34 @@ export default class Newm extends React.Component {
   }
 
   renderTableList() {
-    const list = (this.state.output || []).flat(); // 二维数组拍扁成一维，每个表格平均高度 350
-    if (!list.length) {
-      return null
+    // 只有当showTableList为true时才显示section
+    if (!this.state.showTableList) {
+      return null;
     }
     return (
       <section className='main-render'>
-        <DynamicList
-          height={(window.innerHeight) * 0.98}
-          width={(window.innerWidth) * 0.93}
-          cache={heightCache}
-          data={list}
-          overscanCount={15}
-        >
-          {({ index, style }) => {
-            const calInfo = list[index]
-            const calCount = calInfo.Count
-            return (
-              <div className="single-cal" style={style}>
-                {index % calCount === 0 ? <h3>{calInfo.Era}</h3> : null}
-                <p style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: calInfo.YearInfo }}></p>
-                <table>
-                  <tr>{this.RenderTableContent(calInfo)}</tr>
-                </table>
-              </div>
-            )
-          }}
-        </DynamicList>
-      </section>
-    );
-  }
-
-  BACKUP_renderTableList() {
-    return (
-      <div>
         {(this.state.output || []).map(CalData => {
           const yearGroup = CalData.map(calInfo => {
             return (
               <div className='single-cal'>
-                <p>{calInfo.YearInfo}</p>
+                <h3>{calInfo.Era}</h3>
+                <p style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: calInfo.YearInfo }}></p>
                 <table>
-                  <tr>
-                    {this.RenderTableContent(calInfo)}
-                  </tr>
+                  <tbody>
+                    <tr>
+                      {this.RenderTableContent(calInfo)}
+                    </tr>
+                  </tbody>
                 </table>
-              </div>)
+              </div>
+            )
           })
-          yearGroup.push(<div />) // todo 分隔符
-          return yearGroup;
+          return yearGroup
         })}
-      </div>
+      </section>
     );
   }
+
 
   RenderTableContent(calInfo) {
     return Object.entries(calInfo).map(([key, value]) => {
@@ -310,10 +287,6 @@ export default class Newm extends React.Component {
         <button onClick={this.handleRetrieve} className='button1'>天霝〻地霝〻</button>
         {this.renderDownload()}
         {this.renderTableList()}
-        <hr />
-        <article>
-          
-        </article>
       </>
     )
   }

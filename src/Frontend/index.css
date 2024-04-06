@@ -239,6 +239,7 @@ p {
 
 .section-select-container {
   position: sticky;
+  z-index: 99;
   top: 0;
   margin: 0em auto 5em;
   padding: .5em 0;
@@ -273,11 +274,11 @@ p {
 
 .main-render {
   border-radius: 2em;
-  /* box-shadow: 0 0 20px 0 var(--gray); */
   background: white;
-  border: 1px solid var(--shallowgray);
   margin: 3em auto 0;
   width: 93vw;
+  height: 96vh;
+  overflow: scroll;
 }
 
 .version {
@@ -1207,7 +1208,7 @@ hr {
 .chosen-container .chosen-drop {
   position: absolute;
   top: 100%;
-  z-index: 1010;
+  z-index: 10;
   width: 100%;
   border-radius: .5em;
   border: none;

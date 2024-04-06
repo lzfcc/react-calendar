@@ -14,28 +14,22 @@ export default class Time extends React.Component {
     this.state = {
     };
   }
-  
+
   render() {
     return (
-      <>
-        <section className="modulo">
-          <Deci2Clock />
-          <br />
-          <Clock2Deci />
-          <NightClock />
-          <Deci2Stage />
-          <JD />
-          <br />
-          <Date />
-          <Year />
-          <br />
-          <SC />
-        </section>
-        <hr />
-        <article>
-      
-        </article>
-      </>
+      <section className="modulo">
+        <Deci2Clock />
+        <br />
+        <Clock2Deci />
+        <NightClock />
+        <Deci2Stage />
+        <JD />
+        <br />
+        <Date />
+        <Year />
+        <br />
+        <SC />
+      </section>
     );
   }
 }

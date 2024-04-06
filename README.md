@@ -516,4 +516,13 @@ a = [0, ...a]
 - 修复更改恒星时算法
 - 現代曆表置閏改用UT1時間
 - 儒略日轉換統一爲0時區
-- 統一三種曆書的格式。GPT優化曆書jsx
+- 統一三種曆書的格式。
+
+4-06 前端 `1.10`
+
+- 升級到 `react 18.2.0`
+- 刪掉markdown渲染組件，直接用腳本生成html，再站貼到index.html。嘗試了webpack引入html，失敗。
+- 刪掉 `react-window-dynamic-list`，已經停止維護了，不支持react18。發現其實並不太影響性能，200條也能比較輕鬆地應付。
+- 將 `npm run build` 與 `webpack` 合一
+- GPT優化曆書jsx
+- tab欄sticky置頂

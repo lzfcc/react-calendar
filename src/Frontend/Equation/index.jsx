@@ -19,31 +19,25 @@ export default class Equation extends React.Component {
   }
   render() {
     return (
-      <>
-        <section className='modulo'>
-          <h2>垛積</h2>
-          <Sn1 />
-          <Sn3 />
-          <Sn4 />
-          <h2>內插</h2>
-          <Interpolate1 />
-          <p></p>
-          <Interpolate2 />
-          <Interpolate3 />
-          <MeasureSols />
-          {/* <h2>擬合</h2>
+      <section className='modulo'>
+        <h2>垛積</h2>
+        <Sn1 />
+        <Sn3 />
+        <Sn4 />
+        <h2>內插</h2>
+        <Interpolate1 />
+        <p></p>
+        <Interpolate2 />
+        <Interpolate3 />
+        <MeasureSols />
+        {/* <h2>擬合</h2>
           <Polyfit /> */}
-          <h2>方程</h2>
-          <Equa1 />
-          {/* <h2>開方</h2>
+        <h2>方程</h2>
+        <Equa1 />
+        {/* <h2>開方</h2>
         <Sqrt1 />
         <Sqrt3 /> */}
-        </section>
-        <hr />
-        <article>
-     
-        </article>
-      </>
+      </section>
     )
   }
 }

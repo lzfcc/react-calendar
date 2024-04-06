@@ -62,11 +62,7 @@ export default class Astronomy extends React.Component {
           <h2>現代天文計算</h2>
           <Const />
           <SolarChange />
-        </section>
-        <hr />
-        <article>
-         
-        </article>
+        </section>        
       </>
     )
   }

@@ -25,40 +25,34 @@ export default class Astronomy extends React.Component {
 
   render() {
     return (
-      <>
-        <section className='modulo'>
-          <h2>基礎</h2>
-          <Cent />
-          <br />
-          <Frequency />
-          <Fret2Leng />
-          <br />
-          <Leng2Fret />
-          <h2>生律</h2>
-          <h3>純律</h3>
-          <Pythagorean />
-          <Pythagorean60 />
-          <Justoni />
-          <h3>調律</h3>
-          <Hechengtian />
-          <Meantone4 />
-          <Meantone3 />
-          <h3>等程律</h3>
-          <Equal12 />
-          <Equal19 />
-          <h2>品弦法</h2>
-          <Tuning />
-          <h2>徽位</h2>
-          <FretPitch />
-          <BetweenFret />
-          <h2>打譜第一步</h2>
-          <Position2Pitch />
-        </section>
-        <hr />
-        <article>
-    
-        </article>
-      </>
+      <section className='modulo'>
+        <h2>基礎</h2>
+        <Cent />
+        <br />
+        <Frequency />
+        <Fret2Leng />
+        <br />
+        <Leng2Fret />
+        <h2>生律</h2>
+        <h3>純律</h3>
+        <Pythagorean />
+        <Pythagorean60 />
+        <Justoni />
+        <h3>調律</h3>
+        <Hechengtian />
+        <Meantone4 />
+        <Meantone3 />
+        <h3>等程律</h3>
+        <Equal12 />
+        <Equal19 />
+        <h2>品弦法</h2>
+        <Tuning />
+        <h2>徽位</h2>
+        <FretPitch />
+        <BetweenFret />
+        <h2>打譜第一步</h2>
+        <Position2Pitch />
+      </section>
     )
   }
 }

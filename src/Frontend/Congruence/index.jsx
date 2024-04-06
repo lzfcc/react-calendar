@@ -21,39 +21,32 @@ export default class Converter extends React.Component {
     this.state = {
     };
   }
-  
+
   render() {
     return (
-      <>
-        <section className="modulo">
-          <h2>大衍</h2>
-          <Dayanqiuyi />
-          <IndetermEqua1 />
-          <Sunzi />
-          <h2>調日法</h2>
-          <IndetermEqua />
-          <Denom />
-          <ContinuedFrac />
-          <p></p>
-          <ContinuedFrac1 />
-          <h2>章蔀</h2>
-          <Gcdlcm />
-          <Fraclcm />
-          <Zhang />
-          <h2>上元演紀</h2>
-          <Origin2 />
-          <Origin />
-          <h2>從零開始造唐宋曆</h2>
-          <ExhauDenom />
-          <ExhauOrigin />
-          <ExhauConst />
-          <article></article>
-        </section>
-        <hr />
-        <article>
-         
-        </article>
-      </>
+      <section className="modulo">
+        <h2>大衍</h2>
+        <Dayanqiuyi />
+        <IndetermEqua1 />
+        <Sunzi />
+        <h2>調日法</h2>
+        <IndetermEqua />
+        <Denom />
+        <ContinuedFrac />
+        <p></p>
+        <ContinuedFrac1 />
+        <h2>章蔀</h2>
+        <Gcdlcm />
+        <Fraclcm />
+        <Zhang />
+        <h2>上元演紀</h2>
+        <Origin2 />
+        <Origin />
+        <h2>從零開始造唐宋曆</h2>
+        <ExhauDenom />
+        <ExhauOrigin />
+        <ExhauConst />
+      </section>
     );
   }
 }

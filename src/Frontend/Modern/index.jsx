@@ -10,7 +10,6 @@ export default class Astronomy extends React.Component {
     };
   }
   render() {
-    const { md } = this.state
     return (
       <>
         <section>
@@ -22,10 +21,6 @@ export default class Astronomy extends React.Component {
         <section >
           <Eph />
         </section>
-        <hr />
-        <article>
-
-        </article>
       </>
     )
   }

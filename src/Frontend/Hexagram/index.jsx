@@ -10,21 +10,15 @@ export default class Astronomy extends React.Component {
     this.state = {
     };
   }
-  
+
   render() {
     return (
-      <>
-        <section className='modulo'>
-          <h2>筮占</h2>
-          <HexoZhuxi />
-          <HexoZhuxiB />
-          <HexoQinghua />
-        </section>
-        <hr />
-        <article>
-          
-        </article>
-      </>
+      <section className='modulo'>
+        <h2>筮占</h2>
+        <HexoZhuxi />
+        <HexoZhuxiB />
+        <HexoQinghua />
+      </section>
     )
   }
 }

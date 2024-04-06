@@ -1,5 +1,5 @@
 import React from 'react'
-import DynamicList, { createCache } from 'react-window-dynamic-list'
+
 const TableRowNameMap = {
   MonthPrint: ' ',
   NewmScPrint: '定朔',
@@ -22,9 +22,8 @@ const TableRowNameMap = {
   TermAcrDeciPrint: 'UT1',
   TermEquaPrint: '赤道',
   TermEclpPrint: '黃道',
+  showTableList: false,
 }
-const heightCache = createCache();
-
 export default class Newm extends React.Component {
   constructor(props) {
     super(props);
@@ -35,7 +34,6 @@ export default class Newm extends React.Component {
       YearEnd: '',
       output: '',
       Longitude: 116.428,
-      md: ''
     };
   }
 
@@ -137,7 +135,7 @@ export default class Newm extends React.Component {
       this.setState({ YearStart })
       this.setState({ YearEnd })
     }
-    if (YearEnd - YearStart > 500) {
+    if (YearEnd - YearStart > 200) {
       alert('內容過多，爲避免瀏覽器展示性能問題，請減少年數');
       return
     }
@@ -152,37 +150,37 @@ export default class Newm extends React.Component {
       })
     }
     callWorker("Newm")
+    this.setState({
+      showTableList: true
+    });
   }
 
   renderTableList() {
-    const list = (this.state.output || []).flat(); // 二维数组拍扁成一维，每个表格平均高度 350
-    if (!list.length) {
-      return null
+    // 只有当showTableList为true时才显示section
+    if (!this.state.showTableList) {
+      return null;
     }
     return (
-      <div className='main-render'>
-        <DynamicList
-          height={(window.innerHeight) * 0.98}
-          width={(window.innerWidth) * 0.93}
-          cache={heightCache}
-          data={list}
-          overscanCount={15}
-        >
-          {({ index, style }) => {
-            const calInfo = list[index]
-            const calCount = calInfo.Count
+      <section className='main-render'>
+        {(this.state.output || []).map(CalData => {
+          const yearGroup = CalData.map(calInfo => {
             return (
-              <div className="single-cal" style={style}>
-                {index % calCount === 0 ? <h3>{calInfo.Era}</h3> : null}
+              <div className='single-cal'>
+                <h3>{calInfo.Era}</h3>
                 <p style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: calInfo.YearInfo }}></p>
                 <table>
-                  <tr>{this.RenderTableContent(calInfo)}</tr>
+                  <tbody>
+                    <tr>
+                      {this.RenderTableContent(calInfo)}
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             )
-          }}
-        </DynamicList>
-      </div>
+          })
+          return yearGroup
+        })}
+      </section>
     );
   }
 

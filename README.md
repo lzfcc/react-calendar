@@ -499,7 +499,7 @@ a = [0, ...a]
 
 刪除 `MoonLonWest_BACKUP` `MoonLonWest`（《數》頁348白赤差）`MoonLatWest`、`EcliWest`（藤豔輝《宋代朔閏與交食研究》頁90,106）
 
-4-04 `2.13` 增加 VSOP 天文年曆。
+4-04 `2.13` 增加 VSOP 天文年曆。統一現代、清代、古曆三種曆書的格式。
 
 小增補：
 
@@ -516,7 +516,6 @@ a = [0, ...a]
 - 修复更改恒星时算法
 - 現代曆表置閏改用UT1時間
 - 儒略日轉換統一爲0時區
-- 統一三種曆書的格式。
 
 4-06 前端 `1.10`
 
@@ -524,5 +523,6 @@ a = [0, ...a]
 - 刪掉markdown渲染組件，直接用腳本生成html，再站貼到index.html。嘗試了webpack引入html，失敗。
 - 刪掉 `react-window-dynamic-list`，已經停止維護了，不支持react18。發現其實並不太影響性能，200條也能比較輕鬆地應付。
 - 將 `npm run build` 與 `webpack` 合一
+- 用 GPT 爲菜單選擇添加：點擊其他區域關閉菜單
 - GPT優化曆書jsx
 - tab欄sticky置頂

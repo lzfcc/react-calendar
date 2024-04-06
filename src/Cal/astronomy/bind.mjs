@@ -44,7 +44,9 @@ import {
   equa2Eclp,
   testEclpEclpDif,
 } from "./pos_convert_modern.mjs";
-import { autoEquaEclp, autoMoonLon, autoLat, autoRise, autoDial } from "./auto.mjs";
+import { autoEquaEclp } from "./equa_eclp.mjs";
+import { autoMoonPos } from "./moon_pos.mjs";
+import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {
@@ -965,7 +967,7 @@ export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
         EclpLon,
         EquaLat,
         EclpLat
-      } = autoMoonLon(NodeAccum, MoonWhite, Name)
+      } = autoMoonPos(NodeAccum, MoonWhite, Name)
       if (NodeEclp) {
         NodeSdDegPrint = NodeEclp.toFixed(4);
       }

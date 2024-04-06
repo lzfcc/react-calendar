@@ -1,7 +1,6 @@
 import Para from "../parameter/calendars.mjs";
-import { autoRise } from "./auto.mjs";
 import { AutoLightRange } from "../parameter/auto_consts.mjs";
-
+import { autoRise } from "./lat_rise_dial.mjs";
 const LeapAdjust = (LeapNumTerm, TermAvgRaw, NewmInt, Name) => {
   const { isNewmPlus } = Para[Name];
   let Plus = 3.75; // 若不用進朔，需要改成3.75

@@ -6,20 +6,19 @@ import {
     HalfTermNameList, HouListA, HouListB, Hexagram64ListA, Hexagram64ListB, HexagramSymbolListA, HexagramSymbolListB, FiveList2,
     NumList, MonNumList1
 } from '../parameter/constants.mjs'
-
 import {
     YearGodConvert, YearColorConvert, MonColorConvert, WangwangConvert, FubaoConvert, LsStarConvert, BloodConvert, TouringGodConvert
 } from '../ephemeris/luck.mjs'
 import CalNewm from '../newmoon/index.mjs'
-import {
-    autoEquaEclp, autoMoonLon, autoLat, autoRise, autoDial
-} from '../astronomy/auto.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from '../astronomy/acrv.mjs'
 import { mansion, midstar } from '../astronomy/mansion.mjs'
 import { AutoNineOrbit } from '../astronomy/nineorbits.mjs'
 import { jd2Date } from '../time/jd2date.mjs'
 import { AutoLightRange, AutoMoonAvgV } from '../parameter/auto_consts.mjs'
 import { deci, nzh } from '../parameter/functions.mjs'
+import { autoEquaEclp } from '../astronomy/equa_eclp.mjs'
+import { autoMoonPos } from '../astronomy/moon_pos.mjs'
+import { autoLat, autoRise, autoDial } from '../astronomy/lat_rise_dial.mjs'
 
 const abs = x => Math.abs(x)
 const lat2NS = x => {
@@ -229,7 +228,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 const SunEquaLat = autoLat(SdMidn, Name)
                 let Dial = autoDial(SdMidn, SolsDeci, Name)
                 Dial = Dial ? ' ' + Dial.toFixed(3) + '尺' : ''
-                const FuncMoonPos = Type > 5 ? autoMoonLon(NodeAccumMidn, MoonWhiteLon, Name) : {}
+                const FuncMoonPos = Type > 5 ? autoMoonPos(NodeAccumMidn, MoonWhiteLon, Name) : {}
                 if (Type > 5) {
                     MoonLon = FuncMoonPos.EclpLon
                     MoonLat = FuncMoonPos.EclpLat

@@ -2,7 +2,6 @@ import Para from "../parameter/calendars.mjs";
 import { frc, deci } from "../parameter/functions.mjs";
 import { AutoTcorr, AutoDifAccum, MoonFormula } from "./acrv.mjs";
 import { Interpolate3, Make2DPoints } from "../equation/sn.mjs";
-import { autoLat, autoRise } from "./auto.mjs";
 import {
     AutoQuar,
     AutoMoonAvgV,
@@ -10,6 +9,7 @@ import {
     AutoNodePortion,
     AutoNodeCycle,
 } from "../parameter/auto_consts.mjs";
+import { autoLat, autoRise } from "./lat_rise_dial.mjs";
 
 const ExMagni = (Magni, Type, Name, isNewm) => {
     let Status = 0;

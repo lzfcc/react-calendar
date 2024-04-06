@@ -5,9 +5,9 @@ import { N4 } from './newm_shixian.mjs'
 import Para from '../parameter/calendars.mjs'
 import { TermNameList, Term1NameList, ScList, ThreeList, NameList, MonNumList1, MonNumListChuA, MonNumListChuB } from '../parameter/constants.mjs'
 import { AutoEclipse } from '../astronomy/eclipse.mjs'
-import { autoRise } from '../astronomy/auto.mjs'
 import { AutoRangeEcli } from '../parameter/auto_consts.mjs'
 import { fix } from '../parameter/functions.mjs'
+import { autoRise } from '../astronomy/lat_rise_dial.mjs'
 
 // const Index = (Name, YearStart, YearEnd) => {
 export default (Name, YearStart, YearEnd) => {

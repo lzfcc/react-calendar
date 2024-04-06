@@ -28,34 +28,23 @@ lastmod: 2021-04-21
 
 ## 开发者说明
 
-### 1. 技术特征
+###  技术特征
 
 - 计算程序采用 JS 编写
 - 前端框架采用 React
 - 朔闰表、历书采用 Web Worker，实现 UI 线程与计算线程分离
-- 朔闰表采用懒加载，大幅压缩渲染时间
 - 采用 WebPack 打包
-- 采用 [Decimal.js](https://mikemcl.github.io/decimal.js/)<span classname="decimal64">.64</span>进行小数点后 64 位大数字运算，采用 [fraction.js](https://www.npmjs.com/package/fraction.js)<span classname="decimal64">n/d</span>进行分数运算，采用 [nzh](https://blog.whyoop.com/nzh/docs) 进行阿拉伯数字、汉字转换。采用 [react-markdown](https://www.npmjs.com/package/react-markdown) 进行文档渲染。
+- ~~朔闰表采用懒加载，大幅压缩渲染时间~~
+- 采用 [Decimal.js](https://mikemcl.github.io/decimal.js/)<span classname="decimal64">.64</span> 进行小数点后 64 位大数字运算，采用 [fraction.js](https://www.npmjs.com/package/fraction.js)<span classname="decimal64">n/d</span> 进行分数运算，采用 [nzh](https://blog.whyoop.com/nzh/docs) 进行阿拉伯数字、汉字转换。~~采用 [react-markdown](https://www.npmjs.com/package/react-markdown) 进行文档渲染。~~
 
-<del>本仓库基于组件化、工程化的考量，将核心模块<n>计算逻辑</n>拆分到了单独的仓库<n>ancient-calendar</n>中，通过子模块进行依赖，从而前端展示<n>View</n>和计算逻辑<n>Model</n>可以独立开发，前端直接引用子模块的函数进行运算。</del>
+### 安裝
 
-由于运算都在前端进行，在进行大量运算时会卡住 UI，体验较差。为了改进这一问题，我们决定改用 Web Worker<n>前端的多线程</n>。这样就必须将 `Worker()` 构造函数的参数文件独立放在 public 目录下<n>不能参与 webpack 打包</n>，因而不能直接引用子模块，必须将子模块打包成一个文件：
+1. 安裝 `node.js`
+2. `npm install`
+3. 我移動了前端的目錄，所以要在 `node_modules/react-scripts/config/path.js` 中先把 `src/index/` 改成 `src/Frontend/index`
+4. `npm run build`
 
-1. 全局安装 webpack，webpack-CLI
-
-```
-npm install -g webpack webpack-cli
-```
-
-2. 打包 main.js
-
-```
-webpack
-```
-
-3. `$ npm run build`
-
-### 2. 文件功能
+### 文件功能
 
 核心计算程序在 `/src/Cal` 目录下，有 8 个板块，各文件功能说明：
 
@@ -102,7 +91,7 @@ webpack
   - `output_print` 本地打印入口。`const printData = outputFile(2, 1255, 1255, 0` 第一个数字为模式，`1` 为朔闰表，`2` 为历书；第二三个数字为起始年、终止年；第四个数字为自动长历模式开关，目前暂不支持
   - `output_worker` Web Worker，朔闰表、历书两个模块的前端调用入口
 
-### 3. 命名規範
+### 命名規範
 
 #### 天文參數 Astronomy constants
 
@@ -517,7 +506,7 @@ a = [0, ...a]
 - 現代曆表置閏改用UT1時間
 - 儒略日轉換統一爲0時區
 
-4-06 前端 `1.10`
+4-06 前端 `1.10` 減輕負擔
 
 - 升級到 `react 18.2.0`
 - 刪除以前的菜單組件，GPT重新用react寫了個，分成多選和單選。
@@ -526,3 +515,4 @@ a = [0, ...a]
 - 將 `npm run build` 與 `webpack` 合一
 - GPT優化曆書jsx
 - tab欄sticky置頂
+- 本地：Node 從18.16.0升級到21.7.2，npm從9.5.1升級到10.5.0

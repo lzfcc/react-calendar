@@ -1,5 +1,4 @@
 import Para from "../parameter/calendars.mjs";
-import { autoEquaEclp, autoRise } from "./auto.mjs";
 import {
     MansionNameList,
     MansionNameListQing,
@@ -13,6 +12,8 @@ import {
     HighLon2FlatLat,
 } from "./pos_convert.mjs";
 import { deci, fmod } from "../parameter/functions.mjs";
+import { autoEquaEclp } from "./equa_eclp.mjs";
+import { autoRise } from "./lat_rise_dial.mjs";
 
 // 從角開始：
 const EquaDegTaichu = [

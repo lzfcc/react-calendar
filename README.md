@@ -48,43 +48,74 @@ lastmod: 2021-04-21
 
 核心计算程序在 `/src/Cal` 目录下，有 8 个板块，各文件功能说明：
 
-- `para_` 参数
-  - `para_constant` 全局常量参数
-  - `para_calendars` 各历法参数
-  - `para_auto-constant` 根据历法自动选择相应常量
-  - `para_generate` 生成参数的临时文件
-- `newm_` 朔闰表模块
-  - `newm` 朔闰计算
+- `parameter` 参数
+  - `auto_consts` 根據曆法選擇天文參數
+  - `calendars` 各历法参数
+  - `constants` 全局常量参数
+  - `functions` 一些基本的小型函數
+  - `hexa` 筮法用到的
+- `newmoon` 朔闰表模块
+  - `newm` 大部分古曆的朔闰计算
   - `newm_quar` 四分历朔闰计算
-  - `newm_index` 朔闰计算汇总调整输出
-- `day_` 历书模块
-  - `day` 历书计算
-  - `day_luck` 历书中岁神、日神的计算
-- `astronomy_` 天文模块
-  - `astronomy_acrv` 日月速度改正
-  - `astronomy_eclipse` 日月交食
+  - `newm_shixian` 時憲曆朔闰计算
+  - `newm_de` DE 曆表曆朔闰计算
+  - `index` 朔闰计算汇总调整输出
+  - `index_de` DE 曆表朔闰计算汇总调整输出
+- `ephemeris` 历书模块
+  - `eph` 古曆历书计算
+  - `eph_shixian` 時憲曆历书计算
+  - `eph_modern` 現代曆表历书计算
+  - `luck` 历书中岁神、日神的计算
+  - `index` 曆書匯總模塊
+- `astronomy` 天文模块
+  - `acrv` 日月速度改正
+  - `astr_const` 天文常數的計算
+  - `dayadjust` 進朔退望
+  - `eclipse` 日月交食
+  - `equa_eclp` 黃赤經度轉換
+  - `lat_rise_dial` 太陽赤緯、日出、晷長
   - `astronomy_gong2Mansion` 黄赤道积度转换为入宿度
-  - `astronomy_formula` 使用公式进行计算的历法，`astronomy_table` 使用表格进行计算的历法，`astronomy_west` 使用现代方法进行计算。包含黄赤转换、经纬转换、月亮坐标转换
-  - `astronomy_other` 積度轉宿度，進朔，月行九道
-  - `astronomy_bind` 路由模块，根据历法自动选择天文计算
-- `modulo_` 同馀模块
-  - `modulo_continued-frac` 分数连分数
-  - `modulo_continued-frac1` 小数连分数
-  - `modulo_denom` 调日法
-  - `modulo_exhaustion` 从零开始造宋历
-  - `modulo_gcdlcm` 最大公因数
-  - `modulo_origin` 演纪
-  - `modulo_qiuyi` 大衍求一术
-- `equa_` 方程模块
-  - `equa_geometry` 几何
-  - `equa_high` 解高次方程
-  - `equa_math` 数字格式转换
-  - `equa_sn` 垛积
-  - `equa_sqrt` 开方
+  - `mansion` 入宿度
+  - `moon_pos` 月亮經緯
+  - `nineorbits` 月行九道
+  - `pos_convert_modern` 現代天文學位置轉換
+  - `pos_convert` 清代位置轉換
+  - `pos_functions` 位置轉換要用到的基本函數
+  - `bind` 集中展示所有曆法的情況
+- `congruence` 同馀模块
+  - `continued-frac` 分数连分数
+  - `continued-frac1` 小数连分数
+  - `denom` 调日法
+  - `exhaustion` 从零开始造宋历
+  - `gcdlcm` 最大公因数
+  - `origin` 演纪
+  - `qiuyi` 大衍求一术
+- `equation` 方程模块
+  - `geometry` 几何
+  - `high` 解高次方程
+  - `math` 数字格式转换
+  - `sn` 垛积
+  - `sqrt` 开方
 - `time_` 时间模块
-  - `time_decimal2clock` 日分转换为辰刻
-  - `time_era` 年干支转换
-  - `time_jd2date` 儒略日、日期转换
+  - `decimal2clock` 日分转换为辰刻
+  - `era` 年干支转换
+  - `jd2date` 儒略日、日期转换
+  - `delta-t` DeltaT
+  - `sidereal_time` 恆星時
+- `modern` 現代天文學
+  - `elp2000-82b_list` ELP 曆表的週期項
+  - `elp2000` ELP 曆表
+  - `vsop87a_list` VSOP 曆表的週期項
+  - `vsop` VSOP 曆表
+  - `vsop_elp` 用 VSOP、ELP 計算日月五星視位置
+  - `vsop_elp_bind` 一起計算日月五星
+  - `mansion` 入宿度
+  - `newm_de44_list syzygy_de44_list term_de44_list term1_de44_list` DE440/1 曆表的朔、望、節、氣時刻
+  - `nutation_list` 章動週期項
+  - `nutation` IAU2000 章動
+  - `precession` Vondrak 歲差
+
+- `hexagram` 筮法模塊
 - `guqin` 琴律模塊
 - `output_`其他
   - `output` 输出准备
@@ -105,6 +136,7 @@ lastmod: 2021-04-21
 - LeapLimit 閏限 The limit for arranging a leap
 - Equa 赤道 equator
 - Eclp 黃道 ecliptic
+- Ceclp 極黃
 - Ecli 交食 eclipse
 - Lon 經度 longitude
 - Lat 緯度 latitude
@@ -113,6 +145,8 @@ lastmod: 2021-04-21
 
 - Origin 上元以來的
 - Sols 冬至 winter solstice
+- Sd 距離冬至的時間
+- Smd 距離冬至次日夜半的時間
 - Newm 朔 new moon
 - Syzygy 望 syzygy
 - First 天正月，卽冬至所在月 The month in which the winter solstice falls

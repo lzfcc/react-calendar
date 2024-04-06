@@ -520,9 +520,9 @@ a = [0, ...a]
 4-06 前端 `1.10`
 
 - 升級到 `react 18.2.0`
+- 刪除以前的菜單組件，GPT重新用react寫了個，分成多選和單選。
 - 刪掉markdown渲染組件，直接用腳本生成html，再站貼到index.html。嘗試了webpack引入html，失敗。
 - 刪掉 `react-window-dynamic-list`，已經停止維護了，不支持react18。發現其實並不太影響性能，200條也能比較輕鬆地應付。
 - 將 `npm run build` 與 `webpack` 合一
-- 用 GPT 爲菜單選擇添加：點擊其他區域關閉菜單
 - GPT優化曆書jsx
 - tab欄sticky置頂

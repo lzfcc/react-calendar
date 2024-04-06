@@ -36,19 +36,16 @@ export default class Astronomy extends React.Component {
           <BindTcorr />
           <BindCorrEllipse />
           <h2>宿度</h2>
-          <Deg2Mansion />
-          <p></p>
-          <Mansion2Deg />
-          <MansionAccumList />
+          <Deg2Mansion />          
+          <Mansion2Deg />          
+          <MansionAccumList />          
           <MansionAccumModernList />
           <BindEquaEclp />
           <StarEqua />
           <h2>晷漏</h2>
           <BindLon2Lat />
-          <Round />
-          <p></p>
-          <Round2 />
-          <p></p>
+          <Round />          
+          <Round2 />          
           <Round1 />
           <Hushigeyuan />
           <h2>月行</h2>

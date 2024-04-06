@@ -1,6 +1,6 @@
 import React from 'react'
-import MenuSelect from '../MenuSelect'
 import { MansionSystemList } from '../../Cal/parameter/constants.mjs'
+import SingleSelectMenu from '../SingleSelectMenu';
 
 export default class Day extends React.Component {
   constructor(props) {
@@ -251,14 +251,15 @@ RenderDayTableContent(month, info) {
       </span>
     );
   }
+
   renderCalendar() {
-    let cals = MansionSystemList
+    const Calendars = MansionSystemList
     return (
-      <span className='calendar-select'>
-        <MenuSelect
-          calMap={cals}
+      <span>
+        <SingleSelectMenu          
+          Calendars={Calendars}
           onSelect={selected => {
-            this.setState({ MansionSystem: selected })
+            this.setState({ calendars: selected })
           }}
         />
       </span>

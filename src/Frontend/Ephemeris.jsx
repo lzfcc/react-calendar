@@ -1,6 +1,6 @@
 import React from 'react'
 import { NameDayList } from '../Cal/parameter/constants.mjs'
-import MenuSelect from './MenuSelect'
+import SingleSelectMenu from './SingleSelectMenu';
 
 export default class Day extends React.Component {
   constructor(props) {
@@ -118,7 +118,7 @@ export default class Day extends React.Component {
   }
 
   renderSideColumn() {
-    const Name = this.state.calendars[0]
+    const Name = this.state.calendars
     let Side
     if (['Xinfa', 'Yongnian', 'Jiazi', 'Guimao'].includes(Name)) {
       Side = (<td style={{ minWidth: '1.5em' }}>
@@ -219,6 +219,20 @@ export default class Day extends React.Component {
     callWorker("Eph")
   }
 
+  renderCalendar() {
+    const Calendars = NameDayList
+    return (
+      <span>
+        <SingleSelectMenu
+          Calendars={Calendars}
+          onSelect={selected => {
+            this.setState({ calendars: selected })
+          }}
+        />
+      </span>
+    );
+  }
+
   renderInput() {
     return (
       <span className='year-select'>
@@ -233,26 +247,14 @@ export default class Day extends React.Component {
     );
   }
 
-  renderCalendar() {
-    let cals = NameDayList
-    return (
-      <div className='calendar-select'>
-        <MenuSelect
-          calMap={cals}
-          onSelect={selected => {
-            this.setState({ calendars: selected })
-          }}
-        />
-      </div>
-    );
-  }
-
   render() {
     return (
       <>
-        {this.renderCalendar()}
-        {this.renderInput()}
-        <button onClick={this.handleRetrieve} className='button2'>㤂〻如勑令</button>
+        <div className='one-row'>
+          {this.renderCalendar()}
+          {this.renderInput()}
+          <button onClick={this.handleRetrieve} className='button2'>㤂〻如勑令</button>
+        </div>
         <article>
           <ul>
             <li><span className='Jd'>灰色：儒略日、儒略曆或格利高里曆日期</span></li>

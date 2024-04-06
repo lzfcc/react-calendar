@@ -62,7 +62,7 @@ export default class Converter extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='one-row'>
         {this.input()}
         <button onClick={this.handle} className='button4-6'>mansion2deg</button>
         {this.result()}

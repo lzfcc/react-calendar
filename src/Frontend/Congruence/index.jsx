@@ -32,8 +32,7 @@ export default class Converter extends React.Component {
         <h2>調日法</h2>
         <IndetermEqua />
         <Denom />
-        <ContinuedFrac />
-        <p></p>
+        <ContinuedFrac />        
         <ContinuedFrac1 />
         <h2>章蔀</h2>
         <Gcdlcm />

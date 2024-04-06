@@ -1,7 +1,7 @@
 import React from 'react'
 import { NameDayList } from '../../Cal/parameter/constants.mjs'
-import MenuSelect from '../MenuSelect'
 import { bindMansionAccumList } from '../../Cal/astronomy/bind.mjs'
+import SingleSelectMenu from '../SingleSelectMenu'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -57,12 +57,13 @@ export default class Converter extends React.Component {
       </div>
     )
   }
+
   renderCalendar() {
-    let cals = NameDayList
+    const Calendars = NameDayList
     return (
-      <span className='calendar-select'>
-        <MenuSelect
-          calMap={cals}
+      <span>
+        <SingleSelectMenu
+          Calendars={Calendars}
           onSelect={selected => {
             this.setState({ calendars: selected })
           }}
@@ -70,6 +71,7 @@ export default class Converter extends React.Component {
       </span>
     );
   }
+
   renderInput() {
     return (
       <span className='year-select'>
@@ -86,8 +88,8 @@ export default class Converter extends React.Component {
 
   render() {
     return (
-      <div>
-        {this.renderCalendar()}
+      <div className='one-row'>
+        {this.renderCalendar()}        
         {this.renderInput()}
         <button onClick={this.handle} className='button4-6'>黃赤宿鈐</button>
         {this.result()}

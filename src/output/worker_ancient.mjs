@@ -12,7 +12,7 @@ export default addEventListener("message", (event) => {
     postMessage(data);
   }
   if (eventName === "Eph") {
-    data = outputEphWeb(YearStart, calendars[0]);
+    data = outputEphWeb(YearStart, calendars);
     postMessage(data);
   }
 });

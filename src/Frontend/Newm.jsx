@@ -1,7 +1,6 @@
 import React from 'react'
 import { NameList } from '../Cal/parameter/constants.mjs'
-import MenuSelect from './MenuSelect'
-
+import MultiSelectMenu from './MultiSelectMenu';
 const TableRowNameMap = {
   MonthPrint: ' ',
   NewmAvgScPrint: '平朔',
@@ -88,11 +87,11 @@ export default class Newm extends React.Component {
   }
 
   renderCalendar() {
-    const cals = NameList
+    const Calendars = NameList
     return (
       <span>
-        <MenuSelect
-          calMap={cals}
+        <MultiSelectMenu
+          Calendars={Calendars}
           onSelect={selected => {
             this.setState({ calendars: selected })
           }}
@@ -214,7 +213,7 @@ export default class Newm extends React.Component {
 
   renderDownload() {
     return (
-      <span className='save-file'>
+      <span>
         <input type='checkbox' name='download-file' ref={ref => {
           this.downloadRef = ref
         }} />
@@ -225,7 +224,7 @@ export default class Newm extends React.Component {
 
   renderAutoCal() {
     return (
-      <span className='save-file'>
+      <span>
         <input type='checkbox' name='isAuto' ref={ref => {
           this.isAuto = ref
         }}
@@ -279,13 +278,17 @@ export default class Newm extends React.Component {
   render() {
     return (
       <>
-        <div className='calendar-select'>
-          {this.renderCalendar()}
-          {this.renderAutoCal()}
+        <div className='one-row'>
+          <div>
+            {this.renderCalendar()}
+            {this.renderAutoCal()}
+          </div>
+          <div>
+            {this.renderInput()}
+            <button onClick={this.handleRetrieve} className='button1'>天霝〻地霝〻</button>
+            {this.renderDownload()}
+          </div>
         </div>
-        {this.renderInput()}
-        <button onClick={this.handleRetrieve} className='button1'>天霝〻地霝〻</button>
-        {this.renderDownload()}
         {this.renderTableList()}
       </>
     )

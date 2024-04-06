@@ -64,7 +64,7 @@ export default class Equa extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='one-row'>
         {this.input()}
         <button onClick={this.handle} className='button4-8'>弦2弧矢</button>
         {this.result()}

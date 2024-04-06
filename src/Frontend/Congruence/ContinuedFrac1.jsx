@@ -48,7 +48,7 @@ export default class a extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className='one-row'>
         {this.input()}
         <button onClick={this.handle} className='button4-3'>○●○●</button>
         {this.result()}

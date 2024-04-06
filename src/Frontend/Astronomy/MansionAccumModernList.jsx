@@ -1,5 +1,5 @@
-import React from 'react'
-import MenuSelect from '../MenuSelect'
+import React from 'react';
+import SingleSelectMenu from '../SingleSelectMenu';
 import { MansionSystemList } from '../../Cal/parameter/constants.mjs'
 import { bindMansionAccumModernList } from '../../Cal/astronomy/bind.mjs'
 
@@ -70,12 +70,13 @@ export default class Converter extends React.Component {
       </div>
     )
   }
+
   renderCalendar() {
-    let cals = MansionSystemList
+    const Calendars = MansionSystemList
     return (
-      <span className='calendar-select'>
-        <MenuSelect
-          calMap={cals}
+      <span>
+        <SingleSelectMenu
+          Calendars={Calendars}
           onSelect={selected => {
             this.setState({ calendars: selected })
           }}
@@ -99,7 +100,7 @@ export default class Converter extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='one-row'>
         {this.renderCalendar()}
         {this.renderInput()}
         <button onClick={this.handle} className='button4-6'>現代黃赤宿鈐</button>

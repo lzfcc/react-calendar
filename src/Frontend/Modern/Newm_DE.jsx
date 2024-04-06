@@ -198,11 +198,11 @@ export default class Newm extends React.Component {
   render() {
     return (
       <>
-        <div className='calendar-select'>
-          <h2>DE440/1 朔閏表</h2>
-          {this.renderInput()}
-          <button onClick={this.handleRetrieve} className='button1'>密合天行</button>
-        </div>
+
+        <h2>DE440/1 朔閏表</h2>
+        {this.renderInput()}
+        <button onClick={this.handleRetrieve} className='button1'>密合天行</button>
+
         {this.renderTableList()}
       </>
     )

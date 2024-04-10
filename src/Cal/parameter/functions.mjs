@@ -1,6 +1,6 @@
 import big from 'decimal.js';
 import frc from 'fraction.js';
-import nzh from 'nzh/hk.js';
+import nzh from 'nzh/hk';
 
 big.config({
   precision: 64,

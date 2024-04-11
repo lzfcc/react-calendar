@@ -1,5 +1,5 @@
 import React from "react";
-import { Interpolate2_big } from "Cal";
+import { Interpolate2 } from "Cal";
 
 export default class Equa extends React.Component {
   constructor(props) {
@@ -52,10 +52,11 @@ export default class Equa extends React.Component {
       const arr = this.state.Interpolate2Raw.split(/;|,|，|。|；|｜| /)
         .filter(Boolean) // TODO: no array length validation?
         .map((x) => Number(x));
-      const { yPrint } = Interpolate2_big(
+      const { yPrint } = Interpolate2(
         this.state.Interpolate2N,
         this.state.Interpolate20,
-        arr
+        arr,
+        true
       );
       this.setState({ output: yPrint });
     } catch (e) {

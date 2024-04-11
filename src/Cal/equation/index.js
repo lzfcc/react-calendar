@@ -4,8 +4,8 @@ export {
   Sn3,
   Sn4,
   MeasureSols,
-  Interpolate1_big,
-  Interpolate2_big,
-  Interpolate3_big,
+  Interpolate1,
+  Interpolate2,
+  Interpolate3,
 } from "./sn.mjs";
 export { HighEqua1 } from "./high.mjs";

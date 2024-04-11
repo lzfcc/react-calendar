@@ -1,5 +1,6 @@
 import React from "react";
-import { Sn4 } from "../../Cal/equation/sn.mjs";
+import { Sn4 } from "Cal";
+
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);
@@ -7,23 +8,25 @@ export default class Equa extends React.Component {
       Sn4N: 4,
       Sn4P: 2,
     };
-    this.handle = this.handle.bind(this)
+    this.handle = this.handle.bind(this);
   }
 
   input() {
     return (
-      <span className='year-select'>
+      <span className="year-select">
         <span>n</span>
-        <input className='width3'
+        <input
+          className="width3"
           value={this.state.Sn4N}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Sn4N: e.currentTarget.value });
           }}
         />
         <span> p</span>
-        <input className='width3'
+        <input
+          className="width3"
           value={this.state.Sn4P}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Sn4P: e.currentTarget.value });
           }}
         />
@@ -33,22 +36,22 @@ export default class Equa extends React.Component {
 
   handle() {
     try {
-      const Print = Sn4(this.state.Sn4N, this.state.Sn4P)
-      this.setState({ output: Print })
+      const Print = Sn4(this.state.Sn4N, this.state.Sn4P);
+      this.setState({ output: Print });
     } catch (e) {
-      alert(e.message)
+      alert(e.message);
     }
   }
 
   result() {
     if (!this.state.output) {
-      return null
+      return null;
     }
     return (
-      <div className='ans'>
+      <div className="ans">
         <p>{this.state.output}</p>
       </div>
-    )
+    );
   }
 
   render() {
@@ -56,7 +59,9 @@ export default class Equa extends React.Component {
       <div>
         <h3>四角垛　方垛</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-3'>解</button>
+        <button onClick={this.handle} className="button4-3">
+          解
+        </button>
         {this.result()}
       </div>
     );

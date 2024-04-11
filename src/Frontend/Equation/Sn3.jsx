@@ -1,5 +1,6 @@
 import React from "react";
-import { Sn3 } from "../../Cal/equation/sn.mjs";
+import { Sn3 } from "Cal";
+
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);
@@ -7,23 +8,25 @@ export default class Equa extends React.Component {
       Sn5N: 4,
       Sn5P: 2,
     };
-    this.handle = this.handle.bind(this)
+    this.handle = this.handle.bind(this);
   }
 
   input() {
     return (
-      <span className='year-select'>
+      <span className="year-select">
         <span>n</span>
-        <input className='width3'
+        <input
+          className="width3"
           value={this.state.Sn5N}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Sn5N: e.currentTarget.value });
           }}
         />
         <span> p</span>
-        <input className='width3'
+        <input
+          className="width3"
           value={this.state.Sn5P}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Sn5P: e.currentTarget.value });
           }}
         />
@@ -33,22 +36,22 @@ export default class Equa extends React.Component {
 
   handle() {
     try {
-      const { Print } = Sn3(this.state.Sn5N, this.state.Sn5P)
-      this.setState({ output: Print })
+      const { Print } = Sn3(this.state.Sn5N, this.state.Sn5P);
+      this.setState({ output: Print });
     } catch (e) {
-      alert(e.message)
+      alert(e.message);
     }
   }
 
   result() {
     if (!this.state.output) {
-      return null
+      return null;
     }
     return (
-      <div className='ans'>
+      <div className="ans">
         <p>{this.state.output}</p>
       </div>
-    )
+    );
   }
 
   render() {
@@ -56,7 +59,10 @@ export default class Equa extends React.Component {
       <div>
         <h3>三角垛　落一形垛</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-3'>解</button><span className='Deci64'>.64</span>
+        <button onClick={this.handle} className="button4-3">
+          解
+        </button>
+        <span className="Deci64">.64</span>
         {this.result()}
       </div>
     );

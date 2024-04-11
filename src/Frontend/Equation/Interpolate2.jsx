@@ -1,38 +1,45 @@
 import React from "react";
-import { Interpolate2_big } from "../../Cal/equation/sn.mjs";
+import { Interpolate2 } from "Cal";
+
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       Interpolate2N: 1.12345678,
-      Interpolate2Raw: '18588,4458,2840,1160,180',
+      Interpolate2Raw: "18588,4458,2840,1160,180",
       Interpolate20: 289943,
     };
-    this.handle = this.handle.bind(this)
+    this.handle = this.handle.bind(this);
   }
 
   input() {
     return (
-      <span className='year-select'>
+      <span className="year-select">
         <span>n</span>
-        <input className='width4'
+        <input
+          className="width4"
           value={this.state.Interpolate2N}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Interpolate2N: e.currentTarget.value });
           }}
         />
-        <span> f<sub>0</sub></span>
-        <input className='width4'
+        <span>
+          {" "}
+          f<sub>0</sub>
+        </span>
+        <input
+          className="width4"
           value={this.state.Interpolate20}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Interpolate20: e.currentTarget.value });
           }}
         />
         <p></p>
         <span> Δ</span>
-        <input className='width5'
+        <input
+          className="width5"
           value={this.state.Interpolate2Raw}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ Interpolate2Raw: e.currentTarget.value });
           }}
         />
@@ -42,33 +49,40 @@ export default class Equa extends React.Component {
 
   handle() {
     try {
-      let arr = this.state.Interpolate2Raw.split(/;|,|，|。|；|｜| /).filter(Boolean)
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = Number(arr[i])
-      }
-      const { yPrint } = Interpolate2_big(this.state.Interpolate2N, this.state.Interpolate20, arr)
-      this.setState({ output: yPrint })
+      const arr = this.state.Interpolate2Raw.split(/;|,|，|。|；|｜| /)
+        .filter(Boolean) // TODO: no array length validation?
+        .map((x) => Number(x));
+      const { yPrint } = Interpolate2(
+        this.state.Interpolate2N,
+        this.state.Interpolate20,
+        arr,
+        true
+      );
+      this.setState({ output: yPrint });
     } catch (e) {
-      alert(e.message)
+      alert(e.message);
     }
   }
 
   result() {
     if (!this.state.output) {
-      return null
+      return null;
     }
     return (
-      <div className='ans' style={{ whiteSpace: 'pre-wrap' }}>
+      <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
         <p>{this.state.output}</p>
       </div>
-    )
+    );
   }
 
   render() {
     return (
       <div>
         {this.input()}
-        <button onClick={this.handle} className='button4-5'>朱世傑</button><span className='Deci64'>.64</span>
+        <button onClick={this.handle} className="button4-5">
+          朱世傑
+        </button>
+        <span className="Deci64">.64</span>
         {this.result()}
       </div>
     );

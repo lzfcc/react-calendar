@@ -1,30 +1,33 @@
 import React from "react";
-import { Interpolate3_big } from "../../Cal/equation/sn.mjs";
+import { Interpolate3 } from "Cal";
+
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       n: 11.36116,
-      initial: '1.124,1.27；2.5873,4.38882；3.93,9.63882;7.98,64.899;12.68,565',
+      initial: "1.124,1.27;2.5873,4.38882;3.93,9.63882;7.98,64.899;12.68,565",
     };
-    this.handle = this.handle.bind(this)
+    this.handle = this.handle.bind(this);
   }
 
   input() {
     return (
-      <span className='year-select'>
+      <span className="year-select">
         <span>n</span>
-        <input className='width4'
+        <input
+          className="width4"
           value={this.state.n}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ n: e.currentTarget.value });
           }}
         />
         <p></p>
         <span> 數列</span>
-        <input className='width5'
+        <input
+          className="width5"
           value={this.state.initial}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ initial: e.currentTarget.value });
           }}
         />
@@ -34,26 +37,26 @@ export default class Equa extends React.Component {
 
   handle() {
     try {
-      let arr = this.state.initial.split(/;|,|，|。|；|｜| /).filter(Boolean)
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = Number(arr[i])
-      }
-      const { Print } = Interpolate3_big(this.state.n, arr)
-      this.setState({ output: Print })
+      const arr = this.state.initial.split(";").filter(Boolean); // TODO: no array length validation?
+      const points = arr.map((s) => s.split(",").map((x) => Number(x))); // "1.2,3.4" => ["1.2", "3.4"] => [1.2, 3.4]
+      // TODO: Strictly speaking, Number(x) will lose precision, if you intend to calculate with high precision,
+      // you should keep string and pass into Interpolate3, it will handle the conversion.
+      const { Print } = Interpolate3(this.state.n, points, true);
+      this.setState({ output: Print });
     } catch (e) {
-      alert(e.message)
+      alert(e.message);
     }
   }
 
   result() {
     if (!this.state.output) {
-      return null
+      return null;
     }
     return (
-      <div className='ans' style={{ whiteSpace: 'pre-wrap' }}>
+      <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
         <p>{this.state.output}</p>
       </div>
-    )
+    );
   }
 
   render() {
@@ -62,7 +65,10 @@ export default class Equa extends React.Component {
         <h3>拉格朗日內插</h3>
         <h4>不等間距高次內插</h4>
         {this.input()}
-        <button onClick={this.handle} className='button4-6'>Lagrange</button><span className='Deci64'>.64</span>
+        <button onClick={this.handle} className="button4-6">
+          Lagrange
+        </button>
+        <span className="Deci64">.64</span>
         {this.result()}
       </div>
     );

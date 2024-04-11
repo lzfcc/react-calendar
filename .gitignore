@@ -27,6 +27,3 @@ yarn-error.log*
 
 output1.md
 output.md
-
-public/worker_ancient.min.js
-public/worker_modern.min.js

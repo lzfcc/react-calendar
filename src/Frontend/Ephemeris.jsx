@@ -1,6 +1,7 @@
-import React from 'react'
-import { NameDayList } from '../Cal/parameter/constants.mjs'
-import SingleSelectMenu from './SingleSelectMenu';
+import React from "react";
+import { NameDayList } from "Cal/parameter/constants.mjs";
+import SingleSelectMenu from "./SingleSelectMenu";
+import MyWorker from "workers/worker_ancient.mjs?worker";
 
 export default class Day extends React.Component {
   constructor(props) {
@@ -8,8 +9,8 @@ export default class Day extends React.Component {
     this.handleRetrieve = this.handleRetrieve.bind(this);
     this.state = {
       calendars: [],
-      YearStart: '',
-      YearEnd: '',
+      YearStart: "",
+      YearEnd: "",
       AutoMode: 0,
       output: null,
       loading: false,
@@ -19,10 +20,14 @@ export default class Day extends React.Component {
   }
 
   componentDidMount() {
-    this.worker = new Worker('worker_ancient.min.js');
-    this.worker.addEventListener('message', ({ data }) => {
+    this.worker = new MyWorker();
+    this.worker.addEventListener("message", ({ data }) => {
       this.setState({ output: data, loading: false });
     });
+  }
+
+  componentWillUnmount() {
+    this.worker.terminate();
   }
 
   // 以下經GPT優化：
@@ -53,7 +58,17 @@ export default class Day extends React.Component {
       return null;
     }
 
-    const { MonName, MonInfo, MonColor, DayData, Era, Title, DayAccum, YearGod, YearColor } = output;
+    const {
+      MonName,
+      MonInfo,
+      MonColor,
+      DayData,
+      Era,
+      Title,
+      DayAccum,
+      YearGod,
+      YearColor,
+    } = output;
     const list = DayData.slice(1);
 
     if (!list.length) {
@@ -61,16 +76,17 @@ export default class Day extends React.Component {
     }
 
     return (
-      <section className='day-render'>
-        <div className='daytitle-wrap'>
+      <section className="day-render">
+        <div className="daytitle-wrap">
           <h2>
-            <span className='daytitle-1'>{Era}</span><br />
+            <span className="daytitle-1">{Era}</span>
+            <br />
             {Title}
           </h2>
-          <p className='DayAccum'>{DayAccum}</p>
+          <p className="DayAccum">{DayAccum}</p>
           <p>{YearGod}</p>
           {YearColor && (
-            <div className='YearColor'>
+            <div className="YearColor">
               {this.renderYearColorTable(YearColor)}
             </div>
           )}
@@ -81,13 +97,11 @@ export default class Day extends React.Component {
             <h3>{MonName[index + 1]}</h3>
             <p dangerouslySetInnerHTML={{ __html: MonInfo[index + 1] }}></p>
             {MonColor[index + 1] && (
-              <span className='YearColor'>
+              <span className="YearColor">
                 {this.renderYearColorTable(MonColor[index + 1])}
               </span>
             )}
-            <div>
-              {this.RenderDayTableContent(index + 1, info)}
-            </div>
+            <div>{this.RenderDayTableContent(index + 1, info)}</div>
           </div>
         ))}
       </section>
@@ -118,38 +132,42 @@ export default class Day extends React.Component {
   }
 
   renderSideColumn() {
-    const Name = this.state.calendars
-    let Side
-    if (['Xinfa', 'Yongnian', 'Jiazi', 'Guimao'].includes(Name)) {
-      Side = (<td style={{ minWidth: '1.5em' }}>
-        <p className="Sc">&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>日</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>月</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>旦</p>
-        <p>昏</p>
-      </td>)
+    const Name = this.state.calendars;
+    let Side;
+    if (["Xinfa", "Yongnian", "Jiazi", "Guimao"].includes(Name)) {
+      Side = (
+        <td style={{ minWidth: "1.5em" }}>
+          <p className="Sc">&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>日</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>月</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>旦</p>
+          <p>昏</p>
+        </td>
+      );
     } else {
-      Side = (<td style={{ minWidth: '1.5em' }}>
-        <p className="Sc">&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>日</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>月</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>旦</p>
-        <p>昏</p>
-        <p>神</p>
-      </td>)
+      Side = (
+        <td style={{ minWidth: "1.5em" }}>
+          <p className="Sc">&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>日</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>月</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>旦</p>
+          <p>昏</p>
+          <p>神</p>
+        </td>
+      );
     }
     return Side;
   }
@@ -176,13 +194,19 @@ export default class Day extends React.Component {
   // 在这个代码片段中，我们首先使用 filter 方法来排除数组中键为 'MonColor' 的项，然后使用 map 方法来遍历过滤后的数组并返回一个新的<p> 元素数组。每个<p> 元素都使用 key 作为 React 的 key 属性，这是必需的，以帮助 React 确定何时重新渲染组件。
   renderDayDetail(info, day) {
     // 过滤掉 'MonColor' 键
-    const filteredEntries = Object.entries(info[day]).filter(([key]) => key !== 'MonColor');
+    const filteredEntries = Object.entries(info[day]).filter(
+      ([key]) => key !== "MonColor"
+    );
     return (
       <div>
         {filteredEntries.map(([key, value]) => (
           // 假设 key 是唯一的，直接使用 key 作为 React 列表的 key
           // 如果 key 不是唯一的，你需要找到一种方式来生成唯一的 key
-          <p key={key} className={key} dangerouslySetInnerHTML={{ __html: value }} />
+          <p
+            key={key}
+            className={key}
+            dangerouslySetInnerHTML={{ __html: value }}
+          />
         ))}
       </div>
     );
@@ -190,43 +214,43 @@ export default class Day extends React.Component {
 
   handleRetrieve() {
     if (this.state.calendars.length === 0) {
-      alert('Please choose a calendar');
-      return
-    }
-    if (this.state.YearStart.length === 0) {
-      alert('Please input year(s)');
-      return
-    }
-    let YearStart = parseInt(this.state.YearStart)
-    if (YearStart < -3807 || YearStart > 9999) {
-      alert('year range: -3807 to 9999');
-      return
-    }
-    let YearEnd = YearStart
-    if (Number.isNaN(YearStart) && Number.isNaN(YearEnd)) {
-      alert('illegal input!');
+      alert("Please choose a calendar");
       return;
     }
-    const callWorker = eventName => {
+    if (this.state.YearStart.length === 0) {
+      alert("Please input year(s)");
+      return;
+    }
+    let YearStart = parseInt(this.state.YearStart);
+    if (YearStart < -3807 || YearStart > 9999) {
+      alert("year range: -3807 to 9999");
+      return;
+    }
+    let YearEnd = YearStart;
+    if (Number.isNaN(YearStart) && Number.isNaN(YearEnd)) {
+      alert("illegal input!");
+      return;
+    }
+    const callWorker = (eventName) => {
       this.setState({ loading: true });
       this.worker.postMessage({
         eventName,
         ...this.state,
         YearStart,
-        YearEnd
-      })
-    }
-    callWorker("Eph")
+        YearEnd,
+      });
+    };
+    callWorker("Eph");
   }
 
   renderCalendar() {
-    const Calendars = NameDayList
+    const Calendars = NameDayList;
     return (
       <span>
         <SingleSelectMenu
           Calendars={Calendars}
-          onSelect={selected => {
-            this.setState({ calendars: selected })
+          onSelect={(selected) => {
+            this.setState({ calendars: selected });
           }}
         />
       </span>
@@ -235,10 +259,10 @@ export default class Day extends React.Component {
 
   renderInput() {
     return (
-      <span className='year-select'>
+      <span className="year-select">
         <input
           value={this.state.YearStart}
-          onChange={e => {
+          onChange={(e) => {
             this.setState({ YearStart: e.currentTarget.value });
           }}
         />
@@ -250,28 +274,60 @@ export default class Day extends React.Component {
   render() {
     return (
       <>
-        <div className='one-row'>
+        <div className="one-row">
           {this.renderCalendar()}
           {this.renderInput()}
-          <button onClick={this.handleRetrieve} className='button2'>㤂〻如勑令</button>
+          <button onClick={this.handleRetrieve} className="button2">
+            㤂〻如勑令
+          </button>
         </div>
         <article>
           <ul>
-            <li><span className='Jd'>灰色：儒略日、儒略曆或格利高里曆日期</span></li>
-            <li><span className='Nayin'>黑色：納音、建除、黃道黑道；七曜值日、二十八宿值日、二十八禽值日</span></li>
-            <li><span className='Equa'>紅色：赤道經緯</span></li>
-            <li><span className='Eclp'>黑色：極黃經緯</span></li>
-            <li><span className='Eclp'>黃色：黃道經緯</span></li>
-            <li><span className='MoonRise'>【月】綠色：出入時刻</span></li>
-            <li><span className='NodeMapo'>【月】灰色：羅㬋（正交）、月孛（月遠地點）</span></li>
-            <li><span className='Rise'>綠色：民用曚影時刻、日出入刻度、昏旦中星</span></li>
-            <li><span className='HouName'>黑色：沒滅、二十四節氣、七十二候、卦用事、土王用事</span></li>
-            <li><span className='ManGod'>灰色：人神、血支血忌、日遊神</span></li>
-            <li><span className='Luck'>紅色：各種日神</span></li>
+            <li>
+              <span className="Jd">灰色：儒略日、儒略曆或格利高里曆日期</span>
+            </li>
+            <li>
+              <span className="Nayin">
+                黑色：納音、建除、黃道黑道；七曜值日、二十八宿值日、二十八禽值日
+              </span>
+            </li>
+            <li>
+              <span className="Equa">紅色：赤道經緯</span>
+            </li>
+            <li>
+              <span className="Eclp">黑色：極黃經緯</span>
+            </li>
+            <li>
+              <span className="Eclp">黃色：黃道經緯</span>
+            </li>
+            <li>
+              <span className="MoonRise">【月】綠色：出入時刻</span>
+            </li>
+            <li>
+              <span className="NodeMapo">
+                【月】灰色：羅㬋（正交）、月孛（月遠地點）
+              </span>
+            </li>
+            <li>
+              <span className="Rise">
+                綠色：民用曚影時刻、日出入刻度、昏旦中星
+              </span>
+            </li>
+            <li>
+              <span className="HouName">
+                黑色：沒滅、二十四節氣、七十二候、卦用事、土王用事
+              </span>
+            </li>
+            <li>
+              <span className="ManGod">灰色：人神、血支血忌、日遊神</span>
+            </li>
+            <li>
+              <span className="Luck">紅色：各種日神</span>
+            </li>
           </ul>
         </article>
         {this.renderDayTableList()}
       </>
-    )
+    );
   }
 }

@@ -53,7 +53,7 @@ export const Sn4 = (n, p) => { // 四角垛
 // console.log(Sn4(40, 1))
 
 // 這個小函數求三角垛第n項是什麼
-export const Sn3Sub = (n, p) => {
+const Sn3Sub = (n, p) => {
     n = parseInt(n)
     p = parseInt(p)
     let b = 1

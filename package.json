@@ -13,16 +13,15 @@
     "nzh": "^1.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1",
     "web-vitals": "^3.3.1"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
     "build:markdown": "node src/documents/build-markdown.js",
-    "build": "npm run build:markdown && webpack && GENERATE_SOURCEMAP=false ESLINT_NO_DEV_ERRORS=true react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "pack": "webpack",
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage --watch=false",
     "lint": "eslint ."
   },
   "browserslist": {
@@ -38,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",
@@ -48,6 +48,8 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^3.2.5",
     "prettier-eslint": "^16.3.0",
+    "vite": "^5.2.8",
+    "vite-tsconfig-paths": "^4.3.2",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.0.1"
   }

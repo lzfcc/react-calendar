@@ -14,7 +14,7 @@ export default class App extends React.Component {
     super(props);
     this.tabs = [
       { title: "朔閏表", Component: Newm },
-      { tilte: "曆書", Component: Ephemeris },
+      { title: "曆書", Component: Ephemeris },
       { title: "現代曆表", Component: Modern },
       { title: "同餘", Component: Congruence },
       { title: "招差", Component: Equation },
@@ -57,8 +57,11 @@ export default class App extends React.Component {
   }
   renderTabContent() {
     const { activeTab } = this.state;
-    const tabComponents = this.tabs.map(({ Component }, index) => (
-      <div style={{ display: activeTab === index ? "block" : "none" }}>
+    const tabComponents = this.tabs.map(({ title, Component }, index) => (
+      <div
+        style={{ display: activeTab === index ? "block" : "none" }}
+        key={title}
+      >
         <Component />
       </div>
     ));

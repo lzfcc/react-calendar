@@ -34,7 +34,7 @@ import { mansionQing, midstarQing } from "../astronomy/mansion.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { nzh } from "../parameter/functions.mjs";
-import { sunQing, moonQing } from "../newmoon/newm_shixian.mjs";
+import { moonQing, sunQing } from "../astronomy/sun_moon_qing.mjs";
 
 export const D2 = (Name, YearStart, YearEnd) => {
   YearEnd = YearEnd || YearStart;

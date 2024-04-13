@@ -7,10 +7,7 @@ import { deci, fix, fmod, fm60 } from '../parameter/functions.mjs'
 
 // const cal = (Name, Y) => {
 export default (Name, Y) => {
-    const { Type, isAcr, isNewmPlus, Sidereal, SolarNumer, LunarNumer, Denom, Anoma, Node, AcrTermList,
-        OriginAd, CloseOriginAd, OriginMonNum, ZhengNum,
-        YuanRange, JiRange, ZhangRange, ZhangLeap,
-        YinyangConst, EcliConst, MansionRaw } = Para[Name]
+    const { Type, isAcr, isNewmPlus, Sidereal, SolarNumer, LunarNumer, Denom, Anoma, Node, AcrTermList, OriginAd, CloseOriginAd, OriginMonNum, ZhengNum, YuanRange, JiRange, ZhangRange, ZhangLeap, YinyangConst, EcliConst, MansionRaw } = Para[Name]
     let { Solar, SolarRaw, Lunar, LunarRaw, ScConst, NodeConst, FirstConst, AnomaConst, MansionConst, SolsConst
     } = Para[Name]
     ScConst = ScConst || 0
@@ -86,12 +83,12 @@ export default (Name, Y) => {
         // const LeapAccumThis = OriginAccumThis + FirstConst // 閏積   
         OriginAccumThis = CloseOriginYear * SolarRaw + SolarChangeAccum
         const LeapAccumThis = OriginAccumThis - FirstConst // 閏積
-        LeapSurAvg = parseFloat(fmod(LeapAccumThis, Lunar).toPrecision(14)) // 閏餘、冬至月齡        
+        LeapSurAvg = fmod(LeapAccumThis, Lunar) // 閏餘、冬至月齡        
     } else if (Type === 11) {
         OriginAccumThis = CloseOriginYear * Solar // 中積
         SolsAccum = OriginAccumThis + SolsConst // 通積：該年冬至積日
         const LeapAccumThis = OriginAccumThis + FirstConst // 閏積
-        LeapSurAvg = parseFloat(fmod(LeapAccumThis, Lunar).toPrecision(14)) // 閏餘、冬至月齡        
+        LeapSurAvg = fmod(LeapAccumThis, Lunar) // 閏餘、冬至月齡        
     }
     const SolsDeci = deci(SolsAccum) //.toFixed(fixed)
     let FirstAccum = 0, FirstAnomaAccum = 0, FirstNodeAccum = 0
@@ -123,9 +120,9 @@ export default (Name, Y) => {
     if (ZhangRange) {
         LeapLimit = ZhangRange - ZhangLeap
     } else if (Type <= 7) {
-        LeapLimit = parseFloat((13 * LunarNumer - SolarNumer).toPrecision(14))
+        LeapLimit = 13 * LunarNumer - SolarNumer
     } else {
-        LeapLimit = parseFloat((13 * Lunar - Solar).toPrecision(14))
+        LeapLimit = 13 * Lunar - Solar
     }
     const main = isNewm => {
         const AvgRaw = [], AvgInt = [], AvgSc = [], AvgDeci = [], TermAcrRaw = [], TermAcrSd = [], TermAvgRaw = [], TermAvgSd = [], Term1AvgRaw = [], Term1AvgSd = [], Term1Sc = [], Term1Deci = [], Term1AcrRaw = [], Term1AcrSd = [], Term1AcrSc = [], Term1AcrDeci = [], Term1Equa = [], Term1Eclp = [], TermSc = [], TermDeci = [], TermAcrSc = [], TermAcrDeci = [], TermEqua = [], TermEclp = [], AnomaAccum = [], AnomaAccumMidn = [], NodeAccum = [], NodeAccumMidn = [], AcrInt = [], Int = [], Raw = [], Tcorr = [], AcrRaw = [], AcrMod = [], Sc = [], Deci1 = [], Deci2 = [], Deci3 = [], Deci = [], Sd = [], AcrSd = [], Eclp = [], Equa = []
@@ -316,4 +313,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnomaAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('Shoushi', -2158))
+// console.log(cal('Jingchu', 1158))

@@ -1,18 +1,10 @@
-import { big } from '../parameter/functions.mjs'
+import { R2D } from '../parameter/functions.mjs'
 import { Gong2Lon, GongFlat2High, GongHigh2Flat, HighLon2FlatLat } from '../astronomy/pos_convert.mjs'
 
-const pi = big.acos(-1)
-const r2d = degree => big(degree).mul(180).div(pi)
-const d2r = degree => big(degree).mul(pi).div(180)
-const RoundL2HWest = (r, l) => big(r).mul(big(1).sub(d2r(l).cos())).toNumber() // 輸入半弧，輸出矢
-const RoundL2CWest = (r, l) => big(r).mul(d2r(l).sin()).toNumber() // 輸入半弧，輸出半弦
-// const RoundH2LWest = (r, h) => r2d(big.acos((r - h) / r)).toNumber() // 輸入矢，輸出半弧
-const RoundC2LWest = (r, c) => r2d(big(c).div(r).asin()).toNumber() // 輸入半弦，輸出半弧  // 圓心角l=arcsin(sqrt(2rh-h^2)/r) 
-// const RoundH2CWest、RoundC2HWest // 直接用勾股定理
-
-// const RoundL2HWest = (r, l) => big(r).sub(big.sqrt(big(r).pow(2).mul(big(1).sub((d2r(l).sin()).pow(2))))).toNumber()  // 半弦c,半弧l，c=rsinl, h=sqrt(r^2-c^2)+r ==> h=r-sqrt(r^2*(1-(sinl)^2))
-// console.log (RoundL2HWest(58,180))
-// const RoundH2LWest = (r, h) => r2d(big.sqrt(h * (2 * r - h)).div(r).asin()).toNumber()// c=sqrt(h(2r-h)), sinl=c/r ==>半弧l=arcsin(sqrt(h(2r-h))/r)
+const RoundL2HWest = (r, l) => r * (1 - Math.cos(l)) // 輸入半弧，輸出矢
+const RoundH2LWest = (r, h) => Math.acos((r - h) / r) // 輸入矢，輸出半弧
+const RoundL2CWest = (r, l) => r * Math.sin(l) // 輸入半弧，輸出半弦
+const RoundC2LWest = (r, c) => Math.asin(c / r) // 輸入半弦，輸出半弧  // 圓心角l=arcsin(sqrt(2rh-h^2)/r)
 
 // 會圓術已知矢長求弧長 
 const RoundH2LC = h => { // 弓弦長 2* sqrt (r^2-(r-h)^2) //半徑，矢長
@@ -342,13 +334,3 @@ export const HushigeyuanMoon = (NodeEclp, MoonNodeEclpDif) => { // v黃白正交
 // 南宋秦九韶的《数书九章》（Mathematical Treatise in Nine Sections）中的三斜求积术：以小斜幂，并大斜幂，减中斜幂，余半之，自乘于上；以小斜幂乘大斜幂，减上，余四约之，为实；一为从隅，开平方得积。秦九韶他把三角形的三条边分别称为小斜、中斜和大斜。“术”即方法。三斜求积术就是用小斜平方加上大斜平方，减中斜平方，取余数的一半的平方，而得一个数。小斜平方乘以大斜平方，减上面所得到的那个数。相减后余数被4除,开平方后即得面积。化下简就会发现这就是传说中的已知三边求三角形面积的海伦公式。
 // 海伦公式 sqrt(p (p-a) (p-b) (p-c)), p=(a+b+c)/2
 // 三斜求积术 sqrt( ((c^2 a^2)-((c^2+a^2-b^2 )/2)^2)/4 )
-// const date = new Date()
-export const Heron = (a, b, c) => {
-    const tmp1 = big(c).pow(2).mul(big(a).pow(2)) // 225
-    const tmp2 = big(c).pow(2).add(big(a).pow(2)).sub(big(b).pow(2)) // 18
-    const tmp3 = tmp1.sub(tmp2.div(2).pow(2))
-    const S = tmp3.div(4).sqrt().toFixed(15)
-    const Print = 'S△ABC = ' + S
-    return { Print }
-}
-// console.log(Heron(31, 41, 51))

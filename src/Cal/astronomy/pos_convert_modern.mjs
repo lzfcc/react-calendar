@@ -9,6 +9,8 @@ import {
   cotd,
   asind,
   acosd,
+  atand,
+  atan2d,
 } from "../parameter/functions.mjs";
 import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
@@ -69,6 +71,22 @@ export const testEclpEclpDif = (Sobliq, Lat) => {
   return Print;
 };
 // console.log(testEclpEclpDif(23.5, 20))
+
+/**
+ * 《數理》p347一行重新發明了九道術：將月亮的黃道度（即月亮與交點的極黃經差）換算成白道度。
+ *  九道術的球面三角算法藪內清公式。算黃白差 abs(B-G) ，B: 月亮距升交點的黃道度，G: 月亮距升交點的白道度。白道度G是以黃道度B和交點黃經爲自變量的二元函數。
+ * @param {*} Sobliq 黃赤大距Eps
+ * @param {*} Mobliq 黃白大距 I
+ * @param {*} NodeEclpLon 升交點黃經omega
+ * @param {*} CeclpNodeDif 月亮距交點黃經B
+ */
+export const Ceclp2CwhiteNodeDif = (Sobliq, Mobliq, NodeEclpLon, CeclpNodeDif) => {
+  const tmp1 = sind(CeclpNodeDif)
+  const tmp2 = cosd(CeclpNodeDif) * cosd(Mobliq) - sind(Mobliq) * cosd(NodeEclpLon + CeclpNodeDif) * tand(Sobliq)
+  const MoonNodeWhiteDif = atan2d(tmp1, tmp2)
+  return MoonNodeWhiteDif
+}
+// console.log(Ceclp2CwhiteNodeDif(23.5, 6, 50, 140))
 
 /**
  * 一天之内太阳高度角的变化速率如何计算？ - Pjer https://www.zhihu.com/question/25909220/answer/1026387602 一年中太阳直射点在地球上的移动速度是多少？ - 黄诚赟的回答 https://www.zhihu.com/question/335690936/answer/754032487「太阳直射点的纬度变化不是匀速的，春分秋分最大，夏至冬至最小。」

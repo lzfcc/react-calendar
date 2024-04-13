@@ -2,6 +2,7 @@ import React from "react";
 import { NameDayList } from "Cal/parameter/constants.mjs";
 import SingleSelectMenu from "./SingleSelectMenu";
 import MyWorker from "workers/worker_ancient.mjs?worker";
+import Para from "Cal/parameter/calendars.mjs"
 
 export default class Day extends React.Component {
   constructor(props) {
@@ -41,13 +42,16 @@ export default class Day extends React.Component {
   renderYearColorTable(yearColor) {
     return (
       <table>
-        {yearColor.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((d, colIndex) => (
-              <td key={colIndex} dangerouslySetInnerHTML={{ __html: d }} />
-            ))}
-          </tr>
-        ))}
+        <tbody>
+          {yearColor.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((d, colIndex) => (
+                <td key={colIndex} dangerouslySetInnerHTML={{ __html: d }} />
+              ))}
+            </tr>
+
+          ))}
+        </tbody>
       </table>
     );
   }
@@ -133,8 +137,9 @@ export default class Day extends React.Component {
 
   renderSideColumn() {
     const Name = this.state.calendars;
+    const { Type } = Para[Name]
     let Side;
-    if (["Xinfa", "Yongnian", "Jiazi", "Guimao"].includes(Name)) {
+    if (Type === 13) {
       Side = (
         <td style={{ minWidth: "1.5em" }}>
           <p className="Sc">&nbsp;</p>
@@ -149,6 +154,22 @@ export default class Day extends React.Component {
           <p>&nbsp;</p>
           <p>旦</p>
           <p>昏</p>
+        </td>
+      );
+    } else if (Type <= 10) {
+      Side = (
+        <td style={{ minWidth: "1.5em" }}>
+          <p className="Sc">&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>日</p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <p>月</p>
+          <p>&nbsp;</p>
+          <p>旦</p>
+          <p>昏</p>
+          <p>神</p>
         </td>
       );
     } else {
@@ -292,13 +313,16 @@ export default class Day extends React.Component {
               </span>
             </li>
             <li>
-              <span className="Equa">紅色：赤道經緯</span>
+              <span className="Equa">紅色：赤道經緯宿度</span>
             </li>
             <li>
-              <span className="Eclp">黑色：極黃經緯</span>
+              <span className="Ceclp">黑色：極黃經緯宿度</span>
             </li>
             <li>
-              <span className="Eclp">黃色：黃道經緯</span>
+              <span className="Eclp">黃色：黃道經緯宿度</span>
+            </li>
+            <li>
+              <span className="WhiteLon">【月】藍色：九道經度</span>
             </li>
             <li>
               <span className="MoonRise">【月】綠色：出入時刻</span>

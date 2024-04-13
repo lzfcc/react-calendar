@@ -6,6 +6,7 @@ import Deg2Mansion from './Deg2Mansion'
 import Mansion2Deg from './Mansion2Deg'
 import MansionAccumList from './MansionAccumList'
 import MansionAccumModernList from './MansionAccumModernList'
+import WhiteAccumList from './WhiteAccumList'
 import BindLon2Lat from './Lon2Lat'
 import StarEqua from './StarEqua'
 import MoonLon from './MoonLon'
@@ -40,6 +41,7 @@ export default class Astronomy extends React.Component {
           <Mansion2Deg />          
           <MansionAccumList />          
           <MansionAccumModernList />
+          <WhiteAccumList />
           <BindEquaEclp />
           <StarEqua />
           <h2>晷漏</h2>

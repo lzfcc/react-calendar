@@ -51,7 +51,7 @@ export const AutoSidereal = Name => {
     } else if (['Guantian', 'Fengyuan', 'Zhantian', 'Jiyuan'].includes(Name)) {
         Sidereal = 365.2436
     } else {
-        Sidereal = +(Para[Name].Sidereal).toFixed(4)
+        Sidereal = +(Para[Name].Sidereal || Para[Name].Solar).toFixed(4)
     }
     return Sidereal
 }
@@ -93,7 +93,7 @@ export const AutoMoonAvgV = Name => { // 陳美東《月離表初探》
     return V
 }
 
-export const AutoNodeCycle = Name => {
+export const nodeQuar = Name => {
     let NodeCycle = 363.7934 // 授時
     if (Name === 'Yingtian') { // 乾元儀天沒說
         NodeCycle = 363.828307
@@ -120,9 +120,9 @@ export const AutoNodeCycle = Name => {
         const MoonAvgVd = AutoMoonAvgV(Name)
         NodeCycle = +(MoonAvgVd * Node).toFixed(4)
     }
-    return NodeCycle
+    return NodeCycle / 4
 }
-// console.log(AutoNodeCycle('Qiandao'))
+// console.log(nodeQuar('Qiandao'))
 
 export const AutoNodePortion = Name => {
     let p = .0785077

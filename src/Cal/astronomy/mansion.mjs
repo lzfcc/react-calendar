@@ -12,7 +12,7 @@ import {
     HighLon2FlatLat,
 } from "./pos_convert.mjs";
 import { deci, fmod } from "../parameter/functions.mjs";
-import { autoEquaEclp } from "./equa_eclp.mjs";
+import { equaEclp } from "./equa_eclp.mjs";
 import { autoRise } from "./lat_rise_dial.mjs";
 
 // 從角開始：
@@ -599,7 +599,7 @@ export const degAccumList = (Name, Y) => {
             for (let i = 0; i < 28; i++) {
                 const EquaSd = (EquaAccumList[i] - SolsDeg + Sidereal) % Sidereal; // 距冬至赤道度
                 EclpAccumList[i] =
-                    EquaAccumList[i] + autoEquaEclp(EquaSd, Name).Equa2EclpDif; // 極黃
+                    EquaAccumList[i] + equaEclp(EquaSd, Name).Equa2EclpDif; // 極黃
             }
             const adj = EclpAccumList[0] - Sidereal;
             for (let i = 0; i < 28; i++) {
@@ -625,17 +625,17 @@ export const degAccumList = (Name, Y) => {
     }
     return { EclpAccumList, EquaAccumList };
 };
-// console.log(degAccumList('Guimao', 1300))
+// console.log(degAccumList('Wuji', 1300))
 
 export const mansion2Deg = (Mansion, AccumList) => {
     let Print = 0;
     if (AccumList.length === undefined) {
-        Print = +(AccumList[Mansion.slice(0, 1)] + +Mansion.slice(1)).toFixed(10);
+        Print = +(AccumList[Mansion.slice(0, 1)] + +Mansion.slice(1)).toFixed(11);
     } else {
         Print = +(
             AccumList[MansionNameList.indexOf(Mansion.slice(0, 1))] +
             +Mansion.slice(1)
-        ).toFixed(10);
+        ).toFixed(11);
     }
     return Print;
 };
@@ -643,8 +643,7 @@ export const mansion2Deg = (Mansion, AccumList) => {
 export const deg2Mansion = (Deg, AccumList, fixed) => {
     Deg = +Deg + 1e-12;
     let Print = "";
-    if (AccumList.length === undefined) {
-        // 清代用字典
+    if (AccumList.length === undefined) { // 清代用字典
         const SortedList = Object.entries(AccumList).sort((a, b) => a[1] - b[1]);
         for (let i = 0; i < 27; i++) {
             if (Deg >= SortedList[i][1] && Deg < SortedList[i + 1][1]) {
@@ -666,15 +665,9 @@ export const deg2Mansion = (Deg, AccumList, fixed) => {
     return Print;
 };
 // console.log(deg2Mansion(1, degAccumList('Guimao', 900).EquaAccumList))
-/**
- * 20240312改寫，增加黃道宿度
- * @param {*} Name 曆法名
- * @param {*} Y 冬至小分
- * @param {*} EclpGong 距冬至黃道實行度
- * @param {*} SolsDeci 公元年
- * @returns
- */
-export const mansion = (Name, Y, EclpGong) => {
+
+// 冬至日躔
+export const solsMansion = (Name, Y) => {
     const { SolarRaw, MansionConst, MansionRaw, OriginAd, CloseOriginAd } =
         Para[Name];
     if (!MansionRaw) return
@@ -697,17 +690,49 @@ export const mansion = (Name, Y, EclpGong) => {
     const SolsEquaMansion = deg2Mansion(SolsEquaDeg, EquaAccumList, 10);
     const SolsMansionName = SolsEquaMansion.slice(0, 1);
     const SolsEquaMansionDeg = +SolsEquaMansion.slice(1);
-    const SolsEclpMansionDeg = autoEquaEclp(SolsEquaMansionDeg, Name).Equa2Eclp; // 根據《太陽通軌》（《明大統曆法彙編》p128），直接用冬至赤道宿度（例如在箕5，即用5）赤轉黃即冬至黃道宿度。又如紀元曆「求天正冬至加時黃道日度」：「以冬至加時赤道日度及分秒，減一百一度⋯⋯」就是指這個5
+    const SolsEclpMansionDeg = equaEclp(SolsEquaMansionDeg, Name).Equa2Eclp; // 根據《太陽通軌》（《明大統曆法彙編》p128），直接用冬至赤道宿度（例如在箕5，即用5）赤轉黃即冬至黃道宿度。又如紀元曆「求天正冬至加時黃道日度」：「以冬至加時赤道日度及分秒，減一百一度⋯⋯」就是指這個5
     const SolsEclpMansion = SolsMansionName + SolsEclpMansionDeg;
     const SolsEclpDeg = mansion2Deg(SolsEclpMansion, EclpAccumList);
+    return {
+        EclpAccumList,
+        SolsEquaDeg,
+        SolsEclpDeg,
+        SolsMansionName,
+        SolsEclpMansion: SolsMansionName + SolsEclpMansionDeg.toFixed(3),
+        SolsEquaMansion: SolsMansionName + SolsEquaMansionDeg.toFixed(3),
+    };
+};
+/**
+ * 20240312改寫，增加黃道宿度
+ * @param {*} Name 曆法名
+ * @param {*} Y 冬至小分
+ * @param {*} EclpGong 距冬至黃道實行度
+ * @param {*} SolsDeci 公元年
+ * @returns
+ */
+export const mansion = (Name, Y, EclpGong) => {
+    const { SolarRaw, MansionRaw, OriginAd, CloseOriginAd } =
+        Para[Name];
+    if (!MansionRaw) return
+    let { Sidereal, Solar } = Para[Name];
+    const isPrecession = !!Sidereal; // 有歲差的曆法
+    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y);
+    Sidereal = Sidereal || Solar || SolarRaw;
+    const OriginYear = Y - (OriginAd || CloseOriginAd);
+    const OriginYear1 = OriginYear + 1;
+    if (Name === "Shoushi" || Name === "Shoushi2") {
+        Sidereal += +(Math.trunc(OriginYear1 / 100) * 0.0001).toFixed(4); // 方向和歲實消長反的
+        Solar = +(SolarRaw - Math.trunc(OriginYear1 / 100) * 0.0001).toFixed(4);
+    }
+    const { SolsEquaDeg, SolsEclpDeg, SolsEclpMansion, SolsEquaMansion } = solsMansion(Name, Y)
     let EclpDeg = 0;
     let EquaDeg = 0;
-    const EquaGong = autoEquaEclp(EclpGong, Name).Eclp2Equa;
+    const EquaGong = equaEclp(EclpGong, Name).Eclp2Equa;
     const PrecessionFrac = isPrecession
         ? (EquaGong / Sidereal) * (Sidereal - Solar)
         : 0; // 一年之中的歲差
     EclpDeg =
-        (SolsEclpDeg + EclpGong - autoEquaEclp(PrecessionFrac, Name).Equa2Eclp) %
+        (SolsEclpDeg + EclpGong - equaEclp(PrecessionFrac, Name).Equa2Eclp) %
         Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
     EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal;
     const Equa = deg2Mansion(EquaDeg, EquaAccumList);
@@ -716,8 +741,8 @@ export const mansion = (Name, Y, EclpGong) => {
         Equa,
         Eclp,
         EquaDeg,
-        SolsEclpMansion: SolsMansionName + SolsEclpMansionDeg.toFixed(3),
-        SolsEquaMansion: SolsMansionName + SolsEquaMansionDeg.toFixed(3),
+        SolsEclpMansion,
+        SolsEquaMansion,
     };
 };
 // console.log(mansion('Dayan', 1555, 10).Equa)

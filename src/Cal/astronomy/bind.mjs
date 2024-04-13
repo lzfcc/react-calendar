@@ -28,7 +28,7 @@ import {
   corrEllipseD2,
   corrRingA,
   corrRingC,
-} from "../newmoon/newm_shixian.mjs";
+} from "../astronomy/sun_moon_qing.mjs";
 import {
   GongFlat2High,
   GongHigh2Flat,
@@ -44,8 +44,8 @@ import {
   equa2Eclp,
   testEclpEclpDif,
 } from "./pos_convert_modern.mjs";
-import { autoEquaEclp } from "./equa_eclp.mjs";
-import { autoMoonPos } from "./moon_pos.mjs";
+import { equaEclp } from "./equa_eclp.mjs";
+import { moonLonLat } from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
@@ -314,7 +314,7 @@ export const bindEquaEclp = (GongRaw) => {
       let Eclp2EquaLatPrint = "-";
       let Eclp2EquaLatWestPrint = "-";
       let Eclp2EquaLatErrPrint = "-";
-      const { Equa2Eclp, Eclp2Equa, Equa2EclpDif, Eclp2EquaDif } = autoEquaEclp(
+      const { Equa2Eclp, Eclp2Equa, Equa2EclpDif, Eclp2EquaDif } = equaEclp(
         GongRaw,
         Name,
       );
@@ -666,6 +666,7 @@ export const bindMansion2Deg = (Mansion) => {
 // console.log(bindMansion2Deg('氐1'))
 const DirList = ["東青龍", "北玄武", "西白虎", "南朱雀"];
 const NumList = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘";
+
 export const bindMansionAccumList = (Name, Y) => {
   Name = Name.toString();
   Y = parseInt(Y);
@@ -794,6 +795,36 @@ export const bindMansionAccumList = (Name, Y) => {
   };
 };
 // console.log(bindMansionAccumList('Guimao', 281))
+
+// 九道宿度
+export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
+  Name = Name.toString();
+  Y = parseInt(Y);
+  const { WhiteAccumList } = moonLonLat(NodeAccum, 0, Sd, 0, Name, Y);
+  const WhiteList = [];
+  for (let i = 0; i < 28; i++) {
+    WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
+  }
+  const WhiteAccumPrint = [];
+  for (let i = 0; i < 4; i++) {
+    WhiteAccumPrint.push([]);
+    let WhiteSum = 0;
+    for (let j = 0; j < 7; j++) {
+      const index = i * 7 + j;
+      WhiteSum += WhiteList[index];
+    }
+    for (let j = 0; j < 7; j++) {
+      const index = i * 7 + j;
+      WhiteAccumPrint[i].push(
+        `${MansionNameList[index]} ${WhiteAccumList[index].toFixed(3)}　\n${NumList[index]} ${WhiteList[index]}`,
+      );
+    }
+    WhiteAccumPrint[i][8] = DirList[i] + WhiteSum.toFixed(3);
+  }
+  return WhiteAccumPrint;
+};
+
+
 export const bindMansionAccumModernList = (Name, Jd) => {
   Jd = parseFloat(Jd);
   const {
@@ -967,7 +998,7 @@ export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
         EclpLon,
         EquaLat,
         EclpLat
-      } = autoMoonPos(NodeAccum, MoonWhite, Name)
+      } = moonLonLat(NodeAccum, MoonWhite, Name)
       if (NodeEclp) {
         NodeSdDegPrint = NodeEclp.toFixed(4);
       }

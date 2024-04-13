@@ -1,6 +1,7 @@
 import big from 'decimal.js';
 import frc from 'fraction.js';
 import nzh from 'nzh/hk';
+import Para from "../parameter/calendars.mjs";
 
 big.config({
   precision: 64,
@@ -38,6 +39,7 @@ export const fmod = (X, m) => X - Math.floor(X / m) * m // (X % m + m) % m
 export const fm60 = X => fmod(X, 60)
 export const sind = X => Math.sin(D2R * X)//.toFixed(8) // 數理精蘊附八線表用的是七位小數
 export const sin2d = X => 2 * sind(X / 2) // 通弦
+export const atan2d = (a, b) => R2D * Math.atan2(a, b)
 export const cosd = X => Math.cos(D2R * X) //.toFixed(8)
 export const tand = X => Math.tan(D2R * X)//.toFixed(8)
 export const cotd = X => (1 / Math.tan(D2R * X))//.toFixed(8)

@@ -165,6 +165,18 @@ export const MansionSystemList = {
   Lingtai: '靈臺儀象志',
   Yixiang: '儀象考成'
 }
+export const NameJiudaoList = {
+  Huangji: '皇極',
+  Dayan: "大衍",
+  Qintian: "欽天",
+  Yingtian: "應天",
+  Qianyuan: "乾元",
+  Yitian: "儀天",
+  Chongtian: "崇天",
+  Mingtian: "明天",
+  Guantian: "觀天",
+  Jiyuan: "紀元",  
+}
 export const ScList = [
   "癸亥",
   "甲子",

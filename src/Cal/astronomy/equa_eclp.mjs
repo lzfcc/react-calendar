@@ -3,6 +3,114 @@ import { Hushigeyuan } from "../equation/geometry.mjs";
 import Para from "../parameter/calendars.mjs";
 import { deci } from "../parameter/functions.mjs";
 
+/**
+ * 古曆黃赤轉換經驗公式。表格法用等差級數公式轉換爲公式法
+ * @param {*} Name 
+ * @param {*} Lon 半象限以內的x
+ * @param {*} isWhite 用於欽天的特例
+ * @returns 黃赤差、赤黃差
+ */
+export const equa2EclpPoly = (Name, Lon, isWhite) => {
+  const { Type } = Para[Name]
+  const main = (Lon, a, b, c) => {
+    c = c || 1
+    const Equa2EclpDif = Lon * (a - c * Lon) / b
+    const h = Math.sqrt(((b - a) / c / 2) ** 2 + b / c * Lon) - (b - a) / c / 2 //  x - x(a - x) / b 的反函數
+    return { Equa2EclpDif, h }
+  }
+  let h = 0;
+  let Eclp2EquaDif = 0;
+  let Equa2EclpDif = 0;
+  // 公式法《中國古曆通解》p215：
+  // NodeDifQuarRev / Xian * (XianDifInitial - XianDifChange * (NodeDifQuarRev / Xian - 1) / 2)
+  if (Name === "Chongxuan") { // fmax(45.568)=2.99
+    Equa2EclpDif =
+      (Lon * (1315 - 14.4 * Lon) - Lon * (4566 - Lon) / 1696)
+      / 10000; // 後面一項最多只有0.012的修正值，從0開始逐漸增大，不知道什麼作用
+    h =
+      Math.sqrt((694 + 57742 / 122107) * Lon + (301 + 81608 / 122107) ** 2) -
+      (301 + 81608 / 122107);
+  } else {
+    let a = 0
+    let b = 0
+    let c = 1
+    let MaxX = 0
+    if (Type === 6) {
+      a = 772 // x/4(97/450+(x/4-1)/450/2)
+      b = 14400
+      c = -1
+      MaxX = 44 // 表格法依平 4*11
+    } else if (Name === 'Qintian') { // 通解p496
+      if (isWhite === true) { // 欽天黃白限不是5，是5.07
+        a = 431.1914 //85 * 5.072840277777778
+        b = 3705.654 // 144 * 5.072840277777778**2
+        c = 5
+      } else {
+        // XianDifInitial = 40 / 72; // 《通解》p496
+        // XianDifChange = - 5 / 72;
+        a = 85
+        b = 720 // fmax(42.5)=2.509
+      }
+    } else if (Type === 7) { // 大衍公式《通解》p215
+      a = 125
+      b = 1200 // 在45度正好=3，所以45以上處理爲依平
+      MaxX = 45 // 表格法依平
+    } else if (Name === 'Yingtian') { // 通解p523，極值2+68/101
+      a = 85
+      b = 673 + 1 / 3 // fmax(42.5)=2.683      
+    } else if (Name === 'Qianyuan') {
+      a = 95
+      b = 840 // fmax(47.5)=2.686，實際可用f(45)=2.678
+      MaxX = 45
+    } else if (Name === 'Yitian') {
+      a = 112
+      b = 1010 // fmax(56)=3.105，實際可用f(45)=2.98515
+      MaxX = 45
+    } else if (Name === "Chongtian") {
+      a = 125
+      b = 1200 // 在45度正好=3，所以45以上處理爲依平        
+    } else if (Name === "Mingtian") {
+      a = 111.37
+      b = 1000
+    } else if (["Guantian", "Fengyuan", "Zhantian"].includes(Name)) {
+      a = 400
+      b = 4000
+      c = 3 // fmax(66.666)=3.333 
+      // Equa2EclpDif = (Lon * (400 - 3 * Lon)) / 4000;
+      // h = Math.sqrt(360000 + (4000 / 3) * Lon) - 600;
+      // 可得 XianDifInitial = 77/160; XianDifChange = 6/160
+    } else if (Type === 9 || Type === 10) { // 紀元一直到南宋、大明、庚午
+      a = 101
+      b = 1000
+      // if (LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75)) {
+      // h = Math.sqrt(202050.25 + 1000 * Lon) - 449.5;
+      // }
+      //  else {
+      //     h = -Math.sqrt(303050.25 - 1000 * LonHalf) + 550.5 // 這兩個公式是一樣的，只是對稱而已
+      // }
+    }
+    MaxX = MaxX || a / c / 2 // 函數最大值的x
+    if (MaxX <= 45) {
+      if (Lon > MaxX) {
+        const Func = main(MaxX, a, b)
+        Equa2EclpDif = Func.Equa2EclpDif
+        h = Func.h
+      } else {
+        const Func = main(Lon, a, b)
+        Equa2EclpDif = Func.Equa2EclpDif
+        h = Func.h
+      }
+    } else {
+      const Func = main(Lon, a, b)
+      Equa2EclpDif = Func.Equa2EclpDif
+      h = Func.h
+    }
+  }
+  // 曲安京《中国古代的二次求根公式与反函数》，西北大学学报(自然科学版). 1997(01)。曆法中二次反函數僅有的例子是大衍行星行度、紀元黃赤。我把其他幾個曆法補出來了
+  Eclp2EquaDif = Math.abs(Lon - h);
+  return { Equa2EclpDif, Eclp2EquaDif }
+}
+
 export const Equa2EclpTable = (LonRaw, Name) => {
   let { Type, Sidereal, Solar } = Para[Name];
   Sidereal = Sidereal || Solar;
@@ -10,9 +118,9 @@ export const Equa2EclpTable = (LonRaw, Name) => {
   const Sidereal25 = Sidereal / 4;
   const LonHalf = LonRaw % Sidereal50;
   const Lon = Sidereal25 - Math.abs(LonHalf - Sidereal25);
-  let Range = [];
+  let XianList = [];
   if (Type <= 4) {
-    Range = [
+    XianList = [
       0,
       4,
       4,
@@ -39,8 +147,8 @@ export const Equa2EclpTable = (LonRaw, Name) => {
       3,
       4,
     ]; // 劉洪濤
-  } else if (["Huangji", "Linde", "LindeB"].includes(Name)) {
-    Range = [
+  } else if (Type === 6) {
+    XianList = [
       0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3.31, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     ]; // 《中國古代曆法》57頁
   } else if (
@@ -53,10 +161,10 @@ export const Equa2EclpTable = (LonRaw, Name) => {
       "Qintian",
       "Yingtian",
       "Qianyuan",
-      "Yitian",
+      "Yitian"
     ].includes(Name)
   ) {
-    Range = [
+    XianList = [
       0,
       5,
       5,
@@ -79,89 +187,93 @@ export const Equa2EclpTable = (LonRaw, Name) => {
       5,
     ];
   }
-  let LonDifDifInitial = 0;
-  let LonDifDifChange = 0;
-  if (["Huangji", "Linde", "LindeB"].includes(Name)) {
-    // 爲何皇極增速先慢後快，大衍先快後慢？
-    LonDifDifInitial = 97 / 450; // ⋯⋯四度爲限。初數九十七，每限增一，以終百七
-    LonDifDifChange = 1 / 450;
+
+  let XianDifInitial = 0;
+  let XianDifChange = 0;
+  if (Type === 6) {
+    // 爲何皇極增速先慢後快，大衍先快後慢？感覺皇極是乾象曆的慣性
+    XianDifInitial = 97 / 450; // ⋯⋯四度爲限。初數九十七，每限增一，以終百七
+    XianDifChange = 1 / 450;
   } else if (
     ["Dayan", "Zhide", "Wuji", "Tsrengyuan", "Xuanming"].includes(Name)
   ) {
-    LonDifDifInitial = 12 / 24;
-    LonDifDifChange = -1 / 24;
+    XianDifInitial = 12 / 24;
+    XianDifChange = -1 / 24;
   } else if (Name === "Qintian") {
-    LonDifDifInitial = 40 / 72;
-    LonDifDifChange = -5 / 72;
+    XianDifInitial = 40 / 72; // 《通解》p496
+    XianDifChange = -5 / 72;
   } else if (Name === "Yingtian") {
-    LonDifDifInitial = 12 / 20.2;
-    LonDifDifChange = -1.5 / 20.2;
+    // XianDifInitial = 12 / 30.3; // 這樣改之後能每限都不同，按照原文，有4限是一樣的
+    // XianDifChange = -.5 / 20.2;
+    XianDifInitial = 12 / 20.2; // 極值與《中國古代立法》p59一致。
+    XianDifChange = -1.5 / 20.2;
   } else if (Name === "Qianyuan") {
-    LonDifDifInitial = 9 / 16.8;
-    LonDifDifChange = -1 / 16.8;
+    XianDifInitial = 9 * 5 / 84;
+    XianDifChange = -5 / 84;
   } else if (Name === "Yitian") {
-    LonDifDifInitial = 107 / 202;
-    LonDifDifChange = -10 / 202;
+    XianDifInitial = 107 / 202;
+    XianDifChange = -10 / 202;
   }
-  const length = Range.length - 2;
-  const RangeAccum = Range.slice();
+  const length = XianList.length - 2;
+  const XianAccum = XianList.slice();
   for (let i = 1; i <= length + 1; i++) {
-    RangeAccum[i] += RangeAccum[i - 1];
+    XianAccum[i] += XianAccum[i - 1];
   }
-  const LonDifDif = [];
-  LonDifDif[1] = LonDifDifInitial;
+  const XianDif = [];
+  XianDif[1] = XianDifInitial;
   for (let i = 2; i <= length / 2; i++) {
-    LonDifDif[i] = LonDifDif[i - 1] + LonDifDifChange;
+    XianDif[i] = XianDif[i - 1] + XianDifChange;
   }
-  LonDifDif[length / 2 + 1] = 0;
-  LonDifDif[length / 2 + 2] = LonDifDif[length / 2];
+  XianDif[length / 2 + 1] = 0;
+  XianDif[length / 2 + 2] = XianDif[length / 2];
   for (let i = length / 2 + 3; i <= length + 1; i++) {
-    LonDifDif[i] = LonDifDif[i - 1] - LonDifDifChange;
+    XianDif[i] = XianDif[i - 1] - XianDifChange;
   }
-  const LonDifAccum = [];
-  LonDifAccum[0] = 0;
+  const XianDifAccum = [];
+  XianDifAccum[0] = 0;
   if (Type <= 4) {
     for (let i = 1; i <= 12; i++) {
-      LonDifAccum[i] = LonDifAccum[i - 1] + 1 / 4;
+      XianDifAccum[i] = XianDifAccum[i - 1] + 1 / 4;
     }
     for (let i = 13; i <= 24; i++) {
-      LonDifAccum[i] = LonDifAccum[i - 1] - 1 / 4;
+      XianDifAccum[i] = XianDifAccum[i - 1] - 1 / 4;
     }
   } else {
     for (let i = 1; i <= length / 2 + 1; i++) {
-      LonDifAccum[i] = LonDifAccum[i - 1] + LonDifDif[i];
-      LonDifAccum[i] = parseFloat(LonDifAccum[i].toPrecision(14));
+      XianDifAccum[i] = XianDifAccum[i - 1] + XianDif[i];
     }
     for (let i = length / 2 + 2; i <= length + 1; i++) {
-      LonDifAccum[i] = LonDifAccum[i - 1] - LonDifDif[i];
-      LonDifAccum[i] = parseFloat(LonDifAccum[i].toPrecision(14));
+      XianDifAccum[i] = XianDifAccum[i - 1] - XianDif[i];
     }
-    LonDifAccum[length + 1] = 0;
+    XianDifAccum[length + 1] = 0;
   }
-  let LonOrder = 0;
-  for (let j = 1; j <= Range.length - 2; j++) {
-    if (RangeAccum[j] <= Lon && Lon < RangeAccum[j + 1]) {
-      LonOrder = j;
+  let XianOrder = 0;
+  for (let j = 1; j <= XianList.length - 2; j++) {
+    if (XianAccum[j] <= Lon && Lon < XianAccum[j + 1]) {
+      XianOrder = j;
     }
   }
   let Equa2EclpDif =
-    LonDifAccum[LonOrder] +
-    ((LonDifAccum[LonOrder + 1] - LonDifAccum[LonOrder]) *
-      (Lon - RangeAccum[LonOrder])) /
-    (RangeAccum[LonOrder + 1] - RangeAccum[LonOrder]); // 一次內插
+    XianDifAccum[XianOrder] +
+    ((XianDifAccum[XianOrder + 1] - XianDifAccum[XianOrder]) *
+      (Lon - XianAccum[XianOrder])) /
+    (XianAccum[XianOrder + 1] - XianAccum[XianOrder]); // 一次內插
   let sign1 = 1;
   if (
     LonRaw < Sidereal / 4 ||
     (LonRaw >= Sidereal50 && LonRaw < Sidereal * 0.75)
-  )
+  ) {
     sign1 = -1;
+  }
   Equa2EclpDif *= sign1;
   const Equa2Eclp = LonRaw + Equa2EclpDif;
   const Eclp2EquaDif = -Equa2EclpDif;
   const Eclp2Equa = LonRaw + Eclp2EquaDif;
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
-// console.log(Equa2EclpTable(1, 'Qianxiang'))
+// console.log(Equa2EclpTable(1, 'Qintian'))
+// console.log(Equa2EclpTable(20, 'Dayan'))
+// console.log(Equa2EclpTable(1, 'Huangji'))
 
 export const Equa2EclpFormula = (LonRaw, Name) => {
   // 公式化的，週天度就用自己的
@@ -172,46 +284,9 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   const Solar75 = Solar * 0.75;
   let Equa2Eclp = 0;
   let Eclp2Equa = 0;
-  const LonQuar = LonRaw % Solar25;
-  const Lon = Solar125 - Math.abs(LonQuar - Solar125);
-  let h = 0;
-  let Eclp2EquaDif = 0;
-  let Equa2EclpDif = 0;
-  // 這些函數並不是以91度或者45度對稱，而是將近60度左右
-  if (Name === "Chongxuan") {
-    Equa2EclpDif =
-      ((1315 - 14.4 * Lon) * Lon - (Lon * (4566 - Lon)) / 1696) / 10000;
-    // const tmp1 =(frc('8685 4566/1696').div(frc(14.4).sub('1/1696'))).div(2).toFraction(true) // '301 81608 / 122107'
-    // const tmp2=frc(10000).div(frc(14.4).sub('1/1696')).toFraction(true) // "694 57742/122107"
-    h =
-      Math.sqrt((694 + 57742 / 122107) * Lon + (301 + 81608 / 122107) ** 2) -
-      (301 + 81608 / 122107);
-  } else if (["Dayan", "Chongtian"].includes(Name)) {
-    if (Lon <= 45) {
-      Equa2EclpDif = (Lon * (125 - Lon)) / 1200; // 在45度正好=3，所以45以上處理爲依平
-      h = Math.sqrt(288906.25 + 1200 * Lon) - 537.5;
-    } else {
-      Equa2EclpDif = 3;
-      h = 3;
-    }
-  } else if (Name === "Mingtian") {
-    Equa2EclpDif = (Lon * (111.37 - Lon)) / 1000;
-    h = Math.sqrt(197415.819225 + 1000 * Lon) - 444.315;
-  } else if (["Guantian", "Fengyuan", "Zhantian"].includes(Name)) {
-    Equa2EclpDif = (Lon * (400 - 3 * Lon)) / 4000;
-    h = Math.sqrt(360000 + (4000 / 3) * Lon) - 600;
-  } else if (Name === "Jiyuan") {
-    // 紀元一直到南宋、大明、庚午
-    Equa2EclpDif = (Lon * (101 - Lon)) / 1000;
-    // if (LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75)) {
-    h = Math.sqrt(202050.25 + 1000 * Lon) - 449.5;
-    // }
-    //  else {
-    //     h = -Math.sqrt(303050.25 - 1000 * LonHalf) + 550.5 // 這兩個公式是一樣的，只是對稱而已
-    // }
-  }
-  // 《古代曆法》頁123    沒明白。曲安京《中国古代的二次求根公式与反函数》，西北大学学报(自然科学版). 1997(01)。曆法中二次反函數僅有的例子是大衍行星行度、紀元。赤道度爲Solar/8，黃道度就是43.1287。兩篇公式不一樣，最後畫圖才想明白。我把其他幾個曆法補出來了
-  Eclp2EquaDif = Math.abs(Lon - h);
+  const LonQuar = LonRaw % Solar25; // 滿象限去之
+  const Lon = Solar125 - Math.abs(LonQuar - Solar125); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
+  let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(Name, Lon)
   const sign1 =
     LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75) ? -1 : 1;
   const sign2 =
@@ -223,19 +298,29 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
 
-export const autoEquaEclp = (Gong, Name) => {
+// console.log(Equa2EclpFormula(23, 'Dayan').Equa2EclpDif)
+// console.log(Equa2EclpTable(23, 'Dayan').Equa2EclpDif) // 公式和表格很接近
+
+export const equaEclp = (Gong, Name) => {
   // 輸入度數而非距冬至時間 // 只有公式法的才有黃轉赤。表格的是直接取符號相反
   const { Type, Sidereal, Solar, SolarRaw } = Para[Name];
   Gong %= Sidereal || Solar || SolarRaw;
   let Func = {};
-  if (Type <= 7 || ["Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
-    if (["Yisi", "LindeB", "Shenlong"].includes(Name))
-      Func = Equa2EclpTable(Gong, "Linde");
-    else Func = Equa2EclpTable(Gong, Name);
+  // if (Type <= 7 || ["Yingtian", "Qianyuan", "Yitian"].includes(Name)) {
+  //   if (["Yisi", "LindeB", "Shenlong"].includes(Name))
+  //     Func = Equa2EclpTable(Gong, "Linde");
+  //   else Func = Equa2EclpTable(Gong, Name);
+  // } else {
+  //   if (Type === 9 || Type === 10) Func = Equa2EclpFormula(Gong, "Jiyuan");
+  //   else if (Type === 11) Func = Hushigeyuan(Gong);
+  //   else Func = Equa2EclpFormula(Gong, Name); // (Name === 'Dayan' || Type === 8)
+  // }
+  if (Type <= 4) {
+    Func = Equa2EclpTable(Gong, Name)
+  } else if (Type === 11) {
+    Func = Hushigeyuan(Gong)
   } else {
-    if (Type === 9 || Type === 10) Func = Equa2EclpFormula(Gong, "Jiyuan");
-    else if (Type === 11) Func = Hushigeyuan(Gong);
-    else Func = Equa2EclpFormula(Gong, Name); // (Name === 'Dayan' || Type === 8)
+    Func = Equa2EclpFormula(Gong, Name)
   }
   const { Equa2Eclp, Eclp2Equa, Equa2EclpDif, Eclp2EquaDif } = Func;
   return {

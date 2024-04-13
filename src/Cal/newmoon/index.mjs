@@ -409,7 +409,8 @@ export default (Name, YearStart, YearEnd) => {
             ////////////// 曆書
             LeapNumTerm, SolsAccum, Sols,
             NewmInt, // 結尾就不切了，因爲最後一個月還要看下個月的情況
-            NewmRaw: ((Type === 1 || Type >= 13) ? [] : NewmSlice(ThisYear.NewmRaw)),
+            NewmRaw: (Type === 1 ? NewmSlice(ThisYear.NewmAvgRaw)
+                : (Type >= 13 ? [] : NewmSlice(ThisYear.NewmRaw))),
             NewmAcrRaw: ((Type === 1 || Type >= 13) ? [] : NewmSlice(ThisYear.NewmAcrRaw)), // 這個是給南系月亮位置用的，平朔注曆，但是月亮位置是定朔
             // NewmAcrInt: (Type === 1 ? [] : NewmSlice(ThisYear.NewmAcrInt)),
             // NewmNodeAccumPrint, // : (Type === 1 ? [] : NewmNodeAccumPrint.slice(NewmStart)), // 為什麼還要切一遍？？

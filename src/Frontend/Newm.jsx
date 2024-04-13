@@ -1,7 +1,7 @@
 import React from "react";
 import { NameList } from "Cal/parameter/constants.mjs";
 import MultiSelectMenu from "./MultiSelectMenu";
-import MyWorker from "workers/worker_modern.mjs?worker";
+import MyWorker from "workers/worker_ancient.mjs?worker";
 
 const TableRowNameMap = {
   MonthPrint: " ",
@@ -96,11 +96,10 @@ export default class Newm extends React.Component {
   }
 
   renderCalendar() {
-    const Calendars = NameList;
     return (
       <span>
         <MultiSelectMenu
-          Calendars={Calendars}
+          Calendars={NameList}
           onSelect={(selected) => {
             this.setState({ calendars: selected });
           }}

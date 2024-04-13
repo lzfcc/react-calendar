@@ -302,8 +302,6 @@ h2 {
 }
 
 .ans {
-  /* box-shadow: 0 0 14px 0 var(--shallowgray1); */
-  border: 1px solid var(--shallowgray);
   margin: 1.5em auto;
   padding: 2em 1em;
   background: white;
@@ -639,7 +637,6 @@ code {
   font-family: var(--codesans);
   font-size: .9em;
   background: white;
-  border: 1px solid var(--shallowgray);
   border-radius: .2em;
   padding: .1em .2em;
 }
@@ -900,12 +897,12 @@ hr {
 /* 日書 */
 
 .day-render {
-  overflow: visible;
   border-radius: 2em;
   background: white;
-  border: 1px solid var(--shallowgray);
   margin: 3em auto 0;
   width: fit-content;
+  height: 96vh;
+  overflow: scroll;
   padding: 0 .2em 2em;
 }
 
@@ -998,8 +995,8 @@ hr {
   color: var(--lettergreen);
 }
 
-.MoonEclp,
-.MoonEclpLat {
+.WhiteMansion,
+.WhiteLon {
   color: var(--letterblue);
 }
 

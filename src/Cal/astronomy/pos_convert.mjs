@@ -116,6 +116,17 @@ export const abc_Sph = (a, b, c) => {
   return avsind(vsinDif / mid);
 };
 
+// 《后编》蒙氣差
+const refractionGuimao = (h) => {
+  const a = tand(90 - h) ** 2 + 1;
+  const delta = 4 + 4 * a * 2.0006095 * 0.0006095;
+  const X = (-2 + Math.sqrt(delta)) / (2 * a); // 根據公式1 ，一元二次方程求根公式
+  const ang1 = asind((1 + X) / 1.0006095) - h;
+  const ang2 = asind(sind(ang1) * 1.0002841);
+  return ang2 - ang1;
+};
+// console.log(atmos(20)) // .04453873130688635
+
 // https://zhuanlan.zhihu.com/p/265334815 清代日出公式推導
 const sunRiseQing = (RiseLat, Lon, d) =>
   0.25 +

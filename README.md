@@ -303,7 +303,7 @@ lastmod: 2021-04-21
 
 5-22 `0.991.3 1.05.2`
 
-**核心** 增加 AutoNodeCycle、AutoSidereal、AutoSolar，統一一些常量。變量改名。暫且將五紀正元進朔標準降低 10 刻。修復宣明月度 NaN 的問題：黃赤轉換、九道術暫時用大衍的。修復本地曆書打印的小問題。 **前端** 標籤換個順序。 **文字** 增加一些和敦煌具注曆的核對。
+**核心** 增加 nodeQuar、AutoSidereal、AutoSolar，統一一些常量。變量改名。暫且將五紀正元進朔標準降低 10 刻。修復宣明月度 NaN 的問題：黃赤轉換、九道術暫時用大衍的。修復本地曆書打印的小問題。 **前端** 標籤換個順序。 **文字** 增加一些和敦煌具注曆的核對。
 
 #### 5-24 `0.992`
 
@@ -550,3 +550,13 @@ a = [0, ...a]
 - GPT優化曆書jsx
 - tab欄sticky置頂
 - 本地：Node 從18.16.0升級到21.7.2，npm從9.5.1升級到10.5.0
+
+4-14 前端 `1.11` @lzfcc
+
+- 用 vite 取代 CRA，構建速度大大加快。並且取代了 webpack 打包 worker，完全不用依賴 webpack 了
+- 增加 `jsconfig.json`，支持絕對路徑
+- Each directory has a index file that is used to export all functions and variables that are available in that directory, in order to make it easier to import the functions and variables in other files.
+- combine interpolate and interpolate_big
+
+4-14 `2.14` 重寫九道術、黃白交周。太難了，很多概念難以理解，很多衝突的地恨，尚待定。乾元取消 YinyangConst。
+

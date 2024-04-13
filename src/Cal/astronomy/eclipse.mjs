@@ -7,7 +7,7 @@ import {
     AutoMoonAvgV,
     AutoMoonTcorrDif,
     AutoNodePortion,
-    AutoNodeCycle,
+    nodeQuar,
 } from "../parameter/auto_consts.mjs";
 import { autoLat, autoRise } from "./lat_rise_dial.mjs";
 
@@ -1733,10 +1733,9 @@ const Eclipse3 = (
     const Solar75 = Solar * 0.75;
     const Solar875 = (Solar * 7) / 8;
     const HalfTermLeng = Solar / 24;
-    const NodeCycle =
-        Name === "Chongxuan" || Type === 11 ? AutoNodeCycle(Name) : 0;
-    const NodeCycle50 = NodeCycle / 2;
-    const NodeCycle25 = NodeCycle / 4;
+    const NodeCycle25 =
+        Name === "Chongxuan" || Type === 11 ? nodeQuar(Name) : 0;
+    const NodeCycle50 = NodeCycle25 * 2;
     const {
         Tcorr2: AvgTcorr,
         SunTcorr,

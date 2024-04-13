@@ -11,13 +11,13 @@ import {
 } from '../ephemeris/luck.mjs'
 import CalNewm from '../newmoon/index.mjs'
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from '../astronomy/acrv.mjs'
-import { mansion, midstar } from '../astronomy/mansion.mjs'
+import { deg2Mansion, mansion, midstar } from '../astronomy/mansion.mjs'
 import { AutoNineOrbit } from '../astronomy/nineorbits.mjs'
 import { jd2Date } from '../time/jd2date.mjs'
 import { AutoLightRange, AutoMoonAvgV } from '../parameter/auto_consts.mjs'
 import { deci, nzh } from '../parameter/functions.mjs'
-import { autoEquaEclp } from '../astronomy/equa_eclp.mjs'
-import { autoMoonPos } from '../astronomy/moon_pos.mjs'
+import { equaEclp } from '../astronomy/equa_eclp.mjs'
+import { moonLonLat } from '../astronomy/moon_lon_lat.mjs'
 import { autoLat, autoRise, autoDial } from '../astronomy/lat_rise_dial.mjs'
 
 const abs = x => Math.abs(x)
@@ -39,7 +39,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const HouLeng = Solar / 72
         const HalfTermLeng = Solar / 24
         const HexagramLeng = Solar / 60
-        const MoonAvgVd = Type < 4 ? AutoMoonAvgV(Name) : undefined
+        const MoonAvgVd = AutoMoonAvgV(Name)
         const ZhengScOrder = ((Math.floor(NewmInt[0]) + (ScConst || 0)) % 60 + 60) % 60
         const ZhengSdMidn = +(NewmInt[0] - SolsAccum).toFixed(5) // 正月夜半到冬至距離
         const ZhengSdInt = Math.floor(NewmInt[0]) - Math.floor(SolsAccum) // 正月朔日夜半距離冬至夜半整數日
@@ -172,19 +172,21 @@ export const D1 = (Name, YearStart, YearEnd) => {
             let MoonEclpLonNewmMidn = 0, SunEclpLonNewm = 0, AnomaCycle = 0, MoonAcrSNewm = 0, SdNewm = 0
             if (Type < 4) SdNewm = NewmRaw[i - 1] - SolsAccum // 合朔加時 
             else SdNewm = NewmAcrRaw[i - 1] - SolsAccum
+            const AnomaAccumNewm = NewmAnomaAccumPrint[i - 1] // 加時入轉。這個求月行遲疾修正的步驟是我假設的
+            const SunDifAccumNewm = AutoDifAccum(AnomaAccumNewm, SdNewm, Name).SunDifAccum
+            SunEclpLonNewm = SdNewm + SunDifAccumNewm
+            if (Type <= 3) {
+                MoonEclpLonNewmMidn = SdNewm - deci(NewmRaw[i - 1]) * MoonAvgVd
+            } else {
+                const MoonAcrSFunc = AutoMoonAcrS(AnomaAccumNewm, Name)
+                AnomaCycle = MoonAcrSFunc.AnomaCycle
+                MoonAcrSNewm = MoonAcrSFunc.MoonAcrS
+            }
+            let NewmNode1WhiteDeg = 0, NewmWhiteAccumList = [] // 朔正交宿積度、朔九道宿鈐
             if (Type > 1) {
-                const AnomaAccumNewm = NewmAnomaAccumPrint[i - 1] // 加時入轉。這個求月行遲疾修正的步驟是我假設的
-                const SunDifAccumNewm = AutoDifAccum(AnomaAccumNewm, SdNewm, Name).SunDifAccum
-                SunEclpLonNewm = SdNewm + SunDifAccumNewm
-                if (Type < 4) {
-                    MoonEclpLonNewmMidn = SunEclpLonNewm - deci(NewmRaw[i - 1]) * MoonAvgVd
-                } else {
-                    const MoonAcrSFunc = AutoMoonAcrS(AnomaAccumNewm, Name)
-                    AnomaCycle = MoonAcrSFunc.AnomaCycle
-                    MoonAcrSNewm = MoonAcrSFunc.MoonAcrS
-                    // const MoonAcrSNewmMidn = AutoMoonAcrS(NewmAnomaAccumMidnPrint[i - 1], Name).MoonAcrS // newm文件中已經加上了進朔，不知道對不對
-                    // const MoonEclpLonNewmMidn = SunEclpLonNewm - (MoonAcrSNewm - MoonAcrSNewmMidn)
-                }
+                const FuncNewm = moonLonLat(NewmNodeAccumMidnPrint[i - 1], NewmAnomaAccumMidnPrint[i - 1], (NewmAcrRaw[i - 1] || NewmRaw[i - 1]) - SolsAccum, SunEclpLonNewm, Name, Y, true)
+                NewmNode1WhiteDeg = FuncNewm.Node1WhiteDeg
+                NewmWhiteAccumList = FuncNewm.WhiteAccumList
             }
             Sc[i] = []
             Jd[i] = []
@@ -203,47 +205,48 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 const SdInt = ZhengSdInt + DayAccum // 每日夜半距冬至夜半整日數。冬至當日爲0
                 DayAccum++ // 這個位置不能變
                 //////////天文曆///////////
-                let SunEquaLon = 0, SunLon = 0, MoonWhiteLon = 0, MoonLon = 0, MoonLat = 0, MoonEquaLon = 0, MoonEquaLat = 0, AnomaAccumMidn = 0, NodeAccumMidn = 0
+                let SunEquaLon = 0, SunLon = 0, MoonWhiteLon = 0, AnomaAccumMidn = 0, NodeAccumMidn = 0, MoonLon = 0, MoonEquaLon = 0, MoonLat = 0, MoonEquaLat = 0, WhiteMansion = ''
                 if (Type === 1) {
                     SunLon = SdMidn % Solar
-                    SunEquaLon = autoEquaEclp(SunLon, Name).Eclp2Equa % Solar
+                    SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Solar
+                    MoonWhiteLon = (MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd) % Sidereal
                 } else {
                     NodeAccumMidn = (NewmNodeAccumMidnPrint[i - 1] + k - 1) % Node
                     AnomaAccumMidn = (NewmAnomaAccumMidnPrint[i - 1] + k - 1) % Anoma
                     NodeAccumMidn = (NodeAccumMidn + AutoTcorr(AnomaAccumMidn, SdMidn, Name, NodeAccumMidn).NodeAccumCorrA) % Node
                     const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum
                     SunLon = (SdMidn + SunDifAccumMidn) % Sidereal
-                    SunEquaLon = autoEquaEclp(SunLon, Name).Eclp2Equa % Sidereal
+                    SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal
                     // 元嘉開始計算月度就有計入遲疾的方法，大業就完全是定朔，但又是平朔注曆，這樣會衝突，我只能把麟德以前全部求平行度。
                     // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
                     if (Type <= 3) {
-                        MoonWhiteLon = MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd
-                        MoonLon = MoonWhiteLon
+                        MoonWhiteLon = (MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd) % Sidereal
                     } else {
                         const MoonAcrSMidn = AutoMoonAcrS(AnomaAccumMidn, Name).MoonAcrS
-                        MoonWhiteLon = SunEclpLonNewm + (MoonAcrSMidn - MoonAcrSNewm + AnomaCycle) % AnomaCycle
-                        if (Type <= 5) MoonLon = MoonWhiteLon
+                        MoonWhiteLon = (SunEclpLonNewm + MoonAcrSMidn - MoonAcrSNewm) % Sidereal
                     }
                 }
                 const SunEquaLat = autoLat(SdMidn, Name)
                 let Dial = autoDial(SdMidn, SolsDeci, Name)
                 Dial = Dial ? ' ' + Dial.toFixed(3) + '尺' : ''
-                const FuncMoonPos = Type > 5 ? autoMoonPos(NodeAccumMidn, MoonWhiteLon, Name) : {}
-                if (Type > 5) {
-                    MoonLon = FuncMoonPos.EclpLon
-                    MoonLat = FuncMoonPos.EclpLat
-                    MoonEquaLon = FuncMoonPos.EquaLon
-                    MoonEquaLat = FuncMoonPos.EquaLat
-                }
                 const { Equa: SunEqua, Eclp: SunEclp } = mansion(Name, Y, SunLon)
-                const { Eclp: MoonEclp, Equa: MoonEqua } = mansion(Name, Y, MoonLon)
+                const FuncMoon = moonLonLat(NodeAccumMidn, AnomaAccumMidn, SdMidn, MoonWhiteLon, Name, Y)
+                MoonLon = FuncMoon.EclpLon
+                MoonLat = FuncMoon.EclpLat
+                if (NewmWhiteAccumList) {
+                    const AvgMoonNode1Dif = (Node - NodeAccumMidn) * MoonAvgVd // 交前多少度
+                    const DifAccum = AutoDifAccum(AnomaAccumMidn, 0, Name).MoonDifAccum
+                    WhiteMansion = deg2Mansion((NewmNode1WhiteDeg - AvgMoonNode1Dif + DifAccum + Sidereal) % Sidereal, NewmWhiteAccumList)
+                }
                 Pos[i][k] =
                     `<p class="Equa">` + SunEquaLon.toFixed(4) + ' ' + lat2NS(SunEquaLat) + `</p>`
                     + `<p class="Ceclp">` + SunLon.toFixed(4) + Dial + `</p>`
                     + `<p><span class="Equa">` + SunEqua + `</span> <span class="Ceclp">` + SunEclp + `</span></p>`
-                    + `<p class="Equa">` + MoonEquaLon.toFixed(4) + + lat2NS(MoonEquaLat) + `</p>`
-                    + `<p class="Ceclp">` + MoonLon.toFixed(4) + ' ' + lat2NS(MoonLat) + `</p>`
-                    + `<p><span class="Equa">` + MoonEqua + `</span> <span class="Ceclp">` + MoonEclp + `</span></p>`
+                    + (MoonEquaLon ? `<p class="Equa">` + MoonEquaLon.toFixed(4) + lat2NS(MoonEquaLat) + `</p>` : ``)
+                    + (MoonLon ? `<p><span class="Ceclp">` + MoonLon.toFixed(4) + `</span>` + (MoonLat ? ` <span class="Ceclp">` + lat2NS(MoonLat) + `</span>` : ``) + `</p>`
+                        : `<p><span class="WhiteLon">` + MoonWhiteLon.toFixed(4) + `</span>` + (MoonLat ? ` <span class="Ceclp">` + lat2NS(MoonLat) + `</span>` : ``) + `</p>`)
+                    + (WhiteMansion ? `<p class="WhiteMansion">` + WhiteMansion + `</p>`
+                        : `<p class="Ceclp">` + mansion(Name, Y, MoonWhiteLon).Eclp + `</p>`)
                 const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci)
                 const Rise = autoRise(SdMidn, SolsDeci, Name)
                 const LightRange = AutoLightRange(Name) * 100
@@ -380,4 +383,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
     }
     return result
 }
-// console.log(D1('Shoushi', 1006))
+// console.log(D1('Linde', 1111))

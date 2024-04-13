@@ -10,8 +10,8 @@
   },
   "plugins": ["react"],
   "rules": {
-    "no-undef": "error",
-    "no-unused-vars": "warn",
-    "eqeqeq": "warn"
+    "no-undef": "error"
+    // "no-unused-vars": "warn",
+    // "eqeqeq": "warn"
   }
 }

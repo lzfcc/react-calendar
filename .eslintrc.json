@@ -3,10 +3,10 @@
     "env": {
       "browser": true,
       "node": true,
-      "es6": true
+      "es2023": true
     },
     "parserOptions": {
-      "ecmaVersion": 2021,
+      "ecmaVersion": 2023,
       "sourceType": "module",
       "ecmaFeatures": {
         "jsx": true
@@ -14,7 +14,10 @@
     },
     "rules": {
       "prettier/prettier": ["error"],
+      "no-undef": "error",
+      "no-unused-vars": "warn",
+      "eqeqeq": "error",
       "camelcase": "off",
-      "no-plusplus": ["error", {"allowForLoopAfterthoughts": true}]
+      "no-plusplus": ["warn", {"allowForLoopAfterthoughts": true}]
     }
   }

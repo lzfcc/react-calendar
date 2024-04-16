@@ -261,21 +261,58 @@ export default class Newm extends React.Component {
   }
 
   renderTableList() {
-    // 只有当showTableList为true时才显示section
+    // Only display the section if showTableList is true
     if (!this.state.showTableList) {
       return null;
     }
+
+    // Helper function to render YearInfo as JSX
+    const renderYearInfo = (yearInfo) => {
+      // Check if yearInfo is an array and not null or undefined
+      if (Array.isArray(yearInfo)) {
+        // Initialize an array to hold all spans and line breaks
+        const elements = [];
+
+        // Process each object in the array
+        yearInfo.forEach((obj, objIndex) => {
+          if (obj) { // Make sure the object is not null or undefined
+            // Process each key-value pair in the object
+            Object.entries(obj).forEach(([key, value], keyIndex) => {
+              // Add the span for the key-value pair
+              elements.push(
+                <span key={`${key}-${objIndex}-${keyIndex}`} className={key}>
+                  {value}
+                </span>
+              );
+              // Add a space after the span (except after the last key-value pair)
+              if (keyIndex < Object.entries(obj).length - 1) {
+                elements.push(' ');
+              }
+            });
+            // Add a line break after the object (except after the last object)
+            if (objIndex < yearInfo.length - 1) {
+              elements.push(<br key={`br-${objIndex}`} />);
+            }
+          }
+        });
+        // Return the array of spans and line breaks
+        return elements;
+      }
+      // If yearInfo is not an array or is null/undefined, return an empty fragment
+      return <></>;
+    }
+
+
     return (
       <section className="main-render">
-        {(this.state.output || []).map((CalData) => {
-          const yearGroup = CalData.map((calInfo) => {
+        {(this.state.output || []).map((CalData, index) => {
+          return CalData.map((calInfo, index2) => {
             return (
-              <div className="single-cal">
+              <div key={`cal-${index}-${index2}`} className="single-cal">
                 <h3>{calInfo.Era}</h3>
-                <p
-                  style={{ whiteSpace: "pre-wrap" }}
-                  dangerouslySetInnerHTML={{ __html: calInfo.YearInfo }}
-                ></p>
+                <p>
+                  {renderYearInfo(calInfo.YearInfo)}
+                </p>
                 <table>
                   <tbody>
                     <tr>{this.RenderTableContent(calInfo)}</tr>
@@ -284,22 +321,45 @@ export default class Newm extends React.Component {
               </div>
             );
           });
-          return yearGroup;
         })}
       </section>
     );
   }
 
+  // GPT。後端輸入「10+」，變成「10<span>+</span>」
   RenderTableContent(calInfo) {
-    return Object.entries(calInfo).map(([key, value]) => {
+    // Helper function to wrap symbols with a span
+    const wrapSymbolsWithSpan = (text) => {
+      // Define the symbols to wrap and their corresponding class names
+      const symbols = {
+        '+': 'NewmPlus',
+        '-': 'SyzygySub',
+        "●": 'eclipse-symbol',
+        "◐": 'eclipse-symbol',
+        "◔": 'eclipse-symbol'
+      };
+      // Split the text into parts by symbols and keep the separators (symbols)
+      const parts = text.split(/(\+|\-|●|◐|◔)/g);
+      // Transform parts into an array of strings or JSX elements
+      return parts.map((part, index) => {
+        // If the part is a symbol, return a JSX span element
+        if (symbols[part]) {
+          return <span key={index} className={symbols[part]}>{part}</span>;
+        }
+        // Otherwise, return the string as is
+        return part;
+      });
+    }
+    return Object.entries(calInfo).map(([key, value], rowIdx) => {
       if (Array.isArray(value) && value.length > 0 && TableRowNameMap[key]) {
         return (
-          <tr className={key}>
-            {[<th>{TableRowNameMap[key]}</th>].concat(
-              value.map((x) => (
-                <td dangerouslySetInnerHTML={{ __html: x }}></td>
-              ))
-            )}
+          <tr key={rowIdx} className={key}>
+            <th>{TableRowNameMap[key]}</th>
+            {value.map((x, index) => (
+              <td key={`${key}-${index}`}>
+                {wrapSymbolsWithSpan(x)}
+              </td>
+            ))}
           </tr>
         );
       }

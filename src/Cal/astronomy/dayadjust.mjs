@@ -26,7 +26,7 @@ const LeapAdjust = (LeapNumTerm, TermAvgRaw, NewmInt, Name) => {
   return LeapNumTerm;
 };
 
-export const AutoNewmPlus = (Deci, Sd, SolsDeci, Name) => {
+export const newmPlus = (Deci, Sd, SolsDeci, Name) => {
   // 朔小分
   const { Solar } = Para[Name];
   const Solar25 = Solar / 4;
@@ -50,28 +50,15 @@ export const AutoNewmPlus = (Deci, Sd, SolsDeci, Name) => {
   } else if (Sd > Solar25 && Sd < Solar * 0.75) {
     standard = 0.75 + (Rise - SpringequinoxSunrise) / Portion;
   }
-  let NewmPlus = 0;
-  let Print = "";
-  if (Deci >= standard) {
-    NewmPlus = 1;
-    Print = `<span class='NewmPlus'>+</span>`;
-  }
-  return { NewmPlus, Print };
+  return Deci >= standard ? 1 : 0
 };
-// console.log( AutoNewmPlus (.75, 191, .9, 'Linde') )
+// console.log( newmPlus (.75, 191, .9, 'Linde') )
 
-export const AutoSyzygySub = (Deci, Sd, SolsDeci, Name) => {
+export const syzygySub = (Deci, Sd, SolsDeci, Name) => {
   const { Type } = Para[Name];
   const LightRange = AutoLightRange(Name);
   const Rise = autoRise(Sd, SolsDeci, Name) / 100;
   let standard = Rise - LightRange;
   if (Type >= 8 || Name === "Qintian") standard = Rise;
-  let SyzygySub = 0;
-  let Print = "";
-  if (Deci < standard) {
-    // 晨前刻、晨初餘數
-    SyzygySub = -1;
-    Print = `<span class='NewmPlus'>-</span>`;
-  }
-  return { SyzygySub, Print };
+  return Deci < standard ? -1 : 0
 };

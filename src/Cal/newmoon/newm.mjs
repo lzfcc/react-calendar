@@ -2,7 +2,7 @@ import Para from '../parameter/calendars.mjs'
 import { ScList } from '../parameter/constants.mjs'
 import { AutoDifAccum, AutoTcorr } from '../astronomy/acrv.mjs'
 import { mansion } from '../astronomy/mansion.mjs'
-import { AutoNewmPlus, AutoSyzygySub } from '../astronomy/dayadjust.mjs'
+import { newmPlus, syzygySub } from '../astronomy/dayadjust.mjs'
 import { deci, fix, fmod, fm60 } from '../parameter/functions.mjs'
 
 // const cal = (Name, Y) => {
@@ -165,12 +165,10 @@ export default (Name, Y) => {
                 }
             } else Deci[i] = AvgDeci[i]
             AcrSd[i] = Sd[i] + Tcorr[i] // 授時：定朔入曆=經朔入盈缩历+加減差
-            let NewmPlus = 0, SyzygySub = 0, NewmPlusPrint = '', SyzygySubPrint = ''
+            let NewmPlus = 0, SyzygySub = 0
             if (isNewm) {
                 if (isAcr && isNewmPlus) {
-                    const Func = AutoNewmPlus((Deci1[i] || Deci[i]), Sd[i], SolsDeci, Name) // 進朔
-                    NewmPlus = Func.NewmPlus
-                    NewmPlusPrint = Func.Print
+                    NewmPlus = newmPlus((Deci1[i] || Deci[i]), Sd[i], SolsDeci, Name) // 進朔
                 }
                 if (MansionRaw) {
                     const Func = mansion(Name, Y,
@@ -219,9 +217,7 @@ export default (Name, Y) => {
                     Term1Eclp[i] = Func1.Eclp
                 }
             } else {
-                const Func = AutoSyzygySub(Deci[i], Sd[i], SolsDeci, Name) // 退望
-                SyzygySub = Func.SyzygySub
-                SyzygySubPrint = Func.Print
+                SyzygySub = syzygySub(Deci[i], Sd[i], SolsDeci, Name) // 退望
             }
             Int[i] = isAcr ? AcrInt[i] : AvgInt[i]
             Raw[i] = isAcr ? AcrRaw[i] : AvgRaw[i]
@@ -231,11 +227,11 @@ export default (Name, Y) => {
             AnomaAccumMidn[i] += NewmPlus
             if (isNewm) {
                 if (Tcorr[i]) {
-                    Sc[i] = ScList[fm60(AcrInt[i] + ScConst + 1)] + (NewmPlusPrint || '') + (SyzygySubPrint || '')
+                    Sc[i] = ScList[fm60(AcrInt[i] + ScConst + 1)] + (NewmPlus === 1 ? "+" : "")
                 }
             } else {
                 if (Tcorr[i]) {
-                    Sc[i] = ScList[fm60(AcrInt[i] + ScConst + 1)] + (NewmPlusPrint || '') + (SyzygySubPrint || '')
+                    Sc[i] = ScList[fm60(AcrInt[i] + ScConst + 1)] + (SyzygySub === -1 ? "-" : "")
                 } else {
                     Sc[i] = AvgSc[i]
                 }

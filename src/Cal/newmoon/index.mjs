@@ -293,9 +293,7 @@ export default (Name, YearStart, YearEnd) => {
                         isMoonEcli = (SyzygyDeciPrint[i] < Rise + RangeMoonEcli) || (SyzygyDeciPrint[i] > 1 - Rise - RangeMoonEcli)
                     }
                     Rise = fix(Rise)
-                    const StatusList = [``, `<span class='eclipse-symbol'>●</span>`,
-                        `<span class='eclipse-symbol'>◐</span>`,
-                        `<span class='eclipse-symbol'>◔</span>`]
+                    const StatusList = ["", "●", "◐", "◔"]
                     if (isSunEcli) { // 這些數字根據大統，再放寬0.3
                         SunEcliFunc = AutoEclipse(NewmNodeAccumPrint[i], NewmAnomaAccumPrint[i], NewmDeciPrint[i], NewmAvgDeciPrint[i], NewmAcrSdPrint[i], NewmSdPrint[i], 1, Name, NoleapMon, LeapNumTerm, SolsAccum)
                         const SunEcliStatus = SunEcliFunc.Status
@@ -305,8 +303,10 @@ export default (Name, YearStart, YearEnd) => {
                         const NewmEndDeci = SunEcliFunc.EndDeci ? fix(SunEcliFunc.EndDeci) : 0
                         if (SunEcliStatus) {
                             NewmMagni = SunEcliFunc.Magni.toFixed(2)
-                            SunEcli[i] = `<span class='eclipse'>S${NoleapMon}</span>`
-                            SunEcli[i] += '出' + Rise + ' 分' + NewmMagni + (NewmStartDeci ? '虧' + NewmStartDeci : '') + (NewmGreatDeci ? '甚' + NewmGreatDeci : '') + (NewmEndDeci ? '復' + NewmEndDeci : '') + ' 入' + Sunset
+                            SunEcli[i] = {
+                                EclipseMon: "S" + NoleapMon,
+                                EclipseInfo: '出' + Rise + ' 分' + NewmMagni + (NewmStartDeci ? '虧' + NewmStartDeci : '') + (NewmGreatDeci ? '甚' + NewmGreatDeci : '') + (NewmEndDeci ? '復' + NewmEndDeci : '') + ' 入' + Sunset
+                            }
                             NewmScPrint[i] += StatusList[SunEcliStatus]
                         }
                     }
@@ -319,8 +319,10 @@ export default (Name, YearStart, YearEnd) => {
                         const SyzygyEndDeci = MoonEcliFunc.EndDeci ? fix(MoonEcliFunc.EndDeci) : 0
                         if (MoonEcliStatus) {
                             SyzygyMagni = MoonEcliFunc.Magni.toFixed(2)
-                            MoonEcli[i] = `<span class='eclipse'>M${NoleapMon}</span>`
-                            MoonEcli[i] += '入' + Sunset + ' 分' + SyzygyMagni + (SyzygyStartDeci ? '虧' + SyzygyStartDeci + '甚' + SyzygyGreatDeci : '') + (SyzygyEndDeci ? '復' + SyzygyEndDeci : '') + ' 出' + Rise
+                            MoonEcli[i] = {
+                                EclipseMon: "M" + NoleapMon,
+                                EclipseInfo: '入' + Sunset + ' 分' + SyzygyMagni + (SyzygyStartDeci ? '虧' + SyzygyStartDeci + '甚' + SyzygyGreatDeci : '') + (SyzygyEndDeci ? '復' + SyzygyEndDeci : '') + ' 出' + Rise
+                            }
                             SyzygyScPrint[i] += StatusList[MoonEcliStatus]
                         }
                     }
@@ -342,39 +344,40 @@ export default (Name, YearStart, YearEnd) => {
         let Era = Y
         if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`
         else Era = `公元前 ${1 - Y} 年 ${YearSc}`
-        let YearInfo = `<span class='cal-name'>${NameList[Name]}</span> 距曆元${Y - (OriginAd || CloseOriginAd)}年 `
+        let YearInfo = [{ CalName: NameList[Name], OriginYear: `距曆元${Y - (OriginAd || CloseOriginAd)}年` }]
         if (Type === 1) {
             const LeapSur = isTermLeap ? ThisYear.LeapSurAvgThis : ThisYear.LeapSurAvgFix
             if (Name === 'Taichu') {
-                YearInfo += `${ScList[ThisYear.BuScOrder]}統${ThisYear.BuYear}${ThisYear.JupiterSc}`
+                YearInfo.push({ BuYear: `${ScList[ThisYear.BuScOrder]}統${ThisYear.BuYear}${ThisYear.JupiterSc}` })
             } else {
-                YearInfo += `${ThreeList[ThisYear.JiOrder]}紀${ScList[ThisYear.BuScOrder]}蔀${ThisYear.BuYear}`
+                YearInfo.push({ BuYear: `${ThreeList[ThisYear.JiOrder]}紀${ScList[ThisYear.BuScOrder]}蔀${ThisYear.BuYear}` })
             }
-            YearInfo += `  大${ZhengGreatSur}小${ZhengSmallSur}冬至${parseFloat((ThisYear.SolsAccumMod).toPrecision(6)).toFixed(4)}`
+            YearInfo.push({ SolsSur: `大${ZhengGreatSur}小${ZhengSmallSur}冬至${parseFloat((ThisYear.SolsAccumMod).toPrecision(6)).toFixed(4)}` })
             if (SolsOriginDif === -45.65625) {
-                YearInfo += `立春${parseFloat(((SolsAccum % 60 + 60) % 60).toPrecision(6)).toFixed(4)}`
+                YearInfo.push({ SolsSur: `立春${parseFloat(((SolsAccum % 60 + 60) % 60).toPrecision(6)).toFixed(4)}` })
             } else if (SolsOriginDif === -60.875) {
-                YearInfo += `雨水${parseFloat(((SolsAccum % 60 + 60) % 60).toPrecision(6)).toFixed(4)}`
+                YearInfo.push({ SolsSur: `雨水${parseFloat(((SolsAccum % 60 + 60) % 60).toPrecision(6)).toFixed(4)}` })
             }
-            YearInfo += `  閏餘${LeapSur.toFixed(4)}`
+            YearInfo.push({ LeapSur: `閏餘${LeapSur.toFixed(4)}` })
             if (ThisYear.LeapNumOriginLeapSur) {
-                YearInfo += `閏${ThisYear.LeapNumOriginLeapSur - NewmStart}`
+                YearInfo.push({ LeapMon: `閏${ThisYear.LeapNumOriginLeapSur - NewmStart}` })
             }
         } else {
-            if (JiScOrder) YearInfo += `${ScList[JiScOrder]}紀${ThisYear.JiYear}`
+            if (JiScOrder) YearInfo.push({ BuYear: `${ScList[JiScOrder]}紀${ThisYear.JiYear}` })
             if (Type <= 10) {
-                YearInfo += (OriginMonNum === 2 ? '雨' : '冬') + ((SolsAccum % 60 + 60) % 60).toFixed(4)
+                YearInfo.push({ SolsAccum: (OriginMonNum === 2 ? '雨' : '冬') + ((SolsAccum % 60 + 60) % 60).toFixed(4) })
             }
-            if (Type === 2) YearInfo += `  平${ThisYear.LeapSurAvg}定${(ThisYear.LeapSurAcr).toFixed(2)}準${LeapLimit}`
-            else if (Type === 3) YearInfo += `  平${Math.round((ThisYear.LeapSurAvg) * ZhangRange)}定${((ThisYear.LeapSurAcr) * ZhangRange).toFixed(2)}準${Math.round((LeapLimit) * ZhangRange)}`
-            else if (Type <= 7) YearInfo += `  平${parseFloat((ThisYear.LeapSurAvg).toPrecision(8))}定${(ThisYear.LeapSurAcr).toFixed(2)}準${(LeapLimit)}`
-            else if (Type <= 11) YearInfo += `  平${(ThisYear.LeapSurAvg).toFixed(2)}定${(ThisYear.LeapSurAcr).toFixed(2)}準${(LeapLimit).toFixed(2)}`
+            if (Type === 2) YearInfo.push({ LeapSur: `平${ThisYear.LeapSurAvg}定${(ThisYear.LeapSurAcr).toFixed(2)}準${LeapLimit}` })
+            else if (Type === 3) YearInfo.push({ LeapSur: `平${Math.round((ThisYear.LeapSurAvg) * ZhangRange)}定${((ThisYear.LeapSurAcr) * ZhangRange).toFixed(2)}準${Math.round((LeapLimit) * ZhangRange)}` })
+            else if (Type <= 7) YearInfo.push({ LeapSur: `平${parseFloat((ThisYear.LeapSurAvg).toPrecision(8))}定${(ThisYear.LeapSurAcr).toFixed(2)}準${(LeapLimit)}` })
+            else if (Type <= 11) YearInfo.push({ LeapSur: `平${(ThisYear.LeapSurAvg).toFixed(2)}定${(ThisYear.LeapSurAcr).toFixed(2)}準${(LeapLimit).toFixed(2)}` })
         }
-        if (AccumPrint) YearInfo += ` ${AccumPrint}`
-        let EcliPrint = []
-        if ((SunEcli || []).length) EcliPrint = SunEcli.join('')
-        if ((MoonEcli || []).length) EcliPrint += MoonEcli.join('')
-        if (EcliPrint) YearInfo += `\n${EcliPrint}`
+        if (AccumPrint) YearInfo.push({ Accum: AccumPrint })
+        YearInfo = [YearInfo.reduce((accumulator, currentObject) => {
+            return { ...accumulator, ...currentObject };
+        }, {})] // 扁平化到一個對象中
+        if ((SunEcli || []).length) YearInfo.push(...SunEcli)
+        if ((MoonEcli || []).length) YearInfo.push(...MoonEcli)
         if (Type < 13) {
             const step = []
             let NewmIntLong = NewmInt.concat(NextYear.NewmInt)
@@ -397,8 +400,8 @@ export default (Name, YearStart, YearEnd) => {
                     break
                 }
             }
-            if (tmp30 === 4) YearInfo += `<span class='step30'>四連大</span>`
-            if (tmp29 === 3) YearInfo += `<span class='step30'>三連小</span>`
+            if (tmp30 === 4) YearInfo.push({ step30: "四連大" })
+            if (tmp29 === 3) YearInfo.push({ step30: "三連小" })
         }
         return {
             Era, YearInfo, MonthPrint,

@@ -331,7 +331,7 @@ h2 {
   color: var(--red);
 }
 
-.cal-name {
+.CalName {
   color: var(--red);
   margin-right: .1em;
   font-weight: bold;
@@ -339,12 +339,11 @@ h2 {
   font-family: var(--serif);
 }
 
-.eclipse {
+.EclipseMon {
   font-family: var(--codesans);
   border: 1px solid var(--gray);
   color: var(--gray);
   border-radius: .4em;
-  margin: auto .4em;
   padding: .2em .25em;
   font-size: .85em;
 }
@@ -352,11 +351,14 @@ h2 {
 .eclipse-symbol {
   color: var(--red);
   font-size: 1.2em;
+  margin-left: .2em;
 }
 
-.NewmPlus {
+.NewmPlus,
+.SyzygySub {
   color: var(--blue);
   font-size: 1.2em;
+  margin-left: .2em;
 }
 
 table {
@@ -1007,7 +1009,6 @@ hr {
   color: var(--letterred);
 }
 
-/* 'Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury' */
 .SunEclpLon,
 .SunEclpLat,
 .SunEclp,

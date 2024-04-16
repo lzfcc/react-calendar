@@ -100,7 +100,7 @@ export default (Name, Y) => {
         EcliAccum = EcliRange * deci((OriginYear % EcliNumer) * (Solar / Lunar) / EcliRange)
         for (let k = 1; k <= 3; k++) {
             // NewmAvgSc[Math.trunc(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
-            SyzygySc[Math.trunc(EcliRange * k - EcliAccum)] += `<span class='eclipse-symbol'>◐</span>`
+            SyzygySc[Math.trunc(EcliRange * k - EcliAccum)] += "◐"
         } // 四分要看具體時刻，如果在晝則望，在夜則望前一日
     }
     // 中氣

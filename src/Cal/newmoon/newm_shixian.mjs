@@ -1172,28 +1172,23 @@ export const N4 = (Name, Y) => {
       // 1738年NoleapMon會因為去年不閏而閏多一個月，暫時不想解決
       if (Ecli[i]) {
         if (isNewm) {
-          EcliPrint[i] = `<span class='eclipse'>S${NoleapMon}</span>`;
-          EcliPrint[i] += `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
-            }甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(
-              1 - Rise[i],
-            )} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(
-              Ecli[i].GreatSEquaLon,
-            )} ${Lat2NS(Ecli[i].GreatSLat)}`;
+          EcliPrint[i] = {
+            EclipseMon: "S" + NoleapMon,
+            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i],)} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon,)} ${Lat2NS(Ecli[i].GreatSLat)}`
+          };
         } else {
-          EcliPrint[i] = `<span class='eclipse'>M${NoleapMon}</span>`;
-          EcliPrint[i] += `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
-            }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(
-              Ecli[i].GreatMLon,
-            )} ${Lat2NS(Ecli[i].GreatMLat)} 赤道${deg2Hms(
-              Ecli[i].GreatMEquaLon,
-            )} ${Lat2NS(Ecli[i].GreatMEquaLat)}`;
-        }
-        if (Ecli[i].Magni >= 99) {
-          NowSc[i] += `<span class='eclipse-symbol'>●</span>`;
-        } else if (Ecli[i].Magni > 10) {
-          NowSc[i] += `<span class='eclipse-symbol'>◐</span>`;
-        } else if (Ecli[i].Magni > 0) {
-          NowSc[i] += `<span class='eclipse-symbol'>◔</span>`;
+          EcliPrint[i] = {
+            EclipseMon: "M" + NoleapMon,
+            EclipseInfo: `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
+              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon,)} ${Lat2NS(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon,)} ${Lat2NS(Ecli[i].GreatMEquaLat)}`
+          }
+          if (Ecli[i].Magni >= 99) {
+            NowSc[i] += "●";
+          } else if (Ecli[i].Magni > 10) {
+            NowSc[i] += "◐";
+          } else if (Ecli[i].Magni > 0) {
+            NowSc[i] += "◔";
+          }
         }
       }
     }

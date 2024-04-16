@@ -53,7 +53,6 @@ export default class Day extends React.Component {
     );
   }
 
-
   renderDayTableList() {
     const { output } = this.state;
     if (!output) {

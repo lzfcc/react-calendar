@@ -974,7 +974,7 @@ export const HuangheiList = [
   "司命",
   "句陳",
 ]; // https://www.zhihu.com/question/20167015/answer/15508998
-
+export const PlanetList = ['Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury']
 export const MansionNameList =
   ['角', '亢', '氐', '房', '心', '尾', '箕', '斗', '牛', '女', '虛', '危', '室', '壁', '奎', '婁', '胃', '昴', '畢', '觜', '參', '井', '鬼', '柳', '星', '張', '翼', '軫']; // 值日，星期日對應房、虛、昴、星
 export const MansionNameListQing =

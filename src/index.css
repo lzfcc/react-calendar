@@ -960,19 +960,75 @@ hr {
   color: var(--gray)
 }
 
+.Hori,
+.SunHoriLon,
+.SunHoriLat,
+.MoonHoriLon,
+.MoonHoriLat,
+.SaturnHoriLon,
+.SaturnHoriLat,
+.JupiterHoriLon,
+.JupiterHoriLat,
+.MarsHoriLon,
+.MarsHoriLat,
+.VenusHoriLon,
+.VenusHoriLat,
+.MercuryHoriLon,
+.MercuryHoriLat,
+.Node,
+.Mapo,
+.ManGod {
+  color: var(--gray);
+}
+
 .SunEquaLon,
 .SunEquaLat,
 .SunEqua,
-.EquaMansion,
+.MoonEquaLon,
+.MoonEquaLat,
+.MoonEqua,
+.SaturnEquaLon,
+.SaturnEquaLat,
+.SaturnEqua,
+.JupiterEquaLon,
+.JupiterEquaLat,
+.JupiterEqua,
+.MarsEquaLon,
+.MarsEquaLat,
+.MarsEqua,
+.VenusEquaLon,
+.VenusEquaLat,
+.VenusEqua,
+.MercuryEquaLon,
+.MercuryEquaLat,
+.MercuryEqua,
 .Lat,
 .MoonEquaMansion {
   color: var(--letterred);
 }
 
+/* 'Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury' */
+.SunEclpLon,
+.SunEclpLat,
 .SunEclp,
-.EclpMansion,
+.MoonEclpLon,
+.MoonEclpLat,
 .MoonEclp,
-.MoonMansion {
+.SaturnEclpLon,
+.SaturnEclpLat,
+.SaturnEclp,
+.JupiterEclpLon,
+.JupiterEclpLat,
+.JupiterEclp,
+.MarsEclpLon,
+.MarsEclpLat,
+.MarsEclp,
+.VenusEclpLon,
+.VenusEclpLat,
+.VenusEclp,
+.MercuryEclpLon,
+.MercuryEclpLat,
+.MercuryEclp {
   color: var(--letteryellow);
 }
 
@@ -981,7 +1037,8 @@ hr {
 .Dial,
 .Morningstar,
 .Duskstar,
-.MoonRise {
+.MoonRise,
+.MoonSet {
   color: var(--lettergreen);
 }
 
@@ -990,20 +1047,9 @@ hr {
   color: var(--letterblue);
 }
 
-.MoonEqua,
-.MoonEquaLat {
-  color: var(--letterpurple);
-}
-
 .HexagramSymbol {
   font-size: 1.7em;
   margin: 0 .1em;
-}
-
-.Hori,
-.NodeMapo,
-.ManGod {
-  color: var(--gray);
 }
 
 .Luck {

@@ -11,11 +11,11 @@ import {
     xyz2lonlat,
     rr1
 } from "../astronomy/pos_functions.mjs";
-import { H2R, R2D, pi2 } from "../parameter/functions.mjs";
+import { R2D, pi2 } from "../parameter/functions.mjs";
 import { FlatLon2FlatLat, Lat2NS, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
-import { horizontal, topocentric } from "../astronomy/pos_convert_modern.mjs";
-import { siderealTime } from "../time/sidereal_time.mjs";
+import { horizontal } from "../astronomy/pos_convert_modern.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
+import { PlanetList } from "Cal/parameter/constants.mjs";
 
 // 這單獨放一個為了避免循環依賴
 const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
@@ -28,7 +28,6 @@ const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
     };
 };
 
-const PlanetList = ['Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury']
 // 一次性輸出七政位置 ⚠️ 轉換爲 topocentric，不是geocentric
 export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
     const T = (Jd - 2451545) / 36525; // 儒略世紀

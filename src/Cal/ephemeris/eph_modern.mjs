@@ -7,6 +7,7 @@ import {
   YuanList,
   NumList,
   MonNumList1,
+  PlanetList,
 } from "../parameter/constants.mjs";
 import { YearGodConvert, YearColorConvert, MonColorConvert } from "./luck.mjs";
 import { sunRise, twilight } from "../astronomy/pos_convert.mjs";
@@ -104,19 +105,17 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(MidnTTJd, Longitude, Latitude, h)
         const SunEclpLatNoon = calPos_vsop('Sun', MidnTTJd + .5).EquaLat
         const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數        
-        Pos[i][k] = ``
+        Pos[i][k] = []
         for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度
           const EquaMansion = deg2MansionModern(EquaLon[j] * R2D, EquaAccumList).Mansion;
           const CeclpMansion = deg2MansionModern(CeclpLon[j], CeclpAccumList).Mansion;
           const EclpMansion = deg2MansionModern(EclpLon[j] * R2D, EclpAccumList).Mansion;
-          Pos[i][k] +=
-            `<p class="Hori">` + (HoriLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(HoriLat[j] * R2D) + `</p>`
-            + `<p class="Equa">` + (EquaLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EquaLat[j] * R2D) + `</p>`
-            + `<p>` + CeclpLon[j].toFixed(4) + ' ' + Lat2NS(CeclpLat[j]) + `</p>`
-            + `<p class="Eclp">` + (EclpLon[j] * R2D).toFixed(4) + ' ' + Lat2NS(EclpLat[j] * R2D) + `</p>`
-            + `<p><span class="Equa">` + EquaMansion + `</span>`
-            + `<span class="Ceclp">` + CeclpMansion + `</span>`
-            + `<span class="Eclp">` + EclpMansion + `</span></p>`
+          Pos[i][k].push(
+            { [PlanetList[j] + "HoriLon"]: (HoriLon[j] * R2D).toFixed(4), [PlanetList[j] + "HoriLat"]: Lat2NS(HoriLat[j] * R2D) },
+            { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: Lat2NS(EquaLat[j] * R2D) },
+            { [PlanetList[j] + "CeclpLon"]: CeclpLon[j].toFixed(4), [PlanetList[j] + "CeclpLat"]: Lat2NS(CeclpLat[j]) },
+            { [PlanetList[j] + "EclpLon"]: (EclpLon[j] * R2D).toFixed(4), [PlanetList[j] + "EclpLat"]: Lat2NS(EclpLat[j] * R2D) },
+            { [PlanetList[j] + "Equa"]: EquaMansion, [PlanetList[j] + "Ceclp"]: CeclpMansion, [PlanetList[j] + "Eclp"]: EclpMansion })
         }
         const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)

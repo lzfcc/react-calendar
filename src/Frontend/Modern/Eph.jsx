@@ -30,17 +30,24 @@ export default class Day extends React.Component {
   componentWillUnmount() {
     this.worker.terminate();
   }
-
+  // GPT：
   renderYearColorTable(yearColor) {
     return (
       <table>
-        {yearColor.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((d, colIndex) => (
-              <td key={colIndex} dangerouslySetInnerHTML={{ __html: d }} />
-            ))}
-          </tr>
-        ))}
+        <tbody>
+          {yearColor.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, colIndex) => {
+                const [key, value] = Object.entries(cell)[0];
+                return (
+                  <td key={colIndex} className={key}>
+                    {value}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
       </table>
     );
   }
@@ -182,22 +189,50 @@ export default class Day extends React.Component {
       </div>
     );
   }
+  // GPT
   renderDayDetail(info, day) {
-    // 过滤掉 'MonColor' 键
     const filteredEntries = Object.entries(info[day]).filter(
-      ([key]) => key !== "MonColor"
+      ([key, value]) => key !== "MonColor" && value !== undefined // 这里添加了对 undefined 的检查
     );
+
     return (
       <div>
-        {filteredEntries.map(([key, value]) => (
-          // 假设 key 是唯一的，直接使用 key 作为 React 列表的 key
-          // 如果 key 不是唯一的，你需要找到一种方式来生成唯一的 key
-          <p
-            key={key}
-            className={key}
-            dangerouslySetInnerHTML={{ __html: value }}
-          />
-        ))}
+        {filteredEntries.map(([key, value]) => {
+          if (Array.isArray(value)) {
+            // 对于数组中的每个对象，我们创建一个 <p> 标签
+            const paragraphs = value.map((obj, index) => {
+              // 仅当 obj 不是 null 或 undefined 时，我们才处理它
+              if (obj) {
+                const spans = Object.entries(obj)
+                  .filter(([_, val]) => val !== 0 && val !== undefined)
+                  .map(([subKey, subValue], index, array) => (
+                    <React.Fragment key={subKey}>
+                      <span className={subKey}>{`${subValue}`}</span>
+                      {index !== array.length - 1 && ' '}
+                    </React.Fragment>
+                  ));
+
+                if (spans.length === 0) return null;
+
+                return (
+                  <p key={`paragraph-${key}-${index}`} className={key}>
+                    {spans}
+                  </p>
+                );
+              }
+              return null;
+            });
+
+            return paragraphs.filter(Boolean);
+          }
+
+          // 如果 value 不是数组且不是 undefined，直接显示
+          return (
+            <p key={key} className={key}>
+              <span className={key}>{value}</span>
+            </p>
+          );
+        })}
       </div>
     );
   }

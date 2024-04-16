@@ -155,15 +155,19 @@ export const D2 = (Name, YearStart, YearEnd) => {
           MoonEquaLat,
           SunEquaLon,
         );
-        Pos[i][k] =
-          `<p class="Equa">` + deg2Hms(SunEquaLon) + ' ' + Lat2NS(SunLat) + `</p>`
-          + `<p class="Eclp">` + deg2Hms(SunLon) + `</p>`
-          + `<p><span class="Equa">` + FuncSun.Equa + `</span> <span class="Eclp">` + FuncSun.Eclp + `</span></p>`
-          + `<p class="Equa">` + deg2Hms(MoonEquaLon) + ' ' + Lat2NS(MoonEquaLat) + `</p>`
-          + `<p class="Eclp">` + deg2Hms(MoonLon) + ' ' + Lat2NS(MoonLat) + `</p>`
-          + `<p><span class="Equa">` + mansionQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa + `</span> <span class="Eclp">` + mansionQing(Name, Y, MoonGong).Eclp + `</span></p>`
-          + `<p class="MoonRise">` + deci2hms(MoonRiseTmp).hm + ' ' + deci2hms(MoonSetTmp).hm + `</p>`
-          + `<p class="NodeMapo">` + deg2Hms(Node) + ' ' + deg2Hms(Mapo) + `</p>`
+        Pos[i][k] = [
+          { SunEquaLon: deg2Hms(SunEquaLon), SunEquaLat: Lat2NS(SunLat) },
+          { SunEclpLon: deg2Hms(SunLon) },
+          { SunEqua: FuncSun.Equa, SunEclp: FuncSun.Eclp },
+          { MoonEquaLon: deg2Hms(MoonEquaLon), MoonEquaLat: Lat2NS(MoonEquaLat) },
+          { MoonEclpLon: deg2Hms(MoonLon), MoonEclpLat: Lat2NS(MoonLat) },
+          {
+            MoonEqua: mansionQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa,
+            MoonEclp: mansionQing(Name, Y, MoonGong).Eclp
+          },
+          { MoonRise: deci2hms(MoonRiseTmp).hm, MoonSet: deci2hms(MoonSetTmp).hm },
+          { Node: deg2Hms(Node), Mapo: deg2Hms(Mapo) }
+        ]
         const TwilightLeng = twilight(RiseLat, SunLat);
         const Rise = sunRise(RiseLat, SunLat).t0;
         const FuncMidstar = midstarQing(Name, Y, SunLon, SunLonMor, Rise);

@@ -14,6 +14,8 @@ import {
   t3,
   avsind,
   vsind,
+  R2D,
+  pi,
 } from "../parameter/functions.mjs";
 
 export const Lon2Gong = (Lon) => (Lon + 90) % 360;
@@ -99,12 +101,14 @@ export const aCb_Sph = (a, b, C) => {
     (cosd(atand(tanAPlBDiv2)) / cosd(atand(tanAMiBDiv2))) * tand((a + b) / 2);
   return atand(tancdiv2) * 2;
 };
+
 // 已知三個角一邊求b邊。sinAcosb=cosBsinC+sinBcosCcosa
 export const ABCa_Sph = (A, B, C, a) =>
   acosd((cosd(B) * sind(C) + sind(B) * cosd(C) * cosd(a)) / sind(A));
 // console.log(ABCa_Sph(72.8488888889,90,83.61729023292902,72.7386111111))// 88度1分18秒=88.02166666667
+
+// 斜弧三角形已知三邊求a所對角。上編卷三總較法
 export const abc_Sph = (a, b, c) => {
-  // 斜弧三角形已知三邊求a所對角。上編卷三總較法
   const sum = b + c;
   const dif = abs(b - c);
   let mid = 0;
@@ -129,9 +133,7 @@ const refractionGuimao = (h) => {
 
 // https://zhuanlan.zhihu.com/p/265334815 清代日出公式推導
 const sunRiseQing = (RiseLat, Lon, d) =>
-  0.25 +
-  (Lon < 180 ? -1 : 1) *
-  (asind(tand(abs(d) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
+  0.25 + (Lon < 180 ? -1 : 1) * (asind(tand(abs(d) * tand(RiseLat))) / 360); // 日出時刻。這個經度應該是正午的經度??
 export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
   const MSDif = (MEquaLon - SEquaLon + 360) % 360;
   const Dif =
@@ -162,10 +164,10 @@ export const sunRise = (f, d) => {
 };
 
 /**
- * 
+ *
  * @param {*} RiseLat 地理緯度
  * @param {*} d 赤緯
- * @returns 
+ * @returns
  */
 export const twilight = (RiseLat, d) => {
   // 民用曚影時長。應該也是用的正午太陽緯度
@@ -183,10 +185,10 @@ export const deg2Hms = (deg) => {
   const m = Math.trunc(60 * Deci);
   const s = Math.trunc(3600 * Deci - 60 * m);
   // const ss = Math.round(216000 * Deci - 3600 * m - 60 * s)
-  let mStr = m.toString()
-  let sStr = s.toString()
-  if (mStr.length < 2) mStr = '0' + mStr
-  if (sStr.length < 2) sStr = '0' + sStr
+  let mStr = m.toString();
+  let sStr = s.toString();
+  if (mStr.length < 2) mStr = `0${mStr}`;
+  if (sStr.length < 2) sStr = `0${sStr}`;
   return `${Math.trunc(deg)}°${mStr}′${sStr}″`; // + ss
 };
 
@@ -224,7 +226,7 @@ export const moonEclp2EquaGuimao = (Sobliq, Lon, Lat) => {
   };
 };
 /**
- *
+ * 已知黃道經緯求赤道經緯
  * @param {*} Sobliq 黃赤大距
  * @param {*} Lon 黃經
  * @param {*} Lat 黃緯
@@ -235,7 +237,7 @@ export const eclp2Equa = (Sobliq, Lon, Lat) => {
   const EquaLat = 90 - aCb_Sph(Sobliq, 90 - Lat, t1(Gong)); // 赤緯
   let A = acosd(
     (cosd(90 - Lat) - cosd(Sobliq) * cosd(90 - EquaLat)) /
-    (sind(Sobliq) * sind(90 - EquaLat)),
+      (sind(Sobliq) * sind(90 - EquaLat)),
   ); // cosA=(cosa-cosb·cosc)/(sinb·sinc)
   A = A || 180;
   return {
@@ -244,3 +246,42 @@ export const eclp2Equa = (Sobliq, Lon, Lat) => {
   };
 };
 // console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60)) // 考成卷十六恆星曆理算例:赤經緯23度41分58秒=23.6994444444，求得赤緯8度5分4秒=8.08444444444
+
+/**
+ * 黃白交點黃經轉白赤交點赤經。減《數理天文學》白道交周
+ * @param {*} WhEcNodeLon 黃白交點黃經
+ * @param {*} Sobliq 黃赤大距
+ * @param {*} Mobliq 黃白大距
+ * @returns
+ */
+const whEcNode2WhEqNode = (WhEcNodeLon, Sobliq, Mobliq) => {
+  const WhEcNodeLonRev = WhEcNodeLon <= 180 ? WhEcNodeLon : 360 - WhEcNodeLon;
+  const WhEcNodeLonRev1 = 180 - WhEcNodeLonRev; // 圖像以秋分對稱，尖峰距秋分較近
+  Sobliq = Sobliq || 23.5559844; // 23.9度。1280理論值23.533°
+  Mobliq = Mobliq || 5.91363627; // 6度。理論平均值5.1453°
+  const tan_WhEqNodeLonMax = tand(Mobliq) / sind(Sobliq); // 正交極數：白赤交點赤經最大值的tan()
+  const tan_WhEqNodeLon =
+    (tan_WhEqNodeLonMax * sind(WhEcNodeLonRev1)) /
+    (1 - tan_WhEqNodeLonMax * cosd(Sobliq) * cosd(WhEcNodeLonRev1));
+  return {
+    WhEqNodeLonMax: atand(tan_WhEqNodeLonMax),
+    WhEqNodeLon: atand(tan_WhEqNodeLon),
+  };
+};
+
+/**
+ * 求白赤大距
+ * @param {*} WhEcNodeLon 黃白交點黃經
+ * @param {*} Mobliq 黃白大距
+ */
+const whEqObliq = (WhEcNodeLon, Sobliq, Mobliq) => {
+  const WhEcNodeLonRev = WhEcNodeLon <= 180 ? WhEcNodeLon : 360 - WhEcNodeLon; // 看圖像，黃經從0-180逐漸降低，那麼180-360應該是逐漸升高
+  Mobliq = Mobliq || 5.91363627;
+  const { WhEqNodeLon } = whEcNode2WhEqNode(WhEcNodeLonRev, Sobliq, Mobliq);
+  const sin_WhEqObliq =
+    (sind(Mobliq) * sind(WhEcNodeLonRev)) / sind(WhEqNodeLon); // 球面三角形BHG正弦定理
+  return asind(sin_WhEqObliq);
+};
+// LonHigh2Flat(whEqObliq, MoonWhiteLon) // 白經轉赤經
+// HighLon2FlatLat(whEqObliq, MoonWhiteLon) // 白經轉赤緯。MoonWhiteLon：月亮距離白赤正交
+// console.log(whEqObliq(330, 23.533, 5.1453))

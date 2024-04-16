@@ -556,17 +556,13 @@ export const degAccumList = (Name, Y) => {
         if (Name === "Jiazi" || Name === "Guimao")
             EclpAccumListArr = raw2Accum(EclpDegJiazi);
         else EclpAccumListArr = raw2Accum(EclpDegXinfa);
-        const StarEclpLon = (-MansionConst + Precession + 270 + 360) % 360; // 宿度起算點。本質上MansionConst是另一套計算度數的體系，那麼赤道上的MansionConst也需要黃轉赤
-        const StarEquaLon = LonHigh2Flat(Sobliq, StarEclpLon);
+        const StartEclp = (-MansionConst + Precession + 270 + 360) % 360; // 宿度起算點。本質上MansionConst是另一套計算度數的體系，那麼赤道上的MansionConst也需要黃轉赤
+        const StartEqua = LonHigh2Flat(Sobliq, StartEclp);
         for (let i = 0; i < 28; i++) {
-            const MansionLon = (EclpAccumListArr[i] + StarEclpLon) % 360; // 某星黃經
-            // EquaAccumListArr[i] = ((eclp2Equa(Sobliq, MansionLon, EclpLatJiazi[i]).EquaLon + MansionConst + 90 + 360) % 360) // 這是以前錯的
-            const MansionEquaLon = eclp2Equa(
-                Sobliq,
-                MansionLon,
-                EclpLatJiazi[i],
-            ).EquaLon;
-            EquaAccumListArr[i] = (MansionEquaLon - StarEquaLon + 360) % 360;
+            const EclpLon = (EclpAccumListArr[i] + StartEclp) % 360; // 某星黃經
+            // EquaAccumListArr[i] = ((eclp2Equa(Sobliq, EclpLon, EclpLatJiazi[i]).EquaLon + MansionConst + 90 + 360) % 360) // 這是以前錯的
+            const MansionEquaLon = eclp2Equa(Sobliq, EclpLon, EclpLatJiazi[i]).EquaLon;
+            EquaAccumListArr[i] = (MansionEquaLon - StartEqua + 360) % 360;
         }
         const adj = EquaAccumListArr[0] - 360;
         for (let i = 0; i < 28; i++) {
@@ -642,13 +638,15 @@ export const mansion2Deg = (Mansion, AccumList) => {
 // console.log(mansion2Deg('心2', degAccumList('Guimao', 900).EquaAccumList))
 export const deg2Mansion = (Deg, AccumList, fixed) => {
     Deg = +Deg + 1e-12;
-    let Print = "";
+    let Print = "", Name = "";
+    let MansDeg = 0
     if (AccumList.length === undefined) { // 清代用字典
         const SortedList = Object.entries(AccumList).sort((a, b) => a[1] - b[1]);
         for (let i = 0; i < 27; i++) {
             if (Deg >= SortedList[i][1] && Deg < SortedList[i + 1][1]) {
-                const MansionDeg = Deg - SortedList[i][1];
-                Print = SortedList[i][0] + MansionDeg.toFixed(fixed || 3);
+                Name = SortedList[i][0]
+                MansDeg = Deg - SortedList[i][1];
+                Print = Name + MansDeg.toFixed(fixed || 3);
                 break;
             }
             Print = SortedList[27][0] + (Deg - SortedList[27][1]).toFixed(fixed || 3); // 軫
@@ -656,13 +654,14 @@ export const deg2Mansion = (Deg, AccumList, fixed) => {
     } else {
         for (let i = 0; i < 28; i++) {
             if (Deg >= AccumList[i] && Deg < AccumList[i + 1]) {
-                const MansionDeg = Deg - AccumList[i];
-                Print = MansionNameList[i] + MansionDeg.toFixed(fixed || 3);
+                Name = MansionNameList[i]
+                MansDeg = Deg - AccumList[i];
+                Print = Name + MansDeg.toFixed(fixed || 3);
                 break;
             }
         }
     }
-    return Print;
+    return { Print, Name, MansDeg };
 };
 // console.log(deg2Mansion(1, degAccumList('Guimao', 900).EquaAccumList))
 
@@ -687,13 +686,12 @@ export const solsMansion = (Name, Y) => {
     const SolsEquaDeg = isPrecession
         ? fmod(OriginAccum + OriginDeg, Sidereal)
         : OriginDeg; // 赤道冬至。算例參《古曆新探》p85
-    const SolsEquaMansion = deg2Mansion(SolsEquaDeg, EquaAccumList, 10);
-    const SolsMansionName = SolsEquaMansion.slice(0, 1);
-    const SolsEquaMansionDeg = +SolsEquaMansion.slice(1);
+    const { Name: SolsMansionName, MansDeg: SolsEquaMansionDeg } = deg2Mansion(SolsEquaDeg, EquaAccumList);
     const SolsEclpMansionDeg = equaEclp(SolsEquaMansionDeg, Name).Equa2Eclp; // 根據《太陽通軌》（《明大統曆法彙編》p128），直接用冬至赤道宿度（例如在箕5，即用5）赤轉黃即冬至黃道宿度。又如紀元曆「求天正冬至加時黃道日度」：「以冬至加時赤道日度及分秒，減一百一度⋯⋯」就是指這個5
     const SolsEclpMansion = SolsMansionName + SolsEclpMansionDeg;
     const SolsEclpDeg = mansion2Deg(SolsEclpMansion, EclpAccumList);
     return {
+        EquaAccumList,
         EclpAccumList,
         SolsEquaDeg,
         SolsEclpDeg,
@@ -735,8 +733,8 @@ export const mansion = (Name, Y, EclpGong) => {
         (SolsEclpDeg + EclpGong - equaEclp(PrecessionFrac, Name).Equa2Eclp) %
         Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
     EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal;
-    const Equa = deg2Mansion(EquaDeg, EquaAccumList);
-    const Eclp = deg2Mansion(EclpDeg, EclpAccumList);
+    const Equa = deg2Mansion(EquaDeg, EquaAccumList).Print;
+    const Eclp = deg2Mansion(EclpDeg, EclpAccumList).Print;
     return {
         Equa,
         Eclp,
@@ -762,23 +760,9 @@ export const mansionQing = (Name, Y, Gong, isEqua) => {
     const Precession = StarVy * (Y - (MansionOriginAd || CloseOriginAd));
     const SolsEclpDeg = fmod(MansionConst - Precession, 360); // 冬至黃道宿積度（宿的度量體系）從角0度開始，冬至在多少度
     // 此處照抄古曆，只是黃赤互換
-    const SolsEclpMansion = deg2Mansion(
-        SolsEclpDeg,
-        EclpAccumList,
-        undefined,
-        true,
-        Exchange,
-    );
-    const SolsMansionName = SolsEclpMansion.slice(0, 1);
-    const SolsEclpMansionDeg = +SolsEclpMansion.slice(1);
+    const { Name: SolsMansionName, MansDeg: SolsEclpMansionDeg } = deg2Mansion(SolsEclpDeg, EclpAccumList);
     const SolsEquaDeg = GongHigh2Flat(Sobliq, SolsEclpDeg); // 直接這樣算即可，因為平常是逆時針加，這裏是順時針加，只是方向反了，但度數不變
-    const SolsEquaMansion = deg2Mansion(
-        SolsEquaDeg,
-        EquaAccumList,
-        undefined,
-        true,
-        Exchange,
-    );
+    const SolsEquaMansion = deg2Mansion(SolsEquaDeg, EquaAccumList).Print;
     let EclpMansionGong = 0;
     let EquaMansionGong = 0;
     if (isEqua) {
@@ -791,15 +775,8 @@ export const mansionQing = (Name, Y, Gong, isEqua) => {
             SolsEquaDeg + GongHigh2Flat(Sobliq, Gong - PrecessionFrac);
     }
     return {
-        Eclp: deg2Mansion(
-            EclpMansionGong % 360,
-            EclpAccumList,
-            3,
-            true,
-            Exchange,
-            true,
-        ),
-        Equa: deg2Mansion(EquaMansionGong % 360, EquaAccumList, 3, true, Exchange),
+        Eclp: deg2Mansion(EclpMansionGong % 360, EclpAccumList).Print,
+        Equa: deg2Mansion(EquaMansionGong % 360, EquaAccumList).Print,
         SolsEclpMansion: SolsMansionName + SolsEclpMansionDeg.toFixed(3),
         SolsEquaMansion,
         Exchange,
@@ -824,8 +801,8 @@ export const midstar = (Name, Y, EclpGong, Sd, SolsDeci) => {
     const DuskstarDeg =
         (EquaDeg + Sidereal * HalfLight + (Type === 7 ? 0 : 1 - HalfNight)) %
         Sidereal;
-    const Duskstar = deg2Mansion(DuskstarDeg, EquaAccumList, 2);
-    const Morningstar = deg2Mansion(MorningstarDeg, EquaAccumList, 2);
+    const Duskstar = deg2Mansion(DuskstarDeg, EquaAccumList, 2).Print;
+    const Morningstar = deg2Mansion(MorningstarDeg, EquaAccumList, 2).Print;
     return { Morningstar, Duskstar }
 };
 export const midstarQing = (Name, Y, LonTod, LonMor, Rise) => {
@@ -855,12 +832,12 @@ export const midstarQing = (Name, Y, LonTod, LonMor, Rise) => {
         ((EquaMansionGongTod + MorningstarTmp) * (Solar / 360) + Solar) % Solar,
         EquaAccumList,
         2,
-    );
+    ).Print;
     const Duskstar = deg2Mansion(
         ((EquaMansionGongTod + DuskstarTmp) * (Solar / 360) + Solar) % Solar,
         EquaAccumList,
         2,
-    );
+    ).Print;
     return { Morningstar, Duskstar };
 };
 

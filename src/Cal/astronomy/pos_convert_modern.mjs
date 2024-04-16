@@ -107,7 +107,7 @@ const hourA2ElevatA = (v, Lat, f) =>
 /**
  *
  * @param {*} X 地心座標
- * @param {*} LASTrad 恆星時
+ * @param {*} LASTrad 恆星時（弧度）
  * @param {*} Latitude 地理緯度°
  * @param {*} h 海拔km
  * @return topocentric座標

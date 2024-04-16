@@ -597,9 +597,9 @@ export const bindDeg2Mansion = (Deg) => {
     "Jiazi",
   ].map((Name) => {
     const EclpList = eval(`EclpAccumList${Name}`);
-    const Eclp = deg2Mansion(Deg, EclpList);
+    const Eclp = deg2Mansion(Deg, EclpList).Print;
     const EquaList = eval(`EquaAccumList${Name}`);
-    const Equa = deg2Mansion(Deg, EquaList);
+    const Equa = deg2Mansion(Deg, EquaList).Print;
     return {
       title: NameList[Name],
       data: [Equa, Eclp],
@@ -800,7 +800,7 @@ export const bindMansionAccumList = (Name, Y) => {
 export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
   Name = Name.toString();
   Y = parseInt(Y);
-  const { WhiteAccumList } = moonLonLat(NodeAccum, 0, Sd, 0, Name, Y);
+  const { WhiteAccumList } = moonLonLat(NodeAccum, Sd, undefined, Name, Y, true);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -823,6 +823,7 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
   }
   return WhiteAccumPrint;
 };
+// console.log(bindWhiteAccumList('Dayan', 1281, 1, 2))
 
 
 export const bindMansionAccumModernList = (Name, Jd) => {

@@ -214,24 +214,44 @@ export default class Day extends React.Component {
   // GPT：
   // 在这个代码片段中，我们首先使用 filter 方法来排除数组中键为 'MonColor' 的项，然后使用 map 方法来遍历过滤后的数组并返回一个新的<p> 元素数组。每个<p> 元素都使用 key 作为 React 的 key 属性，这是必需的，以帮助 React 确定何时重新渲染组件。
   renderDayDetail(info, day) {
-    // 过滤掉 'MonColor' 键
     const filteredEntries = Object.entries(info[day]).filter(
       ([key]) => key !== "MonColor"
     );
     return (
       <div>
-        {filteredEntries.map(([key, value]) => (
-          // 假设 key 是唯一的，直接使用 key 作为 React 列表的 key
-          // 如果 key 不是唯一的，你需要找到一种方式来生成唯一的 key
-          <p
-            key={key}
-            className={key}
-            dangerouslySetInnerHTML={{ __html: value }}
-          />
-        ))}
+        {filteredEntries.map(([key, value]) => {
+          if (Array.isArray(value)) {
+            // 对于数组中的每个对象，我们创建一个 <p> 标签
+            const paragraphs = value.map((obj, index) => {
+              // 过滤掉值为0的键值对，并为其他每个键值对创建一个 <span>
+              const spans = Object.entries(obj)
+                .filter(([_, val]) => val !== 0 || val !== undefined)
+                .map(([subKey, subValue]) => (
+                  <span key={subKey} className={subKey}>{`${subValue}`}</span>
+                ));
+              // 如果没有任何有效的 <span>，则不创建 <p>
+              if (spans.length === 0) return null;
+              // 使用对象的索引作为 p 标签的 key
+              return (
+                <p key={`paragraph-${key}-${index}`} className={key}>
+                  {spans}
+                </p>
+              );
+            });
+            // 仅渲染非空的 <p> 标签
+            return paragraphs.filter(Boolean);
+          }
+          // 如果 value 不是数组，直接显示
+          return (
+            <p key={key} className={key}>
+              <span className={key}>{value}</span>
+            </p>
+          );
+        })}
       </div>
     );
   }
+
 
   handleRetrieve() {
     if (this.state.calendars.length === 0) {

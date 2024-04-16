@@ -1,8 +1,7 @@
 :root {
   --bg: #fffae8;
-  --bggray: #f4f4f4;
-  --shallowgray: #b6b5b5;
-  --shallowgray1: #d2d1d1;
+  --bggray: #f8f8f8;
+  --shallowgray: #bcbcbc;
   --gray: #787878;
   --black: #2b2b2b;
   --yellow: #ffda56;
@@ -171,7 +170,7 @@ n {
 }
 
 u {
-  border-bottom: .15em solid var(--shallowgray1);
+  border-bottom: .15em solid var(--shallowgray);
   text-decoration: none;
   margin: 0 .1em
 }
@@ -244,7 +243,6 @@ p {
   margin: 0em auto 5em;
   padding: .5em 0;
   border-radius: .6em;
-  /* border-bottom: .2em solid var(--bggray); */
   background: var(--bg);
 }
 
@@ -274,7 +272,7 @@ p {
 
 .main-render {
   border-radius: 2em;
-  background: white;
+  background: var(--bggray);
   margin: 3em auto 0;
   width: 93vw;
   height: 96vh;
@@ -304,7 +302,7 @@ h2 {
 .ans {
   margin: 1.5em auto;
   padding: 2em 1em;
-  background: white;
+  background: var(--bggray);
   border-radius: 1.5em;
   max-height: 90vh;
   overflow: scroll;
@@ -452,7 +450,7 @@ table td {
 }
 
 .rowline table td {
-  border-top: 1px solid var(--shallowgray1);
+  border-top: 1px solid var(--shallowgray);
   margin-top: 1em;
   vertical-align: top;
   padding: .5em 1.2em;
@@ -636,7 +634,7 @@ year-range {
 code {
   font-family: var(--codesans);
   font-size: .9em;
-  background: white;
+  background: var(--bggray);
   border-radius: .2em;
   padding: .1em .2em;
 }
@@ -898,7 +896,7 @@ hr {
 
 .day-render {
   border-radius: 2em;
-  background: white;
+  background: var(--bggray);
   margin: 3em auto 0;
   width: fit-content;
   height: 96vh;
@@ -972,14 +970,16 @@ hr {
   color: var(--gray)
 }
 
-.Equa,
+.SunEquaLon,
+.SunEquaLat,
+.SunEqua,
 .EquaMansion,
 .Lat,
 .MoonEquaMansion {
   color: var(--letterred);
 }
 
-.Eclp,
+.SunEclp,
 .EclpMansion,
 .MoonEclp,
 .MoonMansion {

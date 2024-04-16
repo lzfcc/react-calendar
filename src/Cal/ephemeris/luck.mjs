@@ -1,3 +1,4 @@
+import { fmod } from '../parameter/functions.mjs'
 import {
     ColorList,
     ClassColorList,
@@ -108,70 +109,92 @@ export const YearGodConvert = (a, b, YearScOrder, YuanYear) => { // 干，支，
 // 9   5   7                 7   3   5
 // 8   1   3                 6   8   1
 // 4   6   2                 2   4   9
-export const YearColorConvert = YuanYear => {
+const YearColorConvert_BACKUP = YuanYear => {
     let YearColor = []
     if (YuanYear > 0) {
-        const row1an = Math.round(((9 - YuanYear) % 9 + 9) % 9.1)
-        const row1bn = Math.round(((5 - YuanYear) % 9 + 9) % 9.1)
-        const row1cn = Math.round(((7 - YuanYear) % 9 + 9) % 9.1)
-        const row2an = Math.round(((8 - YuanYear) % 9 + 9) % 9.1)
-        const row2bn = Math.round(((1 - YuanYear) % 9 + 9) % 9.1)
-        const row2cn = Math.round(((3 - YuanYear) % 9 + 9) % 9.1)
-        const row3an = Math.round(((4 - YuanYear) % 9 + 9) % 9.1)
-        const row3bn = Math.round(((6 - YuanYear) % 9 + 9) % 9.1)
-        const row3cn = Math.round(((2 - YuanYear) % 9 + 9) % 9.1)
-        const row1a = `<span class='${ClassColorList[row1an]}'>` + ColorList[row1an] + NumList[row1an] + `</span>`
-        const row1b = `<span class='${ClassColorList[row1bn]}'>` + ColorList[row1bn] + NumList[row1bn] + `</span>`
-        const row1c = `<span class='${ClassColorList[row1cn]}'>` + ColorList[row1cn] + NumList[row1cn] + `</span>`
-        const row2a = `<span class='${ClassColorList[row2an]}'>` + ColorList[row2an] + NumList[row2an] + `</span>`
-        const row2b = `<span class='${ClassColorList[row2bn]}'>` + ColorList[row2bn] + NumList[row2bn] + `</span>`
-        const row2c = `<span class='${ClassColorList[row2cn]}'>` + ColorList[row2cn] + NumList[row2cn] + `</span>`
-        const row3a = `<span class='${ClassColorList[row3an]}'>` + ColorList[row3an] + NumList[row3an] + `</span>`
-        const row3b = `<span class='${ClassColorList[row3bn]}'>` + ColorList[row3bn] + NumList[row3bn] + `</span>`
-        const row3c = `<span class='${ClassColorList[row3cn]}'>` + ColorList[row3cn] + NumList[row3cn] + `</span>`
+        const row1an = fmod(8 - YuanYear, 9)
+        const row1bn = fmod(4 - YuanYear, 9)
+        const row1cn = fmod(6 - YuanYear, 9)
+        const row2an = fmod(7 - YuanYear, 9)
+        const row2bn = fmod(0 - YuanYear, 9)
+        const row2cn = fmod(2 - YuanYear, 9)
+        const row3an = fmod(3 - YuanYear, 9)
+        const row3bn = fmod(5 - YuanYear, 9)
+        const row3cn = fmod(1 - YuanYear, 9)
+        const row1a = `<span class='${ClassColorList[row1an]}'>` + ColorList[row1an] + NumList[row1an + 1] + `</span>`
+        const row1b = `<span class='${ClassColorList[row1bn]}'>` + ColorList[row1bn] + NumList[row1bn + 1] + `</span>`
+        const row1c = `<span class='${ClassColorList[row1cn]}'>` + ColorList[row1cn] + NumList[row1cn + 1] + `</span>`
+        const row2a = `<span class='${ClassColorList[row2an]}'>` + ColorList[row2an] + NumList[row2an + 1] + `</span>`
+        const row2b = `<span class='${ClassColorList[row2bn]}'>` + ColorList[row2bn] + NumList[row2bn + 1] + `</span>`
+        const row2c = `<span class='${ClassColorList[row2cn]}'>` + ColorList[row2cn] + NumList[row2cn + 1] + `</span>`
+        const row3a = `<span class='${ClassColorList[row3an]}'>` + ColorList[row3an] + NumList[row3an + 1] + `</span>`
+        const row3b = `<span class='${ClassColorList[row3bn]}'>` + ColorList[row3bn] + NumList[row3bn + 1] + `</span>`
+        const row3c = `<span class='${ClassColorList[row3cn]}'>` + ColorList[row3cn] + NumList[row3cn + 1] + `</span>`
         YearColor.push([row1a, row1b, row1c])
         YearColor.push([row2a, row2b, row2c])
         YearColor.push([row3a, row3b, row3c])
     }
     return YearColor
 }
+const generateColor = (formula) => {
+    // 辅助函数用于生成对象
+    const YearColor = []
+    const generateColorObject = (num) => {
+        const index = fmod(num, 9);
+        return { [ClassColorList[index]]: ColorList[index] + NumList[index + 1] };
+    };
+    // 计算每个位置的值，并构造对象
+    for (let i = 0; i < formula.length; i++) {
+        const row = Math.floor(i / 3);
+        if (!YearColor[row]) {
+            YearColor[row] = [];
+        }
+        YearColor[row].push(generateColorObject(formula[i]));
+    }
+    return YearColor
+}
+export const YearColorConvert = YuanYear => {
+    const formula = [
+        8 - YuanYear, // row 1, column a
+        4 - YuanYear, // row 1, column b
+        6 - YuanYear, // row 1, column c
+        7 - YuanYear, // row 2, column a
+        0 - YuanYear, // row 2, column b
+        2 - YuanYear, // row 2, column c
+        3 - YuanYear, // row 3, column a
+        5 - YuanYear, // row 3, column b
+        1 - YuanYear, // row 3, column c
+    ];
+    return generateColor(formula);
+};
 
 export const MonColorConvert = (YuanYear, i, ZhengMonScOrder) => {
-    const row1an = Math.round(((7 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row1bn = Math.round(((3 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row1cn = Math.round(((5 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row2an = Math.round(((6 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row2bn = Math.round(((8 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row2cn = Math.round(((1 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row3an = Math.round(((2 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row3bn = Math.round(((4 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row3cn = Math.round(((9 - YuanYear * 3 - i + 1) % 9 + 9) % 9.1)
-    const row1a = `<span class='${ClassColorList[row1an]}'>` + ColorList[row1an] + NumList[row1an] + `</span>`
-    const row1b = `<span class='${ClassColorList[row1bn]}'>` + ColorList[row1bn] + NumList[row1bn] + `</span>`
-    const row1c = `<span class='${ClassColorList[row1cn]}'>` + ColorList[row1cn] + NumList[row1cn] + `</span>`
-    const row2a = `<span class='${ClassColorList[row2an]}'>` + ColorList[row2an] + NumList[row2an] + `</span>`
-    const row2b = `<span class='${ClassColorList[row2bn]}'>` + ColorList[row2bn] + NumList[row2bn] + `</span>`
-    const row2c = `<span class='${ClassColorList[row2cn]}'>` + ColorList[row2cn] + NumList[row2cn] + `</span>`
-    const row3a = `<span class='${ClassColorList[row3an]}'>` + ColorList[row3an] + NumList[row3an] + `</span>`
-    const row3b = `<span class='${ClassColorList[row3bn]}'>` + ColorList[row3bn] + NumList[row3bn] + `</span>`
-    const row3c = `<span class='${ClassColorList[row3cn]}'>` + ColorList[row3cn] + NumList[row3cn] + `</span>`
-    let MonColor = []
-    MonColor.push([row1a, row1b, row1c])
-    MonColor.push([row2a, row2b, row2c])
-    MonColor.push([row3a, row3b, row3c])
-    // const MonSc = ScList[Math.round((ZhengMonScOrder + i - 1) % 60.1)]
+    const formula = [
+        7 - YuanYear * 3 - i,
+        3 - YuanYear * 3 - i,
+        5 - YuanYear * 3 - i,
+        6 - YuanYear * 3 - i,
+        8 - YuanYear * 3 - i,
+        1 - YuanYear * 3 - i,
+        2 - YuanYear * 3 - i,
+        4 - YuanYear * 3 - i,
+        9 - YuanYear * 3 - i
+    ]
+    const MonColor = generateColor(formula);
     const MonSc = ScList[(ZhengMonScOrder + i - 1) % 60]
     const MonSindhuName = MonSindhuNameList[i]
     const MonScaleName = MonScaleNameList[i]
     const MonHexagramName = MonHexagramNameList[i]
     const MonGod = MoonGodList[i]
     const Fourauspicious = FourauspiciousList[(i - 1) % 3]
-    const MonInfo = `<span class='eclipse'>月建</span>` + MonSc + `<span class='eclipse'>宿音卦</span>` + MonSindhuName + MonScaleName + MonHexagramName + `<span class='eclipse'>吉時</span>` + Fourauspicious + `\n` + `<span class='eclipse'>月神</span>` + MonGod
+    const MonInfo = `〔月建〕` + MonSc + `〔宿音卦〕` + MonSindhuName + MonScaleName + MonHexagramName + `〔吉時〕` + Fourauspicious + `〔月神〕` + MonGod
     return {
         MonInfo,
         MonColor
     }
 }
+// console.log(MonColorConvert(111, 3))
+
 
 export const WangwangConvert = (i, Stem, Branch, JieNum, JieDifInt) => {
     const Four = Math.round((i % 4 + 4) % 4.1)

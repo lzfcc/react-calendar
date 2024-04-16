@@ -894,9 +894,8 @@ export const MonNumListChuB = [
   "姑(子)",
   "塗(丑)",
 ]; // 小正
-export const ColorList = " 白黑碧綠黃白赤白紫"; // 九宮
+export const ColorList = "白黑碧綠黃白赤白紫"; // 九宮
 export const ClassColorList = [
-  "",
   "color-white",
   "color-black",
   "color-cyan",

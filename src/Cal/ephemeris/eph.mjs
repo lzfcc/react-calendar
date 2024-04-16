@@ -225,11 +225,11 @@ export const D1 = (Name, YearStart, YearEnd) => {
       Pos = [],
       Morningstar = [],
       Duskstar = [],
-      HouName = [],
       HexagramName = [],
       FiveName = [],
       ManGod = [],
       Luck = [];
+    let HouName = []
     let DayAccum = 0,
       JieAccum = 0,
       SummsolsDayAccum = 0,
@@ -416,20 +416,22 @@ export const D1 = (Name, YearStart, YearEnd) => {
           if (HouAccum[j] >= SdMidn && HouAccum[j] < SdMidn + 1) {
             HouOrder = j % 72;
             const TermOrder = HouOrder % 3 ? -1 : Math.round(HouOrder / 3) % 24;
-            HouName[i][k] =
-              TermOrder >= 0
-                ? `<span class='term'>${HalfTermNameList[TermOrder]}</span>`
-                : "";
+            HouName[i][k] = []
             if (Type >= 3) {
-              HouName[i][k] +=
-                HouList[HouOrder] +
-                deci(HouAccum[j] + SolsAccum)
-                  .toFixed(4)
-                  .slice(2, 6);
+              HouName[i][k].push({
+                Term: TermOrder >= 0 ? HalfTermNameList[TermOrder] : undefined,
+                Hou: HouList[HouOrder] +
+                  deci(HouAccum[j] + SolsAccum)
+                    .toFixed(4)
+                    .slice(2, 6)
+              });
             } else if (TermOrder >= 0) {
-              HouName[i][k] += deci(HouAccum[j] + SolsAccum)
-                .toFixed(4)
-                .slice(2, 6);
+              HouName[i][k].push({
+                Term: TermOrder >= 0 ? HalfTermNameList[TermOrder] : undefined,
+                Hou: deci(HouAccum[j] + SolsAccum)
+                  .toFixed(4)
+                  .slice(2, 6)
+              });
             }
             if (j % 6 === 3) {
               // 立春等節
@@ -442,7 +444,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
             }
             break; // 兩個要點：break；由於建寅，要循環不止72個
           } else {
-            HouName[i][k] = "";
+            HouName[i][k] = [undefined];
           }
         }
         if (DayAccum === 1) {
@@ -472,13 +474,13 @@ export const D1 = (Name, YearStart, YearEnd) => {
         if (AutumnDayAccum && !Fu3DayAccum) {
           Fu3DayAccum = AutumnDayAccum + ((17 - Stem) % 10);
         }
-        let Fu = "";
+        let Fu;
         if (DayAccum === Fu1DayAccum) {
-          Fu = `<span class='sanfu'>初伏</span>`;
+          Fu = { Sanfu: "初伏" };
         } else if (DayAccum === Fu2DayAccum) {
-          Fu = `<span class='sanfu'>中伏</span>`;
+          Fu = { Sanfu: "中伏" };
         } else if (DayAccum === Fu3DayAccum) {
-          Fu = `<span class='sanfu'>末伏</span>`;
+          Fu = { Sanfu: "末伏" };
         }
         Nayin[i][k] =
           NayinList[Math.ceil(ScOrder / 2)] +
@@ -486,21 +488,23 @@ export const D1 = (Name, YearStart, YearEnd) => {
           Huanghei +
           " " +
           (Week[i][k] || "");
-        HouName[i][k] += Fu;
+        HouName[i][k].push(Fu)
         for (let j = 0; j < 7; j++) {
           if (MieSd[j] >= SdMidn && MieSd[j] < SdMidn + 1) {
-            HouName[i][k] +=
-              `<span class='momie'>滅</span>` +
-              deci(MieSd[j] + SolsAccum)
+            HouName[i][k].push({
+              Momie: "滅",
+              MomieDeci: deci(MieSd[j] + SolsAccum)
                 .toFixed(4)
-                .slice(2, 6);
+                .slice(2, 6)
+            });
             break;
           } else if (MoSd[j] >= SdMidn && MoSd[j] < SdMidn + 1) {
-            HouName[i][k] +=
-              `<span class='momie'>沒</span>` +
-              deci(MoSd[j] + SolsAccum)
+            HouName[i][k].push({
+              Momie: "沒",
+              MomieDeci: deci(MoSd[j] + SolsAccum)
                 .toFixed(4)
-                .slice(2, 6);
+                .slice(2, 6)
+            });
             break;
           }
         }
@@ -509,11 +513,10 @@ export const D1 = (Name, YearStart, YearEnd) => {
           if (SdMidn >= FiveAccumList[l] && SdMidn < FiveAccumList[l] + 1) {
             FiveOrder = l % 8;
             const FiveDeci = (SdMidn - FiveAccumList[l]).toFixed(4).slice(2, 6);
-            FiveName[i][k] =
-              `<span class='FiveNameSymbol'>` +
-              FiveList2[FiveOrder] +
-              `</span>` +
-              FiveDeci;
+            FiveName[i][k] = [{
+              FiveNameSymbol: FiveList2[FiveOrder],
+              FiveNameDeci: FiveDeci
+            }];
             break;
           }
         }
@@ -533,7 +536,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
                 [{ HexagramName: Hexagram64List[HexagramOrder], HexagramSymbol: HexagramSymbolList[HexagramOrder], HexagramDeci: HexagramDeci }];
               break;
             } else {
-              HexagramName[i][k] = "";
+              HexagramName[i][k] = undefined;
             }
           }
         }
@@ -588,4 +591,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Easthan', 1111))
+// console.log(D1('Daming', 1111))

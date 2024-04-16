@@ -32,29 +32,27 @@ export default class Day extends React.Component {
   }
 
   // 以下經GPT優化：
-  // 解构赋值：使用 ES6 的解构赋值来简化对 this.state 中属性的引用。
-  // 避免在渲染函数中修改 state：forEach 修改 list 中的元素是一个副作用，应该在 state 设置或数据获取时完成。
-  // 给列表元素添加 key：在渲染列表时，每个元素都应有一个唯一的 key 属性。
-  // 移除内联样式：内联样式对性能不利，应该尽量使用 CSS 类。
-  // 移除危险的 dangerouslySetInnerHTML：这个属性可能导致 XSS 攻击。如果内容是安全的，尽量通过其他方式渲染。
-  // 将静态内容移出 map 函数：如果某些内容不依赖于循环中的数据，应该将其移出循环。
-  // 减少不必要的渲染：如果 this.state.output 没有改变，不需要重新渲染整个组件。
   renderYearColorTable(yearColor) {
     return (
       <table>
         <tbody>
           {yearColor.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {row.map((d, colIndex) => (
-                <td key={colIndex} dangerouslySetInnerHTML={{ __html: d }} />
-              ))}
+              {row.map((cell, colIndex) => {
+                const [key, value] = Object.entries(cell)[0];
+                return (
+                  <td key={colIndex} className={key}>
+                    {value}
+                  </td>
+                );
+              })}
             </tr>
-
           ))}
         </tbody>
       </table>
     );
   }
+
 
   renderDayTableList() {
     const { output } = this.state;
@@ -99,7 +97,7 @@ export default class Day extends React.Component {
         {list.map((info, index) => (
           <div className="single-cal" key={index}>
             <h3>{MonName[index + 1]}</h3>
-            <p dangerouslySetInnerHTML={{ __html: MonInfo[index + 1] }}></p>
+            <p>{MonInfo[index + 1]}</p>
             {MonColor[index + 1] && (
               <span className="YearColor">
                 {this.renderYearColorTable(MonColor[index + 1])}
@@ -211,37 +209,44 @@ export default class Day extends React.Component {
     );
   }
 
-  // GPT：
-  // 在这个代码片段中，我们首先使用 filter 方法来排除数组中键为 'MonColor' 的项，然后使用 map 方法来遍历过滤后的数组并返回一个新的<p> 元素数组。每个<p> 元素都使用 key 作为 React 的 key 属性，这是必需的，以帮助 React 确定何时重新渲染组件。
+  // GPT
   renderDayDetail(info, day) {
     const filteredEntries = Object.entries(info[day]).filter(
-      ([key]) => key !== "MonColor"
+      ([key, value]) => key !== "MonColor" && value !== undefined // 这里添加了对 undefined 的检查
     );
+
     return (
       <div>
         {filteredEntries.map(([key, value]) => {
           if (Array.isArray(value)) {
             // 对于数组中的每个对象，我们创建一个 <p> 标签
             const paragraphs = value.map((obj, index) => {
-              // 过滤掉值为0的键值对，并为其他每个键值对创建一个 <span>
-              const spans = Object.entries(obj)
-                .filter(([_, val]) => val !== 0 || val !== undefined)
-                .map(([subKey, subValue]) => (
-                  <span key={subKey} className={subKey}>{`${subValue}`}</span>
-                ));
-              // 如果没有任何有效的 <span>，则不创建 <p>
-              if (spans.length === 0) return null;
-              // 使用对象的索引作为 p 标签的 key
-              return (
-                <p key={`paragraph-${key}-${index}`} className={key}>
-                  {spans}
-                </p>
-              );
+              // 仅当 obj 不是 null 或 undefined 时，我们才处理它
+              if (obj) {
+                const spans = Object.entries(obj)
+                  .filter(([_, val]) => val !== 0 && val !== undefined)
+                  .map(([subKey, subValue], index, array) => (
+                    <React.Fragment key={subKey}>
+                      <span className={subKey}>{`${subValue}`}</span>
+                      {index !== array.length - 1 && ' '}
+                    </React.Fragment>
+                  ));
+
+                if (spans.length === 0) return null;
+
+                return (
+                  <p key={`paragraph-${key}-${index}`} className={key}>
+                    {spans}
+                  </p>
+                );
+              }
+              return null;
             });
-            // 仅渲染非空的 <p> 标签
+
             return paragraphs.filter(Boolean);
           }
-          // 如果 value 不是数组，直接显示
+
+          // 如果 value 不是数组且不是 undefined，直接显示
           return (
             <p key={key} className={key}>
               <span className={key}>{value}</span>
@@ -251,7 +256,6 @@ export default class Day extends React.Component {
       </div>
     );
   }
-
 
   handleRetrieve() {
     if (this.state.calendars.length === 0) {

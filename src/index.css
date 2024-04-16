@@ -359,16 +359,6 @@ h2 {
   font-size: 1.2em;
 }
 
-.term {
-  background: var(--lettergreen);
-  color: var(--bg);
-  font-family: var(--serif);
-  border-radius: .2em;
-  padding: .2em .25em;
-  margin-right: .25em;
-  font-weight: bold;
-}
-
 table {
   border-collapse: collapse;
   font-family: var(--codesans);
@@ -1005,12 +995,8 @@ hr {
   color: var(--letterpurple);
 }
 
-.day-table td p.HexagramName {
-  font-size: .85em;
-}
-
 .HexagramSymbol {
-  font-size: 2em;
+  font-size: 1.7em;
   margin: 0 .1em;
 }
 
@@ -1024,7 +1010,7 @@ hr {
   color: var(--letterred);
 }
 
-.momie {
+.Momie {
   background: var(--black);
   color: var(--bg);
   font-family: var(--serif);
@@ -1050,7 +1036,17 @@ hr {
   margin-left: .25em;
 }
 
-.sanfu {
+.Term {
+  background: var(--lettergreen);
+  color: var(--bg);
+  font-family: var(--serif);
+  border-radius: .2em;
+  padding: .2em .25em;
+  margin-right: .25em;
+  font-weight: bold;
+}
+
+.Sanfu {
   background: var(--letterred);
   color: var(--bg);
   padding: .1em .15em;
@@ -1064,7 +1060,7 @@ hr {
 }
 
 .YearColor table td {
-  padding: .7em 0;
+  padding: .7em .5em;
   min-width: 0 !important;
   width: auto !important;
   border: 1px solid var(--gray);

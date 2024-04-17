@@ -41,7 +41,7 @@ import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/ma
 import { nineOrbits } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
-import { deci, lat2NS, nzh } from "../parameter/functions.mjs";
+import { deci, fm60, lat2NS, nzh } from "../parameter/functions.mjs";
 import { equaEclp } from "../astronomy/equa_eclp.mjs";
 import { moonLonLat } from "../astronomy/moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "../astronomy/lat_rise_dial.mjs";
@@ -85,9 +85,8 @@ export const D1 = (Name, YearStart, YearEnd) => {
     const HalfTermLeng = Solar / 24;
     const HexagramLeng = Solar / 60;
     const MoonAvgVd = AutoMoonAvgV(Name);
-    const ZhengScOrder =
-      (((Math.floor(NewmInt[0]) + (ScConst || 0)) % 60) + 60) % 60;
-    const ZhengSdMidn = +(NewmInt[0] - SolsAccum).toFixed(5); // 正月夜半到冬至距離
+    const ZhengScOrder = fm60((Math.floor(NewmInt[0]) + (ScConst || 0)))
+    const ZhengSdMidn = +((NewmInt[0] - SolsAccum + Solar) % Solar).toFixed(5); // 正月夜半到冬至距離
     const ZhengSdInt = Math.floor(NewmInt[0]) - Math.floor(SolsAccum); // 正月朔日夜半距離冬至夜半整數日
     const SolsDeci = deci(SolsAccum);
     const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
@@ -582,4 +581,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Daming', 1111))
+// console.log(D1('Yuanjia', 111))

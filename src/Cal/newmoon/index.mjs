@@ -28,7 +28,7 @@ export default (Name, YearStart, YearEnd) => {
         let { LeapNumTerm, NewmInt, NewmStart, NewmEnd, TermStart, TermEnd } = ThisYear
         NewmInt = NewmInt || []
         const TermAcrSc = [], TermAcrDeci = [], TermNowDeci = [], Term1Name = [], Term1Sc = [], Term1Deci = [], Term1Equa = [], Term1Eclp = [], Term1AcrSc = [], Term1AcrDeci = [], Term1NowDeci = []
-        let TermName = [], TermSc = [], TermDeci = [], TermEqua = [], TermEclp = [], TermDuskstar = []
+        let TermName = [], TermSc = [], TermDeci = [], TermEqua = [], TermEclp = []
         let specialStart = 0, specialNewmSyzygyEnd = 0
         if (Type === 1) {
             if ((isTermLeap && NextYear.TermSc[1] === '') || (!isTermLeap && NextYear.TermSc[SolsMon] === '')) {
@@ -65,7 +65,6 @@ export default (Name, YearStart, YearEnd) => {
             TermSc = ThisYear.TermSc
             TermDeci = ThisYear.TermDeci
             TermEqua = ThisYear.TermEqua || []
-            TermDuskstar = ThisYear.TermDuskstar || []
         } else {
             for (let i = 1; i <= 13; i++) {
                 TermName[i] = TermNameList[(i + 2) % 12]
@@ -235,7 +234,7 @@ export default (Name, YearStart, YearEnd) => {
         const SyzygyDeciPrint = NewmSlice(ThisYear.SyzygyDeci)
         const NewmNowlineDeciPrint = ThisYear.NewmNowlineDeci ? NewmSlice(ThisYear.NewmNowlineDeci) : undefined
         const SyzygyNowlineDeciPrint = ThisYear.SyzygyNowlineDeci ? NewmSlice(ThisYear.SyzygyNowlineDeci) : undefined
-        let NewmDeciPrint = [], TermNamePrint = [], TermScPrint = [], TermDeciPrint = [], TermAcrScPrint = [], TermAcrDeciPrint = [], TermNowDeciPrint = [], TermEquaPrint = [], TermEclpPrint = [], TermDuskstarPrint = [], Term1NamePrint = [], Term1ScPrint = [], Term1DeciPrint = [], Term1EquaPrint = [], Term1EclpPrint = [], Term1AcrDeciPrint = [], Term1NowDeciPrint = [], Term1AcrScPrint = []
+        let NewmDeciPrint = [], TermNamePrint = [], TermScPrint = [], TermDeciPrint = [], TermAcrScPrint = [], TermAcrDeciPrint = [], TermNowDeciPrint = [], TermEquaPrint = [], TermEclpPrint = [], Term1NamePrint = [], Term1ScPrint = [], Term1DeciPrint = [], Term1EquaPrint = [], Term1EclpPrint = [], Term1AcrDeciPrint = [], Term1NowDeciPrint = [], Term1AcrScPrint = []
         TermNamePrint = TermSlice(TermName)
         Term1NamePrint = Term1Name[2] ? TermSlice(Term1Name) : []
         if ((TermSc || []).length) {
@@ -262,7 +261,6 @@ export default (Name, YearStart, YearEnd) => {
             TermEclpPrint = TermSlice(TermEclp)
             Term1EclpPrint = TermSlice(Term1Eclp)
         }
-        TermDuskstarPrint = TermDuskstar[2] ? TermSlice(TermDuskstar) : undefined
         ////////// 調用交食模塊。由於隋系交食需要用月份，所以必須要切了之後才能用，傳一堆參數，很惡心
         let SunEcli = [], MoonEcli = [], NewmNodeAccumPrint = [], NewmNodeAccumMidnPrint = [], NewmAnomaAccumPrint = [], NewmAnomaAccumMidnPrint = []
         if (Type > 1 && Type <= 11) {
@@ -408,7 +406,7 @@ export default (Name, YearStart, YearEnd) => {
             NewmAvgScPrint, NewmAvgDeciPrint, NewmScPrint, NewmDeci3Print, NewmDeci2Print, NewmDeci1Print, NewmNowlineDeciPrint, NewmAcrDeciPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint,
             SyzygyScPrint, SyzygyNowlineDeciPrint, SyzygyDeciPrint,
             Term1NamePrint, Term1ScPrint, Term1DeciPrint, Term1AcrScPrint, Term1AcrDeciPrint, Term1NowDeciPrint, Term1EclpPrint, Term1EquaPrint,
-            TermNamePrint, TermScPrint, TermDeciPrint, TermAcrScPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint, TermDuskstarPrint,
+            TermNamePrint, TermScPrint, TermDeciPrint, TermAcrScPrint, TermAcrDeciPrint, TermNowDeciPrint, TermEclpPrint, TermEquaPrint,
             ////////////// 曆書
             LeapNumTerm, SolsAccum, Sols,
             NewmInt, // 結尾就不切了，因爲最後一個月還要看下個月的情況

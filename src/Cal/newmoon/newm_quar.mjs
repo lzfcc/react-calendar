@@ -1,6 +1,6 @@
 import { ScList, TermNameList } from '../parameter/constants.mjs'
 import Para from '../parameter/calendars.mjs'
-import { mans, midstar } from '../astronomy/mans.mjs'
+import { mans } from '../astronomy/mans.mjs'
 import { deci } from '../parameter/functions.mjs'
 
 export default (Name, Y) => {
@@ -86,7 +86,7 @@ export default (Name, Y) => {
         NewmAvgSc[i] = ScList[(NewmInt[i] % 60 + 60) % 60]
         NewmAvgDeci[i] = (NewmAvgRaw[i] - NewmInt[i]).toFixed(4).slice(2, 6)
         NewmSd[i] = NewmAvgBare[i] - SolsAccumRaw
-        if (MansRaw) NewmEqua[i] = mans(Name, Y, undefined, NewmSd[i]).Equa
+        if (MansRaw) NewmEqua[i] = mans(Name, Y, NewmSd[i]).Equa
         // NewmJd[i] = Math.round(parseFloat((JdOrigin + (Math.trunc((Math.round(parseFloat((JdSols + Y * Solar).toPrecision(14))) - JdOrigin) / Lunar) + ZhengNum + i - 1) * Lunar).toPrecision(14)))
         SyzygyAvgRaw[i] = parseFloat(((Math.trunc((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - .5) * Lunar + SolsConst).toPrecision(14)) + BuScOrder
         SyzygyAvgMod[i] = (SyzygyAvgRaw[i] % 60 + 60) % 60
@@ -105,7 +105,7 @@ export default (Name, Y) => {
     }
     // 中氣
     let LeapNumTerm = LeapNumAvgThis
-    const TermAvgBare = [], TermAvgRaw = [], TermAvgMod = [], TermOrderMod = [], TermSc = [], TermName = [], TermDeci = [], TermEqua = [], TermDuskstar = []
+    const TermAvgBare = [], TermAvgRaw = [], TermAvgMod = [], TermOrderMod = [], TermSc = [], TermName = [], TermDeci = [], TermEqua = []
     // const TermJd = []
     if ((isTermLeap && !LeapNumTerm) || (!isTermLeap && ((!isLeapAvgThis && !isLeapAvgNext) || (!isLeapAvgThis && !isAdvance) || (!isLeapAvgThis && isAdvance)))) {
         for (let i = 1; i <= 13; i++) {
@@ -118,8 +118,7 @@ export default (Name, Y) => {
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
             if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
-                TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
+                TermEqua[i] = mans(Name, Y, TermSd).Equa
             }
         }
     } else {
@@ -133,8 +132,7 @@ export default (Name, Y) => {
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
             if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
-                TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
+                TermEqua[i] = mans(Name, Y, TermSd).Equa
             }
         }
         while (LeapNumTerm >= 1 && (TermAvgRaw[LeapNumTerm] >= NewmInt[LeapNumTerm + 1]) && (TermAvgRaw[LeapNumTerm] < NewmInt[LeapNumTerm + 1] + 2)) {
@@ -148,7 +146,6 @@ export default (Name, Y) => {
         TermDeci[LeapNumTerm + 1] = ''
         if (MansRaw) {
             TermEqua[LeapNumTerm + 1] = ''
-            TermDuskstar[LeapNumTerm + 1] = ''
         }
         // TermJd[LeapNumTerm + 1] = ''
         for (let i = LeapNumTerm + 2; i <= 13; i++) {
@@ -161,8 +158,7 @@ export default (Name, Y) => {
             TermDeci[i] = (TermAvgMod[i] - TermOrderMod[i]).toFixed(4).slice(2, 6)
             if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
-                TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
+                TermEqua[i] = mans(Name, Y, TermSd).Equa
             }
         }
     }
@@ -192,6 +188,6 @@ export default (Name, Y) => {
         TermName, TermSc, TermDeci,
         LeapSurAvgFix, LeapSurAvgThis, LeapNumOriginLeapSur, LeapNumTerm,
         isAdvance, isPost, isLeapAvgFix, isLeapAvgThis, isLeapAvgNext, NewmStart, NewmEnd, TermStart, TermEnd,
-        NewmEqua, TermEqua, TermDuskstar
+        NewmEqua, TermEqua
     }
 }

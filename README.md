@@ -556,4 +556,10 @@ a = [0, ...a]
 - Each directory has a index file that is used to export all functions and variables that are available in that directory, in order to make it easier to import the functions and variables in other files.
 - combine interpolate and interpolate_big
 
-4-14 `2.14` 重寫九道術、黃白交周。太難了，很多概念難以理解，很多衝突的地恨，尚待定。乾元取消 YinyangConst。
+4-17 前端 `1.12` 朔閏表、曆書的樣式渲染移到前端
+
+ `2.14` 重寫九道術、黃白交周。
+
+小修復：
+
+- 修復四分到開皇朔閏表沒有宿度

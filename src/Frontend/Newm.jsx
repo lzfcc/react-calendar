@@ -34,8 +34,7 @@ const TableRowNameMap = {
   TermAcrDeciPrint: " ",
   TermNowDeciPrint: "迭代",
   TermEquaPrint: "赤道",
-  TermEclpPrint: "黃道",
-  TermDuskstarPrint: "旦昏中",
+  TermEclpPrint: "黃道"
 };
 
 export default class Newm extends React.Component {

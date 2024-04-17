@@ -118,7 +118,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
         k++
       ) {
         // 每月日數
-        const SmdMidn = Math.trunc(NewmSmd[i - 1]) + k - 1; // 每日夜半距冬至次日夜半日數
+        const SmdMidn = Math.trunc(NewmSmd[i - 1]) + k; // 每日夜半距冬至次日夜半日數
         // const SmdMidn = 263 // 1722-9-11八月朔 :263 廖育棟01:05
         DayAccum++; // 這個位置不能變
         /// ///////天文曆///////////

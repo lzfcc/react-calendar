@@ -214,17 +214,17 @@ export const dialTable3 = (Lat1) => {
 export const latFormula = (XRaw, Name) => {
   // 《中國古代曆法》頁128、古曆新探p172。漏刻頁135。
   const Solar = AutoSidereal(Name);
-  const Solar25 = Solar / 4;
-  const Solar50 = Solar / 2;
+  const SolarQuar = Solar / 4;
+  const SolarHalf = Solar / 2;
   XRaw %= Solar;
-  const LonHalf = XRaw % Solar50;
+  const LonHalf = XRaw % SolarHalf;
   let Lat = 0;
   let g = 0;
   if (Name === "Yitian") {
-    if (XRaw >= 88.8811 && XRaw < Solar50 + 93.7411) {
+    if (XRaw >= 88.8811 && XRaw < SolarHalf + 93.7411) {
       // 冬至後次象// 946785.5 / 10100=93.7411
-      Solar50;
-      const Lon = Math.abs(Solar50 - XRaw);
+      SolarHalf;
+      const Lon = Math.abs(SolarHalf - XRaw);
       g =
         (1261875 / 20126347) * Lon ** 2 -
         (6250000 / (20126347 * 522009)) * Lon ** 4;
@@ -237,8 +237,8 @@ export const latFormula = (XRaw, Name) => {
       Lat = -23.9081 + (50 / 1062) * g;
     }
   } else if (Name === "Jiyuan") {
-    const Lon = Solar25 - Math.abs(LonHalf - Solar25);
-    if (XRaw >= Solar25 && XRaw < 3 * Solar25) {
+    const Lon = SolarQuar - Math.abs(LonHalf - SolarQuar);
+    if (XRaw >= SolarQuar && XRaw < 3 * SolarQuar) {
       // 夏至前後
       Lat =
         23.9 -
@@ -254,7 +254,7 @@ export const latFormula = (XRaw, Name) => {
         348.856;
     }
   } else {
-    const Lon = Solar25 - Math.abs(LonHalf - Solar25);
+    const Lon = SolarQuar - Math.abs(LonHalf - SolarQuar);
     if (
       [
         "Chongxuan",
@@ -280,7 +280,7 @@ export const latFormula = (XRaw, Name) => {
       else if (Name === "Mingtian")
         (a = 84800 / 24039561), (b = 20000 / (24039561 * 10689));
       g = a * Lon ** 2 - b * Lon ** 4;
-      if (XRaw >= Solar25 && XRaw < 3 * Solar25) Lat = e1 - g;
+      if (XRaw >= SolarQuar && XRaw < 3 * SolarQuar) Lat = e1 - g;
       else Lat = -e2 + g;
     }
   }
@@ -290,12 +290,12 @@ export const latFormula = (XRaw, Name) => {
 // console.log(1e-6)
 export const riseFormula = (LatNoon, SdNoon, Name) => {
   const Solar = AutoSidereal(Name);
-  const Solar50 = Solar / 2;
+  const SolarHalf = Solar / 2;
   let Night = 0;
   if (Name === "Yitian") {
     if (SdNoon < 88.8811) Night = 22.53 - LatNoon / 4.76;
-    else if (SdNoon < Solar50) Night = 22.49 - LatNoon / 4.8;
-    else if (SdNoon < Solar50 + 93.7411) Night = 22.51 - LatNoon / 4.8;
+    else if (SdNoon < SolarHalf) Night = 22.49 - LatNoon / 4.8;
+    else if (SdNoon < SolarHalf + 93.7411) Night = 22.51 - LatNoon / 4.8;
     else Night = 22.47 - LatNoon / 4.76;
   } else Night = 22.5 - LatNoon / 4.8;
   return Night + 2.5;
@@ -303,8 +303,8 @@ export const riseFormula = (LatNoon, SdNoon, Name) => {
 export const dialFormula = (DegRaw, Name, SolsDeci) => {
   // 陈美东《崇玄仪天崇天三历晷长计算法及三次差内插法的应用》有儀天曆術文補
   const Solar = AutoSolar(Name);
-  const Solar25 = Solar / 4;
-  const Solar50 = Solar / 2;
+  const SolarQuar = Solar / 4;
+  const SolarHalf = Solar / 2;
   DegRaw %= Solar;
   let xian = 0;
   let Dial = 0;
@@ -315,7 +315,7 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
     xian = 45.62;
   else if (Name === "Jiyuan") xian = 62.2;
   const Deg1 = Math.min(DegRaw, Solar - DegRaw); // 與0的距離
-  const Deg2 = Math.abs(Solar50 - DegRaw); // 與180的距離
+  const Deg2 = Math.abs(SolarHalf - DegRaw); // 與180的距離
   if (["Chongxuan", "Qintian", "Yitian", "Chongtian"].includes(Name)) {
     let a1 = 2197.14;
     let b1 = 15.05;
@@ -329,8 +329,8 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
     } else Dial = 1.478 + 1e-7 * (a2 - b2 * Deg2) * Deg2 ** 2;
     // if (['Chongxuan', 'Qintian'].includes(Name)) { // 大衍、崇玄求次日晷長。爲避免麻煩，統一用崇天的方法。儀天：算二至具體時刻到當日夜半，再加減半日晷長。《古曆新探》p138:當日時刻到二至(.N)的時長，崇玄.5-.N，儀天0，崇天.5。
     //     const DegRawMor = DegRaw + 1
-    //     let DegMor = parseFloat(((DegRaw + 1) % Solar50).toPrecision(14))
-    //     if ((DegRawMor > xian && DegRawMor < Solar50) || (DegRawMor >= Solar - xian)) DegMor = parseFloat((Solar50 - DegMor).toPrecision(14))
+    //     let DegMor = parseFloat(((DegRaw + 1) % SolarHalf).toPrecision(14))
+    //     if ((DegRawMor > xian && DegRawMor < SolarHalf) || (DegRawMor >= Solar - xian)) DegMor = parseFloat((SolarHalf - DegMor).toPrecision(14))
     //     if (DegRawMor < xian || (DegRawMor >= Solar - xian)) {
     //         DialMor = 12.715 - 1e-6 * (a1 - b1 * DegMor) * DegMor ** 2
     //     } else DialMor = 1.478 + 1e-7 * (a2 - b2 * DegMor) * DegMor ** 2
@@ -345,7 +345,7 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
           Deg1 ** 3 -
           (200 / 827) * Deg1 ** 4 +
           (1 / 827) * Deg1 ** 5);
-    } else if (DegRaw > Solar25 && DegRaw < 3 * Solar25) {
+    } else if (DegRaw > SolarQuar && DegRaw < 3 * SolarQuar) {
       Dial =
         1.57 +
         1e-6 *
@@ -366,7 +366,7 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
       Dial =
         12.83 -
         (200 * Deg1 ** 2) / (100617 + 100 * Deg1 + (400 / 29) * Deg1 ** 2);
-    } else if (DegRaw > Solar25 && DegRaw < 3 * Solar25) {
+    } else if (DegRaw > SolarQuar && DegRaw < 3 * SolarQuar) {
       Dial = 1.56 + (4 * Deg2 ** 2) / (7923 + 9 * Deg2);
     } else {
       Dial =

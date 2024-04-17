@@ -1,14 +1,14 @@
 import Para from '../parameter/calendars.mjs'
 import { ScList } from '../parameter/constants.mjs'
 import { AutoDifAccum, AutoTcorr } from '../astronomy/acrv.mjs'
-import { mansion } from '../astronomy/mansion.mjs'
+import { mans } from '../astronomy/mans.mjs'
 import { newmPlus, syzygySub } from '../astronomy/dayadjust.mjs'
 import { deci, fix, fmod, fm60 } from '../parameter/functions.mjs'
 
 // const cal = (Name, Y) => {
 export default (Name, Y) => {
-    const { Type, isAcr, isNewmPlus, Sidereal, SolarNumer, LunarNumer, Denom, Anoma, Node, AcrTermList, OriginAd, CloseOriginAd, OriginMonNum, ZhengNum, YuanRange, JiRange, ZhangRange, ZhangLeap, YinyangConst, EcliConst, MansionRaw } = Para[Name]
-    let { Solar, SolarRaw, Lunar, LunarRaw, ScConst, NodeConst, FirstConst, AnomaConst, MansionConst, SolsConst
+    const { Type, isAcr, isNewmPlus, Sidereal, SolarNumer, LunarNumer, Denom, Anoma, Node, AcrTermList, OriginAd, CloseOriginAd, OriginMonNum, ZhengNum, YuanRange, JiRange, ZhangRange, ZhangLeap, YinyangConst, EcliConst, MansRaw } = Para[Name]
+    let { Solar, SolarRaw, Lunar, LunarRaw, ScConst, NodeConst, FirstConst, AnomaConst, MansConst, SolsConst
     } = Para[Name]
     ScConst = ScConst || 0
     SolarRaw = SolarRaw || Solar
@@ -16,7 +16,7 @@ export default (Name, Y) => {
     FirstConst = FirstConst || 0
     NodeConst = NodeConst || 0
     AnomaConst = Type === 11 ? AnomaConst : (AnomaConst / Denom || 0)
-    MansionConst = MansionConst || 0
+    MansConst = MansConst || 0
     SolsConst = SolsConst || 0
     const isExcl = Type >= 4 ? 1 : 0
     const ZhangMon = Math.round(ZhangRange * (12 + ZhangLeap / ZhangRange))
@@ -115,7 +115,7 @@ export default (Name, Y) => {
     FirstNodeAccum = +FirstNodeAccum.toFixed(fixed)
     const AccumPrint = (Anoma ? '轉' + fmod(SolsAccum + AnomaConst, Anoma).toFixed(4) : '') +
         (Node ? '交' + ((SolsAccum % Node + NodeConst + (YinyangConst === -1 ? Node / 2 : 0) + Node) % Node).toFixed(4) : '') +
-        (Sidereal ? '週' + fmod(SolsAccum + MansionConst, Sidereal).toFixed(4) : '')
+        (Sidereal ? '週' + fmod(SolsAccum + MansConst, Sidereal).toFixed(4) : '')
     let LeapLimit = 0
     if (ZhangRange) {
         LeapLimit = ZhangRange - ZhangLeap
@@ -170,8 +170,8 @@ export default (Name, Y) => {
                 if (isAcr && isNewmPlus) {
                     NewmPlus = newmPlus((Deci1[i] || Deci[i]), Sd[i], SolsDeci, Name) // 進朔
                 }
-                if (MansionRaw) {
-                    const Func = mansion(Name, Y,
+                if (MansRaw) {
+                    const Func = mans(Name, Y,
                         Type >= 5 ? AcrSd[i] + AutoDifAccum(0, AcrSd[i], Name).SunDifAccum : undefined, AcrSd[i])
                     Equa[i] = Func.Equa // 授時：定朔加時定積度=定朔加時中積（即定朔入曆）+盈縮差
                     Eclp[i] = Func.Eclp
@@ -208,9 +208,9 @@ export default (Name, Y) => {
                     Term1AcrSc[i] = ScList[Math.trunc(tmp3)]
                     Term1AcrDeci[i] = fix(deci(tmp3), 3)
                 }
-                if (MansionRaw) {
-                    const Func = mansion(Name, Y, TermAvgSd[i], TermAvgSd[i])
-                    const Func1 = mansion(Name, Y, Term1AvgSd[i], Term1AvgSd[i]) // 這裏省略了紀元等提到的今年次年黃赤道差之差
+                if (MansRaw) {
+                    const Func = mans(Name, Y, TermAvgSd[i], TermAvgSd[i])
+                    const Func1 = mans(Name, Y, Term1AvgSd[i], Term1AvgSd[i]) // 這裏省略了紀元等提到的今年次年黃赤道差之差
                     TermEqua[i] = Func.Equa
                     TermEclp[i] = Func.Eclp
                     Term1Equa[i] = Func1.Equa

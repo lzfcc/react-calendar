@@ -8,8 +8,8 @@ import {
   BranchList1,
   NayinList,
   WeekList,
-  MansionNameList,
-  MansionAnimalNameList,
+  MansNameList,
+  MansAnimalNameList,
   ManGodList,
   JianchuList,
   HuangheiList,
@@ -37,7 +37,7 @@ import {
 } from "../ephemeris/luck.mjs";
 import CalNewm from "../newmoon/index.mjs";
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from "../astronomy/acrv.mjs";
-import { deg2Mansion, degAccumList, mansion, midstar, solsMansion } from "../astronomy/mansion.mjs";
+import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/mans.mjs";
 import { AutoNineOrbit } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
@@ -58,7 +58,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       Anoma,
       SolarRaw,
       WeekConst,
-      MansionDayConst,
+      MansDayConst,
       ScConst,
       CloseOriginAd,
     } = Para[Name];
@@ -279,7 +279,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
       const NewmEclpGong = SdNewm + AutoDifAccum(0, SdNewm, Name).SunDifAccum
-      const SolsEclpDeg = solsMansion(Name, Y).SolsEclpDeg
+      const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg
       const NewmEclpDeg = NewmEclpGong + SolsEclpDeg
       if (Type >= 6) {
         const FuncNewm = moonLonLat(
@@ -340,16 +340,16 @@ export const D1 = (Name, YearStart, YearEnd) => {
           const MoonAcrSMidn = AutoMoonAcrS(AnomaAccumMidn, Name).MoonAcrS;
           if (Type <= 4) {
             const MoonEclpDeg = (NewmEclpDeg + MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal;
-            MoonEclp = deg2Mansion(MoonEclpDeg, EclpAccumList).Print;
+            MoonEclp = deg2Mans(MoonEclpDeg, EclpAccumList).Print;
           } else {
             const MoonWhiteDeg = (NewmWhiteDeg + MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal;
-            MoonWhite = deg2Mansion(MoonWhiteDeg, NewmWhiteAccumList).Print;
+            MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
           }
         }
         const SunEquaLat = autoLat(SdMidn, Name);
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? "" + Dial.toFixed(3) + "尺" : "";
-        const { Equa: SunEqua, Eclp: SunEclp } = mansion(Name, Y, SunLon);
+        const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
         const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, SdMidn, NewmEclpGong, Name, Y);
         Pos[i][k] = [
           { SunEquaLon: SunEquaLon.toFixed(4), SunEquaLat: lat2NS(SunEquaLat) },
@@ -401,12 +401,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
         );
         if (Type >= 6) {
           const WeekOrder = (NewmInt[i - 1] + k + 3 + (WeekConst || 0)) % 7;
-          const MansionOrder =
-            (NewmInt[i - 1] + k + 21 + (MansionDayConst || 0)) % 28;
+          const MansOrder =
+            (NewmInt[i - 1] + k + 21 + (MansDayConst || 0)) % 28;
           Week[i][k] =
             WeekList[WeekOrder] +
-            MansionNameList[MansionOrder] +
-            MansionAnimalNameList[MansionOrder];
+            MansNameList[MansOrder] +
+            MansAnimalNameList[MansOrder];
         }
         for (let j = HouOrder; j < 90; j++) {
           // 氣候

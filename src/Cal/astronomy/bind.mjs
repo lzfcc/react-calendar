@@ -8,18 +8,18 @@ import {
 } from "./acrv.mjs";
 import {
   NameList,
-  MansionNameList,
-  MansionNameListQing,
+  MansNameList,
+  MansNameListQing,
   NameJiudaoList,
 } from "../parameter/constants.mjs";
 import { AutoEclipse } from "./eclipse.mjs";
 import {
-  deg2Mansion,
-  mansion2Deg,
-  mansion,
-  mansionQing,
+  deg2Mans,
+  mans2Deg,
+  mans,
+  mansQing,
   degAccumList,
-} from "./mansion.mjs";
+} from "./mans.mjs";
 import { AutoSolar } from "../parameter/auto_consts.mjs";
 import {
   corrEllipse,
@@ -36,7 +36,7 @@ import {
   HighLon2FlatLat,
   sunRise,
 } from "./pos_convert.mjs";
-import { mansionModern } from "../modern/mansion.mjs";
+import { mansModern } from "../modern/mans.mjs";
 import {
   Lon2DialWest,
   eclp2Ceclp,
@@ -555,7 +555,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
   return Print;
 };
 // console.log(bindLon2Lat(0, 2)[14].data[3])
-export const bindDeg2Mansion = (Deg) => {
+export const bindDeg2Mans = (Deg) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
     EclpAccumList: EclpAccumListTaichu,
@@ -599,9 +599,9 @@ export const bindDeg2Mansion = (Deg) => {
     "Jiazi",
   ].map((Name) => {
     const EclpList = eval(`EclpAccumList${Name}`);
-    const Eclp = deg2Mansion(Deg, EclpList).Print;
+    const Eclp = deg2Mans(Deg, EclpList).Print;
     const EquaList = eval(`EquaAccumList${Name}`);
-    const Equa = deg2Mansion(Deg, EquaList).Print;
+    const Equa = deg2Mans(Deg, EquaList).Print;
     return {
       title: NameList[Name],
       data: [Equa, Eclp],
@@ -609,9 +609,9 @@ export const bindDeg2Mansion = (Deg) => {
   });
   return Print;
 };
-// console.log(bindDeg2Mansion(23.1511, 'Jiazi'))
+// console.log(bindDeg2Mans(23.1511, 'Jiazi'))
 
-export const bindMansion2Deg = (Mansion) => {
+export const bindMans2Deg = (Mans) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
     EclpAccumList: EclpAccumListTaichu,
@@ -655,9 +655,9 @@ export const bindMansion2Deg = (Mansion) => {
     "Jiazi",
   ].map((Name) => {
     const EclpList = eval(`EclpAccumList${Name}`);
-    const Eclp = +mansion2Deg(Mansion, EclpList).toFixed(3);
+    const Eclp = +mans2Deg(Mans, EclpList).toFixed(3);
     const EquaList = eval(`EquaAccumList${Name}`);
-    const Equa = +mansion2Deg(Mansion, EquaList).toFixed(3);
+    const Equa = +mans2Deg(Mans, EquaList).toFixed(3);
     return {
       title: NameList[Name],
       data: [Equa || "", Eclp],
@@ -665,11 +665,11 @@ export const bindMansion2Deg = (Mansion) => {
   });
   return Print;
 };
-// console.log(bindMansion2Deg('氐1'))
+// console.log(bindMans2Deg('氐1'))
 const DirList = ["東青龍", "北玄武", "西白虎", "南朱雀"];
 const NumList = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘";
 
-export const bindMansionAccumList = (Name, Y) => {
+export const bindMansAccumList = (Name, Y) => {
   Name = Name.toString();
   Y = parseInt(Y);
   const { Type, Solar } = Para[Name];
@@ -677,19 +677,19 @@ export const bindMansionAccumList = (Name, Y) => {
   const p = Type === 13 ? 360 / Solar : undefined;
   const EclpList = [];
   const EquaList = [];
-  const NameList = Type === 13 ? MansionNameListQing : MansionNameList;
+  const NameList = Type === 13 ? MansNameListQing : MansNameList;
   let Func = {};
-  if (Type === 13) Func = mansionQing(Name, Y, 0);
-  else Func = mansion(Name, Y, 0);
-  const { SolsEclpMansion, SolsEquaMansion } = Func;
+  if (Type === 13) Func = mansQing(Name, Y, 0);
+  else Func = mans(Name, Y, 0);
+  const { SolsEclpMans, SolsEquaMans } = Func;
   let SolsEclpPrint = "";
   let SolsEquaPrint = "";
   if (Type === 13) {
-    SolsEclpPrint = `${SolsEclpMansion}°${(+SolsEclpMansion.slice(1) / p).toFixed(2)}度`;
-    SolsEquaPrint = `${SolsEquaMansion}°${(+SolsEquaMansion.slice(1) / p).toFixed(2)}度`;
+    SolsEclpPrint = `${SolsEclpMans}°${(+SolsEclpMans.slice(1) / p).toFixed(2)}度`;
+    SolsEquaPrint = `${SolsEquaMans}°${(+SolsEquaMans.slice(1) / p).toFixed(2)}度`;
   } else {
-    SolsEclpPrint = SolsEclpMansion;
-    SolsEquaPrint = SolsEquaMansion;
+    SolsEclpPrint = SolsEclpMans;
+    SolsEquaPrint = SolsEquaMans;
   }
   let EclpSortedList = [];
   let EquaSortedList = [];
@@ -796,7 +796,7 @@ export const bindMansionAccumList = (Name, Y) => {
     SolsEquaPrint,
   };
 };
-// console.log(bindMansionAccumList('Guimao', 281))
+// console.log(bindMansAccumList('Guimao', 281))
 
 // 九道宿度
 export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
@@ -820,41 +820,41 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
       WhiteAccumPrint[i].push(
-        `${MansionNameList[index]} ${WhiteAccumList[index].toFixed(3)}　\n${NumList[index]} ${WhiteList[index]}`,
+        `${MansNameList[index]} ${WhiteAccumList[index].toFixed(3)}　\n${NumList[index]} ${WhiteList[index]}`,
       );
     }
     WhiteAccumPrint[i][8] = DirList[i] + WhiteSum.toFixed(3);
   }
-  const WhiteDegMans = deg2Mansion(NewmWhiteDeg, WhiteAccumList).Print
+  const WhiteDegMans = deg2Mans(NewmWhiteDeg, WhiteAccumList).Print
   return { WhiteAccumPrint, WhiteDegMans }
 };
 // console.log(bindWhiteAccumList('Jiyuan', 1281, 10, 50))
 
 
-export const bindMansionAccumModernList = (Name, Jd) => {
+export const bindMansAccumModernList = (Name, Jd) => {
   Jd = parseFloat(Jd);
   const {
     EclpAccumList: EclpAccumListRaw,
     EquaAccumList: EquaAccumListRaw,
     CeclpAccumList: CeclpAccumListRaw,
-    SolsEclpMansion,
-    SolsEquaMansion,
-    SolsCeclpMansion
-  } = mansionModern(Jd, Name);
+    SolsEclpMans,
+    SolsEquaMans,
+    SolsCeclpMans
+  } = mansModern(Jd, Name);
   const EclpAccumList = {};
   const EquaAccumList = {};
   const CeclpAccumList = {}
-  for (const Mansion in EclpAccumListRaw) {
-    EclpAccumList[Mansion] =
-      (EclpAccumListRaw[Mansion] - EclpAccumListRaw["角"] + 360) % 360;
+  for (const Mans in EclpAccumListRaw) {
+    EclpAccumList[Mans] =
+      (EclpAccumListRaw[Mans] - EclpAccumListRaw["角"] + 360) % 360;
   }
-  for (const Mansion in EquaAccumListRaw) {
-    EquaAccumList[Mansion] =
-      (EquaAccumListRaw[Mansion] - EquaAccumListRaw["角"] + 360) % 360;
+  for (const Mans in EquaAccumListRaw) {
+    EquaAccumList[Mans] =
+      (EquaAccumListRaw[Mans] - EquaAccumListRaw["角"] + 360) % 360;
   }
-  for (const Mansion in CeclpAccumListRaw) {
-    CeclpAccumList[Mansion] =
-      (CeclpAccumListRaw[Mansion] - CeclpAccumListRaw["角"] + 360) % 360;
+  for (const Mans in CeclpAccumListRaw) {
+    CeclpAccumList[Mans] =
+      (CeclpAccumListRaw[Mans] - CeclpAccumListRaw["角"] + 360) % 360;
   }
   const EclpSortedList = Object.entries(EclpAccumList).sort(
     (a, b) => a[1] - b[1],
@@ -955,12 +955,12 @@ export const bindMansionAccumModernList = (Name, Jd) => {
     EclpAccumPrint,
     EquaAccumPrint,
     CeclpAccumPrint,
-    SolsEclpPrint: SolsEclpMansion,
-    SolsEquaPrint: SolsEquaMansion,
-    SolsCeclpPrint: SolsCeclpMansion,
+    SolsEclpPrint: SolsEclpMans,
+    SolsEquaPrint: SolsEquaMans,
+    SolsCeclpPrint: SolsCeclpMans,
   };
 };
-// console.log(bindMansionAccumModernList('Chongzhen', 2424222))
+// console.log(bindMansAccumModernList('Chongzhen', 2424222))
 
 export const bindMoonLat = (NodeAccum, NewmSd) => {
   // 該時刻入交日、距冬至日數

@@ -3,7 +3,7 @@ import {
   StemList,
   BranchList,
   WeekList,
-  MansionNameList,
+  MansNameList,
   YuanList,
   NumList,
   MonNumList1,
@@ -15,7 +15,7 @@ import CalNewm from "../newmoon/index_de.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { R2D, nzh } from "../parameter/functions.mjs";
-import { deg2MansionModern, mansionModernList, midstarModern } from "../modern/mansion.mjs";
+import { deg2MansModern, mansModernList, midstarModern } from "../modern/mans.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { deltaT } from "../time/delta-t.mjs";
 import { bindTopo_vsop } from "../modern/vsop_elp_bind.mjs";
@@ -28,10 +28,10 @@ const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
  * @param {*} Latitude 地理緯度
  * @returns 
  */
-// export const D3 = (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
-export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
+// export const D3 = (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
+export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
   YearEnd = YearEnd || YearStart;
-  MansionSystem = MansionSystem || 'Shi'
+  MansSystem = MansSystem || 'Shi'
   const Main = (Y) => {
     const {
       LeapNumTerm,
@@ -104,18 +104,18 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         /// ///////天文曆///////////
         const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(MidnTTJd, Longitude, Latitude, h)
         const SunEclpLatNoon = calPos_vsop('Sun', MidnTTJd + .5).EquaLat
-        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansionModernList(NewmUT1Jd[i - 1] + 15, MansionSystem) // 取月中的宿積度表，減少計算次數        
+        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansModernList(NewmUT1Jd[i - 1] + 15, MansSystem) // 取月中的宿積度表，減少計算次數        
         Pos[i][k] = []
         for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度
-          const EquaMansion = deg2MansionModern(EquaLon[j] * R2D, EquaAccumList).Mansion;
-          const CeclpMansion = deg2MansionModern(CeclpLon[j], CeclpAccumList).Mansion;
-          const EclpMansion = deg2MansionModern(EclpLon[j] * R2D, EclpAccumList).Mansion;
+          const EquaMans = deg2MansModern(EquaLon[j] * R2D, EquaAccumList).Mans;
+          const CeclpMans = deg2MansModern(CeclpLon[j], CeclpAccumList).Mans;
+          const EclpMans = deg2MansModern(EclpLon[j] * R2D, EclpAccumList).Mans;
           Pos[i][k].push(
             { [PlanetList[j] + "HoriLon"]: (HoriLon[j] * R2D).toFixed(4), [PlanetList[j] + "HoriLat"]: Lat2NS(HoriLat[j] * R2D) },
             { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: Lat2NS(EquaLat[j] * R2D) },
             { [PlanetList[j] + "CeclpLon"]: CeclpLon[j].toFixed(4), [PlanetList[j] + "CeclpLat"]: Lat2NS(CeclpLat[j]) },
             { [PlanetList[j] + "EclpLon"]: (EclpLon[j] * R2D).toFixed(4), [PlanetList[j] + "EclpLat"]: Lat2NS(EclpLat[j] * R2D) },
-            { [PlanetList[j] + "Equa"]: EquaMansion, [PlanetList[j] + "Ceclp"]: CeclpMansion, [PlanetList[j] + "Eclp"]: EclpMansion })
+            { [PlanetList[j] + "Equa"]: EquaMans, [PlanetList[j] + "Ceclp"]: CeclpMans, [PlanetList[j] + "Eclp"]: EclpMans })
         }
         const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
@@ -125,11 +125,11 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansionSystem) => {
         Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + midstarModern(MidnTTJd + Dusk, Longitude, EquaAccumList)
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
-        const MansionOrder = (Jd[i][k] + 0) % 28;
+        const MansOrder = (Jd[i][k] + 0) % 28;
         const WeekOrder = (Jd[i][k] + 0) % 7;
         const date = jd2Date(Jd[i][k]);
         Jd[i][k] += ` ${date.mm}.${date.dd} `
-        Jd[i][k] += WeekList[WeekOrder] + MansionNameList[MansionOrder]
+        Jd[i][k] += WeekList[WeekOrder] + MansNameList[MansOrder]
         Sc[i][k] = `${NumList[k]}日${Sc[i][k]}`;
       }
     }

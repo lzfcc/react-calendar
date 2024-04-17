@@ -1005,7 +1005,7 @@ hr {
 .MercuryEquaLat,
 .MercuryEqua,
 .Lat,
-.MoonEquaMansion {
+.MoonEquaMans {
   color: var(--letterred);
 }
 
@@ -1043,7 +1043,7 @@ hr {
   color: var(--lettergreen);
 }
 
-.WhiteMansion,
+.WhiteMans,
 .WhiteLon {
   color: var(--letterblue);
 }
@@ -1077,7 +1077,7 @@ hr {
   font-weight: bold;
 }
 
-.MoonMansionNote {
+.MoonMansNote {
   color: var(--red);
   font-weight: bold;
   margin-left: .25em;

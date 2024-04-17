@@ -82,7 +82,7 @@ export const equa2EclpPoly = (Name, Lon, isWhite) => {
     } else if (Type === 9 || Type === 10) { // 紀元一直到南宋、大明、庚午
       a = 101
       b = 1000
-      // if (LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75)) {
+      // if (LonRaw < SolarQuar || (LonRaw >= SolarHalf && LonRaw < SolarQuar3)) {
       // h = Math.sqrt(202050.25 + 1000 * Lon) - 449.5;
       // }
       //  else {
@@ -114,10 +114,10 @@ export const equa2EclpPoly = (Name, Lon, isWhite) => {
 export const Equa2EclpTable = (LonRaw, Name) => {
   let { Type, Sidereal, Solar } = Para[Name];
   Sidereal = Sidereal || Solar;
-  const Sidereal50 = Sidereal / 2;
-  const Sidereal25 = Sidereal / 4;
-  const LonHalf = LonRaw % Sidereal50;
-  const Lon = Sidereal25 - Math.abs(LonHalf - Sidereal25);
+  const SiderealHalf = Sidereal / 2;
+  const SiderealQuar = Sidereal / 4;
+  const LonHalf = LonRaw % SiderealHalf;
+  const Lon = SiderealQuar - Math.abs(LonHalf - SiderealQuar);
   let XianList = [];
   if (Type <= 4) {
     XianList = [
@@ -134,7 +134,7 @@ export const Equa2EclpTable = (LonRaw, Name) => {
       4,
       3,
       4,
-      5 + deci(Sidereal25),
+      5 + deci(SiderealQuar),
       4,
       3,
       4,
@@ -175,7 +175,7 @@ export const Equa2EclpTable = (LonRaw, Name) => {
       5,
       5,
       5,
-      1 + deci(Sidereal25),
+      1 + deci(SiderealQuar),
       5,
       5,
       5,
@@ -261,7 +261,7 @@ export const Equa2EclpTable = (LonRaw, Name) => {
   let sign1 = 1;
   if (
     LonRaw < Sidereal / 4 ||
-    (LonRaw >= Sidereal50 && LonRaw < Sidereal * 0.75)
+    (LonRaw >= SiderealHalf && LonRaw < Sidereal * 0.75)
   ) {
     sign1 = -1;
   }
@@ -278,19 +278,19 @@ export const Equa2EclpTable = (LonRaw, Name) => {
 export const Equa2EclpFormula = (LonRaw, Name) => {
   // 公式化的，週天度就用自己的
   const Solar = AutoSidereal(Name);
-  const Solar25 = Solar / 4;
-  const Solar50 = Solar / 2;
-  const Solar125 = Solar / 8;
-  const Solar75 = Solar * 0.75;
+  const SolarQuar = Solar / 4;
+  const SolarHalf = Solar / 2;
+  const SolarOcta = Solar / 8;
+  const SolarQuar3 = Solar * 0.75;
   let Equa2Eclp = 0;
   let Eclp2Equa = 0;
-  const LonQuar = LonRaw % Solar25; // 滿象限去之
-  const Lon = Solar125 - Math.abs(LonQuar - Solar125); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
+  const LonQuar = LonRaw % SolarQuar; // 滿象限去之
+  const Lon = SolarOcta - Math.abs(LonQuar - SolarOcta); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
   let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(Name, Lon)
   const sign1 =
-    LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75) ? -1 : 1;
+    LonRaw < SolarQuar || (LonRaw >= SolarHalf && LonRaw < SolarQuar3) ? -1 : 1;
   const sign2 =
-    LonRaw < Solar25 || (LonRaw >= Solar50 && LonRaw < Solar75) ? 1 : -1;
+    LonRaw < SolarQuar || (LonRaw >= SolarHalf && LonRaw < SolarQuar3) ? 1 : -1;
   Equa2EclpDif *= sign1;
   Eclp2EquaDif *= sign2;
   Equa2Eclp = LonRaw + Equa2EclpDif;

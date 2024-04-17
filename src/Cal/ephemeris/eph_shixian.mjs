@@ -9,8 +9,8 @@ import {
   NayinList,
   WeekList,
   WeekList1,
-  MansionNameList,
-  MansionAnimalNameList,
+  MansNameList,
+  MansAnimalNameList,
   JianchuList,
   HuangheiList,
   YuanList,
@@ -30,7 +30,7 @@ import {
   sunRise
 } from "../astronomy/pos_convert.mjs";
 import CalNewm from "../newmoon/index.mjs";
-import { mansionQing, midstarQing } from "../astronomy/mansion.mjs";
+import { mansQing, midstarQing } from "../astronomy/mans.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
 import { nzh } from "../parameter/functions.mjs";
@@ -50,7 +50,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
       NodeRoot,
       NewmSmd,
       SolsmorScOrder,
-      MansionDaySolsmor,
+      MansDaySolsmor,
     } = CalNewm(Name, Y)[0];
     /// ////
     const YearScOrder = (((Y - 3) % 60) + 60) % 60;
@@ -145,7 +145,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
           Speri,
           Sorb,
         );
-        const FuncSun = mansionQing(Name, Y, SunGong);
+        const FuncSun = mansQing(Name, Y, SunGong);
         const SunEquaLon = LonHigh2Flat(Sobliq, SunLon);
         const SunLat = HighLon2FlatLat(Sobliq, SunLon)
         const { EquaLon: MoonEquaLon, EquaLat: MoonEquaLat } = eclp2Equa(Sobliq, MoonLon, MoonLat);
@@ -162,8 +162,8 @@ export const D2 = (Name, YearStart, YearEnd) => {
           { MoonEquaLon: deg2Hms(MoonEquaLon), MoonEquaLat: Lat2NS(MoonEquaLat) },
           { MoonEclpLon: deg2Hms(MoonLon), MoonEclpLat: Lat2NS(MoonLat) },
           {
-            MoonEqua: mansionQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa,
-            MoonEclp: mansionQing(Name, Y, MoonGong).Eclp
+            MoonEqua: mansQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa,
+            MoonEclp: mansQing(Name, Y, MoonGong).Eclp
           },
           { MoonRise: deci2hms(MoonRiseTmp).hm, MoonSet: deci2hms(MoonSetTmp).hm },
           { Node: deg2Hms(Node), Mapo: deg2Hms(Mapo) }
@@ -180,13 +180,13 @@ export const D2 = (Name, YearStart, YearEnd) => {
         const JdTmp = Math.trunc(SmJd + SmdMidn)
         const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder
         Jd[i][k] = JdTmp - (JdScDif > 50 ? JdScDif - 60 : (JdScDif < -50 ? JdScDif + 60 : JdScDif));
-        const MansionOrder = (MansionDaySolsmor + DayAccum - 1) % 28;
-        const WeekOrder = (MansionDaySolsmor + DayAccum + 2) % 7;
+        const MansOrder = (MansDaySolsmor + DayAccum - 1) % 28;
+        const WeekOrder = (MansDaySolsmor + DayAccum + 2) % 7;
         const date = jd2Date(Jd[i][k]);
         Jd[i][k] += ' ' + date.mm + '.' + date.dd + ' ' +
           WeekList[WeekOrder] +
-          MansionNameList[MansionOrder] +
-          MansionAnimalNameList[MansionOrder];
+          MansNameList[MansOrder] +
+          MansAnimalNameList[MansOrder];
       }
     }
     DayAccum =

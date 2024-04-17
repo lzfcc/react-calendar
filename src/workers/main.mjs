@@ -342,12 +342,12 @@ export const outputEphWeb = (year, Name) => {
     }
 }
 
-export const outputEphModernWeb = (year, Longitude, Latitude, h, MansionSystem) => {
+export const outputEphModernWeb = (year, Longitude, Latitude, h, MansSystem) => {
     year = +year
     Longitude = +Longitude
     Latitude = +Latitude
     h = +h
-    const [result] = CalEph_Modern(year, undefined, Longitude, Latitude, h, MansionSystem)
+    const [result] = CalEph_Modern(year, undefined, Longitude, Latitude, h, MansSystem)
     const { Era, Title, YearColor, DayAccum, YearGod, MonName, MonInfo, MonColor, ...OtherResult
     } = result
     return {

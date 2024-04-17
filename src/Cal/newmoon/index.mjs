@@ -422,7 +422,7 @@ export default (Name, YearStart, YearEnd) => {
             NewmAnomaAccumMidnPrint,
             // 時憲曆曆書
             SolsmorScOrder: Type === 13 ? ThisYear.SolsmorScOrder : undefined,
-            MansionDaySolsmor: Type === 13 ? ThisYear.MansionDaySolsmor : undefined,
+            MansDaySolsmor: Type === 13 ? ThisYear.MansDaySolsmor : undefined,
             SunRoot: Type === 13 ? ThisYear.SunRoot : undefined,
             SperiRoot: Type === 13 ? ThisYear.SperiRoot : undefined,
             MoonRoot: Type === 13 ? ThisYear.MoonRoot : undefined,

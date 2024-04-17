@@ -1,7 +1,7 @@
 import { multiply, divide, add } from "mathjs";
 import { precessionMx } from "./precession.mjs";
 import { nutaMx } from "./nutation.mjs";
-import { MansionNameList } from "../parameter/constants.mjs";
+import { MansNameList } from "../parameter/constants.mjs";
 import { Fbmx, rr1, xyz2lonlat } from "../astronomy/pos_functions.mjs";
 import { Parsec, R2D, cDay } from "../parameter/functions.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
@@ -163,8 +163,8 @@ const LingtaiVelList = LingtaiList.map((index) => VelList[index]);
 const YixiangPosList = YixiangList.map((index) => PosList[index]);
 const YixiangVelList = YixiangList.map((index) => VelList[index]);
 
-// 與古曆的deg2Mansion區別在於現代的不從角0起算，直接給出每宿經度
-export const deg2MansionModern = (Deg, AccumObj, fixed) => {
+// 與古曆的deg2Mans區別在於現代的不從角0起算，直接給出每宿經度
+export const deg2MansModern = (Deg, AccumObj, fixed) => {
     const SortedList = Object.entries(AccumObj).sort((a, b) => a[1] - b[1]);
     let index = -1;
     let Solsindex = -1;
@@ -177,21 +177,21 @@ export const deg2MansionModern = (Deg, AccumObj, fixed) => {
     if (Deg < SortedList[0][1]) index = SortedList.length - 1;
     if (index === -1) throw new Error("未找到所在宿度");
     const Name = SortedList[index][0];
-    const MansionDeg = (Deg - SortedList[index][1] + 360) % 360;
+    const MansDeg = (Deg - SortedList[index][1] + 360) % 360;
     for (let i = SortedList.length - 1; i >= 0; i--) {
         if (SortedList[i][1] <= 270) {
             Solsindex = i;
             break;
         }
     }
-    const SolsMansion =
+    const SolsMans =
         SortedList[Solsindex][0] +
         (270 - SortedList[Solsindex][1]).toFixed(fixed || 6);
-    return { Mansion: Name + MansionDeg.toFixed(fixed || 3), SolsMansion };
+    return { Mans: Name + MansDeg.toFixed(fixed || 3), SolsMans };
 };
 
 //根據廖育棟文檔14.3 14.4 
-export const mansionModernList = (Jd, Name) => {
+export const mansModernList = (Jd, Name) => {
     Name = Name || "Yixiang";
     const EclpAccumList = {};
     const EquaAccumList = {};
@@ -222,9 +222,9 @@ export const mansionModernList = (Jd, Name) => {
         const XEqua = multiply(n1, X02mod); // 光行差修正之後
         const XEclp = multiply(rr1(Obliq), XEqua).toArray(); // 乘法順序不能變！
         const EquaLon = (xyz2lonlat(XEqua).Lon * R2D + 360) % 360;
-        EquaAccumList[MansionNameList[i]] = EquaLon
-        CeclpAccumList[MansionNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
-        EclpAccumList[MansionNameList[i]] = (xyz2lonlat(XEclp).Lon * R2D + 360) % 360;
+        EquaAccumList[MansNameList[i]] = EquaLon
+        CeclpAccumList[MansNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
+        EclpAccumList[MansNameList[i]] = (xyz2lonlat(XEclp).Lon * R2D + 360) % 360;
     }
     return {
         EclpAccumList,
@@ -234,22 +234,22 @@ export const mansionModernList = (Jd, Name) => {
         Obliq
     };
 };
-export const mansionModern = (Jd, Name) => {
+export const mansModern = (Jd, Name) => {
     Name = Name || "Yixiang";
-    const { EclpAccumList, EquaAccumList, CeclpAccumList, XS, Obliq } = mansionModernList(Jd, Name)
+    const { EclpAccumList, EquaAccumList, CeclpAccumList, XS, Obliq } = mansModernList(Jd, Name)
     const XSEclp = multiply(rr1(Obliq), XS); // 乘法順序不能變！！要不然transpose()也沒用
     const SunEclpLon = (xyz2lonlat(XSEclp.toArray()).Lon * R2D + 360) % 360;
     const SunEquaLon = (xyz2lonlat(XS.toArray()).Lon * R2D + 360) % 360;
     const SunCeclpLon = equa2Ceclp(Obliq * R2D, SunEquaLon, 0).CeclpLon
-    const { Mansion: Eclp, SolsMansion: SolsEclpMansion } = deg2MansionModern(
+    const { Mans: Eclp, SolsMans: SolsEclpMans } = deg2MansModern(
         SunEclpLon,
         EclpAccumList
     );
-    const { Mansion: Equa, SolsMansion: SolsEquaMansion } = deg2MansionModern(
+    const { Mans: Equa, SolsMans: SolsEquaMans } = deg2MansModern(
         SunEquaLon,
         EquaAccumList
     );
-    const { Mansion: Ceclp, SolsMansion: SolsCeclpMansion } = deg2MansionModern(
+    const { Mans: Ceclp, SolsMans: SolsCeclpMans } = deg2MansModern(
         SunCeclpLon,
         CeclpAccumList
     );
@@ -260,13 +260,13 @@ export const mansionModern = (Jd, Name) => {
         EclpAccumList,
         EquaAccumList,
         CeclpAccumList,
-        SolsEclpMansion,
-        SolsEquaMansion,
-        SolsCeclpMansion
+        SolsEclpMans,
+        SolsEquaMans,
+        SolsCeclpMans
     };
 };
 // const S = performance.now()
-// console.log(mansionModern(2453445, 'Yixiang'))
+// console.log(mansModern(2453445, 'Yixiang'))
 // const E = performance.now()
 // console.log(E - S) // 算一個7ms
 
@@ -325,5 +325,5 @@ export const mansionModern = (Jd, Name) => {
  */
 export const midstarModern = (Jd, Longitude, EquaAccumList) => {
     const LAST = siderealTime(Jd, Longitude) // 晨昏恆星時
-    return deg2MansionModern(LAST * 15, EquaAccumList, 2).Mansion
+    return deg2MansModern(LAST * 15, EquaAccumList, 2).Mans
 }

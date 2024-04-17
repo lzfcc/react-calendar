@@ -1,5 +1,5 @@
 import React from "react";
-import { MansionSystemList } from "Cal/parameter/constants.mjs";
+import { MansSystemList } from "Cal/parameter/constants.mjs";
 import SingleSelectMenu from "../SingleSelectMenu";
 import MyWorker from "workers/worker_modern.mjs?worker";
 
@@ -12,7 +12,7 @@ export default class Day extends React.Component {
       Longitude: 116.428,
       Latitude: 39.906,
       h: 0.06,
-      MansionSystem: "Shi",
+      MansSystem: "Shi",
       output: null,
       loading: false,
       showMonth: 0,
@@ -256,7 +256,7 @@ export default class Day extends React.Component {
     const Longitude = this.state.Longitude;
     const Latitude = this.state.Latitude;
     const h = this.state.h;
-    const MansionSystem = this.state.MansionSystem;
+    const MansSystem = this.state.MansSystem;
     const callWorker = (eventName) => {
       this.setState({ loading: true });
       this.worker.postMessage({
@@ -266,7 +266,7 @@ export default class Day extends React.Component {
         Longitude,
         Latitude,
         h,
-        MansionSystem,
+        MansSystem,
       });
     };
     callWorker("Eph");
@@ -312,7 +312,7 @@ export default class Day extends React.Component {
   }
 
   renderCalendar() {
-    const Calendars = MansionSystemList;
+    const Calendars = MansSystemList;
     return (
       <span>
         <SingleSelectMenu

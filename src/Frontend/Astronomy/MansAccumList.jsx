@@ -1,6 +1,6 @@
 import React from 'react'
 import { NameDayList } from '../../Cal/parameter/constants.mjs'
-import { bindMansionAccumList } from '../../Cal/astronomy/bind.mjs'
+import { bindMansAccumList } from '../../Cal/astronomy/bind.mjs'
 import SingleSelectMenu from '../SingleSelectMenu'
 
 export default class Converter extends React.Component {
@@ -15,7 +15,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { EclpAccumPrint, EquaAccumPrint, SolsEclpPrint, SolsEquaPrint } = bindMansionAccumList(this.state.calendars, this.state.Year)
+      const { EclpAccumPrint, EquaAccumPrint, SolsEclpPrint, SolsEquaPrint } = bindMansAccumList(this.state.calendars, this.state.Year)
       this.setState({ EclpAccumPrint, EquaAccumPrint, SolsEclpPrint, SolsEquaPrint })
     } catch (e) {
       alert(e.message)
@@ -89,7 +89,7 @@ export default class Converter extends React.Component {
   render() {
     return (
       <div className='one-row'>
-        {this.renderCalendar()}        
+        {this.renderCalendar()}
         {this.renderInput()}
         <button onClick={this.handle} className='button4-6'>黃赤宿鈐</button>
         {this.result()}

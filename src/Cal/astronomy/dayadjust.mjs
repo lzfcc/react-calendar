@@ -29,8 +29,8 @@ const LeapAdjust = (LeapNumTerm, TermAvgRaw, NewmInt, Name) => {
 export const newmPlus = (Deci, Sd, SolsDeci, Name) => {
   // 朔小分
   const { Solar } = Para[Name];
-  const Solar25 = Solar / 4;
-  const SpringequinoxSunrise = autoRise(Solar25, 0, Name) / 100;
+  const SolarQuar = Solar / 4;
+  const SpringequinoxSunrise = autoRise(SolarQuar, 0, Name) / 100;
   const Rise = autoRise(Sd, SolsDeci, Name) / 100;
   const LightRange = AutoLightRange(Name);
   let standard = 0.75;
@@ -47,7 +47,7 @@ export const newmPlus = (Deci, Sd, SolsDeci, Name) => {
   } else if (["LindeB", "Dayan", "Qintian", "Chongtian"].includes(Name)) {
     // 欽天日入後則進一日
     standard = 1 - Rise; // 冬至0.7，夏至0.8
-  } else if (Sd > Solar25 && Sd < Solar * 0.75) {
+  } else if (Sd > SolarQuar && Sd < Solar * 0.75) {
     standard = 0.75 + (Rise - SpringequinoxSunrise) / Portion;
   }
   return Deci >= standard ? 1 : 0

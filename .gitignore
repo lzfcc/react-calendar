@@ -27,3 +27,5 @@ yarn-error.log*
 
 output1.md
 output.md
+
+package-lock.json

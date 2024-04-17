@@ -1,12 +1,12 @@
 import { ScList, TermNameList } from '../parameter/constants.mjs'
 import Para from '../parameter/calendars.mjs'
-import { mansion, midstar } from '../astronomy/mansion.mjs'
+import { mans, midstar } from '../astronomy/mans.mjs'
 import { deci } from '../parameter/functions.mjs'
 
 export default (Name, Y) => {
     const { Lunar, Solar, SolsOriginDif, SolsOriginMon,
         OriginAd, OriginYearSc, BuScConst, ZhengNum, OriginMonNum,
-        YuanRange, TongRange, isTermLeap, EcliRange, EcliNumer, MansionRaw
+        YuanRange, TongRange, isTermLeap, EcliRange, EcliNumer, MansRaw
     } = Para[Name]
     let { JiRange, BuRange, SolsConst, DayConst } = Para[Name]
     if (Name === 'Taichu') {
@@ -86,7 +86,7 @@ export default (Name, Y) => {
         NewmAvgSc[i] = ScList[(NewmInt[i] % 60 + 60) % 60]
         NewmAvgDeci[i] = (NewmAvgRaw[i] - NewmInt[i]).toFixed(4).slice(2, 6)
         NewmSd[i] = NewmAvgBare[i] - SolsAccumRaw
-        if (MansionRaw) NewmEqua[i] = mansion(Name, Y, undefined, NewmSd[i]).Equa
+        if (MansRaw) NewmEqua[i] = mans(Name, Y, undefined, NewmSd[i]).Equa
         // NewmJd[i] = Math.round(parseFloat((JdOrigin + (Math.trunc((Math.round(parseFloat((JdSols + Y * Solar).toPrecision(14))) - JdOrigin) / Lunar) + ZhengNum + i - 1) * Lunar).toPrecision(14)))
         SyzygyAvgRaw[i] = parseFloat(((Math.trunc((BuYear - 1) * 235 / 19 + (SolsOriginMon || 0)) + ZhengNum + i - .5) * Lunar + SolsConst).toPrecision(14)) + BuScOrder
         SyzygyAvgMod[i] = (SyzygyAvgRaw[i] % 60 + 60) % 60
@@ -116,9 +116,9 @@ export default (Name, Y) => {
             TermName[i] = TermNameList[(i + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
-            if (MansionRaw) {
+            if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mansion(Name, Y, undefined, TermSd).Equa
+                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
                 TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
             }
         }
@@ -131,9 +131,9 @@ export default (Name, Y) => {
             TermName[i] = TermNameList[(i + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = ((TermAvgMod[i] - TermOrderMod[i]).toFixed(4)).slice(2, 6)
-            if (MansionRaw) {
+            if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mansion(Name, Y, undefined, TermSd).Equa
+                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
                 TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
             }
         }
@@ -146,7 +146,7 @@ export default (Name, Y) => {
         TermName[LeapNumTerm + 1] = '无中'
         TermSc[LeapNumTerm + 1] = ''
         TermDeci[LeapNumTerm + 1] = ''
-        if (MansionRaw) {
+        if (MansRaw) {
             TermEqua[LeapNumTerm + 1] = ''
             TermDuskstar[LeapNumTerm + 1] = ''
         }
@@ -159,9 +159,9 @@ export default (Name, Y) => {
             TermName[i] = TermNameList[(i - 1 + ZhengNum + 12) % 12]
             TermSc[i] = ScList[TermOrderMod[i]]
             TermDeci[i] = (TermAvgMod[i] - TermOrderMod[i]).toFixed(4).slice(2, 6)
-            if (MansionRaw) {
+            if (MansRaw) {
                 const TermSd = TermAvgBare[i] - SolsAccumRaw
-                TermEqua[i] = mansion(Name, Y, undefined, TermSd).Equa
+                TermEqua[i] = mans(Name, Y, undefined, TermSd).Equa
                 TermDuskstar[i] = midstar(Name, Y, undefined, TermSd, SolsDeci)
             }
         }

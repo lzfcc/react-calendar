@@ -1,7 +1,7 @@
 // 可參考廖育棟的時憲曆日月氣朔網站 http://ytliu.epizy.com/Shixian/index_chinese.html ，有一分很漂亮的公式說明。
 import Para from "../parameter/calendars.mjs";
 import { ScList } from "../parameter/constants.mjs";
-import { mansionQing } from "../astronomy/mansion.mjs";
+import { mansQing } from "../astronomy/mans.mjs";
 import { clockQingB } from "../time/decimal2clock.mjs";
 import {
   White2Eclp,
@@ -41,7 +41,7 @@ import {
   fm360,
   t2,
   t3,
-  f3  
+  f3
 } from "../parameter/functions.mjs";
 import { corrRingC, distEllipseA, moonGuimao, moonQing, sunCorrQing, sunQing } from "../astronomy/sun_moon_qing.mjs";
 import { timeAvg2Real } from "../time/eot_qing.mjs";
@@ -66,7 +66,7 @@ export const N4 = (Name, Y) => {
     SunLimitYinAcr,
     SunLimitYangAcr,
     MoonLimit,
-    MansionDayConst,
+    MansDayConst,
     Sobliq,
     RiseLat,
   } = Para[Name]; // SunAvgVm, SorbVm, MorbVm, MoonNodeVmSum, ChouSunConst, ChouSorbConst, ChouMorbConst, ChouWhitelongiConst
@@ -79,10 +79,10 @@ export const N4 = (Name, Y) => {
   const OriginAccum = +(CloseOriginYear * Solar).toFixed(9); // 中積
   const SolsAccum =
     Y >= CloseOriginAd ? OriginAccum + SolsConst : OriginAccum - SolsConst; // 通積分
-  const MansionDaySolsmor =
+  const MansDaySolsmor =
     Y >= CloseOriginAd
-      ? Math.trunc(((OriginAccum + MansionDayConst) % 28) % 28)
-      : Math.trunc((28 - ((OriginAccum - MansionDayConst) % 28)) % 28); // 值宿日分
+      ? Math.trunc(((OriginAccum + MansDayConst) % 28) % 28)
+      : Math.trunc((28 - ((OriginAccum - MansDayConst) % 28)) % 28); // 值宿日分
   const Sols = +(
     Y >= CloseOriginAd ? SolsAccum % 60 : 60 - (SolsAccum % 60)
   ).toFixed(9);
@@ -120,7 +120,7 @@ export const N4 = (Name, Y) => {
     Y >= CloseOriginAd
       ? fm360(NodeConst - DayAccum * NodeVd)
       : fm360(NodeConst + DayAccum * NodeVd); // 正交年根，所得爲白經
-  // const Mansion = (OriginAccumMansion % 28 + 1 + 28) % 28 // 自初日角宿起算，得值宿。（考成：天正冬至乃冬至本日之干支，值宿乃冬至次日之宿，故外加一日。）
+  // const Mans = (OriginAccumMans % 28 + 1 + 28) % 28 // 自初日角宿起算，得值宿。（考成：天正冬至乃冬至本日之干支，值宿乃冬至次日之宿，故外加一日。）
   const SperiRoot =
     SperiConst +
     (Y >= CloseOriginAd
@@ -837,7 +837,7 @@ export const N4 = (Name, Y) => {
     const NowlineSc = ScList[(SolsmorScOrder + Math.trunc(NowlineSmd)) % 60];
     // const NowlineDeci = fix(deci(NowlineSmd), 3)
     const NowlineDeci = clockQingB(deci(NowlineSmd) * 100);
-    const { Eclp: TermEclp, Equa: TermEqua } = mansionQing(Name, Y, TermGong);
+    const { Eclp: TermEclp, Equa: TermEqua } = mansQing(Name, Y, TermGong);
     // 再加上迭代。曆書用的本日次日比例法，少部分密合，大部分相差5-15分鐘。輸出的是視時
     const tmp =
       TermGong - sunQing(Name, SunRoot, SperiRoot, AcrlineSmd).SunGong; // 預防冬至0宮的問題
@@ -1047,7 +1047,7 @@ export const N4 = (Name, Y) => {
       NowSmd[i] = AcrSmd + timeAvg2Real(Name, Sobliq, AcrSunLon, AcrSunCorr); // 朔望只有月離初均，沒有日差，所以都要加。不清楚新法的交食用那種日差
       NowSc[i] = ScList[(SolsmorScOrder + Math.trunc(NowSmd[i])) % 60];
       NowDeci[i] = fix(deci(NowSmd[i]), 3);
-      const Func = mansionQing(Name, Y, AcrSunGong);
+      const Func = mansQing(Name, Y, AcrSunGong);
       Eclp[i] = Func.Eclp;
       Equa[i] = Func.Equa;
       /// ///// 交食
@@ -1286,7 +1286,7 @@ export const N4 = (Name, Y) => {
     MapoRoot,
     NodeRoot,
     SolsAccum,
-    MansionDaySolsmor,
+    MansDaySolsmor,
     NewmSmd,
     Sols,
     SolsmorScOrder,

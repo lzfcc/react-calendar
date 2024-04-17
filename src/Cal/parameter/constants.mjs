@@ -157,7 +157,7 @@ export const NameDayList = {
   Jiazi: "曆象考成",
   Guimao: "曆象考成後編",
 };
-export const MansionSystemList = {
+export const MansSystemList = {
   Shanggu: '古度',
   Shi: '石氏(古曆所用)',
   Chongzhen: '崇禎曆書',
@@ -175,7 +175,7 @@ export const NameJiudaoList = {
   Chongtian: "崇天",
   Mingtian: "明天",
   Guantian: "觀天",
-  Jiyuan: "紀元",  
+  Jiyuan: "紀元",
   Shoushi: "授時"
 }
 export const ScList = [
@@ -976,11 +976,11 @@ export const HuangheiList = [
   "句陳",
 ]; // https://www.zhihu.com/question/20167015/answer/15508998
 export const PlanetList = ['Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury']
-export const MansionNameList =
+export const MansNameList =
   ['角', '亢', '氐', '房', '心', '尾', '箕', '斗', '牛', '女', '虛', '危', '室', '壁', '奎', '婁', '胃', '昴', '畢', '觜', '參', '井', '鬼', '柳', '星', '張', '翼', '軫']; // 值日，星期日對應房、虛、昴、星
-export const MansionNameListQing =
+export const MansNameListQing =
   ['角', '亢', '氐', '房', '心', '尾', '箕', '斗', '牛', '女', '虛', '危', '室', '壁', '奎', '婁', '胃', '昴', '畢', '參', '觜', '井', '鬼', '柳', '星', '張', '翼', '軫']; // 參觜互換
-export const MansionAnimalNameList =
+export const MansAnimalNameList =
   "蛟龍貉兔狐虎豹獬牛蝠鼠燕豬㺄狼狗雉雞烏猴猿犴羊獐馬鹿蛇蚓";
 export const GongList = [
   "娵訾",

@@ -152,15 +152,15 @@ const Hushigeyuan_Sub = (LonRaw, p, q, pAnother) => {
   const r = 60.875;
   const d = 121.75;
   pAnother = pAnother || p;
-  const Sidereal25 = Sidereal / 4;
-  const Sidereal50 = Sidereal / 2;
-  const Sidereal75 = Sidereal * 0.75;
-  let Lon = LonRaw % Sidereal25;
+  const SiderealQuar = Sidereal / 4;
+  const SiderealHalf = Sidereal / 2;
+  const SiderealQuar3 = Sidereal * 0.75;
+  let Lon = LonRaw % SiderealQuar;
   if (
-    (LonRaw > Sidereal25 && LonRaw <= Sidereal50) ||
-    (LonRaw >= Sidereal75 && LonRaw < Sidereal)
+    (LonRaw > SiderealQuar && LonRaw <= SiderealHalf) ||
+    (LonRaw >= SiderealQuar3 && LonRaw < Sidereal)
   ) {
-    Lon = Sidereal25 - Lon;
+    Lon = SiderealQuar - Lon;
   }
   const v1 = RoundL2H(Lon); // LD黃道矢度
   const OL = r - v1; // 黃赤小弦
@@ -175,7 +175,7 @@ const Hushigeyuan_Sub = (LonRaw, p, q, pAnother) => {
   const ON = Math.sqrt(p1 ** 2 + OM ** 2); // 赤小弦// const ON = Math.sqrt(r ** 2 - p2 ** 2) //v2
   let Lat = p2Another + (r - ON) ** 2 / d; // r - ON ： 赤二弦差、黃赤內外矢 //NC ** 2 / d： 半背弦差
   let sign = 1;
-  if (LonRaw < Sidereal25 || LonRaw > Sidereal75) {
+  if (LonRaw < SiderealQuar || LonRaw > SiderealQuar3) {
     Lat = -Lat;
     sign = -1;
   }
@@ -191,8 +191,8 @@ const Hushigeyuan_Sub = (LonRaw, p, q, pAnother) => {
   const BD = RoundC2HL(BL).Halfl;
   let Equa2EclpDif = Lon - BD;
   const condition =
-    (LonRaw >= 0 && LonRaw < Sidereal25) ||
-    (LonRaw >= Sidereal50 && LonRaw < Sidereal75);
+    (LonRaw >= 0 && LonRaw < SiderealQuar) ||
+    (LonRaw >= SiderealHalf && LonRaw < SiderealQuar3);
   Eclp2EquaDif *= condition ? 1 : -1;
   Equa2EclpDif *= condition ? -1 : 1;
   const Eclp2Equa = LonRaw + Eclp2EquaDif;
@@ -256,15 +256,15 @@ const Hushigeyuan_Ex = (LonRaw, e) => {
 const HushigeyuanWest = (LonRaw, Sidereal, DE) => {
   // DE黃赤交角。變量名見《中國古代曆法》頁629
   const pi = Math.PI;
-  const Sidereal25 = Sidereal / 4;
-  const Sidereal50 = Sidereal / 2;
-  const Sidereal75 = Sidereal * 0.75;
-  let Lon = LonRaw % Sidereal25;
+  const SiderealQuar = Sidereal / 4;
+  const SiderealHalf = Sidereal / 2;
+  const SiderealQuar3 = Sidereal * 0.75;
+  let Lon = LonRaw % SiderealQuar;
   if (
-    (LonRaw > Sidereal25 && LonRaw <= Sidereal50) ||
-    (LonRaw >= Sidereal75 && LonRaw < Sidereal)
+    (LonRaw > SiderealQuar && LonRaw <= SiderealHalf) ||
+    (LonRaw >= SiderealQuar3 && LonRaw < Sidereal)
   ) {
-    Lon = Sidereal25 - Lon;
+    Lon = SiderealQuar - Lon;
   }
   /// /轉換爲360度////
   const Portion4 = Sidereal / 360;
@@ -286,7 +286,7 @@ const HushigeyuanWest = (LonRaw, Sidereal, DE) => {
   // const NC = r - Math.sqrt(p1 ** 2 + OM ** 2)
   // let Lat = RoundH2LWest(r, NC)
   let Lat = RoundC2LWest(r, p2);
-  if (LonRaw < Sidereal25 || LonRaw > Sidereal75) Lat = -Lat;
+  if (LonRaw < SiderealQuar || LonRaw > SiderealQuar3) Lat = -Lat;
   /// //赤轉黃/////
   const PE = RoundL2HWest(r, Lon);
   const OP = r - PE;
@@ -302,8 +302,8 @@ const HushigeyuanWest = (LonRaw, Sidereal, DE) => {
   let Equa2EclpDif = (Lon - BD) * Portion4;
   Lat *= Portion4;
   const condition =
-    (LonRaw >= 0 && LonRaw < Sidereal25) ||
-    (LonRaw >= Sidereal50 && LonRaw < Sidereal75);
+    (LonRaw >= 0 && LonRaw < SiderealQuar) ||
+    (LonRaw >= SiderealHalf && LonRaw < SiderealQuar3);
   Eclp2EquaDif *= condition ? 1 : -1;
   Equa2EclpDif *= condition ? -1 : 1;
   const Eclp2Equa = LonRaw + Eclp2EquaDif;

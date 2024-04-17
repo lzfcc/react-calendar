@@ -1,7 +1,7 @@
 import React from 'react';
 import SingleSelectMenu from '../SingleSelectMenu';
-import { MansionSystemList } from '../../Cal/parameter/constants.mjs'
-import { bindMansionAccumModernList } from '../../Cal/astronomy/bind.mjs'
+import { MansSystemList } from '../../Cal/parameter/constants.mjs'
+import { bindMansAccumModernList } from '../../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint } = bindMansionAccumModernList(this.state.calendars, this.state.Jd)
+      const { EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint } = bindMansAccumModernList(this.state.calendars, this.state.Jd)
       this.setState({ EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint })
     } catch (e) {
       alert(e.message)
@@ -72,7 +72,7 @@ export default class Converter extends React.Component {
   }
 
   renderCalendar() {
-    const Calendars = MansionSystemList
+    const Calendars = MansSystemList
     return (
       <span>
         <SingleSelectMenu

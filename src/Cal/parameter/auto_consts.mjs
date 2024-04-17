@@ -198,62 +198,62 @@ export const AutoRangeEcli = (Name, Type) => { // 日出入前後多少不算日
 export const AutoMoonTcorrDif = (AnomaAccum, Name) => { // 唐宋月離損益率
     const { MoonTcorrDifList, Anoma } = Para[Name]
     const AnomaAccumInt = Math.trunc(AnomaAccum)
-    const Anoma25 = Anoma / 4 // 6.8887
-    const Anoma50 = Anoma / 2 // 13.7772
-    const Anoma75 = Anoma * .75 // 20.6659
+    const AnomaQuar = Anoma / 4 // 6.8887
+    const AnomaHalf = Anoma / 2 // 13.7772
+    const AnomaQuar3 = Anoma * .75 // 20.6659
     let MoonTcorrDif = 0
     let TheDenom = 1
     if (Name === 'Yitian') {
-        const AnomaAccumQuar = AnomaAccum % Anoma25
+        const AnomaAccumQuar = AnomaAccum % AnomaQuar
         const AnomaAccumQuarInt = Math.trunc(AnomaAccumQuar)
-        if (AnomaAccum < Anoma25) {
+        if (AnomaAccum < AnomaQuar) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumQuarInt]
-        } else if (AnomaAccum < Anoma50) {
+        } else if (AnomaAccum < AnomaHalf) {
             MoonTcorrDif = MoonTcorrDifList[7 + AnomaAccumQuarInt]
-        } else if (AnomaAccum < Anoma75) {
+        } else if (AnomaAccum < AnomaQuar3) {
             MoonTcorrDif = MoonTcorrDifList[14 + AnomaAccumQuarInt]
         } else {
             MoonTcorrDif = MoonTcorrDifList[21 + AnomaAccumQuarInt]
         }
         if (AnomaAccumQuar >= 6) {
-            TheDenom = Anoma25 - 6
+            TheDenom = AnomaQuar - 6
         }
     } else if (['Xuanming', 'Yingtian'].includes(Name)) {
-        const AnomaAccumHalf = AnomaAccum % Anoma50
+        const AnomaAccumHalf = AnomaAccum % AnomaHalf
         const AnomaAccumHalfInt = Math.trunc(AnomaAccumHalf)
-        if (AnomaAccum < Anoma25) {
+        if (AnomaAccum < AnomaQuar) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumHalfInt]
-        } else if (AnomaAccum < Anoma50) {
+        } else if (AnomaAccum < AnomaHalf) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumHalfInt + 1]
-        } else if (AnomaAccum < Anoma75) {
+        } else if (AnomaAccum < AnomaQuar3) {
             MoonTcorrDif = MoonTcorrDifList[14 + AnomaAccumHalfInt + 1]
         } else {
             MoonTcorrDif = MoonTcorrDifList[14 + AnomaAccumHalfInt + 2]
         }
-        if (AnomaAccumHalf >= 6 && AnomaAccum < Anoma25) {
-            TheDenom = Anoma25 - 6
-        } else if (AnomaAccumHalf >= Anoma25 && AnomaAccumHalf < 7) {
-            TheDenom = 7 - Anoma25
+        if (AnomaAccumHalf >= 6 && AnomaAccum < AnomaQuar) {
+            TheDenom = AnomaQuar - 6
+        } else if (AnomaAccumHalf >= AnomaQuar && AnomaAccumHalf < 7) {
+            TheDenom = 7 - AnomaQuar
         } else if (AnomaAccumHalf >= 13) {
-            TheDenom = Anoma50 - 13
+            TheDenom = AnomaHalf - 13
         }
     } else {
-        if (AnomaAccum < Anoma25) {
+        if (AnomaAccum < AnomaQuar) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumInt]
             if (AnomaAccum >= 6) {
-                TheDenom = Anoma25 - 6
+                TheDenom = AnomaQuar - 6
             }
-        } else if (AnomaAccum < Anoma75) {
+        } else if (AnomaAccum < AnomaQuar3) {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumInt + 1]
             if (AnomaAccum < 7) {
-                TheDenom = 7 - Anoma25
+                TheDenom = 7 - AnomaQuar
             } else if (AnomaAccum >= 20) {
-                TheDenom = Anoma75 - 20
+                TheDenom = AnomaQuar3 - 20
             }
         } else {
             MoonTcorrDif = MoonTcorrDifList[AnomaAccumInt + 2]
             if (AnomaAccum < 21) {
-                TheDenom = 21 - Anoma75
+                TheDenom = 21 - AnomaQuar3
             } else if (AnomaAccum >= 27) {
                 TheDenom = Anoma - 27
             }

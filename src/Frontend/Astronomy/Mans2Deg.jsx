@@ -1,11 +1,11 @@
 import React from 'react'
-import { bindDeg2Mansion } from '../../Cal/astronomy/bind.mjs'
+import { bindMans2Deg } from '../../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      a: 326.9312,
+      a: '張5.9142',
     }
     this.handle = this.handle.bind(this)
   }
@@ -13,7 +13,7 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>度數</span>
+        <span>宿度</span>
         <input className='width3'
           value={this.state.a}
           onChange={e => {
@@ -26,7 +26,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const Print = bindDeg2Mansion(this.state.a)
+      const Print = bindMans2Deg(this.state.a)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)
@@ -62,10 +62,9 @@ export default class Converter extends React.Component {
 
   render() {
     return (
-      <div>
-        <h3>積度 ⇌ 宿度</h3>
+      <div className='one-row'>
         {this.input()}
-        <button onClick={this.handle} className='button4-6'>deg2mansion</button>
+        <button onClick={this.handle} className='button4-6'>mans2deg</button>
         {this.result()}
       </div>
     )

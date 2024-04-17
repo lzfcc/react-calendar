@@ -1,13 +1,13 @@
 import { outputEphModernWeb, outputNewmWeb_DE } from './main.mjs'
 
 export default addEventListener("message", (event) => {
-  const { eventName, YearStart, YearEnd, Longitude, Latitude, h, MansionSystem } = event.data;
+  const { eventName, YearStart, YearEnd, Longitude, Latitude, h, MansSystem } = event.data;
   if (eventName === "Newm") {
     const data = outputNewmWeb_DE(YearStart, YearEnd, Longitude);
     postMessage(data);
   }
   if (eventName === "Eph") {
-    const data = outputEphModernWeb(YearStart, Longitude, Latitude, h, MansionSystem);
+    const data = outputEphModernWeb(YearStart, Longitude, Latitude, h, MansSystem);
     postMessage(data);
   }
 });

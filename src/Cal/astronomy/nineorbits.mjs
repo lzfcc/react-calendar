@@ -7,38 +7,38 @@ export const AutoNineOrbit = (NodeAccum, Sd, Name) => { // 月行九道法
     } = Para[Name]
     Lunar = Lunar || LunarRaw
     Solar = Solar || SolarRaw
-    const Node50 = Node / 2
+    const NodeHalf = Node / 2
     const SynodicNodeDif50 = (Lunar - Node) / 2 // 望差
     const HalfTermLeng = Solar / 24
     Sd += (Node - NodeAccum) * AutoMoonAvgV(Name) // 正交黃道度
     let Print = ''
     if (Type <= 6) {
-        if ((NodeAccum > Node50 - SynodicNodeDif50 && NodeAccum < Node50) || NodeAccum < SynodicNodeDif50 || (NodeAccum > Node50 && NodeAccum < Node50 + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
+        if ((NodeAccum > NodeHalf - SynodicNodeDif50 && NodeAccum < NodeHalf) || NodeAccum < SynodicNodeDif50 || (NodeAccum > NodeHalf && NodeAccum < NodeHalf + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
             Print = `<span class='lati-yellow'>黃</span>`
-        } else if (NodeAccum < Node50) {
+        } else if (NodeAccum < NodeHalf) {
             Print = `<span class='lati-yang'>陽</span>`
         } else Print = `<span class='lati-yin'>陰</span>`
     } else if (Type >= 7 && Type <= 10) { // 月行九道
         if (Sd < 3 * HalfTermLeng || Sd >= 21 * HalfTermLeng) { // 冬
-            if (NodeAccum < Node50) {
+            if (NodeAccum < NodeHalf) {
                 Print = `<span class='lati-white'>白</span><span class='lati-yang'>陽</span>`
             } else Print = `<span class='lati-green'>靑</span><span class='lati-yin'>陰</span>`
         } else if (Sd >= 3 * HalfTermLeng && Sd < 9 * HalfTermLeng) {
-            if (NodeAccum < Node50) {
+            if (NodeAccum < NodeHalf) {
                 Print = `<span class='lati-red'>朱</span><span class='lati-yang'>陽</span>`
             } else Print = `<span class='lati-black'>黑</span><span class='lati-yin'>陰</span>`
         } else if (Sd >= 9 * HalfTermLeng && Sd < 15 * HalfTermLeng) {
-            if (NodeAccum < Node50) {
+            if (NodeAccum < NodeHalf) {
                 Print = `<span class='lati-green'>靑</span><span class='lati-yang'>陽</span>`
             } else Print = `<span class='lati-white'>白</span><span class='lati-yin'>陰</span>`
         } else {
-            if (NodeAccum < Node50) {
+            if (NodeAccum < NodeHalf) {
                 Print = `<span class='lati-black'>黑</span><span class='lati-yang'>陽</span>`
             } else Print = `<span class='lati-red'>朱</span><span class='lati-yin'>陰</span>`
         }
-        if ((NodeAccum > Node50 - SynodicNodeDif50 && NodeAccum < Node50) || NodeAccum < SynodicNodeDif50) {
+        if ((NodeAccum > NodeHalf - SynodicNodeDif50 && NodeAccum < NodeHalf) || NodeAccum < SynodicNodeDif50) {
             Print = `<span class='lati-yellow'>黃</span><span class='lati-yang'>陽</span>`
-        } else if ((NodeAccum > Node50 && NodeAccum < Node50 + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
+        } else if ((NodeAccum > NodeHalf && NodeAccum < NodeHalf + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
             Print = `<span class='lati-yellow'>黃</span><span class='lati-yin'>陰</span>`
         }
     }

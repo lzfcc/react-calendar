@@ -301,10 +301,10 @@ const MoonAcrVListB = [.06793140, .06796518, .06799900, .06803285, .06806673, .0
 //     AnomaXian = AnomaAccumRaw / PartRange
 //     signB = 0
 // } else if (AnomaAccumRaw <= 20.4193) {
-//     AnomaXian = Math.abs(Anoma50 - AnomaAccumRaw) / PartRange
+//     AnomaXian = Math.abs(AnomaHalf - AnomaAccumRaw) / PartRange
 //     signB = -1
 // } else if (AnomaAccumRaw <= 20.8293) {
-//     AnomaXian = Math.abs(Anoma50 - AnomaAccumRaw) / PartRange
+//     AnomaXian = Math.abs(AnomaHalf - AnomaAccumRaw) / PartRange
 //     signB = 0
 // } else {
 //     AnomaXian = (Anoma - AnomaAccumRaw) / PartRange

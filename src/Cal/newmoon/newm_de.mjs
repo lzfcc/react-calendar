@@ -5,8 +5,8 @@ import NewmList from '../modern/newm_de44_list.mjs'
 import SyzygyList from '../modern/syzygy_de44_list.mjs'
 import TermList from '../modern/term_de44_list.mjs'
 import Term1List from '../modern/term1_de44_list.mjs'
-import { mansionModern } from '../modern/mansion.mjs'
-// import { } from '../modern/mansion.mjs'
+import { mansModern } from '../modern/mans.mjs'
+// import { } from '../modern/mans.mjs'
 function findClosest(a, list) {
     let closest = list[0], closestIndex = 0;
     let smallestDifference = Math.abs(a - closest);
@@ -52,7 +52,7 @@ export const N6 = (Y, Longitude) => {
             UT1Deci[i] = Y < 1600 ? UT1JdDate.hms : UT1JdDate.hmsms
             //////// 節氣
             if (isNewm) {
-                const NewmFunc = mansionModern(AcrJd)
+                const NewmFunc = mansModern(AcrJd)
                 Eclp[i] = NewmFunc.Eclp
                 Equa[i] = NewmFunc.Equa
                 // 中氣
@@ -62,7 +62,7 @@ export const N6 = (Y, Longitude) => {
                 TermAcrSc[i] = ScList[UT1TermJdDate.ScOrder]
                 TermAcrMmdd[i] = UT1TermJdDate.mm + '-' + UT1TermJdDate.dd
                 TermAcrDeci[i] = Y < 1600 ? UT1TermJdDate.hms : UT1TermJdDate.hmsms
-                const TermFunc = mansionModern(AcrTermJd)
+                const TermFunc = mansModern(AcrTermJd)
                 TermEclp[i] = TermFunc.Eclp
                 TermEqua[i] = TermFunc.Equa
                 // 節氣
@@ -72,7 +72,7 @@ export const N6 = (Y, Longitude) => {
                 Term1AcrSc[i] = ScList[UT1Term1JdDate.ScOrder]
                 Term1AcrMmdd[i] = UT1Term1JdDate.mm + '-' + UT1Term1JdDate.dd
                 Term1AcrDeci[i] = Y < 1600 ? UT1Term1JdDate.hms : UT1Term1JdDate.hmsms
-                const Term1Func = mansionModern(AcrTerm1Jd)
+                const Term1Func = mansModern(AcrTerm1Jd)
                 Term1Eclp[i] = Term1Func.Eclp
                 Term1Equa[i] = Term1Func.Equa
             }

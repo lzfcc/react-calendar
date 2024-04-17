@@ -1043,7 +1043,7 @@ hr {
   color: var(--lettergreen);
 }
 
-.WhiteMans,
+.MoonWhite,
 .WhiteLon {
   color: var(--letterblue);
 }
@@ -1154,31 +1154,31 @@ hr {
   background: var(--letterpurple);
 }
 
-.lati-red {
+.orb-red {
   background: var(--letterred);
   color: var(--bg);
   padding: .1em .15em;
 }
 
-.lati-black {
+.orb-black {
   background: var(--black);
   color: var(--bg);
   padding: .1em .15em;
 }
 
-.lati-white {
+.orb-white {
   background: white;
   color: var(--black);
   padding: .1em .15em;
 }
 
-.lati-green {
+.orb-green {
   background: var(--lettergreen);
   color: var(--bg);
   padding: .1em .15em;
 }
 
-.lati-yellow {
+.orb-yellow {
   background: var(--letteryellow);
   color: var(--bg);
   padding: .1em .15em;

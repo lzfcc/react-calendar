@@ -1,48 +1,54 @@
 import Para from '../parameter/calendars.mjs'
 import { AutoMoonAvgV } from '../parameter/auto_consts.mjs'
 
-export const AutoNineOrbit = (NodeAccum, Sd, Name) => { // 月行九道法
-    const { Type, SolarRaw, Node, LunarRaw } = Para[Name]
+/**
+ * 月行九道Type >= 7 && Type <= 10 《數理》p343「凡合朔所交⋯⋯」指合朔之前的升交或降交點
+ * @param {*} NodeAccum 合朔入交
+ * @param {*} NewmSd 合朔距冬至時間
+ * @param {*} Name 
+ * @returns 
+ */
+export const nineOrbits = (NodeAccum, NewmSd, Name) => {
+    const { SolarRaw, Node, LunarRaw } = Para[Name]
     let { Solar, Lunar
     } = Para[Name]
     Lunar = Lunar || LunarRaw
     Solar = Solar || SolarRaw
     const NodeHalf = Node / 2
-    const SynodicNodeDif50 = (Lunar - Node) / 2 // 望差
+    const Limit = (Lunar - Node) / 2 // 望差
     const HalfTermLeng = Solar / 24
-    Sd += (Node - NodeAccum) * AutoMoonAvgV(Name) // 正交黃道度
-    let Print = ''
-    if (Type <= 6) {
-        if ((NodeAccum > NodeHalf - SynodicNodeDif50 && NodeAccum < NodeHalf) || NodeAccum < SynodicNodeDif50 || (NodeAccum > NodeHalf && NodeAccum < NodeHalf + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
-            Print = `<span class='lati-yellow'>黃</span>`
-        } else if (NodeAccum < NodeHalf) {
-            Print = `<span class='lati-yang'>陽</span>`
-        } else Print = `<span class='lati-yin'>陰</span>`
-    } else if (Type >= 7 && Type <= 10) { // 月行九道
-        if (Sd < 3 * HalfTermLeng || Sd >= 21 * HalfTermLeng) { // 冬
-            if (NodeAccum < NodeHalf) {
-                Print = `<span class='lati-white'>白</span><span class='lati-yang'>陽</span>`
-            } else Print = `<span class='lati-green'>靑</span><span class='lati-yin'>陰</span>`
-        } else if (Sd >= 3 * HalfTermLeng && Sd < 9 * HalfTermLeng) {
-            if (NodeAccum < NodeHalf) {
-                Print = `<span class='lati-red'>朱</span><span class='lati-yang'>陽</span>`
-            } else Print = `<span class='lati-black'>黑</span><span class='lati-yin'>陰</span>`
-        } else if (Sd >= 9 * HalfTermLeng && Sd < 15 * HalfTermLeng) {
-            if (NodeAccum < NodeHalf) {
-                Print = `<span class='lati-green'>靑</span><span class='lati-yang'>陽</span>`
-            } else Print = `<span class='lati-white'>白</span><span class='lati-yin'>陰</span>`
+    const NodeGong = (NewmSd - (NodeAccum % NodeHalf) * AutoMoonAvgV(Name) + Solar) % Solar // 正交黃道度
+    // OrbColor 黃0青0白1黑2朱3
+    let OrbColor = 0
+    if (NodeGong < 3 * HalfTermLeng || NodeGong >= 21 * HalfTermLeng) { // 冬
+        if (NodeAccum < NodeHalf) {
+            OrbColor = 1
         } else {
-            if (NodeAccum < NodeHalf) {
-                Print = `<span class='lati-black'>黑</span><span class='lati-yang'>陽</span>`
-            } else Print = `<span class='lati-red'>朱</span><span class='lati-yin'>陰</span>`
+            OrbColor = 2
         }
-        if ((NodeAccum > NodeHalf - SynodicNodeDif50 && NodeAccum < NodeHalf) || NodeAccum < SynodicNodeDif50) {
-            Print = `<span class='lati-yellow'>黃</span><span class='lati-yang'>陽</span>`
-        } else if ((NodeAccum > NodeHalf && NodeAccum < NodeHalf + SynodicNodeDif50) || (NodeAccum > Node - SynodicNodeDif50)) {
-            Print = `<span class='lati-yellow'>黃</span><span class='lati-yin'>陰</span>`
+    } else if (NodeGong >= 3 * HalfTermLeng && NodeGong < 9 * HalfTermLeng) { // 春
+        if (NodeAccum < NodeHalf) {
+            OrbColor = 3
+        } else {
+            OrbColor = 4
+        }
+    } else if (NodeGong >= 9 * HalfTermLeng && NodeGong < 15 * HalfTermLeng) { // 夏
+        if (NodeAccum < NodeHalf) {
+            OrbColor = 2
+        } else {
+            OrbColor = 1
+        }
+    } else { // 秋
+        if (NodeAccum < NodeHalf) {
+            OrbColor = 4
+        } else {
+            OrbColor = 3
         }
     }
-    return Print
+    if ((NodeAccum > NodeHalf - Limit && NodeAccum < NodeHalf) || NodeAccum < Limit || (NodeAccum > NodeHalf && NodeAccum < NodeHalf + Limit) || (NodeAccum > Node - Limit)) {
+        OrbColor = 0
+    }
+    return OrbColor
 }
 
 const Exhaustion = () => { // 大同歲實365.2469 設在0.015-.018之間。365.262566

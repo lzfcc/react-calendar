@@ -207,29 +207,34 @@ export default class Day extends React.Component {
       </div>
     );
   }
-
   // GPT
   renderDayDetail(info, day) {
+    const OrbArr = ["黃", "靑", "白", "黑", "朱"];
+    const OrbClassArr = ["orb-yellow", "orb-green", "orb-white", "orb-black", "orb-red"]
     const filteredEntries = Object.entries(info[day]).filter(
       ([key, value]) => key !== "MonColor" && value !== undefined // 这里添加了对 undefined 的检查
     );
-
     return (
       <div>
         {filteredEntries.map(([key, value]) => {
           if (Array.isArray(value)) {
-            // 对于数组中的每个对象，我们创建一个 <p> 标签
             const paragraphs = value.map((obj, index) => {
-              // 仅当 obj 不是 null 或 undefined 时，我们才处理它
               if (obj) {
                 const spans = Object.entries(obj)
-                  .filter(([_, val]) => val !== 0 && val !== undefined)
-                  .map(([subKey, subValue], index, array) => (
-                    <React.Fragment key={subKey}>
-                      <span className={subKey}>{`${subValue}`}</span>
-                      {index !== array.length - 1 && ' '}
-                    </React.Fragment>
-                  ));
+                  .filter(([_, val]) => val !== undefined)
+                  .map(([subKey, subValue], index, array) => {
+                    // 检查subKey是否为'Orb'，如果是，则使用OrbArr中的值
+                    const displayValue =
+                      subKey === 'OrbColor' ? OrbArr[subValue] : subValue;
+                    const displayClass =
+                      subKey === 'OrbColor' ? OrbClassArr[subValue] : subKey;
+                    return (
+                      <React.Fragment key={subKey}>
+                        <span className={displayClass}>{`${displayValue}`}</span>
+                        {index !== array.length - 1 && ' '}
+                      </React.Fragment>
+                    );
+                  });
 
                 if (spans.length === 0) return null;
 
@@ -241,7 +246,6 @@ export default class Day extends React.Component {
               }
               return null;
             });
-
             return paragraphs.filter(Boolean);
           }
 
@@ -255,6 +259,7 @@ export default class Day extends React.Component {
       </div>
     );
   }
+
 
   handleRetrieve() {
     if (this.state.calendars.length === 0) {

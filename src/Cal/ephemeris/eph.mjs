@@ -38,7 +38,7 @@ import {
 import CalNewm from "../newmoon/index.mjs";
 import { AutoTcorr, AutoDifAccum, AutoMoonAcrS } from "../astronomy/acrv.mjs";
 import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/mans.mjs";
-import { AutoNineOrbit } from "../astronomy/nineorbits.mjs";
+import { nineOrbits } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
 import { deci, lat2NS, nzh } from "../parameter/functions.mjs";
@@ -267,24 +267,24 @@ export const D1 = (Name, YearStart, YearEnd) => {
       // 合朔的情況
       let MoonEclpLonNewmMidn = 0,
         MoonAcrSNewm = 0,
-        SdNewm = 0;
+        NewmSd = 0;
       if (Type < 4)
-        SdNewm = NewmRaw[i - 1] - SolsAccum; // 合朔加時
-      else SdNewm = NewmAcrRaw[i - 1] - SolsAccum;
+        NewmSd = NewmRaw[i - 1] - SolsAccum; // 合朔加時
+      else NewmSd = NewmAcrRaw[i - 1] - SolsAccum;
       if (Type === 1) {
-        MoonEclpLonNewmMidn = (SdNewm - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
+        MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
         MoonAcrSNewm = AutoMoonAcrS(NewmAnomaAccumPrint[i - 1], Name).MoonAcrS; // 定朔加時入轉度
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
-      const NewmEclpGong = SdNewm + AutoDifAccum(0, SdNewm, Name).SunDifAccum
+      const NewmEclpGong = NewmSd + AutoDifAccum(0, NewmSd, Name).SunDifAccum
       const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg
       const NewmEclpDeg = NewmEclpGong + SolsEclpDeg
       if (Type >= 6) {
         const FuncNewm = moonLonLat(
           NewmNodeAccumMidnPrint[i - 1],
-          SdNewm,
+          NewmSd,
           NewmEclpGong,
           Name,
           Y
@@ -310,16 +310,16 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const SdInt = ZhengSdInt + DayAccum; // 每日夜半距冬至夜半整日數。冬至當日爲0
         DayAccum++; // 這個位置不能變
         //////////天文曆///////////
-        let SunEquaLon = 0,
-          SunLon = 0,
-          MoonWhiteLon = 0,
-          MoonEclpLon = 0,
-          AnomaAccumMidn = 0,
-          NodeAccumMidn = 0,
-          MoonEquaLon = 0,
-          NowNewm_WhiteDif = 0,
-          MoonEclp = "",
-          MoonWhite = "";
+        let SunEquaLon,
+          SunLon,
+          MoonWhiteLon,
+          MoonEclpLon,
+          AnomaAccumMidn,
+          NodeAccumMidn,
+          MoonEquaLon,
+          NowNewm_WhiteDif,
+          MoonEclp,
+          MoonWhite;
         if (Type === 1) {
           SunLon = SdMidn % Solar;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Solar;
@@ -349,16 +349,20 @@ export const D1 = (Name, YearStart, YearEnd) => {
         }
         const SunEquaLat = autoLat(SdMidn, Name);
         let Dial = autoDial(SdMidn, SolsDeci, Name);
-        Dial = Dial ? "" + Dial.toFixed(3) + "尺" : "";
+        Dial = Dial ? Dial.toFixed(3) + "尺" : undefined;
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
         const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, SdMidn, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
+        let OrbColor
+        if (Type >= 6 && Type <= 10) {
+          OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name)
+        }
         Pos[i][k] = [
           { SunEquaLon: SunEquaLon.toFixed(4), SunEquaLat: lat2NS(SunEquaLat) },
           { SunCeclpLon: SunLon.toFixed(4), Dial: Dial },
           { SunEqua: SunEqua, SunCeclp: SunEclp },
-          { MoonEquaLon: +(MoonEquaLon || 0).toFixed(4), MoonEquaLat: lat2NS(MoonEquaLat) },
-          { MoonCeclpLon: +(MoonEclpLon).toFixed(4), MoonCeclpLat: lat2NS(MoonEclpLat) },
-          { MoonWhiteLon: +(MoonWhiteLon || 0).toFixed(4) },
+          { MoonEquaLon: MoonEquaLon ? MoonEquaLon.toFixed(4) : undefined, MoonEquaLat: lat2NS(MoonEquaLat) },
+          { MoonCeclpLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined, MoonCeclpLat: lat2NS(MoonEclpLat), OrbColor: OrbColor },
+          { MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined },
           { MoonCeclp: MoonEclp, MoonWhite: MoonWhite }
         ]
         const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci);

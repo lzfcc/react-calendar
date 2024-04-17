@@ -121,8 +121,11 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
         const { t: Rise, tSet: Set } = sunRise(Latitude, SunEclpLatNoon * R2D)
         const Morning = Rise - TwilightLeng
         const Dusk = Set + TwilightLeng
-        Morningstar[i][k] = midstarModern(MidnTTJd + Morning, Longitude, EquaAccumList) + ' ' + deci2hms(Morning).hm + ' ' + deci2hms(Rise).hm
-        Duskstar[i][k] = deci2hms(Set).hm + ' ' + deci2hms(Dusk).hm + ' ' + midstarModern(MidnTTJd + Dusk, Longitude, EquaAccumList)
+        Morningstar[i][k] = [
+          {
+            Morningstar: midstarModern(MidnTTJd + Morning, Longitude, EquaAccumList), Morning: deci2hms(Morning).hm, SunRise: deci2hms(Rise).hm
+          },
+          { SunSet: deci2hms(Set).hm, Dusk: deci2hms(Dusk).hm, Duskstar: midstarModern(MidnTTJd + Dusk, Longitude, EquaAccumList) }]
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
         const MansOrder = (Jd[i][k] + 0) % 28;
@@ -146,8 +149,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
       Sc,
       Jd,
       Pos,
-      Morningstar,
-      Duskstar,
+      Morningstar
     };
   };
   const result = [];

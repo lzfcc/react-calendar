@@ -171,9 +171,9 @@ export const D2 = (Name, YearStart, YearEnd) => {
         const TwilightLeng = twilight(RiseLat, SunLat);
         const Rise = sunRise(RiseLat, SunLat).t0;
         const FuncMidstar = midstarQing(Name, Y, SunLon, SunLonMor, Rise);
-        Morningstar[i][k] = `${FuncMidstar.Morningstar} ${deci2hms(Rise - TwilightLeng).hm} ${deci2hms(Rise).hm}`;
-        Duskstar[i][k] =
-          `${deci2hms(1 - Rise).hm} ${deci2hms(1 - Rise + TwilightLeng).hm} ${FuncMidstar.Duskstar}`;
+        Morningstar[i][k] = [
+          { Morningstar: FuncMidstar.Morningstar, Morning: deci2hms(Rise - TwilightLeng).hm, SunRise: deci2hms(Rise).hm },
+          { SunSet: deci2hms(1 - Rise).hm, Dusk: deci2hms(1 - Rise + TwilightLeng).hm, Duskstar: FuncMidstar.Duskstar }]
         /// ////////具注曆////////////
         const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn - 1) % 60;
         Sc[i][k] = `${NumList[k]}日${ScList[ScOrder]}`;
@@ -206,7 +206,6 @@ export const D2 = (Name, YearStart, YearEnd) => {
       Nayin,
       Pos,
       Morningstar,
-      Duskstar,
     };
   };
   const result = [];

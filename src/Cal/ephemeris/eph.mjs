@@ -364,18 +364,8 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const Rise = autoRise(SdMidn, SolsDeci, Name);
         const LightRange = AutoLightRange(Name) * 100;
         Morningstar[i][k] =
-          FuncDusk.Morningstar +
-          " " +
-          (Rise - LightRange).toFixed(2) +
-          " " +
-          Rise.toFixed(2) +
-          "刻";
-        Duskstar[i][k] =
-          (100 - Rise).toFixed(2) +
-          " " +
-          (100 - Rise + LightRange).toFixed(2) +
-          "刻 " +
-          FuncDusk.Duskstar;
+          [{ Morningstar: FuncDusk.Morningstar, Morning: (Rise - LightRange).toFixed(2), SunRise: Rise.toFixed(2) + "刻" },
+          { SunSet: (100 - Rise).toFixed(2), Dusk: (100 - Rise + LightRange).toFixed(2) + "刻 ", Duskstar: FuncDusk.Duskstar }]
         ///////////具注曆////////////
         const ScOrder = (ZhengScOrder + DayAccum) % 60;
         Sc[i][k] = ScList[ScOrder];
@@ -574,7 +564,6 @@ export const D1 = (Name, YearStart, YearEnd) => {
       Nayin,
       Pos,
       Morningstar,
-      Duskstar,
       HouName,
       HexagramName,
       FiveName,

@@ -798,13 +798,23 @@ export const bindMansAccumList = (Name, Y) => {
 };
 // console.log(bindMansAccumList('Guimao', 281))
 
-// 九道宿度
-export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
+/**
+ * 九道宿度
+ * @param {*} Name 
+ * @param {*} Y 
+ * @param {*} NodeAccum 平朔入交
+ * @param {*} AnomaAccum 平朔入轉
+ * @param {*} AvgNewmSd 平朔距冬至時間
+ * @returns 
+ */
+export const bindWhiteAccumList = (Name, Y, NodeAccum, AnomaAccum, AvgNewmSd) => {
   Name = Name.toString();
   Y = parseInt(Y);
   NodeAccum = +NodeAccum
-  Sd = +Sd
-  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, Sd, undefined, Name, Y);
+  AvgNewmSd = +AvgNewmSd
+  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr2
+  const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
+  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -966,21 +976,21 @@ export const bindMansAccumModernList = (Name, Jd) => {
  * 
  * @param {*} NodeAccum 此時入交
  * @param {*} AnomaAccum 此時入轉
- * @param {*} NewmAnomaAccum 合朔入轉
- * @param {*} NewmSd 合朔距冬至時間
+ * @param {*} AvgNewmAnomaAccum 平朔入轉
+ * @param {*} AvgNewmSd 平朔距冬至時間
  * @returns 
  */
-export const bindMoonLat = (NodeAccum, AnomaAccum, NewmAnomaAccum, NewmSd) => {
+export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
   AnomaAccum = +AnomaAccum
-  NewmAnomaAccum = +NewmAnomaAccum
-  NewmSd = +NewmSd;
+  AvgNewmAnomaAccum = +AvgNewmAnomaAccum
+  AvgNewmSd = +AvgNewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  if (NewmSd >= 365.246 || NewmSd < 0)
+  if (AvgNewmSd >= 365.246 || AvgNewmSd < 0)
     throw new Error("請輸入一週天度內的度數");
-  if (AnomaAccum >= 27.21221 || NewmAnomaAccum > 27.21221 || AnomaAccum < 0 || NewmAnomaAccum < 0)
+  if (AnomaAccum >= 27.21221 || AvgNewmAnomaAccum > 27.21221 || AnomaAccum < 0 || AvgNewmAnomaAccum < 0)
     throw new Error("請輸入一交點月內的日數");
   let Print = [];
   Print = Print.concat(
@@ -1000,13 +1010,16 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, NewmAnomaAccum, NewmSd) => {
       "Jiyuan",
       "Shoushi"
     ].map((Name) => {
-      const { Sidereal } = Para[Name]
+      const { Sidereal, Anoma } = Para[Name]
       let LatPrint = "";
       let EquaLatPrint = "";
+      const AcrNewmAnomaAccum = (AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
       const MoonAcrSNow = AutoMoonAcrS(AnomaAccum, Name).MoonAcrS;
-      const MoonAcrSNewm = AutoMoonAcrS(NewmAnomaAccum, Name).MoonAcrS;
+      const MoonAcrSNewm = AutoMoonAcrS(AcrNewmAnomaAccum, Name).MoonAcrS;
       const NowNewm_WhiteDif = (MoonAcrSNow - MoonAcrSNewm + Sidereal) % Sidereal
-      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, NewmSd, undefined, Name, undefined, NowNewm_WhiteDif)
+      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr
+      const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
+      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
       if (EclpLat) {
         LatPrint = lat2NS(EclpLat)
       }

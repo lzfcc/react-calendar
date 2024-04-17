@@ -193,11 +193,8 @@ const eclp2WhiteDif = (Node1EclpGong, NodeDif, Name) => {
     // sign2 = NodeDif < NodeOcta || NodeDif > NodeOcta * 7 || (NodeDif > NodeOcta * 3 && NodeDif < NodeOcta * 5) ? 1 : -1
     sign2 = NodeDifHalf < NodeQuar ? 1 : -1; // 改成和公式法曆法一樣。這幾曆的赤白差符號和大衍的黃白差符號一樣
   } else if (Type === 6 || Type === 7 || Name === 'Chongxuan') {
-    EquaWhiteDif = (Node1EclpGongHalf / (Solar / 72) / 18) * EclpWhiteDif; // 大衍：「計去冬至夏至以來候數，乘黃道所差，十八而一」其實應該是整數
-    // 大衍：（黃白差）距半交前後各九限，以差數爲減；距正交前後各九限，以差數爲加
-    // sign1 = NodeDif < NodeOcta || NodeDif > NodeOcta * 7 || (NodeDif > NodeOcta * 3 && NodeDif < NodeOcta * 5) ? 1 : -1 // 距半交前后各九限，以差数为减；距正交前后各九限，以差数爲加
-    sign1 = NodeDifHalf < NodeQuar ? 1 : -1; // 改成和公式法曆法一樣
-    // 大衍：「距半交前後各九限，以差數爲減；距正交前後各九限，以差數爲加」
+    EquaWhiteDif = (Node1EclpGongHalf / (Solar / 72) / 18) * EclpWhiteDif; // 大衍：「計去冬至夏至以來候數，乘黃道所差，十八而一」其實應該是整數    
+    sign1 = NodeDifHalf < NodeQuar ? 1 : -1; // 大衍：「距半交前後各九限，以差數爲減；距正交前後各九限，以差數爲加」
     const isYinSun = Node1EclpGong > SolarQuar && Node1EclpGong < SolarQuar3 ? 1 : -1;
     const isYinMoon = NodeDif < NodeHalf ? 1 : -1;
     sign2 = sign1 * isYinSun * isYinMoon; // 赤白差符號
@@ -446,17 +443,16 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
  * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
  * 1、根據平交入朔（月亮平行至升交點的時間）、經朔入轉求平交入轉，2、求月亮改正，得月亮運動到升交點的時刻，3、根據平交入朔得到升交點黃經，即正交加時月離黃道宿度
  * @param {*} NodeAccum 此時入交
- * @param {*} Sd 此時距冬至日數
- * @param {*} NewmEclpGong 合朔距冬至實行度
+ * @param {*} AvgNewmSd 平朔距冬至日數
+ * @param {*} NewmEclpGong 定朔距冬至實行度
  * @param {*} Name
  * @param {*} Y 年份。有Y就求九道宿鈐，沒有就求月緯
- * @param {*} isNewm 是合朔的話計算白道宿鈐
  * @param {*} NowNewm_WhiteDif 此時距離合朔的實行度
  * @returns
  */
 export const moonLonLat = (
   NodeAccum,
-  Sd,
+  AvgNewmSd,
   NewmEclpGong,
   Name,
   Y,
@@ -465,13 +461,12 @@ export const moonLonLat = (
   let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
-  NewmEclpGong = NewmEclpGong || Sd + AutoDifAccum(0, Sd, Name).SunDifAccum
   const MoonAvgVd = AutoMoonAvgV(Name);
   const T_Node1Dif_Avg = Node - NodeAccum; // 朔後平交日分：朔之後的正交
   const S_Node1Dif = T_Node1Dif_Avg * MoonAvgVd;
   // const NodeAnomaAccum = (AnomaAccum + T_Node1Dif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
   // const T_Node1Dif = T_Node1Dif_Avg + AutoTcorr(NodeAnomaAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
-  const Node1EclpGong = (Sd + S_Node1Dif) % Sidereal; // 授時：正交距冬至定積度
+  const Node1EclpGong = (AvgNewmSd + S_Node1Dif) % Sidereal; // 授時：正交距冬至定積度
   let WhiteAccumList = [];
   let EclpLat = 0, EquaLat = 0, NewmWhiteDeg = 0
   if (Type === 11) {

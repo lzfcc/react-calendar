@@ -316,7 +316,7 @@ export default class Day extends React.Component {
         <article>
           <ul>
             <li>
-              <span className="Jd">灰色：儒略日、儒略曆或格利高里曆日期</span>
+              <span className="ManGod">灰色：儒略日、儒略曆或格利高里曆日期</span>
             </li>
             <li>
               <span className="Nayin">
@@ -324,13 +324,13 @@ export default class Day extends React.Component {
               </span>
             </li>
             <li>
-              <span className="Equa">紅色：赤道經緯宿度</span>
+              <span className="SunEqua">紅色：赤道經緯宿度</span>
             </li>
             <li>
-              <span className="Ceclp">黑色：極黃經緯宿度</span>
+              <span className="SunCeclp">黑色：極黃經緯宿度</span>
             </li>
             <li>
-              <span className="Eclp">黃色：黃道經緯宿度</span>
+              <span className="SunEclp">黃色：黃道經緯宿度</span>
             </li>
             <li>
               <span className="WhiteLon">【月】藍色：九道經度</span>
@@ -339,7 +339,7 @@ export default class Day extends React.Component {
               <span className="MoonRise">【月】綠色：出入時刻</span>
             </li>
             <li>
-              <span className="NodeMapo">
+              <span className="Mapo">
                 【月】灰色：羅㬋（正交）、月孛（月遠地點）
               </span>
             </li>

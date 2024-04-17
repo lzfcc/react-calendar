@@ -256,7 +256,7 @@ export default (Name, Y) => {
             }
         }
         return {
-            AvgSc, Tcorr, AvgDeci, Int, Raw, Sc, AcrInt, AcrRaw,
+            AvgSc, Tcorr, AvgDeci, Int, Raw, Sc, AcrInt, AcrRaw, AvgRaw,
             Deci, Deci1, Deci2, Deci3, Equa, Eclp, Term1Sc, Term1Deci, Term1AcrSc, Term1AcrDeci, Term1Equa, Term1Eclp, TermSc, TermDeci, TermAcrSc, TermAcrDeci, TermEqua, TermEclp, LeapNumTerm,
             /// 交食用到
             NodeAccum, NodeAccumMidn, AnomaAccum, AnomaAccumMidn, Sd, AcrSd
@@ -270,6 +270,7 @@ export default (Name, Y) => {
         Raw: NewmRaw,
         AcrInt: NewmAcrInt,
         AcrRaw: NewmAcrRaw,
+        AvgRaw: NewmAvgRaw,
         Sc: NewmSc,
         Deci: NewmDeci, // 最精確的那個數字
         Deci1: NewmDeci1,
@@ -300,7 +301,7 @@ export default (Name, Y) => {
     return {
         LeapLimit, OriginYear, JiYear, JiScOrder, SolsAccum, AccumPrint,
         NewmAvgSc, NewmAvgDeci,
-        NewmSc, NewmInt, NewmRaw, NewmAcrRaw, NewmAcrInt, NewmDeci1, NewmDeci2, NewmDeci3,
+        NewmSc, NewmInt, NewmRaw, NewmAcrRaw, NewmAvgRaw, NewmAcrInt, NewmDeci1, NewmDeci2, NewmDeci3,
         SyzygySc,
         Term1Sc, Term1Deci, Term1AcrSc, Term1AcrDeci, Term1Equa, Term1Eclp,
         TermSc, TermDeci, TermAcrSc, TermAcrDeci, TermEqua, TermEclp,

@@ -556,15 +556,14 @@ a = [0, ...a]
 - Each directory has a index file that is used to export all functions and variables that are available in that directory, in order to make it easier to import the functions and variables in other files.
 - combine interpolate and interpolate_big
 
-4-17 前端 `1.12` 朔閏表、曆書的樣式渲染移到前端
+4-17 前端 `1.12` GPT幫忙把朔閏表、曆書的樣式渲染移到前端
 
- `2.14` 重寫九道術、白道交周。
+ `2.14` 重寫九道術、白道交周，難度很大。
 
 小修復：
 
 - 修復四分到開皇朔閏表沒有宿度，刪掉四分曆朔閏表中星
 - 修復會圓術展示
 - 修復元嘉曆書開頭日度是負數
-- 修復 @edcaee6 改錯的時憲曆書錯一日
 - 修復授時曆元前值日
-- 修復現代曆書少了一天
+- 修復現代曆書每日儒略日算法

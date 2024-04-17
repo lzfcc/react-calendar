@@ -92,16 +92,16 @@ export const equa2EclpPoly = (Name, Lon, isWhite) => {
     MaxX = MaxX || a / c / 2 // 函數最大值的x
     if (MaxX <= 45) {
       if (Lon > MaxX) {
-        const Func = main(MaxX, a, b)
+        const Func = main(MaxX, a, b, c)
         Equa2EclpDif = Func.Equa2EclpDif
         h = Func.h
       } else {
-        const Func = main(Lon, a, b)
+        const Func = main(Lon, a, b, c)
         Equa2EclpDif = Func.Equa2EclpDif
         h = Func.h
       }
     } else {
-      const Func = main(Lon, a, b)
+      const Func = main(Lon, a, b, c)
       Equa2EclpDif = Func.Equa2EclpDif
       h = Func.h
     }
@@ -281,24 +281,20 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   const SolarQuar = Solar / 4;
   const SolarHalf = Solar / 2;
   const SolarOcta = Solar / 8;
-  const SolarQuar3 = Solar * 0.75;
   let Equa2Eclp = 0;
   let Eclp2Equa = 0;
+  const LonHalf = LonRaw % SolarHalf;
   const LonQuar = LonRaw % SolarQuar; // 滿象限去之
   const Lon = SolarOcta - Math.abs(LonQuar - SolarOcta); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
   let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(Name, Lon)
-  const sign1 =
-    LonRaw < SolarQuar || (LonRaw >= SolarHalf && LonRaw < SolarQuar3) ? -1 : 1;
-  const sign2 =
-    LonRaw < SolarQuar || (LonRaw >= SolarHalf && LonRaw < SolarQuar3) ? 1 : -1;
+  const sign1 = LonHalf < SolarQuar ? -1 : 1;
   Equa2EclpDif *= sign1;
-  Eclp2EquaDif *= sign2;
+  Eclp2EquaDif *= -sign1;
   Equa2Eclp = LonRaw + Equa2EclpDif;
   Eclp2Equa = LonRaw + Eclp2EquaDif;
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
-
-// console.log(Equa2EclpFormula(23, 'Dayan').Equa2EclpDif)
+// console.log(Equa2EclpFormula(40, 'Guantian').Equa2EclpDif)
 // console.log(Equa2EclpTable(23, 'Dayan').Equa2EclpDif) // 公式和表格很接近
 
 export const equaEclp = (Gong, Name) => {

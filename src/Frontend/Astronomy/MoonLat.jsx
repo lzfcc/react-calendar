@@ -25,14 +25,14 @@ export default class Converter extends React.Component {
             this.setState({ b: e.currentTarget.value });
           }}
         />
-        <span>此前合朔入轉</span>
+        <span>此前平朔入轉</span>
         <input className='width3'
           value={this.state.c}
           onChange={e => {
             this.setState({ c: e.currentTarget.value });
           }}
         />
-        <span>合朔距冬至時間</span>
+        <span>平朔距冬至時間</span>
         <input className='width3'
           value={this.state.d}
           onChange={e => {

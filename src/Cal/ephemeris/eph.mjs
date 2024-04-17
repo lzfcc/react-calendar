@@ -67,6 +67,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       NewmInt,
       NewmRaw,
       NewmAcrRaw,
+      NewmAvgRaw,
       NewmNodeAccumMidnPrint,
       NewmAnomaAccumPrint,
       NewmAnomaAccumMidnPrint,
@@ -268,6 +269,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type < 4)
         NewmSd = NewmRaw[i - 1] - SolsAccum; // 合朔加時
       else NewmSd = NewmAcrRaw[i - 1] - SolsAccum;
+      const AvgNewmSd = NewmAvgRaw[i - 1] - SolsAccum;
       if (Type === 1) {
         MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
@@ -281,7 +283,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type >= 6) {
         const FuncNewm = moonLonLat(
           NewmNodeAccumMidnPrint[i - 1],
-          NewmSd,
+          AvgNewmSd,
           NewmEclpGong,
           Name,
           Y
@@ -347,7 +349,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? Dial.toFixed(3) + "尺" : undefined;
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
-        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, SdMidn, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
+        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, undefined, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
         let OrbColor
         if (Type >= 6 && Type <= 10) {
           OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name)

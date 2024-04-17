@@ -9,15 +9,13 @@ export default class Converter extends React.Component {
     this.state = {
       calendars: '',
       Year: 1281,
-      NodeAccum: 10,
-      Sd: 50,
     }
     this.handle = this.handle.bind(this)
   }
 
   handle() {
     try {
-      const { WhiteAccumPrint, WhiteDegMans } = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum, this.state.Sd)
+      const { WhiteAccumPrint, WhiteDegMans } = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum,this,this.state.AnomaAccum, this.state.Sd)
       this.setState({ WhiteAccumPrint, WhiteDegMans })
     } catch (e) {
       alert(e.message)
@@ -70,14 +68,21 @@ export default class Converter extends React.Component {
             this.setState({ Year: e.currentTarget.value });
           }}
         />
-        <span>年 入交日數</span>
+        <span>年 平朔入交</span>
         <input className='width3'
           value={this.state.NodeAccum}
           onChange={e => {
             this.setState({ NodeAccum: e.currentTarget.value });
           }}
         />
-        <span>距冬至時長</span>
+        <span>平朔入轉</span>
+        <input className='width3'
+          value={this.state.AnomaAccum}
+          onChange={e => {
+            this.setState({ AnomaAccum: e.currentTarget.value });
+          }}
+        />
+        <span>平朔距冬至時長</span>
         <input className='width3'
           value={this.state.Sd}
           onChange={e => {

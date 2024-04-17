@@ -335,9 +335,9 @@ export default class Day extends React.Component {
         </button>
         <p>
           <span className="Hori">灰色：地平座標</span>&nbsp;
-          <span className="Equa">紅色：赤道</span>&nbsp;
-          <span className="Ceclp">黑色：極黃</span>&nbsp;
-          <span className="Eclp">黃色：黃道</span>&nbsp;
+          <span className="SunEqua">紅色：赤道</span>&nbsp;
+          <span className="SunCeclp">黑色：極黃</span>&nbsp;
+          <span className="SunEclp">黃色：黃道</span>&nbsp;
           <span className="Morningstar">
             綠色：晨昏矇影、昏旦中星、日出日入
           </span>

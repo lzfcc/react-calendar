@@ -896,6 +896,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       NodeAccumCorrB = Portion * SunTcorr + MoonTcorr; // 太陽入交定日，上面是月亮入交定日
     }
   }
+  const Tcorr = Tcorr2 || Tcorr1
   return {
     SunTcorr,
     SunTcorr2,
@@ -904,6 +905,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
     MoonTcorr2,
     MoonTcorr1,
     MoonAcrVd,
+    Tcorr,
     Tcorr2,
     Tcorr1,
     NodeAccumCorrA,

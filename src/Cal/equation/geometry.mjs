@@ -1,4 +1,4 @@
-import { R2D } from "../parameter/functions.mjs";
+import { R2D, acosd, asind, cosd, pi, sind } from "../parameter/functions.mjs";
 import {
   Gong2Lon,
   GongFlat2High,
@@ -6,12 +6,12 @@ import {
   HighLon2FlatLat,
 } from "../astronomy/pos_convert.mjs";
 
-const RoundL2HWest = (r, l) => r * (1 - Math.cos(l)); // 輸入半弧，輸出矢
-const RoundH2LWest = (r, h) => Math.acos((r - h) / r); // 輸入矢，輸出半弧
-const RoundL2CWest = (r, l) => r * Math.sin(l); // 輸入半弧，輸出半弦
-const RoundC2LWest = (r, c) => Math.asin(c / r); // 輸入半弦，輸出半弧  // 圓心角l=arcsin(sqrt(2rh-h^2)/r)
+const RoundL2HWest = (r, l) => r * (1 - cosd(l)); // 輸入半弧，輸出矢
+const RoundH2LWest = (r, h) => acosd((r - h) / r); // 輸入矢，輸出半弧
+const RoundL2CWest = (r, l) => r * sind(l); // 輸入半弧，輸出半弦
+const RoundC2LWest = (r, c) => asind(c / r); // 輸入半弦，輸出半弧  // 圓心角l=arcsin(sqrt(2rh-h^2)/r)
 
-// 會圓術已知矢長求弧長
+// 會圓術矢 --> 弧、弦
 const RoundH2LC = (h) => {
   // 弓弦長 2* sqrt (r^2-(r-h)^2) //半徑，矢長
   const r = 60.875;
@@ -20,37 +20,10 @@ const RoundH2LC = (h) => {
   const l = h ** 2 / r + c;
   return { Halfc, c, l };
 };
-export const RoundL2H = (l) => {
-  // 會圓術已知半弧長反求矢長
-  const r = 60.875;
-  const d = 121.75;
-  const equation = (x) =>
-    x ** 4 / d ** 2 + (1 - (2 * l) / d) * x ** 2 - d * x + l ** 2;
-  let mid = 0;
-  let lower = 0;
-  let upper = r;
-  while (upper - lower > 1e-10) {
-    mid = (lower + upper) / 2;
-    if (equation(mid) * equation(lower) < 0) {
-      upper = mid;
-    } else {
-      lower = mid;
-    }
-  }
-  return upper; // 矢長
-};
-const RoundC2HL = (c) => {
-  // c 半弦長
-  const r = 60.875;
-  const h = r - Math.sqrt(r ** 2 - c ** 2);
-  const l = 2 * c + h ** 2 / r;
-  const Halfl = l / 2;
-  return { h, l, Halfl };
-};
-export const RoundH2LPrint = (h) => {
+
+export const RoundH2LCPrint = (h) => {
   h = +h;
   const Sidereal = 365.25;
-  const pi = 3.141592653589793;
   const r = 60.875; // 會圓術系數3，不是pi
   const Portion2 = pi / 3;
   const Portion4 = Sidereal / 360;
@@ -78,43 +51,80 @@ export const RoundH2LPrint = (h) => {
   });
   return Print;
 };
-// console.log(RoundH2LPrint(60.875, 60.875, 365.25))
+// console.log(RoundH2LCPrint(60.875, 60.875, 365.25))
+
+/**
+ * 弦 --> 弧、矢
+ * @param {*} c 
+ * @returns 
+ */
+const RoundC2LH = (c) => {
+  // c 半弦長
+  const r = 60.875;
+  const h = r - Math.sqrt(r ** 2 - c ** 2);
+  const l = 2 * c + h ** 2 / r;
+  const Halfl = l / 2;
+  return { h, l, Halfl };
+};
+
 export const RoundC2LHPrint = (cRaw) => {
   cRaw = +cRaw;
   const c = cRaw / 2;
   if (cRaw > 121.75) {
     throw new Error("c <= 121.75");
   }
-  // const Sidereal = 365.25
-  // const r = 60.875
-  // const Portion2 = pi / 3
-  // const Portion4 = Sidereal / 360
-  const Func = RoundC2HL(c);
-  const { l } = Func;
-  const { h } = Func;
-  // const rReal = Sidereal / pi / 2
-  // const cReal = c / Portion2
-  // let lWest = RoundC2LWest(rReal / Portion4, c / Portion4) * Portion4
-  // const hWest = (rReal / Portion4 - Math.sqrt((rReal / Portion4) ** 2 - cReal ** 2))// / Portion2
-  // lWest *= 2
-  const Print = [
+  const Sidereal = 365.25
+  const r = 60.875
+  const Portion2 = pi / 3
+  const Portion4 = Sidereal / 360
+  const { l, h } = RoundC2LH(c);
+  const rReal = Sidereal / pi / 2
+  const cReal = c / Portion2
+  let lWest = RoundC2LWest(rReal / Portion4, c / Portion4) * Portion4
+  const hWest = (rReal / Portion4 - Math.sqrt((rReal / Portion4) ** 2 - cReal ** 2))// / Portion2
+  lWest *= 2
+  let Print = [
     {
       title: "會圓術",
-      // data: [l.toFixed(6), (l - lWest).toFixed(4), h.toFixed(6), (h - hWest).toFixed(4)]
-      data: [l.toFixed(6), "-", h.toFixed(6), "-"],
+      data: [l.toFixed(6), (l - lWest).toFixed(4), h.toFixed(6), (h - hWest).toFixed(4)]
     },
   ];
-  // Print = Print.concat({
-  //     title: '三角函數',
-  //     data: [lWest.toFixed(6), 0, hWest.toFixed(6), 0]
-  // })
+  Print = Print.concat({
+    title: '三角函數',
+    data: [lWest.toFixed(6), 0, hWest.toFixed(6), 0]
+  })
   return Print;
 };
+// console.log(RoundC2LHPrint(10))
+
+/**
+ * 會圓術 半弧長 --> 矢長
+ * @param {*} l 
+ * @returns 
+ */
+export const RoundL2H = (l) => {
+  const r = 60.875;
+  const d = 121.75;
+  const equation = (x) =>
+    x ** 4 / d ** 2 + (1 - (2 * l) / d) * x ** 2 - d * x + l ** 2;
+  let mid = 0;
+  let lower = 0;
+  let upper = r;
+  while (upper - lower > 1e-10) {
+    mid = (lower + upper) / 2;
+    if (equation(mid) * equation(lower) < 0) {
+      upper = mid;
+    } else {
+      lower = mid;
+    }
+  }
+  return upper; // 矢長
+};
+
 export const RoundL2HPrint = (lRaw) => {
   lRaw = +lRaw;
   const l = lRaw / 2;
   const Sidereal = 365.25;
-  const pi = 3.141592653589793;
   const r = 60.875; // 會圓術系數3，不是pi
   let h = RoundL2H(l);
   if (lRaw === 0) {
@@ -188,7 +198,7 @@ const Hushigeyuan_Sub = (LonRaw, p, q, pAnother) => {
   const BN = (CT * r) / OT;
   const PQ = (p * OP) / q;
   const BL = (PC * BN) / PQ;
-  const BD = RoundC2HL(BL).Halfl;
+  const BD = RoundC2LH(BL).Halfl;
   let Equa2EclpDif = Lon - BD;
   const condition =
     (LonRaw >= 0 && LonRaw < SiderealQuar) ||
@@ -255,7 +265,6 @@ const Hushigeyuan_Ex = (LonRaw, e) => {
 
 const HushigeyuanWest = (LonRaw, Sidereal, DE) => {
   // DE黃赤交角。變量名見《中國古代曆法》頁629
-  const pi = Math.PI;
   const SiderealQuar = Sidereal / 4;
   const SiderealHalf = Sidereal / 2;
   const SiderealQuar3 = Sidereal * 0.75;
@@ -269,7 +278,7 @@ const HushigeyuanWest = (LonRaw, Sidereal, DE) => {
   /// /轉換爲360度////
   const Portion4 = Sidereal / 360;
   Lon /= Portion4;
-  const r = 360 / pi / 2;
+  const r = R2D;
   const p = RoundL2CWest(r, DE); // DK
   const v = RoundL2HWest(r, DE); // KE
   const q = r - v; // OK

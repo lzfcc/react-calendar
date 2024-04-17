@@ -380,7 +380,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   const SolarQuar = 91.310625;
   const SolarQuar3 = 273.931875;
   const SolarOcta = 45.6553125;
-  const SiderealSext = 60.87625; // Solar / 6 周天六之一是天球半徑
+  const SiderealSext = 60.875; // 周天六之一是會圓術天球半徑
   const Sobliq = 23.9; // 黃赤大距
   const k = 14.66; // 正交極數：二至白赤正交與黃白正交的距離WhEq_WhEc_DifMax。推導見p368
   /// 白赤交點距二分度數

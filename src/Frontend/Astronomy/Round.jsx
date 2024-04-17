@@ -1,5 +1,5 @@
 import React from "react";
-import { RoundH2LPrint } from "../../Cal/equation/geometry.mjs";
+import { RoundH2LCPrint } from "../../Cal/equation/geometry.mjs";
 export default class Equa extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +25,7 @@ export default class Equa extends React.Component {
 
   handle() {
     try {
-      const Print = RoundH2LPrint(this.state.H)
+      const Print = RoundH2LCPrint(this.state.H)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)

@@ -118,7 +118,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
         k++
       ) {
         // 每月日數
-        const SmdMidn = Math.trunc(NewmSmd[i - 1]) + k; // 每日夜半距冬至次日夜半日數
+        const SmdMidn = Math.trunc(NewmSmd[i - 1]) + k - 1; // 每日夜半距冬至次日夜半日數
         // const SmdMidn = 263 // 1722-9-11八月朔 :263 廖育棟01:05
         DayAccum++; // 這個位置不能變
         /// ///////天文曆///////////
@@ -175,7 +175,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
           { Morningstar: FuncMidstar.Morningstar, Morning: deci2hms(Rise - TwilightLeng).hm, SunRise: deci2hms(Rise).hm },
           { SunSet: deci2hms(1 - Rise).hm, Dusk: deci2hms(1 - Rise + TwilightLeng).hm, Duskstar: FuncMidstar.Duskstar }]
         /// ////////具注曆////////////
-        const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn - 1) % 60;
+        const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn) % 60;
         Sc[i][k] = `${NumList[k]}日${ScList[ScOrder]}`;
         const JdTmp = Math.trunc(SmJd + SmdMidn)
         const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder

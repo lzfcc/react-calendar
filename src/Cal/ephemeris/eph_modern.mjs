@@ -98,7 +98,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
       ) {
         DayAccum++;
         const DeltaT = deltaT(NewmUT1Jd[i - 1] + 15) // 本月DeltaT        
-        const LocalMidnUT1Jd = Math.trunc(NewmUT1Jd[i - 1] - .5 + k - 1) + .5 // 儒略日半夜是0.5，所以先-.5再+.5
+        const LocalMidnUT1Jd = Math.round(NewmUT1Jd[i - 1] + k - 1) - .5 // 儒略日半夜是0.5，所以要四捨五入再減.5
         Jd[i][k] = LocalMidnUT1Jd + .5
         const MidnTTJd = LocalMidnUT1Jd + DeltaT - Longitude / 360
         /// ///////天文曆///////////
@@ -128,7 +128,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
           { SunSet: deci2hms(Set).hm, Dusk: deci2hms(Dusk).hm, Duskstar: midstarModern(MidnTTJd + Dusk, Longitude, EquaAccumList) }]
         ///////////具注曆////////////
         Sc[i][k] = ScList[jd2Date(Jd[i][k]).ScOrder];
-        const MansOrder = (Jd[i][k] + 0) % 28;
+        const MansOrder = (Jd[i][k] + 11) % 28;
         const WeekOrder = (Jd[i][k] + 0) % 7;
         const date = jd2Date(Jd[i][k]);
         Jd[i][k] += ` ${date.mm}.${date.dd} `
@@ -158,4 +158,4 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
   }
   return result;
 };
-// console.log(D3(2024, 2024, 116.428, 39.5))
+// console.log(D3(1690, 1690, 116.428, 39.5))

@@ -10,6 +10,7 @@ import {
   NameList,
   MansionNameList,
   MansionNameListQing,
+  NameJiudaoList,
 } from "../parameter/constants.mjs";
 import { AutoEclipse } from "./eclipse.mjs";
 import {
@@ -47,6 +48,7 @@ import {
 import { equaEclp } from "./equa_eclp.mjs";
 import { moonLonLat } from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
+import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
 export const bindTcorr = (AnomaAccum, Sd, Name) => {
@@ -320,7 +322,7 @@ export const bindEquaEclp = (GongRaw) => {
       );
       let Eclp2EquaLat = 0;
       if (Name === "Shoushi") Eclp2EquaLat = Hushigeyuan(GongRaw).Lat;
-      else if (List2.indexOf(Name) > 0)
+      else if (List2.indexOf(Name) >= 0)
         Eclp2EquaLat = autoLat(GongRaw, Name, true);
       if (Equa2Eclp) {
         EclpLonPrint = Equa2Eclp.toFixed(6);
@@ -800,7 +802,9 @@ export const bindMansionAccumList = (Name, Y) => {
 export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
   Name = Name.toString();
   Y = parseInt(Y);
-  const { WhiteAccumList } = moonLonLat(NodeAccum, Sd, undefined, Name, Y, true);
+  NodeAccum = +NodeAccum
+  Sd = +Sd
+  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, Sd, undefined, Name, Y, true);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -821,9 +825,10 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
     }
     WhiteAccumPrint[i][8] = DirList[i] + WhiteSum.toFixed(3);
   }
-  return WhiteAccumPrint;
+  const WhiteDegMans = deg2Mansion(NewmWhiteDeg, WhiteAccumList).Print
+  return { WhiteAccumPrint, WhiteDegMans }
 };
-// console.log(bindWhiteAccumList('Dayan', 1281, 1, 2))
+// console.log(bindWhiteAccumList('Jiyuan', 1281, 10, 50))
 
 
 export const bindMansionAccumModernList = (Name, Jd) => {
@@ -957,13 +962,13 @@ export const bindMansionAccumModernList = (Name, Jd) => {
 };
 // console.log(bindMansionAccumModernList('Chongzhen', 2424222))
 
-export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
+export const bindMoonLat = (NodeAccum, NewmSd) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
-  MoonWhite = +MoonWhite;
+  NewmSd = +NewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  if (MoonWhite >= 365.246 || MoonWhite < 0)
+  if (NewmSd >= 365.246 || NewmSd < 0)
     throw new Error("請輸入一週天度內的度數");
   let Print = [];
   Print = Print.concat(
@@ -973,58 +978,28 @@ export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
       "Daming",
       "Huangji",
       "Dayan",
-      "Wuji",
-      "Tsrengyuan",
-      "Chongxuan",
       "Qintian",
       "Yingtian",
+      "Qianyuan",
+      "Yitian",
       "Chongtian",
       "Mingtian",
       "Guantian",
       "Jiyuan",
-      "Shoushi",
+      "Shoushi"
     ].map((Name) => {
-      let NodeSdDegPrint = "-";
-      let EclpLonPrint = "-";
-      let EquaLonPrint = "-";
-      let EclpWhiteDifPrint = "-";
-      let EquaWhiteDifPrint = "-";
-      let LatPrint = "-";
-      let EquaLatPrint = "-";
-      const {
-        NodeEclp,
-        EclpWhiteDif,
-        EquaWhiteDif,
-        EquaLon,
-        EclpLon,
-        EquaLat,
-        EclpLat
-      } = moonLonLat(NodeAccum, MoonWhite, Name)
-      if (NodeEclp) {
-        NodeSdDegPrint = NodeEclp.toFixed(4);
-      }
-      if (EquaWhiteDif) {
-        EquaLonPrint = EquaLon.toFixed(4);
-        EquaWhiteDifPrint = EquaWhiteDif.toFixed(4);
-      }
-      if (EclpLon) {
-        EclpLonPrint = EclpLon.toFixed(4);
-        EclpWhiteDifPrint = EclpWhiteDif.toFixed(4);
-      }
+      let LatPrint = "";
+      let EquaLatPrint = "";
+      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, NewmSd, undefined, Name)
       if (EclpLat) {
-        LatPrint = EclpLat.toFixed(4);
+        LatPrint = lat2NS(EclpLat)
       }
       if (EquaLat) {
-        EquaLatPrint = EquaLat.toFixed(4);
+        EquaLatPrint = lat2NS(EquaLat)
       }
       return {
         title: NameList[Name],
         data: [
-          NodeSdDegPrint,
-          EquaLonPrint,
-          EclpLonPrint,
-          EclpWhiteDifPrint,
-          EquaWhiteDifPrint,
           LatPrint,
           EquaLatPrint,
         ],
@@ -1033,7 +1008,7 @@ export const bindMoonLonLat = (NodeAccum, MoonWhite) => {
   );
   return Print;
 };
-// console.log(bindMoonLonLat(2.252, 55.71))
+// console.log(bindMoonLat(2.252, 55.71))
 
 export const bindSunEclipse = (
   NodeAccum,

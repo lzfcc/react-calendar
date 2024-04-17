@@ -15,7 +15,7 @@ import { R2D, pi2 } from "../parameter/functions.mjs";
 import { FlatLon2FlatLat, Lat2NS, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
 import { horizontal } from "../astronomy/pos_convert_modern.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
-import { PlanetList } from "Cal/parameter/constants.mjs";
+import { PlanetList } from "../parameter/constants.mjs";
 
 // 這單獨放一個為了避免循環依賴
 const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {

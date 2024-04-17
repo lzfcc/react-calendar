@@ -13,7 +13,7 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>度數</span>
+        <span>距冬至度數</span>
         <input className='width3'
           value={this.state.Deg}
           onChange={e => {
@@ -51,7 +51,7 @@ export default class Converter extends React.Component {
             <th>赤-黃</th>
             <th>球面三角</th>
             <th>Δ‱</th>
-            <th><bc>赤緯</bc></th>
+            <th><bc>黃 ⇒ 赤緯</bc></th>
             <th>球面三角</th>
             <th>Δ</th>
           </tr>

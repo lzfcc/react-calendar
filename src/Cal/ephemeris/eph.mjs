@@ -41,16 +41,13 @@ import { deg2Mansion, degAccumList, mansion, midstar, solsMansion } from "../ast
 import { AutoNineOrbit } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
-import { deci, nzh } from "../parameter/functions.mjs";
+import { deci, lat2NS, nzh } from "../parameter/functions.mjs";
 import { equaEclp } from "../astronomy/equa_eclp.mjs";
 import { moonLonLat } from "../astronomy/moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "../astronomy/lat_rise_dial.mjs";
 
 const abs = (x) => Math.abs(x);
-const lat2NS = (x) => {
-  if (x) return (x > 0 ? "N" : "S") + abs(x).toFixed(4);
-  else return undefined;
-};
+
 export const D1 = (Name, YearStart, YearEnd) => {
   YearEnd = YearEnd || YearStart;
   const Main = (Name, Y) => {

@@ -9,7 +9,7 @@ import MansionAccumModernList from './MansionAccumModernList'
 import WhiteAccumList from './WhiteAccumList'
 import BindLon2Lat from './Lon2Lat'
 import StarEqua from './StarEqua'
-import MoonLon from './MoonLon'
+import MoonLat from './MoonLat'
 import Const from './Const'
 import SunEclipse from './SunEclipse'
 import MoonEclipse from './MoonEclipse'
@@ -51,7 +51,7 @@ export default class Astronomy extends React.Component {
           <Round1 />
           <Hushigeyuan />
           <h2>月行</h2>
-          <MoonLon />
+          <MoonLat />
           <h2>交食</h2>
           <SunEclipse />
           <MoonEclipse />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { bindMoonLonLat } from '../../Cal/astronomy/bind.mjs'
+import { bindMoonLat } from '../../Cal/astronomy/bind.mjs'
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -11,14 +11,14 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>入交日</span>
+        <span>入交</span>
         <input className='width3'
           value={this.state.a}
           onChange={e => {
             this.setState({ a: e.currentTarget.value });
           }}
         />
-        <span> 月黃經</span>
+        <span> 距冬至時間</span>
         <input className='width3'
           value={this.state.b}
           onChange={e => {
@@ -31,7 +31,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const Print = bindMoonLonLat(this.state.a, this.state.b)
+      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)
@@ -47,12 +47,7 @@ export default class Converter extends React.Component {
         <table>
           <tr>
             <th></th>
-            <th>正交黃經</th>
-            <th>赤經</th>
-            <th>極黃經</th>
-            <th>白-黃</th>
-            <th>赤白差</th>
-            <th>黃緯</th>
+            <th>極黃緯</th>
             <th>赤緯</th>
           </tr>
           {(this.state.output || []).map(row => {
@@ -73,9 +68,9 @@ export default class Converter extends React.Component {
   render() {
     return (
       <div>
-        <h3>月極黃經 ⇒ 極白經、赤經、黃緯</h3>
+        <h3>太陰緯度</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-8'>月行九道</button><span className='Deci64'>？</span>
+        <button onClick={this.handle} className='button4-8'>月行陰陽</button>
         {this.result()}
       </div>
     )

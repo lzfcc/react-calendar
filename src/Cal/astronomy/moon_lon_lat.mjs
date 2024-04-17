@@ -137,6 +137,7 @@ const eclp2WhiteDif = (Node1EclpGong, NodeDif, Name) => {
   const { Solar, Type } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   const NodeHalf = NodeQuar * 2;
+  const NodeOcta = nodeQuar / 2;
   const Solar25 = Solar / 4;
   const Solar50 = Solar / 2;
   const Solar75 = Solar * 0.75;
@@ -246,7 +247,7 @@ const moonLonJiudao = (Node1EclpGong, NewmEclpGong, Name, Y) => {
   );
   const NewmNode1_EclpDif = (NewmEclpGong - Node1EclpGong + Sidereal) % Sidereal
   const NewmNode1_WhiteDif = NewmNode1_EclpDif + eclp2WhiteDif(Node1EclpGong, NewmNode1_EclpDif, Name)
-  const NewmWhiteDeg = Node1WhiteDeg + NewmNode1_WhiteDif
+  const NewmWhiteDeg = (Node1WhiteDeg + NewmNode1_WhiteDif) % Sidereal
   return { WhiteAccumList, NewmWhiteDeg };
 }
 
@@ -414,7 +415,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, isNewm) => {
       const sign4 = XHalf < Solar25 ? -1 : 1; // 正交中交後為加，半交後為減——這裏暫定用左手法則
       return sign4 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
     }
-    const WhEq_EquaDeg = SolsEquaDeg + WhEqGong;
+    const WhEq_EquaDeg = (SolsEquaDeg + WhEqGong) % Sidereal;
     for (let i = 0; i < EquaAccumList.length; i++) {
       const Mans_WhEq_Dif = (EquaAccumList[i] - WhEq_EquaDeg + Sidereal) % Sidereal; // 「正交後積度」
       WhiteAccumList[i] = Mans_WhEq_Dif + equa2WhiteDif(Mans_WhEq_Dif);
@@ -430,11 +431,11 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, isNewm) => {
     const { Name: WhEq_MansName, MansDeg: WhEq_EquaMansDeg } = deg2Mansion(WhEq_EquaDeg, EquaAccumList) // 白赤正交宿度
     const WhEq_WhiteMansDeg = WhEq_EquaMansDeg + equa2WhiteDif(WhEq_EquaMansDeg)
     const WhEq_WhiteDeg = mansion2Deg(WhEq_MansName + WhEq_WhiteMansDeg, WhiteAccumList) // 正交宿度赤轉白，授時曆沒有，我覺得按道理應該有
-    NewmWhiteDeg = WhEq_WhiteDeg + Newm_WhEq_WhiteDif // 定朔白道宿積度
+    NewmWhiteDeg = (WhEq_WhiteDeg + Newm_WhEq_WhiteDif) % Sidereal // 定朔白道宿積度
   }
   return { WhiteAccumList, NewmWhiteDeg, EquaLat };
 };
-// console.log(moonLonLatShoushi(45.65625 + 91.3125, 70, 1280));
+// console.log(moonLonLatShoushi(45.65625 + 91.3125, 70, 1280, true));
 
 /**
  * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
@@ -504,7 +505,6 @@ export const moonLonLat = (
   }
   return { WhiteAccumList, NewmWhiteDeg, EclpLat, EquaLat };
 };
-// console.log(moonLonLat(8, 13, 156, 40, 'Wuji', 1200, true))
-// console.log(moonLonLat(7, 13, 156, 40, 'Chongtian', 1200))
-// console.log(moonLonLat(7, 13, 156, 40, 'Dayan', 1200))
-// console.log(moonLonLat(7, 13, 156, 40, 'Qintian', 1200))
+
+// console.log(moonLonLat(7, 13, undefined, 'Qintian', 1200))
+// console.log(moonLonLat(7, 13, undefined, 'Shoushi', 1200, true))

@@ -392,9 +392,8 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
  * dialFormula 都是實行度，儀天也是
  * 陳美東誤差：四分.7，麟德.13，大衍.06，宣明.45，崇玄.09，儀天.45，崇天明天觀天.23 .20 .21，紀元.11，大明.12，授時.11。我testLon2Lat：後漢四分：0.7918, 麟德：0.0874, 大衍：0.0448, 宣明：0.3109, 崇玄：0.1009, 應天：0.3115, 乾元：0.3120, 儀天：0.3088, 崇天：0.0536, 明天：0.0539, 觀天：0.0541, 紀元：0.0089, 重修大明：0.0058, 授時：0.0148,
  * @param {*} Sd 距冬至時間
- * @param {*} SolsDeci 冬至小分
- * @param {*} isBare true：不加太陽改正
  * @param {*} Name 曆法名
+ * @param {*} isBare true：不加太陽改正
  * @returns 
  */
 export const autoLat = (Sd, Name, isBare) => {
@@ -444,8 +443,6 @@ export const autoLat = (Sd, Name, isBare) => {
   }
   return Lat;
 };
-
-
 
 export const autoRise = (Sd, SolsDeci, Name) => {
   const { Type } = Para[Name];

@@ -638,6 +638,9 @@ export const mansion2Deg = (Mansion, AccumList) => {
 // console.log(mansion2Deg('心2', degAccumList('Guimao', 900).EquaAccumList))
 export const deg2Mansion = (Deg, AccumList, fixed) => {
     Deg = +Deg + 1e-12;
+    if (Deg > 365.2575) {
+        alert("Deg > 365.2575")
+    }
     let Print = "", Name = "";
     let MansDeg = 0
     if (AccumList.length === undefined) { // 清代用字典

@@ -17,8 +17,8 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const WhiteAccumPrint = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum, this.state.Sd)
-      this.setState({ WhiteAccumPrint })
+      const { WhiteAccumPrint, WhiteDegMans } = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum, this.state.Sd)
+      this.setState({ WhiteAccumPrint, WhiteDegMans })
     } catch (e) {
       alert(e.message)
     }
@@ -31,6 +31,7 @@ export default class Converter extends React.Component {
     return (
       <div className='ans table2'>
         <h3>九道宿鈐</h3>
+        <p>月離九道 {this.state.WhiteDegMans}</p>
         <table>
           {this.state.WhiteAccumPrint.map(row => {
             return (
@@ -76,7 +77,7 @@ export default class Converter extends React.Component {
             this.setState({ NodeAccum: e.currentTarget.value });
           }}
         />
-        <span>距冬至日數</span>
+        <span>距冬至時長</span>
         <input className='width3'
           value={this.state.Sd}
           onChange={e => {

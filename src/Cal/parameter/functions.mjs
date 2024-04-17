@@ -67,6 +67,11 @@ export const fix = (x, n) => {
   return (+a < 10 ? '0' : '') + a
 }
 export const r2dfix = x => x * R2D.toFixed(2)
+
+export const lat2NS = (x) => {
+  if (x) return (x > 0 ? "N" : "S") + abs(x).toFixed(4);
+  else return undefined;
+};
 // const debounce = (fn, delay) => {
 //   let timer = 100; // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
 //   return (...args) => {

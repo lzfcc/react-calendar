@@ -95,7 +95,7 @@ export const NameList = {
   Daming3: "重修大明",
   Yiwei: "乙未(擬)",
   Gengwu: "庚午",
-  Shoushi: "授時(曆經)",
+  Shoushi: "授時", // (曆經)
   Shoushi2: "授時(通軌)",
   Datong: "大統(通軌)",
   Datong2: "大統(曆志)",
@@ -148,7 +148,7 @@ export const NameDayList = {
   Chengtian: "成天",
   Daming3: "重修大明",
   Gengwu: "庚午",
-  Shoushi: "授時(曆經)",
+  Shoushi: "授時", // (曆經)
   Shoushi2: "授時(通軌)",
   Datong: "大統(通軌)",
   Datong2: "大統(曆志)",
@@ -159,7 +159,7 @@ export const NameDayList = {
 };
 export const MansionSystemList = {
   Shanggu: '古度',
-  Shi: '石氏',
+  Shi: '石氏(古曆所用)',
   Chongzhen: '崇禎曆書',
   Xinfa: '新法曆書',
   Lingtai: '靈臺儀象志',
@@ -176,6 +176,7 @@ export const NameJiudaoList = {
   Mingtian: "明天",
   Guantian: "觀天",
   Jiyuan: "紀元",  
+  Shoushi: "授時"
 }
 export const ScList = [
   "癸亥",

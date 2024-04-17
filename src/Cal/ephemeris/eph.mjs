@@ -41,12 +41,10 @@ import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/ma
 import { nineOrbits } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
-import { deci, fm60, lat2NS, nzh } from "../parameter/functions.mjs";
+import { deci, fm60, fmod, lat2NS, nzh } from "../parameter/functions.mjs";
 import { equaEclp } from "../astronomy/equa_eclp.mjs";
 import { moonLonLat } from "../astronomy/moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "../astronomy/lat_rise_dial.mjs";
-
-const abs = (x) => Math.abs(x);
 
 export const D1 = (Name, YearStart, YearEnd) => {
   YearEnd = YearEnd || YearStart;
@@ -333,7 +331,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
             Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
-          SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;          
+          SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
           const MoonAcrSMidn = AutoMoonAcrS(AnomaAccumMidn, Name).MoonAcrS;
           if (Type <= 4) {
@@ -393,9 +391,9 @@ export const D1 = (Name, YearStart, YearEnd) => {
           (SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar,
         );
         if (Type >= 6) {
-          const WeekOrder = (NewmInt[i - 1] + k + 3 + (WeekConst || 0)) % 7;
+          const WeekOrder = fmod(NewmInt[i - 1] + k + 3 + (WeekConst || 0), 7);
           const MansOrder =
-            (NewmInt[i - 1] + k + 21 + (MansDayConst || 0)) % 28;
+            fmod(NewmInt[i - 1] + k + 21 + (MansDayConst || 0), 28);
           Week[i][k] =
             WeekList[WeekOrder] +
             MansNameList[MansOrder] +
@@ -464,6 +462,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
         if (AutumnDayAccum && !Fu3DayAccum) {
           Fu3DayAccum = AutumnDayAccum + ((17 - Stem) % 10);
         }
+        Nayin[i][k] =
+          NayinList[Math.ceil(ScOrder / 2)] +
+          Jianchu +
+          Huanghei +
+          " " +
+          (Week[i][k] || "");
         let Fu;
         if (DayAccum === Fu1DayAccum) {
           Fu = { Sanfu: "初伏" };
@@ -472,12 +476,6 @@ export const D1 = (Name, YearStart, YearEnd) => {
         } else if (DayAccum === Fu3DayAccum) {
           Fu = { Sanfu: "末伏" };
         }
-        Nayin[i][k] =
-          NayinList[Math.ceil(ScOrder / 2)] +
-          Jianchu +
-          Huanghei +
-          " " +
-          (Week[i][k] || "");
         HouName[i][k].push(Fu)
         for (let j = 0; j < 7; j++) {
           if (MieSd[j] >= SdMidn && MieSd[j] < SdMidn + 1) {
@@ -580,4 +578,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Yuanjia', 111))
+// console.log(D1('Shoushi', 1111))

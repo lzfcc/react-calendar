@@ -804,7 +804,7 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, Sd) => {
   Y = parseInt(Y);
   NodeAccum = +NodeAccum
   Sd = +Sd
-  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, Sd, undefined, Name, Y, true);
+  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, Sd, undefined, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -962,14 +962,26 @@ export const bindMansAccumModernList = (Name, Jd) => {
 };
 // console.log(bindMansAccumModernList('Chongzhen', 2424222))
 
-export const bindMoonLat = (NodeAccum, NewmSd) => {
+/**
+ * 
+ * @param {*} NodeAccum 此時入交
+ * @param {*} AnomaAccum 此時入轉
+ * @param {*} NewmAnomaAccum 合朔入轉
+ * @param {*} NewmSd 合朔距冬至時間
+ * @returns 
+ */
+export const bindMoonLat = (NodeAccum, AnomaAccum, NewmAnomaAccum, NewmSd) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
+  AnomaAccum = +AnomaAccum
+  NewmAnomaAccum = +NewmAnomaAccum
   NewmSd = +NewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
   if (NewmSd >= 365.246 || NewmSd < 0)
     throw new Error("請輸入一週天度內的度數");
+  if (AnomaAccum >= 27.21221 || NewmAnomaAccum > 27.21221 || AnomaAccum < 0 || NewmAnomaAccum < 0)
+    throw new Error("請輸入一交點月內的日數");
   let Print = [];
   Print = Print.concat(
     [
@@ -988,9 +1000,13 @@ export const bindMoonLat = (NodeAccum, NewmSd) => {
       "Jiyuan",
       "Shoushi"
     ].map((Name) => {
+      const { Sidereal } = Para[Name]
       let LatPrint = "";
       let EquaLatPrint = "";
-      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, NewmSd, undefined, Name)
+      const MoonAcrSNow = AutoMoonAcrS(AnomaAccum, Name).MoonAcrS;
+      const MoonAcrSNewm = AutoMoonAcrS(NewmAnomaAccum, Name).MoonAcrS;
+      const NowNewm_WhiteDif = (MoonAcrSNow - MoonAcrSNewm + Sidereal) % Sidereal
+      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, NewmSd, undefined, Name, undefined, NowNewm_WhiteDif)
       if (EclpLat) {
         LatPrint = lat2NS(EclpLat)
       }
@@ -1008,7 +1024,7 @@ export const bindMoonLat = (NodeAccum, NewmSd) => {
   );
   return Print;
 };
-// console.log(bindMoonLat(2.252, 55.71))
+// console.log(bindMoonLat(3, 5, 4, 33))
 
 export const bindSunEclipse = (
   NodeAccum,

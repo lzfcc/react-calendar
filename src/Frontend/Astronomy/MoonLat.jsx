@@ -11,18 +11,32 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>入交</span>
+        <span>此時入交</span>
         <input className='width3'
           value={this.state.a}
           onChange={e => {
             this.setState({ a: e.currentTarget.value });
           }}
         />
-        <span> 距冬至時間</span>
+        <span>此時入轉</span>
         <input className='width3'
           value={this.state.b}
           onChange={e => {
             this.setState({ b: e.currentTarget.value });
+          }}
+        />
+        <span>此前合朔入轉</span>
+        <input className='width3'
+          value={this.state.c}
+          onChange={e => {
+            this.setState({ c: e.currentTarget.value });
+          }}
+        />
+        <span>合朔距冬至時間</span>
+        <input className='width3'
+          value={this.state.d}
+          onChange={e => {
+            this.setState({ d: e.currentTarget.value });
           }}
         />
       </span>
@@ -31,7 +45,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c)
+      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c, this.state.d)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)

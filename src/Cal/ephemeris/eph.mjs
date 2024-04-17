@@ -287,8 +287,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SdNewm,
           NewmEclpGong,
           Name,
-          Y,
-          true, // 是合朔
+          Y
         );
         NewmWhiteDeg = FuncNewm.NewmWhiteDeg
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
@@ -318,6 +317,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           AnomaAccumMidn = 0,
           NodeAccumMidn = 0,
           MoonEquaLon = 0,
+          NowNewm_WhiteDif = 0,
           MoonEclp = "",
           MoonWhite = "";
         if (Type === 1) {
@@ -344,13 +344,14 @@ export const D1 = (Name, YearStart, YearEnd) => {
           } else {
             const MoonWhiteDeg = (NewmWhiteDeg + MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal;
             MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
+            NowNewm_WhiteDif = (MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal
           }
         }
         const SunEquaLat = autoLat(SdMidn, Name);
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? "" + Dial.toFixed(3) + "尺" : "";
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
-        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, SdMidn, NewmEclpGong, Name, Y);
+        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, SdMidn, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
         Pos[i][k] = [
           { SunEquaLon: SunEquaLon.toFixed(4), SunEquaLat: lat2NS(SunEquaLat) },
           { SunCeclpLon: SunLon.toFixed(4), Dial: Dial },

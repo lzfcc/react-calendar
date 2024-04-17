@@ -706,9 +706,8 @@ export const solsMans = (Name, Y) => {
 /**
  * 20240312改寫，增加黃道宿度
  * @param {*} Name 曆法名
- * @param {*} Y 冬至小分
+ * @param {*} Y
  * @param {*} EclpGong 距冬至黃道實行度
- * @param {*} SolsDeci 公元年
  * @returns
  */
 export const mans = (Name, Y, EclpGong) => {

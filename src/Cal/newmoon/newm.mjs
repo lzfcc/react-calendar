@@ -171,8 +171,10 @@ export default (Name, Y) => {
                     NewmPlus = newmPlus((Deci1[i] || Deci[i]), Sd[i], SolsDeci, Name) // 進朔
                 }
                 if (MansRaw) {
-                    const Func = mans(Name, Y,
-                        Type >= 5 ? AcrSd[i] + AutoDifAccum(0, AcrSd[i], Name).SunDifAccum : undefined, AcrSd[i])
+                    const Func = mans(
+                        Name,
+                        Y,
+                        AcrSd[i] + AutoDifAccum(0, AcrSd[i], Name).SunDifAccum)
                     Equa[i] = Func.Equa // 授時：定朔加時定積度=定朔加時中積（即定朔入曆）+盈縮差
                     Eclp[i] = Func.Eclp
                 }

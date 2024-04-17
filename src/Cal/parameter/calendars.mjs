@@ -1876,7 +1876,6 @@ export default {
         AnomaNumer: 16200.1204, // 轉分
         Node: 27 + 623.9455 / 2940,
         // 初限36594中限40002末限3408
-        // YinyangConst: -1, // 不應該加呢
         SunLimitYang: 920, // 920更接近4.2度，940的話太多了
         SunLimitYin: 2130,
         SunLimitNone: 3050,

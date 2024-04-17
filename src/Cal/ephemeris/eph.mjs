@@ -333,8 +333,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
             Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
-          SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
-          // 元嘉開始計算月度就有計入遲疾的方法，大業就完全是定朔，但又是平朔注曆，這樣會衝突，我只能把麟德以前全部求平行度。
+          SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;          
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
           const MoonAcrSMidn = AutoMoonAcrS(AnomaAccumMidn, Name).MoonAcrS;
           if (Type <= 4) {

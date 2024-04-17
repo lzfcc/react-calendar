@@ -131,8 +131,11 @@ export default (YearStart, YearEnd, Longitude) => {
         let Era = Y
         if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`
         else Era = `公元前 ${1 - Y} 年 ${YearSc}`
-        let YearInfo = `<span class='cal-name'>DE440/1</span> 距曆元${Y - 2000}年 `
-        YearInfo += ' ΔT = ' + Math.trunc(deltaT(ThisYear.NewmUT1Jd[5]) * 86400) + ' ± ' + deltaTError(Y)[0] + ' 秒'
+        const YearInfo = [{
+            CalName: "DE440/1",
+            OriginYear: `距曆元${Y - 2000}年`,
+            DeltaT: 'ΔT = ' + Math.trunc(deltaT(ThisYear.NewmUT1Jd[5]) * 86400) + ' ± ' + deltaTError(Y)[0] + ' 秒'
+        }]
         return {
             Era, YearInfo, MonthPrint, LeapNumTerm,
             NewmScPrint, NewmMmddPrint, NewmDeciUT18Print, NewmEclpPrint, NewmEquaPrint, NewmUT1JdPrint,

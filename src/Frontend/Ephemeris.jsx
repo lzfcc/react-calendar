@@ -153,22 +153,6 @@ export default class Day extends React.Component {
           <p>昏</p>
         </td>
       );
-    } else if (Type <= 10) {
-      Side = (
-        <td style={{ minWidth: "1.5em" }}>
-          <p className="Sc">&nbsp;</p>
-          <p>&nbsp;</p>
-          <p>&nbsp;</p>
-          <p>日</p>
-          <p>&nbsp;</p>
-          <p>&nbsp;</p>
-          <p>月</p>
-          <p>&nbsp;</p>
-          <p>旦</p>
-          <p>昏</p>
-          <p>神</p>
-        </td>
-      );
     } else {
       Side = (
         <td style={{ minWidth: "1.5em" }}>
@@ -179,7 +163,6 @@ export default class Day extends React.Component {
           <p>&nbsp;</p>
           <p>&nbsp;</p>
           <p>月</p>
-          <p>&nbsp;</p>
           <p>&nbsp;</p>
           <p>旦</p>
           <p>昏</p>

@@ -3,7 +3,7 @@ import { Hushigeyuan } from "../equation/geometry.mjs";
 import {
   AutoTcorr,
   AutoDifAccum,
-  AutoMoonAcrS,
+  anomaS,
   ShoushiXianV,
 } from "./acrv.mjs";
 import {
@@ -120,7 +120,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { MoonAcrS } = AutoMoonAcrS(AnomaAccum, Name);
+      const { MoonAcrS } = anomaS(AnomaAccum, Name);
       let SunTcorrPrint = "-";
       let NodeAccumCorrPrint = "-";
       const SunDifAccumPrint = SunDifAccum ? SunDifAccum.toFixed(5) : "-";
@@ -175,7 +175,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { MoonAcrS } = AutoMoonAcrS(AnomaAccum, Name);
+      const { MoonAcrS } = anomaS(AnomaAccum, Name);
       const SunDifAccumPrint = SunDifAccum.toFixed(5);
       const SunDifAccumErrPrint =
         EllipseSun !== undefined
@@ -812,9 +812,10 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, AnomaAccum, AvgNewmSd) =>
   Y = parseInt(Y);
   NodeAccum = +NodeAccum
   AvgNewmSd = +AvgNewmSd
+  AnomaAccum = +AnomaAccum
   const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr2
   const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AvgNewmSd, NewmEclpGong, Name, Y);
+  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AnomaAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -1014,12 +1015,12 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd)
       let LatPrint = "";
       let EquaLatPrint = "";
       const AcrNewmAnomaAccum = (AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
-      const MoonAcrSNow = AutoMoonAcrS(AnomaAccum, Name).MoonAcrS;
-      const MoonAcrSNewm = AutoMoonAcrS(AcrNewmAnomaAccum, Name).MoonAcrS;
+      const MoonAcrSNow = anomaS(AnomaAccum, Name).MoonAcrS;
+      const MoonAcrSNewm = anomaS(AcrNewmAnomaAccum, Name).MoonAcrS;
       const NowNewm_WhiteDif = (MoonAcrSNow - MoonAcrSNewm + Sidereal) % Sidereal
       const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr
       const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
+      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AnomaAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
       if (EclpLat) {
         LatPrint = lat2NS(EclpLat)
       }

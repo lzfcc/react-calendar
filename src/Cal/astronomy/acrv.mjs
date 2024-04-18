@@ -11,7 +11,7 @@ import {
   AutoQuar,
   AutoMoonTcorrDif,
 } from "../parameter/auto_consts.mjs";
-import { deci } from "../parameter/functions.mjs";
+import { deci, fmod } from "../parameter/functions.mjs";
 
 // 大衍用不等間距二次內插，宣明也是。崇玄暫且用平氣。計算盈縮積
 export const SunDifAccumTable = (Sd, Name) => {
@@ -348,7 +348,6 @@ const MoonTcorrTable = (AnomaAccum, Name) => {
   const AnomaQuar = Anoma / 4;
   const AnomaHalf = Anoma / 2;
   const AnomaQuar3 = Anoma * 0.75;
-  AnomaAccum %= Anoma;
   let AnomaAccumInt = Math.trunc(AnomaAccum);
   let AnomaAccumFrac = AnomaAccum - AnomaAccumInt;
   const AnomaAccumHalf = AnomaAccum % AnomaHalf;
@@ -460,8 +459,6 @@ const MoonTcorrTable = (AnomaAccum, Name) => {
   return { MoonTcorr2, MoonTcorr1 };
 };
 // console.log(MoonTcorrTable(27.5, 'Wuji').MoonTcorr1)
-// console.log(MoonTcorrTable(27.5, 'Qintian').MoonTcorr1)
-// console.log(MoonTcorrTable(27.5, 'Jiyuan').MoonTcorr1)
 
 const MoonDifAccumTable = (AnomaAccum, Name) => {
   // 暫時沒有用，就不處理欽天了
@@ -718,8 +715,12 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
   const { Type, SolarRaw, PartRange, Anoma, NodeDenom } = Para[Name];
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
-  Sd %= Solar;
-  AnomaAccum = AnomaAccum % Anoma || 0;
+  if (Sd) {
+    Sd = fmod(Sd, Solar)
+  }
+  if (AnomaAccum) {
+    AnomaAccum = fmod(AnomaAccum, Anoma)
+  }
   let sunFunc = {};
   let moonFunc = {};
   let TcorrFunc = {};
@@ -874,7 +875,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       sunFunc = SunTcorrTable(Sd, Name);
       SunTcorr2 = sunFunc.SunTcorr2;
       moonFunc = MoonTcorrTable(
-        AnomaAccum + (Name === "Qintian" ? SunTcorr2 : 0),
+        (AnomaAccum + (Name === "Qintian" ? SunTcorr2 : 0) + Anoma) % Anoma,
         Name,
       );
       MoonTcorr1 = -moonFunc.MoonTcorr1;
@@ -918,8 +919,12 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
   const { Type, SolarRaw, Anoma } = Para[Name];
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
-  Sd %= Solar;
-  AnomaAccum = AnomaAccum % Anoma || 0;
+  if (AnomaAccum) {
+    AnomaAccum = fmod(AnomaAccum, Anoma)
+  }
+  if (Sd) {
+    Sd = fmod(Sd, Solar)
+  }
   let DifAccumFunc = {};
   let SunDifAccum = 0;
   let MoonDifAccum = 0;
@@ -1005,8 +1010,9 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
 };
 // console.log(AutoDifAccum(9, 9, 'Chongxuan').MoonDifAccum)
 
-export const AutoMoonAcrS = (AnomaAccum, Name) => {
+export const anomaS = (AnomaAccum, Name) => {
   const { Type, Anoma } = Para[Name];
+  AnomaAccum = fmod(AnomaAccum, Anoma);
   let MoonAcrS = 0;
   let AnomaCycle = 0;
   if (
@@ -1088,7 +1094,7 @@ export const AutoMoonAcrS = (AnomaAccum, Name) => {
   // }
   return { MoonAcrS, AnomaCycle };
 };
-// console.log(AutoMoonAcrS(23, 'Qianxiang').AnomaCycle)
+// console.log(anomaS(23, 'Qianxiang').AnomaCycle)
 
 const MoonDifAccumMax1 = (L) => {
   // 線性內插月遲疾積求極值

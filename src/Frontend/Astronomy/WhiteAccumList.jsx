@@ -15,7 +15,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { WhiteAccumPrint, WhiteDegMans } = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum,this,this.state.AnomaAccum, this.state.Sd)
+      const { WhiteAccumPrint, WhiteDegMans } = bindWhiteAccumList(this.state.calendars, this.state.Year, this.state.NodeAccum, this, this.state.AnoAccum, this.state.Sd)
       this.setState({ WhiteAccumPrint, WhiteDegMans })
     } catch (e) {
       alert(e.message)
@@ -77,9 +77,9 @@ export default class Converter extends React.Component {
         />
         <span>平朔入轉</span>
         <input className='width3'
-          value={this.state.AnomaAccum}
+          value={this.state.AnoAccum}
           onChange={e => {
-            this.setState({ AnomaAccum: e.currentTarget.value });
+            this.setState({ AnoAccum: e.currentTarget.value });
           }}
         />
         <span>平朔距冬至時長</span>

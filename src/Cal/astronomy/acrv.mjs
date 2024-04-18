@@ -270,9 +270,9 @@ const SunTcorrFormula = (Sd, Name) => {
 // console.log(SunTcorrFormula(31.9780521262, 'Jiyuan'))
 
 // 這是魏晉南北朝的月離表
-const MoonTcorrTable1 = (AnomaAccum, Name) => {
+const MoonTcorrTable1 = (AnoAccum, Name) => {
   const { MoonAcrVList, MoonDifAccumList, Anoma, ZhangRange } = Para[Name];
-  AnomaAccum %= Anoma;
+  AnoAccum %= Anoma;
   // const MoonAcrVList = MoonAcrVRaw.slice()
   // if (['Tsrengguang', 'Xinghe', 'Tianbao', 'Daming',].includes(Name)) {
   //     for (let i = 0; i <= 28; i++) {
@@ -292,18 +292,18 @@ const MoonTcorrTable1 = (AnomaAccum, Name) => {
   // MoonDifAccumList[0] = 0
   const MoonAvgVd = AutoMoonAvgV(Name);
   const MoonAvgVddenom = parseFloat((MoonAvgVd * ZhangRange).toPrecision(12)); // 乾象254=章歲+章月
-  const AnomaAccumInt = Math.trunc(AnomaAccum);
-  const AnomaAccumFract = AnomaAccum - AnomaAccumInt;
+  const AnoAccumInt = Math.trunc(AnoAccum);
+  const AnoAccumFract = AnoAccum - AnoAccumInt;
   let MoonDifAccum1 =
-    MoonDifAccumList[AnomaAccumInt] +
-    AnomaAccumFract *
-    (MoonDifAccumList[AnomaAccumInt + 1] - MoonDifAccumList[AnomaAccumInt]); //* MoonAcrAvgDifList[AnomaAccumInt]
+    MoonDifAccumList[AnoAccumInt] +
+    AnoAccumFract *
+    (MoonDifAccumList[AnoAccumInt + 1] - MoonDifAccumList[AnoAccumInt]); //* MoonAcrAvgDifList[AnoAccumInt]
   const SunAvgV = ZhangRange;
   let MoonTcorr1 = 0;
   if (
     ["Qianxiang", "Jingchu", "Daming", "Daye", "Wuyin", "WuyinB"].includes(Name)
   ) {
-    MoonTcorr1 = -MoonDifAccum1 / (MoonAcrVList[AnomaAccumInt] - SunAvgV);
+    MoonTcorr1 = -MoonDifAccum1 / (MoonAcrVList[AnoAccumInt] - SunAvgV);
   } else if (["Yuanjia"].includes(Name)) {
     // 「賓等依何承天法」
     const MoonAcrDayDif = []; // 列差
@@ -311,8 +311,8 @@ const MoonTcorrTable1 = (AnomaAccum, Name) => {
       MoonAcrDayDif[i] = MoonAcrVList[i + 1] - MoonAcrVList[i];
     }
     const MoonAcrV1 =
-      MoonAcrVList[AnomaAccumInt] +
-      AnomaAccumFract * MoonAcrDayDif[AnomaAccumInt];
+      MoonAcrVList[AnoAccumInt] +
+      AnoAccumFract * MoonAcrDayDif[AnoAccumInt];
     MoonTcorr1 = -MoonDifAccum1 / (MoonAcrV1 - SunAvgV);
   } else if (["Tsrengguang", "Xinghe", "Tianbao"].includes(Name)) {
     MoonTcorr1 = -MoonDifAccum1 / MoonAvgVddenom;
@@ -322,7 +322,7 @@ const MoonTcorrTable1 = (AnomaAccum, Name) => {
 };
 // console.log(MoonTcorrTable1(14, 'Jingchu').MoonDifAccum1)
 
-const AnojourTable1 = (AnomaAccum, Name) => {
+const AnojourTable1 = (AnoAccum, Name) => {
   const { MoonDifAccumList, ZhangRange } = Para[Name];
   const MoonAvgVd = AutoMoonAvgV(Name);
   const MoonAvgVddenom = parseFloat((MoonAvgVd * ZhangRange).toPrecision(12));
@@ -332,125 +332,125 @@ const AnojourTable1 = (AnomaAccum, Name) => {
       (MoonDifAccumList[i] + i * MoonAvgVddenom).toPrecision(12),
     );
   }
-  const AnomaAccumInt = Math.trunc(AnomaAccum);
-  const AnomaAccumFract = AnomaAccum - AnomaAccumInt;
+  const AnoAccumInt = Math.trunc(AnoAccum);
+  const AnoAccumFract = AnoAccum - AnoAccumInt;
   const Anojour =
-    (AnojourList[AnomaAccumInt] +
-      AnomaAccumFract *
-      (AnojourList[AnomaAccumInt + 1] - AnojourList[AnomaAccumInt])) /
+    (AnojourList[AnoAccumInt] +
+      AnoAccumFract *
+      (AnojourList[AnoAccumInt + 1] - AnojourList[AnoAccumInt])) /
     ZhangRange;
   return Anojour;
 };
 // console.log(AnojourTable1(.1, 'Daming'))
 
-const MoonTcorrTable = (AnomaAccum, Name) => {
+const MoonTcorrTable = (AnoAccum, Name) => {
   const { Type, MoonTcorrList, Anoma, Denom } = Para[Name];
   const AnomaQuar = Anoma / 4;
   const AnomaHalf = Anoma / 2;
   const AnomaQuar3 = Anoma * 0.75;
-  let AnomaAccumInt = Math.trunc(AnomaAccum);
-  let AnomaAccumFrac = AnomaAccum - AnomaAccumInt;
-  const AnomaAccumHalf = AnomaAccum % AnomaHalf;
-  const AnomaAccumHalfInt = Math.trunc(AnomaAccumHalf);
-  const AnomaAccumHalfFrac = AnomaAccumHalf - AnomaAccumHalfInt;
-  const AnomaAccumQuar = AnomaAccum % AnomaQuar;
-  const AnomaAccumQuarInt = Math.trunc(AnomaAccumQuar);
-  const AnomaAccumQuarFrac = AnomaAccumQuar - AnomaAccumQuarInt;
+  let AnoAccumInt = Math.trunc(AnoAccum);
+  let AnoAccumFrac = AnoAccum - AnoAccumInt;
+  const AnoAccumHalf = AnoAccum % AnomaHalf;
+  const AnoAccumHalfInt = Math.trunc(AnoAccumHalf);
+  const AnoAccumHalfFrac = AnoAccumHalf - AnoAccumHalfInt;
+  const AnoAccumQuar = AnoAccum % AnomaQuar;
+  const AnoAccumQuarInt = Math.trunc(AnoAccumQuar);
+  const AnoAccumQuarFrac = AnoAccumQuar - AnoAccumQuarInt;
   let Plus = 0;
   let MoonTcorr1 = 0;
   let MoonTcorr2 = 0;
   if (Name === "Qintian") {
     const PartRange = Anoma / 248;
-    const XianNum = Math.trunc(AnomaAccum / PartRange);
-    const XianFrac = AnomaAccum / PartRange - XianNum; // 占一限的百分比，而非一日。
+    const XianNum = Math.trunc(AnoAccum / PartRange);
+    const XianFrac = AnoAccum / PartRange - XianNum; // 占一限的百分比，而非一日。
     MoonTcorr1 =
       MoonTcorrList[XianNum] +
       XianFrac * (MoonTcorrList[XianNum + 1] - MoonTcorrList[XianNum]);
   } else {
     const { MoonTcorrDifPos: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
-      AnomaAccum,
+      AnoAccum,
       Name,
     );
     if (Name === "Yitian") {
-      AnomaAccumInt = AnomaAccumQuarInt;
-      AnomaAccumFrac = AnomaAccumQuarFrac;
-      if (AnomaAccum < AnomaQuar) {
-      } else if (AnomaAccum < AnomaHalf) Plus = 7;
-      else if (AnomaAccum < AnomaQuar3) Plus = 14;
+      AnoAccumInt = AnoAccumQuarInt;
+      AnoAccumFrac = AnoAccumQuarFrac;
+      if (AnoAccum < AnomaQuar) {
+      } else if (AnoAccum < AnomaHalf) Plus = 7;
+      else if (AnoAccum < AnomaQuar3) Plus = 14;
       else Plus = 21;
-      if (AnomaAccumQuar >= 6) {
+      if (AnoAccumQuar >= 6) {
         MoonTcorr1 =
-          MoonTcorrList[6 + Plus] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
+          MoonTcorrList[6 + Plus] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
       } else {
         MoonTcorr1 =
-          MoonTcorrList[Plus + AnomaAccumInt] + MoonTcorrDif * AnomaAccumFrac;
+          MoonTcorrList[Plus + AnoAccumInt] + MoonTcorrDif * AnoAccumFrac;
       }
     } else if (["Xuanming", "Yingtian"].includes(Name)) {
-      AnomaAccumInt = AnomaAccumHalfInt;
-      AnomaAccumFrac = AnomaAccumHalfFrac;
-      if (AnomaAccum >= AnomaHalf) Plus = 14;
-      if (AnomaAccumHalf >= 6 && AnomaAccumHalf < AnomaQuar) {
+      AnoAccumInt = AnoAccumHalfInt;
+      AnoAccumFrac = AnoAccumHalfFrac;
+      if (AnoAccum >= AnomaHalf) Plus = 14;
+      if (AnoAccumHalf >= 6 && AnoAccumHalf < AnomaQuar) {
         MoonTcorr1 =
-          MoonTcorrList[6 + Plus] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
-      } else if (AnomaAccumHalf >= AnomaQuar && AnomaAccumHalf < 7) {
+          MoonTcorrList[6 + Plus] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+      } else if (AnoAccumHalf >= AnomaQuar && AnoAccumHalf < 7) {
         MoonTcorr1 =
           MoonTcorrList[7 + Plus] -
-          (MoonTcorrDif * (1 - AnomaAccumFrac)) / TheDenom;
-      } else if (AnomaAccumHalf >= 13) {
+          (MoonTcorrDif * (1 - AnoAccumFrac)) / TheDenom;
+      } else if (AnoAccumHalf >= 13) {
         MoonTcorr1 =
-          MoonTcorrList[13 + Plus] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
+          MoonTcorrList[13 + Plus] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
       } else {
         MoonTcorr1 =
-          MoonTcorrList[Plus + AnomaAccumInt] + MoonTcorrDif * AnomaAccumFrac;
+          MoonTcorrList[Plus + AnoAccumInt] + MoonTcorrDif * AnoAccumFrac;
       }
-    } else if (AnomaAccum >= 6 && AnomaAccum < AnomaQuar) {
+    } else if (AnoAccum >= 6 && AnoAccum < AnomaQuar) {
       MoonTcorr1 =
-        MoonTcorrList[6] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
-    } else if (AnomaAccum >= AnomaQuar && AnomaAccum < 7) {
+        MoonTcorrList[6] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+    } else if (AnoAccum >= AnomaQuar && AnoAccum < 7) {
       MoonTcorr1 =
-        MoonTcorrList[7] - (MoonTcorrDif * (1 - AnomaAccumFrac)) / TheDenom;
-    } else if (AnomaAccum >= 20 && AnomaAccum < AnomaQuar3) {
+        MoonTcorrList[7] - (MoonTcorrDif * (1 - AnoAccumFrac)) / TheDenom;
+    } else if (AnoAccum >= 20 && AnoAccum < AnomaQuar3) {
       MoonTcorr1 =
-        MoonTcorrList[20] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
-    } else if (AnomaAccum >= AnomaQuar3 && AnomaAccum < 21) {
+        MoonTcorrList[20] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+    } else if (AnoAccum >= AnomaQuar3 && AnoAccum < 21) {
       MoonTcorr1 =
-        MoonTcorrList[21] - (MoonTcorrDif * (1 - AnomaAccumFrac)) / TheDenom;
-    } else if (AnomaAccum >= 27) {
+        MoonTcorrList[21] - (MoonTcorrDif * (1 - AnoAccumFrac)) / TheDenom;
+    } else if (AnoAccum >= 27) {
       MoonTcorr1 =
-        MoonTcorrList[27] + (MoonTcorrDif * AnomaAccumFrac) / TheDenom;
+        MoonTcorrList[27] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
     } else {
-      MoonTcorr1 = MoonTcorrList[AnomaAccumInt] + MoonTcorrDif * AnomaAccumFrac;
+      MoonTcorr1 = MoonTcorrList[AnoAccumInt] + MoonTcorrDif * AnoAccumFrac;
     }
   }
   if (Type === 7 && Name !== "Qintian") {
     if (Name === "Xuanming") {
-      AnomaAccumInt = AnomaAccumHalfInt;
-      AnomaAccumFrac = AnomaAccumHalfFrac;
-      if (AnomaAccum >= AnomaHalf) Plus = 14;
-      if (AnomaAccumInt <= 11) {
-        MoonTcorr2 = Interpolate1(AnomaAccumFrac + 1, [
-          MoonTcorrList[Plus + AnomaAccumInt],
-          MoonTcorrList[Plus + AnomaAccumInt + 1],
-          MoonTcorrList[Plus + AnomaAccumInt + 2],
+      AnoAccumInt = AnoAccumHalfInt;
+      AnoAccumFrac = AnoAccumHalfFrac;
+      if (AnoAccum >= AnomaHalf) Plus = 14;
+      if (AnoAccumInt <= 11) {
+        MoonTcorr2 = Interpolate1(AnoAccumFrac + 1, [
+          MoonTcorrList[Plus + AnoAccumInt],
+          MoonTcorrList[Plus + AnoAccumInt + 1],
+          MoonTcorrList[Plus + AnoAccumInt + 2],
         ]);
       } else {
-        MoonTcorr2 = Interpolate1(AnomaAccumFrac + 3, [
-          MoonTcorrList[Plus + AnomaAccumInt - 2],
-          MoonTcorrList[Plus + AnomaAccumInt - 1],
-          MoonTcorrList[Plus + AnomaAccumInt],
+        MoonTcorr2 = Interpolate1(AnoAccumFrac + 3, [
+          MoonTcorrList[Plus + AnoAccumInt - 2],
+          MoonTcorrList[Plus + AnoAccumInt - 1],
+          MoonTcorrList[Plus + AnoAccumInt],
         ]);
       }
-    } else if (Math.trunc(AnomaAccum) <= 25) {
-      MoonTcorr2 = Interpolate1(AnomaAccumFrac + 1, [
-        MoonTcorrList[Plus + AnomaAccumInt],
-        MoonTcorrList[Plus + AnomaAccumInt + 1],
-        MoonTcorrList[Plus + AnomaAccumInt + 2],
+    } else if (Math.trunc(AnoAccum) <= 25) {
+      MoonTcorr2 = Interpolate1(AnoAccumFrac + 1, [
+        MoonTcorrList[Plus + AnoAccumInt],
+        MoonTcorrList[Plus + AnoAccumInt + 1],
+        MoonTcorrList[Plus + AnoAccumInt + 2],
       ]);
     } else {
-      MoonTcorr2 = Interpolate1(AnomaAccumFrac + 3, [
-        MoonTcorrList[Plus + AnomaAccumInt - 2],
-        MoonTcorrList[Plus + AnomaAccumInt - 1],
-        MoonTcorrList[Plus + AnomaAccumInt],
+      MoonTcorr2 = Interpolate1(AnoAccumFrac + 3, [
+        MoonTcorrList[Plus + AnoAccumInt - 2],
+        MoonTcorrList[Plus + AnoAccumInt - 1],
+        MoonTcorrList[Plus + AnoAccumInt],
       ]);
     }
   }
@@ -460,21 +460,21 @@ const MoonTcorrTable = (AnomaAccum, Name) => {
 };
 // console.log(MoonTcorrTable(27.5, 'Wuji').MoonTcorr1)
 
-const MoonDifAccumTable = (AnomaAccum, Name) => {
+const MoonDifAccumTable = (AnoAccum, Name) => {
   // 暫時沒有用，就不處理欽天了
   const { Type, Anoma, MoonAcrVList, Denom, MoonAvgVxian } = Para[Name];
   const AnomaQuar = Anoma / 4;
   const AnomaHalf = Anoma / 2;
   const AnomaQuar3 = Anoma * 0.75;
-  AnomaAccum %= Anoma;
-  let AnomaAccumInt = Math.trunc(AnomaAccum);
-  let AnomaAccumFrac = deci(AnomaAccum);
-  const AnomaAccumHalf = AnomaAccum % AnomaHalf;
-  const AnomaAccumHalfInt = Math.trunc(AnomaAccumHalf);
-  const AnomaAccumHalfFrac = deci(AnomaAccumHalf);
-  const AnomaAccumQuar = AnomaAccum % AnomaQuar;
-  const AnomaAccumQuarInt = Math.trunc(AnomaAccumQuar);
-  const AnomaAccumQuarFrac = deci(AnomaAccumQuar);
+  AnoAccum %= Anoma;
+  let AnoAccumInt = Math.trunc(AnoAccum);
+  let AnoAccumFrac = deci(AnoAccum);
+  const AnoAccumHalf = AnoAccum % AnomaHalf;
+  const AnoAccumHalfInt = Math.trunc(AnoAccumHalf);
+  const AnoAccumHalfFrac = deci(AnoAccumHalf);
+  const AnoAccumQuar = AnoAccum % AnomaQuar;
+  const AnoAccumQuarInt = Math.trunc(AnoAccumQuar);
+  const AnoAccumQuarFrac = deci(AnoAccumQuar);
   const MoonAvgVd = AutoMoonAvgV(Name);
   // const MoonAvgVddenom = parseFloat((MoonAvgVd * Denom).toPrecision(12))
   // 下月離表。麟德：盈加朒減，速減遲加
@@ -505,69 +505,69 @@ const MoonDifAccumTable = (AnomaAccum, Name) => {
   let MoonDifAccum2 = 0;
   let Plus = 0;
   if (Name === "Qintian") {
-    const XianNum = Math.trunc(AnomaAccum * 9);
-    const XianFrac = AnomaAccum * 9 - XianNum; // 占一限的百分比，而非一日。
+    const XianNum = Math.trunc(AnoAccum * 9);
+    const XianFrac = AnoAccum * 9 - XianNum; // 占一限的百分比，而非一日。
     MoonDifAccum2 =
       MoonDifAccumList[XianNum] +
       XianFrac * (MoonDifAccumList[XianNum + 1] - MoonDifAccumList[XianNum]);
   } else {
     if (Name === "Yitian") {
-      AnomaAccumInt = AnomaAccumQuarInt;
-      AnomaAccumFrac = AnomaAccumQuarFrac;
-      if (AnomaAccum < AnomaQuar) {
-      } else if (AnomaAccum < AnomaHalf) Plus = 7;
-      else if (AnomaAccum < AnomaQuar3) Plus = 14;
+      AnoAccumInt = AnoAccumQuarInt;
+      AnoAccumFrac = AnoAccumQuarFrac;
+      if (AnoAccum < AnomaQuar) {
+      } else if (AnoAccum < AnomaHalf) Plus = 7;
+      else if (AnoAccum < AnomaQuar3) Plus = 14;
       else Plus = 21;
     } else if (["Xuanming", "Yingtian"].includes(Name)) {
-      AnomaAccumInt = AnomaAccumHalfInt;
-      AnomaAccumFrac = AnomaAccumHalfFrac;
-      if (AnomaAccum >= AnomaHalf) Plus = 14;
+      AnoAccumInt = AnoAccumHalfInt;
+      AnoAccumFrac = AnoAccumHalfFrac;
+      if (AnoAccum >= AnomaHalf) Plus = 14;
     }
-    if (Math.trunc(AnomaAccum) <= 25) {
-      MoonDifAccum2 = Interpolate1(AnomaAccumFrac + 1, [
-        MoonDifAccumList[Plus + AnomaAccumInt],
-        MoonDifAccumList[Plus + AnomaAccumInt + 1],
-        MoonDifAccumList[Plus + AnomaAccumInt + 2],
+    if (Math.trunc(AnoAccum) <= 25) {
+      MoonDifAccum2 = Interpolate1(AnoAccumFrac + 1, [
+        MoonDifAccumList[Plus + AnoAccumInt],
+        MoonDifAccumList[Plus + AnoAccumInt + 1],
+        MoonDifAccumList[Plus + AnoAccumInt + 2],
       ]);
     } else {
-      MoonDifAccum2 = Interpolate1(AnomaAccumFrac + 3, [
-        MoonDifAccumList[Plus + AnomaAccumInt - 2],
-        MoonDifAccumList[Plus + AnomaAccumInt - 1],
-        MoonDifAccumList[Plus + AnomaAccumInt],
+      MoonDifAccum2 = Interpolate1(AnoAccumFrac + 3, [
+        MoonDifAccumList[Plus + AnoAccumInt - 2],
+        MoonDifAccumList[Plus + AnoAccumInt - 1],
+        MoonDifAccumList[Plus + AnoAccumInt],
       ]);
     }
   }
   // 以下是原本的算法
-  // const AnomaAccumDay1 = AnomaAccumInt
-  // const AnomaAccumFract = AnomaAccum - AnomaAccumInt
-  // const AnomaAccumDay2 = (AnomaAccumDay1 + 1) % 28 // 這沒加上最後一天的情況，以後得補上
-  // const MoonAcrAvgDif1 = MoonAcrAvgDifList[AnomaAccumDay1]
-  // const MoonAcrAvgDif2 = MoonAcrAvgDifList[AnomaAccumDay2]
-  // const MoonDifAccumA = .5 * AnomaAccumFract * (MoonAcrAvgDif1 + MoonAcrAvgDif2) + AnomaAccumFract * (MoonAcrAvgDif1 - MoonAcrAvgDif2) - .5 * (AnomaAccumFract ** 2) * (MoonAcrAvgDif1 - MoonAcrAvgDif2)
+  // const AnoAccumDay1 = AnoAccumInt
+  // const AnoAccumFract = AnoAccum - AnoAccumInt
+  // const AnoAccumDay2 = (AnoAccumDay1 + 1) % 28 // 這沒加上最後一天的情況，以後得補上
+  // const MoonAcrAvgDif1 = MoonAcrAvgDifList[AnoAccumDay1]
+  // const MoonAcrAvgDif2 = MoonAcrAvgDifList[AnoAccumDay2]
+  // const MoonDifAccumA = .5 * AnoAccumFract * (MoonAcrAvgDif1 + MoonAcrAvgDif2) + AnoAccumFract * (MoonAcrAvgDif1 - MoonAcrAvgDif2) - .5 * (AnoAccumFract ** 2) * (MoonAcrAvgDif1 - MoonAcrAvgDif2)
   // let MoonDifAccumB = 0
   // if (Type === 6) {
-  //     MoonDifAccumB = .5 * (MoonDifAccumA / MoonAvgVddenom) * (MoonAcrAvgDif1 + MoonAcrAvgDif2) + (MoonDifAccumA / MoonAvgVddenom) * (1 - AnomaAccumFract) * (MoonAcrAvgDif1 - MoonAcrAvgDif2) - .5 * ((MoonDifAccumA / MoonAvgVddenom) ** 2) * (MoonAcrAvgDif1 - MoonAcrAvgDif2)
+  //     MoonDifAccumB = .5 * (MoonDifAccumA / MoonAvgVddenom) * (MoonAcrAvgDif1 + MoonAcrAvgDif2) + (MoonDifAccumA / MoonAvgVddenom) * (1 - AnoAccumFract) * (MoonAcrAvgDif1 - MoonAcrAvgDif2) - .5 * ((MoonDifAccumA / MoonAvgVddenom) ** 2) * (MoonAcrAvgDif1 - MoonAcrAvgDif2)
   // }
-  // const MoonDifAccum2 = MoonDifAccum[AnomaAccumDay1] + MoonDifAccumA + MoonDifAccumB
-  // const MoonDifAccum1 = MoonDifAccum[AnomaAccumDay1] + MoonAcrAvgDif1 * AnomaAccumFract
+  // const MoonDifAccum2 = MoonDifAccum[AnoAccumDay1] + MoonDifAccumA + MoonDifAccumB
+  // const MoonDifAccum1 = MoonDifAccum[AnoAccumDay1] + MoonAcrAvgDif1 * AnoAccumFract
   return MoonDifAccum2;
 };
 // console.log(MoonDifAccumTable(2.92, 'Jiyuan'))
 
-const AnojourTable2 = (AnomaAccum, Name) => {
+const AnojourTable2 = (AnoAccum, Name) => {
   const { Type, Anoma, MoonAcrVList, Denom } = Para[Name];
   const AnomaQuar = Anoma / 4;
   const AnomaHalf = Anoma / 2;
   const AnomaQuar3 = Anoma * 0.75;
-  AnomaAccum %= Anoma;
-  let AnomaAccumInt = Math.trunc(AnomaAccum);
-  let AnomaAccumFrac = AnomaAccum - AnomaAccumInt;
-  const AnomaAccumHalf = AnomaAccum % AnomaHalf;
-  const AnomaAccumHalfInt = Math.trunc(AnomaAccumHalf);
-  const AnomaAccumHalfFrac = AnomaAccumHalf - AnomaAccumHalfInt;
-  const AnomaAccumQuar = AnomaAccum % AnomaQuar;
-  const AnomaAccumQuarInt = Math.trunc(AnomaAccumQuar);
-  const AnomaAccumQuarFrac = AnomaAccumQuar - AnomaAccumQuarInt;
+  AnoAccum %= Anoma;
+  let AnoAccumInt = Math.trunc(AnoAccum);
+  let AnoAccumFrac = AnoAccum - AnoAccumInt;
+  const AnoAccumHalf = AnoAccum % AnomaHalf;
+  const AnoAccumHalfInt = Math.trunc(AnoAccumHalf);
+  const AnoAccumHalfFrac = AnoAccumHalf - AnoAccumHalfInt;
+  const AnoAccumQuar = AnoAccum % AnomaQuar;
+  const AnoAccumQuarInt = Math.trunc(AnoAccumQuar);
+  const AnoAccumQuarFrac = AnoAccumQuar - AnoAccumQuarInt;
   let MoonDegDenom = Denom;
   if (Name === "Qintian" || Type >= 8) {
     MoonDegDenom = 100;
@@ -588,35 +588,35 @@ const AnojourTable2 = (AnomaAccum, Name) => {
   let Plus = 0;
   let Anojour = 0;
   if (Name === "Qintian") {
-    const XianNum = Math.trunc(AnomaAccum * 9);
-    const XianFrac = AnomaAccum * 9 - XianNum; // 占一限的百分比，而非一日。
+    const XianNum = Math.trunc(AnoAccum * 9);
+    const XianFrac = AnoAccum * 9 - XianNum; // 占一限的百分比，而非一日。
     Anojour =
       AnojourList[XianNum] +
       XianFrac * (AnojourList[XianNum + 1] - AnojourList[XianNum]);
   } else {
     if (Name === "Yitian") {
-      AnomaAccumInt = AnomaAccumQuarInt;
-      AnomaAccumFrac = AnomaAccumQuarFrac;
-      if (AnomaAccum < AnomaQuar) {
-      } else if (AnomaAccum < AnomaHalf) Plus = 7;
-      else if (AnomaAccum < AnomaQuar3) Plus = 14;
+      AnoAccumInt = AnoAccumQuarInt;
+      AnoAccumFrac = AnoAccumQuarFrac;
+      if (AnoAccum < AnomaQuar) {
+      } else if (AnoAccum < AnomaHalf) Plus = 7;
+      else if (AnoAccum < AnomaQuar3) Plus = 14;
       else Plus = 21;
     } else if (["Xuanming", "Yingtian"].includes(Name)) {
-      AnomaAccumInt = AnomaAccumHalfInt;
-      AnomaAccumFrac = AnomaAccumHalfFrac;
-      if (AnomaAccum >= AnomaHalf) Plus = 14;
+      AnoAccumInt = AnoAccumHalfInt;
+      AnoAccumFrac = AnoAccumHalfFrac;
+      if (AnoAccum >= AnomaHalf) Plus = 14;
     }
-    if (Math.trunc(AnomaAccum) <= num - 2) {
-      Anojour = Interpolate1(AnomaAccumFrac + 1, [
-        AnojourList[Plus + AnomaAccumInt],
-        AnojourList[Plus + AnomaAccumInt + 1],
-        AnojourList[Plus + AnomaAccumInt + 2],
+    if (Math.trunc(AnoAccum) <= num - 2) {
+      Anojour = Interpolate1(AnoAccumFrac + 1, [
+        AnojourList[Plus + AnoAccumInt],
+        AnojourList[Plus + AnoAccumInt + 1],
+        AnojourList[Plus + AnoAccumInt + 2],
       ]);
     } else {
-      Anojour = Interpolate1(AnomaAccumFrac + 3, [
-        AnojourList[Plus + AnomaAccumInt - 2],
-        AnojourList[Plus + AnomaAccumInt - 1],
-        AnojourList[Plus + AnomaAccumInt],
+      Anojour = Interpolate1(AnoAccumFrac + 3, [
+        AnojourList[Plus + AnoAccumInt - 2],
+        AnojourList[Plus + AnoAccumInt - 1],
+        AnojourList[Plus + AnoAccumInt],
       ]);
     }
   }
@@ -625,23 +625,23 @@ const AnojourTable2 = (AnomaAccum, Name) => {
 // console.log(AnojourTable2(27.5, 'Jiyuan'))
 // console.log(AnojourTable2(27.5, 'Qintian'))
 
-export const MoonFormula = (AnomaAccumRaw, Name) => {
+export const MoonFormula = (AnoAccumRaw, Name) => {
   const { Type, Anoma, PartRange } = Para[Name];
   const AnomaHalf = Anoma / 2; // 轉中
   const AnomaQuar = Anoma / 4;
   const MoonAvgVd = AutoMoonAvgV(Name);
-  const AnomaAccumRev = AnomaHalf - Math.abs(AnomaAccumRaw - AnomaHalf);
+  const AnoAccumRev = AnomaHalf - Math.abs(AnoAccumRaw - AnomaHalf);
   let MoonDifAccum = 0;
   let MoonAcrVd = 0;
   let signB = 1;
   if (Type === 11) {
     let signA = 1;
     const T =
-      (AnomaQuar - Math.abs((AnomaAccumRaw % AnomaHalf) - AnomaQuar)) / PartRange;
-    if (AnomaAccumRaw >= AnomaHalf) signA = -1;
+      (AnomaQuar - Math.abs((AnoAccumRaw % AnomaHalf) - AnomaQuar)) / PartRange;
+    if (AnoAccumRaw >= AnomaHalf) signA = -1;
     MoonDifAccum =
       (signA * (11.11 * T - 0.0281 * T ** 2 - 0.000325 * T ** 3)) / 100; // 遲疾差。三個常數是遲疾定平立三差
-    const AnomaAccumPart = Math.trunc((AnomaAccumRev * 336) / Anoma);
+    const AnoAccumPart = Math.trunc((AnoAccumRev * 336) / Anoma);
     const MoonAcrVListA = [
       1.2071, 1.2065, 1.2059, 1.2053, 1.2047, 1.204, 1.2033, 1.2026, 1.2019,
       1.2012, 1.2004, 1.1996, 1.1988, 1.198, 1.1972, 1.1963, 1.1955, 1.1946,
@@ -663,17 +663,17 @@ export const MoonFormula = (AnomaAccumRaw, Name) => {
       0.9954, 0.9946, 0.9937, 0.9929, 0.9922, 0.9914, 0.9907, 0.99, 0.9893,
       0.9886, 0.9879, 0.9873, 0.9867, 0.9861, 0.9855,
     ];
-    MoonAcrVd = MoonAcrVListA[AnomaAccumPart];
+    MoonAcrVd = MoonAcrVListA[AnoAccumPart];
   } else if (Name === "Mingtian") {
-    // AnomaAccum = big.div(SolsAccum, Lunar).add(i - 1 + ZhengSd).mul(2142887000).mod(AnomaNumer).floor().div(81120000).toNumber()
-    // AnomaAccum[i] = (Math.floor(SolsAccum / Lunar + i - 1 + ZhengSd) * 2142887000 % AnomaNumer) / 81120000
-    const AnomaAccum = AnomaAccumRaw * MoonAvgVd;
+    // AnoAccum = big.div(SolsAccum, Lunar).add(i - 1 + ZhengSd).mul(2142887000).mod(AnomaNumer).floor().div(81120000).toNumber()
+    // AnoAccum[i] = (Math.floor(SolsAccum / Lunar + i - 1 + ZhengSd) * 2142887000 % AnomaNumer) / 81120000
+    const AnoAccum = AnoAccumRaw * MoonAvgVd;
     const T =
-      92.0927 - Math.abs((AnomaAccumRaw % AnomaHalf) * MoonAvgVd - 92.0927);
+      92.0927 - Math.abs((AnoAccumRaw % AnomaHalf) * MoonAvgVd - 92.0927);
     let sign3 = 1;
-    if (AnomaAccum <= 92.0927) {
-    } else if (AnomaAccum <= 184.1854) sign3 = -1;
-    else if (AnomaAccum <= 92.0927 * 3) {
+    if (AnoAccum <= 92.0927) {
+    } else if (AnoAccum <= 184.1854) sign3 = -1;
+    else if (AnoAccum <= 92.0927 * 3) {
       signB = -1;
       sign3 = -1;
     } else signB = -1;
@@ -682,14 +682,14 @@ export const MoonFormula = (AnomaAccumRaw, Name) => {
     // MoonTcorr2 = tmp / .67735 / Denom // 遲疾定差 13.36875*1976/.67735=39000
     MoonAcrVd = 13.36875 + sign3 * (1.27 - T / 72.5); // 原文739
   } else if (Name === "Futian") {
-    let AnomaAccum = AnomaAccumRaw;
-    if (AnomaAccumRaw > Anoma / 2) {
-      AnomaAccum -= Anoma / 2;
+    let AnoAccum = AnoAccumRaw;
+    if (AnoAccumRaw > Anoma / 2) {
+      AnoAccum -= Anoma / 2;
       signB = -1;
     }
-    MoonDifAccum = (signB * AnomaAccum * (Anoma / 2 - AnomaAccum)) / 9.4;
+    MoonDifAccum = (signB * AnoAccum * (Anoma / 2 - AnoAccum)) / 9.4;
   }
-  const Anojour = AnomaAccumRaw * MoonAvgVd + MoonDifAccum;
+  const Anojour = AnoAccumRaw * MoonAvgVd + MoonDifAccum;
   return { MoonDifAccum, MoonAcrVd, Anojour };
 };
 // console.log(MoonFormula(12.903, 'Shoushi').MoonAcrVd)
@@ -698,7 +698,7 @@ export const MoonFormula = (AnomaAccumRaw, Name) => {
  * 用注釋中的算法算限下行度，和授時曆本表密合，只有一些相差.0001
  * @returns 限下行度
  */
-export const ShoushiXianV = (AnomaAccum) => {
+export const ShoushiXianV = (AnoAccum) => {
   // const V = []
   const P = 0.082;
   // for (let i = 1; i <= 336; i++) {
@@ -706,20 +706,20 @@ export const ShoushiXianV = (AnomaAccum) => {
   // }
   return (
     13.3689 / (1 / P) +
-    MoonFormula(AnomaAccum, "Shoushi").MoonDifAccum -
-    MoonFormula(AnomaAccum - P, "Shoushi").MoonDifAccum
+    MoonFormula(AnoAccum, "Shoushi").MoonDifAccum -
+    MoonFormula(AnoAccum - P, "Shoushi").MoonDifAccum
   );
 };
 // console.log(ShoushiXianV())
-export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
+export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
   const { Type, SolarRaw, PartRange, Anoma, NodeDenom } = Para[Name];
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
   if (Sd) {
     Sd = fmod(Sd, Solar)
   }
-  if (AnomaAccum) {
-    AnomaAccum = fmod(AnomaAccum, Anoma)
+  if (AnoAccum) {
+    AnoAccum = fmod(AnoAccum, Anoma)
   }
   let sunFunc = {};
   let moonFunc = {};
@@ -762,30 +762,30 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Qianxiang").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Qianxiang").Tcorr1;
     } else if (["Liuzhi", "Wangshuozhi", "Sanji"].includes(Name)) {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Jingchu").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Jingchu").Tcorr1;
     } else if (Name === "Xuanshi") {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Tsrengguang").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Tsrengguang").Tcorr1;
     } else if (["Jiayin", "Tianhe", "Daxiang"].includes(Name)) {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Tianbao").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Tianbao").Tcorr1;
     } else if (Name === "Kaihuang") {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Yuanjia").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Yuanjia").Tcorr1;
     } else if (Name === "Yukuo") {
-      Tcorr1 = AutoTcorr(AnomaAccum, 0, "Daming").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, 0, "Daming").Tcorr1;
     } else if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
-      Tcorr1 = AutoTcorr(AnomaAccum, Sd, "Daye").Tcorr1;
+      Tcorr1 = AutoTcorr(AnoAccum, Sd, "Daye").Tcorr1;
     } else {
       if (["Yisi", "LindeB", "Shenlong"].includes(Name)) {
-        TcorrFunc = AutoTcorr(AnomaAccum, Sd, "Linde");
+        TcorrFunc = AutoTcorr(AnoAccum, Sd, "Linde");
       } else if (["Zhide", "TaiyiKaiyuan"].includes(Name)) {
-        TcorrFunc = AutoTcorr(AnomaAccum, Sd, "Dayan");
+        TcorrFunc = AutoTcorr(AnoAccum, Sd, "Dayan");
       } else if (["TaiyiJingyou"].includes(Name)) {
-        TcorrFunc = AutoTcorr(AnomaAccum, Sd, "Chongtian");
+        TcorrFunc = AutoTcorr(AnoAccum, Sd, "Chongtian");
       } else if (["Daming1", "Daming2"].includes(Name)) {
-        TcorrFunc = AutoTcorr(AnomaAccum, Sd, "Jiyuan");
+        TcorrFunc = AutoTcorr(AnoAccum, Sd, "Jiyuan");
       } else if (["Yiwei", "Gengwu"].includes(Name)) {
-        TcorrFunc = AutoTcorr(AnomaAccum, Sd, "Daming3");
+        TcorrFunc = AutoTcorr(AnoAccum, Sd, "Daming3");
       }
       Tcorr1 = TcorrFunc.Tcorr1;
       Tcorr2 = TcorrFunc.Tcorr2;
@@ -797,7 +797,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
   } else {
     if (["Daye", "Wuyin", "WuyinB"].includes(Name)) {
       SunTcorr1 = SunTcorrTable(Sd, Name).SunTcorr1;
-      MoonTcorr1 = MoonTcorrTable1(AnomaAccum, Name).MoonTcorr1;
+      MoonTcorr1 = MoonTcorrTable1(AnoAccum, Name).MoonTcorr1;
       Tcorr1 = SunTcorr1 + MoonTcorr1;
       const HalfTermLeng = Solar / 24;
       const TermNum = Math.trunc(Sd / HalfTermLeng);
@@ -846,18 +846,18 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
         }
       }
     } else if (Type <= 4) {
-      MoonTcorr1 = MoonTcorrTable1(AnomaAccum, Name).MoonTcorr1;
+      MoonTcorr1 = MoonTcorrTable1(AnoAccum, Name).MoonTcorr1;
       Tcorr1 = MoonTcorr1;
     } else if (["Yitian", "Guantian"].includes(Name)) {
       const MoonAvgVd = AutoMoonAvgV(Name);
       SunDifAccum = SunDifAccumFormula(Sd, Name);
-      MoonTcorr1 = -MoonTcorrTable(AnomaAccum, Name).MoonTcorr1;
+      MoonTcorr1 = -MoonTcorrTable(AnoAccum, Name).MoonTcorr1;
       SunTcorr2 = SunDifAccum / MoonAvgVd;
       Tcorr2 = SunTcorr2 + MoonTcorr1;
     } else if (["Futian", "Mingtian"].includes(Name)) {
       const MoonAvgVd = AutoMoonAvgV(Name);
       SunDifAccum = SunDifAccumFormula(Sd, Name);
-      const MoonFunc = MoonFormula(AnomaAccum, Name);
+      const MoonFunc = MoonFormula(AnoAccum, Name);
       MoonDifAccum = MoonFunc.MoonDifAccum;
       MoonAcrVd = MoonFunc.MoonAcrVd;
       SunTcorr2 = SunDifAccum / MoonAvgVd;
@@ -865,7 +865,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       Tcorr2 = SunTcorr2 + MoonTcorr2;
     } else if (Type === 7 && Name !== "Qintian") {
       sunFunc = SunTcorrTable(Sd, Name);
-      moonFunc = MoonTcorrTable(AnomaAccum, Name);
+      moonFunc = MoonTcorrTable(AnoAccum, Name);
       SunTcorr2 = sunFunc.SunTcorr2;
       MoonTcorr2 = -moonFunc.MoonTcorr2;
       MoonTcorr1 = -moonFunc.MoonTcorr1;
@@ -875,14 +875,14 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       sunFunc = SunTcorrTable(Sd, Name);
       SunTcorr2 = sunFunc.SunTcorr2;
       moonFunc = MoonTcorrTable(
-        (AnomaAccum + (Name === "Qintian" ? SunTcorr2 : 0) + Anoma) % Anoma,
+        (AnoAccum + (Name === "Qintian" ? SunTcorr2 : 0) + Anoma) % Anoma,
         Name,
       ); // 欽天求月離改正不是直接用經朔入轉，而是先要求太陽時間改正，加減經朔，再來入轉
       MoonTcorr1 = -moonFunc.MoonTcorr1;
       Tcorr2 = SunTcorr2 + MoonTcorr1;
     } else if (Type === 11) {
       SunDifAccum = SunDifAccumFormula(Sd, Name);
-      moonFunc = MoonFormula(AnomaAccum, Name);
+      moonFunc = MoonFormula(AnoAccum, Name);
       MoonDifAccum = moonFunc.MoonDifAccum;
       MoonAcrVd = moonFunc.MoonAcrVd;
       SunTcorr2 = (SunDifAccum * PartRange) / MoonAcrVd;
@@ -915,12 +915,12 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
 };
 // console.log(AutoTcorr(6, 9, 'Qintian').MoonTcorr)
 
-export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
+export const AutoDifAccum = (AnoAccum, Sd, Name) => {
   const { Type, SolarRaw, Anoma } = Para[Name];
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
-  if (AnomaAccum) {
-    AnomaAccum = fmod(AnomaAccum, Anoma)
+  if (AnoAccum) {
+    AnoAccum = fmod(AnoAccum, Anoma)
   }
   if (Sd) {
     Sd = fmod(Sd, Solar)
@@ -953,28 +953,28 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Qianxiang").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Qianxiang").MoonDifAccum;
     } else if (["Liuzhi", "Wangshuozhi", "Sanji"].includes(Name)) {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Jingchu").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Jingchu").MoonDifAccum;
     } else if (Name === "Xuanshi") {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Tsrengguang").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Tsrengguang").MoonDifAccum;
     } else if (["Jiayin", "Tianhe", "Daxiang"].includes(Name)) {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Tianbao").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Tianbao").MoonDifAccum;
     } else if (Name === "Kaihuang") {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Yuanjia").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Yuanjia").MoonDifAccum;
     } else if (Name === "Yukuo") {
-      MoonDifAccum = AutoDifAccum(AnomaAccum, 0, "Yukuo").MoonDifAccum;
+      MoonDifAccum = AutoDifAccum(AnoAccum, 0, "Yukuo").MoonDifAccum;
     } else {
       if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
-        DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Daye");
+        DifAccumFunc = AutoDifAccum(AnoAccum, Sd, "Daye");
       } else if (["Yisi", "LindeB", "Shenlong"].includes(Name)) {
-        DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Linde");
+        DifAccumFunc = AutoDifAccum(AnoAccum, Sd, "Linde");
       } else if (Name === "Zhide") {
-        DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Dayan");
+        DifAccumFunc = AutoDifAccum(AnoAccum, Sd, "Dayan");
       } else if (["Daming1", "Daming2"].includes(Name)) {
-        DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Jiyuan");
+        DifAccumFunc = AutoDifAccum(AnoAccum, Sd, "Jiyuan");
       } else if (["Yiwei", "Gengwu"].includes(Name)) {
-        DifAccumFunc = AutoDifAccum(AnomaAccum, Sd, "Daming3");
+        DifAccumFunc = AutoDifAccum(AnoAccum, Sd, "Daming3");
       }
       SunDifAccum = DifAccumFunc.SunDifAccum;
       MoonDifAccum = DifAccumFunc.MoonDifAccum;
@@ -992,17 +992,17 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
         SunDifAccum = SunDifAccumTable(Sd, Name);
       }
     }
-    if (AnomaAccum) {
+    if (AnoAccum) {
       if (["Daye", "Wuyin", "WuyinB"].includes(Name)) {
-        MoonDifAccum = MoonTcorrTable1(AnomaAccum, Name).MoonDifAccum1;
+        MoonDifAccum = MoonTcorrTable1(AnoAccum, Name).MoonDifAccum1;
       } else if (Type <= 4) {
-        MoonDifAccum = MoonTcorrTable1(AnomaAccum, Name).MoonDifAccum1;
+        MoonDifAccum = MoonTcorrTable1(AnoAccum, Name).MoonDifAccum1;
       } else if (["Yitian", "Guantian"].includes(Name)) {
-        MoonDifAccum = MoonDifAccumTable(AnomaAccum, Name);
+        MoonDifAccum = MoonDifAccumTable(AnoAccum, Name);
       } else if (["Futian", "Mingtian"].includes(Name) || Type === 11) {
-        MoonDifAccum = MoonFormula(AnomaAccum, Name).MoonDifAccum;
+        MoonDifAccum = MoonFormula(AnoAccum, Name).MoonDifAccum;
       } else if (Type < 11) {
-        MoonDifAccum = MoonDifAccumTable(AnomaAccum, Name);
+        MoonDifAccum = MoonDifAccumTable(AnoAccum, Name);
       }
     }
   }
@@ -1010,9 +1010,9 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
 };
 // console.log(AutoDifAccum(9, 9, 'Chongxuan').MoonDifAccum)
 
-export const anojour = (AnomaAccum, Name) => {
+export const anojour = (AnoAccum, Name) => {
   const { Type, Anoma } = Para[Name];
-  AnomaAccum = fmod(AnomaAccum, Anoma);
+  AnoAccum = fmod(AnoAccum, Anoma);
   let Anojour = 0;
   let AnomaCycle = 0;
   if (
@@ -1040,54 +1040,54 @@ export const anojour = (AnomaAccum, Name) => {
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
-      Anojour = AnojourTable1(AnomaAccum, "Qianxiang");
+      Anojour = AnojourTable1(AnoAccum, "Qianxiang");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Qianxiang");
     } else if (["Liuzhi", "Wangshuozhi", "Sanji"].includes(Name)) {
-      Anojour = AnojourTable1(AnomaAccum, "Jingchu");
+      Anojour = AnojourTable1(AnoAccum, "Jingchu");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Jingchu");
     } else if (Name === "Xuanshi") {
-      Anojour = AnojourTable1(AnomaAccum, "Tsrengguang");
+      Anojour = AnojourTable1(AnoAccum, "Tsrengguang");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Tsrengguang");
     } else if (["Jiayin", "Tianhe", "Daxiang"].includes(Name)) {
-      Anojour = AnojourTable1(AnomaAccum, "Tianbao");
+      Anojour = AnojourTable1(AnoAccum, "Tianbao");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Tianbao");
     } else if (Name === "Kaihuang") {
-      Anojour = AnojourTable1(AnomaAccum, "Yuanjia");
+      Anojour = AnojourTable1(AnoAccum, "Yuanjia");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Yuanjia");
     } else if (Name === "Yukuo") {
-      Anojour = AnojourTable1(AnomaAccum, "Daming");
+      Anojour = AnojourTable1(AnoAccum, "Daming");
       AnomaCycle = AnojourTable1(Anoma - 1e-13, "Daming");
     } else if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
-      Anojour = AnojourTable2(AnomaAccum, "Daye");
+      Anojour = AnojourTable2(AnoAccum, "Daye");
       AnomaCycle = AnojourTable2(Anoma - 1e-13, "Daye");
     } else if (["Yisi", "LindeB", "Shenlong"].includes(Name)) {
-      Anojour = AnojourTable2(AnomaAccum, "Linde");
+      Anojour = AnojourTable2(AnoAccum, "Linde");
       AnomaCycle = AnojourTable2(Anoma - 1e-13, "Linde");
     } else if (Name === "Zhide") {
-      Anojour = AnojourTable2(AnomaAccum, "Dayan");
+      Anojour = AnojourTable2(AnoAccum, "Dayan");
       AnomaCycle = AnojourTable2(Anoma - 1e-13, "Dayan");
     } else if (["Daming1", "Daming2"].includes(Name)) {
-      Anojour = AnojourTable2(AnomaAccum, "Jiyuan");
+      Anojour = AnojourTable2(AnoAccum, "Jiyuan");
       AnomaCycle = AnojourTable2(Anoma - 1e-13, "Jiyuan");
     } else if (["Yiwei", "Gengwu"].includes(Name)) {
-      Anojour = AnojourTable2(AnomaAccum, "Daming3");
+      Anojour = AnojourTable2(AnoAccum, "Daming3");
       AnomaCycle = AnojourTable2(Anoma - 1e-13, "Daming3");
     }
   } else if (Type > 1 && Type < 5) {
-    Anojour = AnojourTable1(AnomaAccum, Name);
+    Anojour = AnojourTable1(AnoAccum, Name);
     AnomaCycle = AnojourTable1(Anoma - 1e-13, Name);
   } else if (Name === "Mingtian") {
-    Anojour = MoonFormula(AnomaAccum, Name).Anojour;
+    Anojour = MoonFormula(AnoAccum, Name).Anojour;
     AnomaCycle = 368.3708;
   } else if (Name === "Futian" || Type === 11) {
-    Anojour = MoonFormula(AnomaAccum, Name).Anojour;
+    Anojour = MoonFormula(AnoAccum, Name).Anojour;
     AnomaCycle = MoonFormula(Anoma - 1e-13, Name).Anojour;
   } else {
-    Anojour = AnojourTable2(AnomaAccum, Name);
+    Anojour = AnojourTable2(AnoAccum, Name);
     AnomaCycle = AnojourTable2(Anoma - 1e-13, Name);
   }
   // if (['Xuanming', 'Yingtian', 'Yitian'].includes(Name)) {
-  //     if (AnomaAccum > Anoma / 2) {
+  //     if (AnoAccum > Anoma / 2) {
   //         Anojour += AnomaCycle
   //     }
   //     AnomaCycle *= 2

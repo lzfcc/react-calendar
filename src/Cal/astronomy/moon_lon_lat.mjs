@@ -327,7 +327,7 @@ export const MoonLatTable = (NodeAccum, Name) => {
 // 大衍：《中國古代曆法》頁530
 // console.log(MoonLatTable(10, 'Dayan'))
 
-export const MoonLatFormula = (NodeAccum, Name, AnomaAccum, Sd) => {
+export const MoonLatFormula = (NodeAccum, Name, AnoAccum, Sd) => {
   // 《中國古代曆法》頁146,陳美東《中國古代月亮極黃緯計算法》；《數》頁410
   const { Node } = Para[Name];
   const NodeQuar = nodeQuar(Name);
@@ -348,7 +348,7 @@ export const MoonLatFormula = (NodeAccum, Name, AnomaAccum, Sd) => {
     if (LonHalfRev < 30) Lat = f1 - f2;
     else Lat = f1 - f3;
   } else if (Name === 'Qintian') {
-    NodeAccum += AutoTcorr(AnomaAccum, Sd, Name, NodeAccum).NodeAccumCorrA; // 欽天用入交定日
+    NodeAccum += AutoTcorr(AnoAccum, Sd, Name, NodeAccum).NodeAccumCorrA; // 欽天用入交定日
     const NodeAccumHalf = NodeAccum % NodeHalf;
     Lat = ((Node / 2 - NodeAccumHalf) * NodeAccumHalf) / (556 / 72);
   } else if (Name === 'Chongtian') {
@@ -457,7 +457,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
  * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
  * ⚠️注意有隱式開關
  * @param {*} NodeAccum 求月緯是此時入交，其他是經朔入交
- * @param {*} AvgNewmAnomaAccum 欽天求月黃緯是此時入轉，其他都是經朔入轉
+ * @param {*} AvgNewmAnoAccum 欽天求月黃緯是此時入轉，其他都是經朔入轉
  * @param {*} AvgNewmSd 平朔距冬至日數
  * @param {*} NewmEclpGong 定朔距冬至實行度
  * @param {*} Name
@@ -467,7 +467,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
  */
 export const moonLonLat = (
   NodeAccum,
-  AvgNewmAnomaAccum,
+  AvgNewmAnoAccum,
   AvgNewmSd,
   NewmEclpGong,
   Name,
@@ -481,27 +481,27 @@ export const moonLonLat = (
   const T_Node1Dif_Avg = Node - NodeAccum; // 朔後平交日分：朔之後的正交
   const S_Node1Dif = T_Node1Dif_Avg * MoonAvgVd;
   const S_NodeDif = NodeAccum * MoonAvgVd; // 朔前正交
-  // const NodeAnomaAccum = (AvgNewmAnomaAccum + T_Node1Dif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
-  // const T_Node1Dif = T_Node1Dif_Avg + AutoTcorr(NodeAnomaAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
+  // const NodeAnoAccum = (AvgNewmAnoAccum + T_Node1Dif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
+  // const T_Node1Dif = T_Node1Dif_Avg + AutoTcorr(NodeAnoAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
   const Node1EclpGong = (AvgNewmSd + S_Node1Dif) % Sidereal; // 授時：正交距冬至定積度
   let NodeEclp = Node1EclpGong // 崇天以後的
   if (Name === "Qintian") { // 欽天都要先加一個日躔改正
-    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr
+    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr
     NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
   } else if (Type === 6 || Type === 7) { // 大衍
     const AvgNodeEclpGong = AvgNewmSd - S_NodeDif; // 朔前平交
     NodeEclp = (AvgNodeEclpGong + AutoDifAccum(undefined, AvgNodeEclpGong, Name).SunDifAccum + Solar) % Solar
   } else if (Name === "Yingtian" || Name === "Qianyuan") {
-    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnomaAccum, undefined, Name).MoonTcorr
+    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
     NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
   } else if (Name === "Yitian") {
-    const AcrNewmAnomaAccum = AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, undefined, Name).MoonTcorr
-    const AcrNewmAnojour = anojour(AcrNewmAnomaAccum, Name).Anojour
+    const AcrNewmAnoAccum = AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
+    const AcrNewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour
     if (NodeAccum < Node / 2) { // 儀天用距離最近的正交
-      const NodeAnojour = anojour(AvgNewmAnomaAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
+      const NodeAnojour = anojour(AvgNewmAnoAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
       NodeEclp = (NewmEclpGong - (AcrNewmAnojour - NodeAnojour) + Solar) % Solar
     } else {
-      const Node1Anojour = anojour(AvgNewmAnomaAccum + Node - NodeAccum, Name).Anojour
+      const Node1Anojour = anojour(AvgNewmAnoAccum + Node - NodeAccum, Name).Anojour
       NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
     }
   }

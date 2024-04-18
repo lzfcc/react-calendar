@@ -262,17 +262,17 @@ export default (Name, YearStart, YearEnd) => {
             Term1EclpPrint = TermSlice(Term1Eclp)
         }
         ////////// 調用交食模塊。由於隋系交食需要用月份，所以必須要切了之後才能用，傳一堆參數，很惡心
-        let SunEcli = [], MoonEcli = [], NewmNodeAccumPrint = [], NewmNodeAccumMidnPrint = [], NewmAnomaAccumPrint = [], NewmAnomaAccumMidnPrint = []
+        let SunEcli = [], MoonEcli = [], NewmNodeAccumPrint = [], NewmNodeAccumMidnPrint = [], NewmAnoAccumPrint = [], NewmAnoAccumMidnPrint = []
         if (Type > 1 && Type <= 11) {
             NewmDeciPrint = NewmSlice(ThisYear.NewmDeci)
             const SyzygyAvgDeciPrint = NewmSlice(ThisYear.SyzygyAvgDeci)
             if (Node) {
                 NewmNodeAccumPrint = NewmSlice(ThisYear.NewmNodeAccum)
                 NewmNodeAccumMidnPrint = NewmSlice(ThisYear.NewmNodeAccumMidn)
-                NewmAnomaAccumPrint = NewmSlice(ThisYear.NewmAnomaAccum)
-                NewmAnomaAccumMidnPrint = NewmSlice(ThisYear.NewmAnomaAccumMidn)
+                NewmAnoAccumPrint = NewmSlice(ThisYear.NewmAnoAccum)
+                NewmAnoAccumMidnPrint = NewmSlice(ThisYear.NewmAnoAccumMidn)
                 const SyzygyNodeAccumPrint = NewmSlice(ThisYear.SyzygyNodeAccum)
-                const SyzygyAnomaAccumPrint = NewmSlice(ThisYear.SyzygyAnomaAccum)
+                const SyzygyAnoAccumPrint = NewmSlice(ThisYear.SyzygyAnoAccum)
                 const SyzygySdPrint = NewmSlice(ThisYear.SyzygySd)
                 const SyzygyAcrSdPrint = NewmSlice(ThisYear.SyzygyAcrSd)
                 for (let i = 0; i < MonthPrint.length; i++) { // 切了之後從0開始索引
@@ -293,7 +293,7 @@ export default (Name, YearStart, YearEnd) => {
                     Rise = fix(Rise)
                     const StatusList = ["", "●", "◐", "◔"]
                     if (isSunEcli) { // 這些數字根據大統，再放寬0.3
-                        SunEcliFunc = AutoEclipse(NewmNodeAccumPrint[i], NewmAnomaAccumPrint[i], NewmDeciPrint[i], NewmAvgDeciPrint[i], NewmAcrSdPrint[i], NewmSdPrint[i], 1, Name, NoleapMon, LeapNumTerm, SolsAccum)
+                        SunEcliFunc = AutoEclipse(NewmNodeAccumPrint[i], NewmAnoAccumPrint[i], NewmDeciPrint[i], NewmAvgDeciPrint[i], NewmAcrSdPrint[i], NewmSdPrint[i], 1, Name, NoleapMon, LeapNumTerm, SolsAccum)
                         const SunEcliStatus = SunEcliFunc.Status
                         let NewmMagni = 0
                         const NewmStartDeci = SunEcliFunc.StartDeci ? fix(SunEcliFunc.StartDeci) : 0
@@ -309,7 +309,7 @@ export default (Name, YearStart, YearEnd) => {
                         }
                     }
                     if (isMoonEcli) { // 陳美東《中國古代的月食食限及食分算法》：五紀17.8/13.36大概是1.33
-                        MoonEcliFunc = AutoEclipse(SyzygyNodeAccumPrint[i], SyzygyAnomaAccumPrint[i], SyzygyDeciPrint[i], SyzygyAvgDeciPrint[i], SyzygyAcrSdPrint[i], SyzygySdPrint[i], 0, Name, NoleapMon, LeapNumTerm, SolsAccum)
+                        MoonEcliFunc = AutoEclipse(SyzygyNodeAccumPrint[i], SyzygyAnoAccumPrint[i], SyzygyDeciPrint[i], SyzygyAvgDeciPrint[i], SyzygyAcrSdPrint[i], SyzygySdPrint[i], 0, Name, NoleapMon, LeapNumTerm, SolsAccum)
                         const MoonEcliStatus = MoonEcliFunc.Status
                         let SyzygyMagni = 0
                         const SyzygyStartDeci = MoonEcliFunc.StartDeci ? fix(MoonEcliFunc.StartDeci) : 0
@@ -417,8 +417,8 @@ export default (Name, YearStart, YearEnd) => {
             // NewmAcrInt: (Type === 1 ? [] : NewmSlice(ThisYear.NewmAcrInt)),
             NewmNodeAccumPrint, // : (Type === 1 ? [] : NewmNodeAccumPrint.slice(NewmStart)), // 為什麼還要切一遍？？
             NewmNodeAccumMidnPrint,
-            NewmAnomaAccumPrint, //: (Type === 1 ? [] : NewmAnomaAccumPrint.slice(NewmStart))
-            NewmAnomaAccumMidnPrint,
+            NewmAnoAccumPrint, //: (Type === 1 ? [] : NewmAnoAccumPrint.slice(NewmStart))
+            NewmAnoAccumMidnPrint,
             // 時憲曆曆書
             SolsmorScOrder: Type === 13 ? ThisYear.SolsmorScOrder : undefined,
             MansDaySolsmor: Type === 13 ? ThisYear.MansDaySolsmor : undefined,

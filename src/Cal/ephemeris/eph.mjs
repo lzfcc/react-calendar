@@ -70,8 +70,8 @@ export const D1 = (Name, YearStart, YearEnd) => {
       NewmAvgRaw,
       NewmNodeAccumPrint,
       NewmNodeAccumMidnPrint,
-      NewmAnomaAccumPrint,
-      NewmAnomaAccumMidnPrint,
+      NewmAnoAccumPrint,
+      NewmAnoAccumMidnPrint,
     } = CalNewm(Name, Y)[0];
     if (["Shoushi", "Shoushi2"].includes(Name)) {
       Solar = +(
@@ -274,7 +274,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type === 1) {
         MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
-        NewmAnojour = anojour(NewmAnomaAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
+        NewmAnojour = anojour(NewmAnoAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
@@ -284,7 +284,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type >= 6) {
         const FuncNewm = moonLonLat(
           NewmNodeAccumPrint[i - 1],
-          NewmAnomaAccumPrint[i - 1],
+          NewmAnoAccumPrint[i - 1],
           AvgNewmSd,
           NewmEclpGong,
           Name,
@@ -315,7 +315,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SunLon,
           MoonWhiteLon,
           MoonEclpLon,
-          AnomaAccumMidn,
+          AnoAccumMidn,
           NodeAccumMidn,
           MoonEquaLon,
           NowNewm_WhiteDif,
@@ -327,17 +327,17 @@ export const D1 = (Name, YearStart, YearEnd) => {
           MoonEclpLon = (MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd) % Sidereal;
         } else {
           NodeAccumMidn = (NewmNodeAccumMidnPrint[i - 1] + k - 1) % Node;
-          AnomaAccumMidn = (NewmAnomaAccumMidnPrint[i - 1] + k - 1) % Anoma;
+          AnoAccumMidn = (NewmAnoAccumMidnPrint[i - 1] + k - 1) % Anoma;
           NodeAccumMidn =
             (NodeAccumMidn +
-              AutoTcorr(AnomaAccumMidn, SdMidn, Name, NodeAccumMidn)
+              AutoTcorr(AnoAccumMidn, SdMidn, Name, NodeAccumMidn)
                 .NodeAccumCorrA) %
             Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
-          const MidnAnojour = anojour(AnomaAccumMidn, Name).Anojour;
+          const MidnAnojour = anojour(AnoAccumMidn, Name).Anojour;
           if (Type <= 4) {
             const MoonEclpDeg = (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonEclp = deg2Mans(MoonEclpDeg, EclpAccumList).Print;
@@ -351,7 +351,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? Dial.toFixed(3) + "尺" : undefined;
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
-        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, AnomaAccumMidn, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
+        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, AnoAccumMidn, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
         let OrbColor
         if (Type >= 6 && Type <= 10) {
           OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name)

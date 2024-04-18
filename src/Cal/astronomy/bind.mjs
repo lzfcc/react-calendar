@@ -51,10 +51,10 @@ import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
 // 月亮我2020年4個月的數據擬合 -.9942  + .723*cosd(x* .2243) +  6.964 *sind(x* .2243)，但是幅度跟古曆比起來太大了，就調小了一點 極大4.4156，極小-5.6616
-export const bindTcorr = (AnomaAccum, Sd, Name) => {
+export const bindTcorr = (AnoAccum, Sd, Name) => {
   // Name預留給誤差分析程序，否則不用
   Sd = +Sd;
-  AnomaAccum = +AnomaAccum;
+  AnoAccum = +AnoAccum;
   if (Sd > 365.2425 || Sd < 0) throw new Error("請輸入一回歸年內的日數！");
   let List1 = [
     "Qianxiang",
@@ -109,18 +109,18 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
       const p = 360 / Solar;
       const EllipseSun = cS ? corrEllipse(Sd * p, cS) / p : undefined;
       const EllipseMoon = cM
-        ? corrEllipse(((AnomaAccum / Anoma) * 360 + 180) % 360, cM) / p
+        ? corrEllipse(((AnoAccum / Anoma) * 360 + 180) % 360, cM) / p
         : undefined;
       let AutoDifAccumFunc = {};
       if (Name !== "Qintian")
-        AutoDifAccumFunc = AutoDifAccum(AnomaAccum, Sd, Name);
+        AutoDifAccumFunc = AutoDifAccum(AnoAccum, Sd, Name);
       const { SunDifAccum, MoonDifAccum } = AutoDifAccumFunc;
       const { SunTcorr, MoonTcorr, MoonAcrVd, NodeAccumCorrA } = AutoTcorr(
-        AnomaAccum,
+        AnoAccum,
         Sd,
         Name,
       );
-      const { Anojour } = anojour(AnomaAccum, Name);
+      const { Anojour } = anojour(AnoAccum, Name);
       let SunTcorrPrint = "-";
       let NodeAccumCorrPrint = "-";
       const SunDifAccumPrint = SunDifAccum ? SunDifAccum.toFixed(5) : "-";
@@ -131,7 +131,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
       const MoonDifAccumPrint = (MoonDifAccum || 0).toFixed(5);
       let MoonAcrVdPrint = "-";
       if (Name === "Shoushi") {
-        const tmp = ShoushiXianV(AnomaAccum);
+        const tmp = ShoushiXianV(AnoAccum);
         MoonAcrVdPrint = `${tmp.toFixed(4)}\n${(tmp / 0.082).toFixed(4)}`;
       } else if (MoonAcrVd) MoonAcrVdPrint = MoonAcrVd.toFixed(4);
       const MoonDifAccumErrPrint =
@@ -167,15 +167,15 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
       const p = 360 / Solar;
       const EllipseSun = cS ? corrEllipse(Sd * p, cS) / p : undefined;
       const EllipseMoon = cM
-        ? corrEllipse((AnomaAccum / Anoma) * 360, cM) / p
+        ? corrEllipse((AnoAccum / Anoma) * 360, cM) / p
         : undefined;
-      const { SunDifAccum, MoonDifAccum } = AutoDifAccum(AnomaAccum, Sd, Name);
+      const { SunDifAccum, MoonDifAccum } = AutoDifAccum(AnoAccum, Sd, Name);
       const { SunTcorr, MoonTcorr, NodeAccumCorrA } = AutoTcorr(
-        AnomaAccum,
+        AnoAccum,
         Sd,
         Name,
       );
-      const { Anojour } = anojour(AnomaAccum, Name);
+      const { Anojour } = anojour(AnoAccum, Name);
       const SunDifAccumPrint = SunDifAccum.toFixed(5);
       const SunDifAccumErrPrint =
         EllipseSun !== undefined
@@ -803,19 +803,19 @@ export const bindMansAccumList = (Name, Y) => {
  * @param {*} Name 
  * @param {*} Y 
  * @param {*} NodeAccum 平朔入交
- * @param {*} AnomaAccum 平朔入轉
+ * @param {*} AnoAccum 平朔入轉
  * @param {*} AvgNewmSd 平朔距冬至時間
  * @returns 
  */
-export const bindWhiteAccumList = (Name, Y, NodeAccum, AnomaAccum, AvgNewmSd) => {
+export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
   Name = Name.toString();
   Y = parseInt(Y);
   NodeAccum = +NodeAccum
   AvgNewmSd = +AvgNewmSd
-  AnomaAccum = +AnomaAccum
-  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr2
+  AnoAccum = +AnoAccum
+  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr2
   const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AnomaAccum, AvgNewmSd, NewmEclpGong, Name, Y);
+  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -976,22 +976,22 @@ export const bindMansAccumModernList = (Name, Jd) => {
 /**
  * 
  * @param {*} NodeAccum 此時入交
- * @param {*} AnomaAccum 此時入轉
- * @param {*} AvgNewmAnomaAccum 平朔入轉
+ * @param {*} AnoAccum 此時入轉
+ * @param {*} AvgNewmAnoAccum 平朔入轉
  * @param {*} AvgNewmSd 平朔距冬至時間
  * @returns 
  */
-export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd) => {
+export const bindMoonLat = (NodeAccum, AnoAccum, AvgNewmAnoAccum, AvgNewmSd) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
-  AnomaAccum = +AnomaAccum
-  AvgNewmAnomaAccum = +AvgNewmAnomaAccum
+  AnoAccum = +AnoAccum
+  AvgNewmAnoAccum = +AvgNewmAnoAccum
   AvgNewmSd = +AvgNewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
   if (AvgNewmSd >= 365.246 || AvgNewmSd < 0)
     throw new Error("請輸入一週天度內的度數");
-  if (AnomaAccum >= 27.21221 || AvgNewmAnomaAccum > 27.21221 || AnomaAccum < 0 || AvgNewmAnomaAccum < 0)
+  if (AnoAccum >= 27.21221 || AvgNewmAnoAccum > 27.21221 || AnoAccum < 0 || AvgNewmAnoAccum < 0)
     throw new Error("請輸入一交點月內的日數");
   let Print = [];
   Print = Print.concat(
@@ -1014,13 +1014,13 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd)
       const { Sidereal, Anoma } = Para[Name]
       let LatPrint = "";
       let EquaLatPrint = "";
-      const AcrNewmAnomaAccum = (AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
-      const AnojourNow = anojour(AnomaAccum, Name).Anojour;
-      const AnojourNewm = anojour(AcrNewmAnomaAccum, Name).Anojour;
+      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
+      const AnojourNow = anojour(AnoAccum, Name).Anojour;
+      const AnojourNewm = anojour(AcrNewmAnoAccum, Name).Anojour;
       const NowNewm_WhiteDif = (AnojourNow - AnojourNewm + Sidereal) % Sidereal
-      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr
+      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
       const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AnomaAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
+      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
       if (EclpLat) {
         LatPrint = lat2NS(EclpLat)
       }
@@ -1042,20 +1042,20 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd)
 
 export const bindSunEclipse = (
   NodeAccum,
-  AnomaAccum,
+  AnoAccum,
   AvgDeci,
   AvgSd,
   SolsDeci,
 ) => {
   NodeAccum = +NodeAccum;
-  AnomaAccum = +AnomaAccum;
+  AnoAccum = +AnoAccum;
   AvgDeci = +`.${AvgDeci}`;
   AvgSd = +AvgSd;
   SolsDeci = +`.${SolsDeci}`;
   const Solar = 365.24478;
   const HalfTermLeng = Solar / 24;
   if (NodeAccum > 27.212215) throw new Error("請輸入一交點月27.212215內的日數");
-  if (AnomaAccum > 27.5545) throw new Error("請輸入一近點月27.5545內的日數");
+  if (AnoAccum > 27.5545) throw new Error("請輸入一近點月27.5545內的日數");
   // 隋系是要根據月份來判斷的，這裏爲了簡化輸入，我改爲用節氣判斷季節，這不準確
   let i = 0;
   for (let j = 0; j <= 11; j++) {
@@ -1087,12 +1087,12 @@ export const bindSunEclipse = (
       "Shoushi",
       "Datong",
     ].map((Name) => {
-      const { Tcorr1, Tcorr2 } = AutoTcorr(AnomaAccum, AvgSd, Name);
+      const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
       const AcrSd = AvgSd + (Tcorr2 || Tcorr1);
       const { Magni, StartDeci, GreatDeci, EndDeci, Status } = AutoEclipse(
         NodeAccum,
-        AnomaAccum,
+        AnoAccum,
         AcrDeci,
         AvgDeci,
         AcrSd,
@@ -1146,12 +1146,12 @@ export const bindSunEclipse = (
       "Chongtian",
       "Guantian",
     ].map((Name) => {
-      const { Tcorr1, Tcorr2 } = AutoTcorr(AnomaAccum, AvgSd, Name);
+      const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
       const AcrSd = AvgSd + (Tcorr2 || Tcorr1);
       const { Magni, StartDeci, GreatDeci, EndDeci, Status } = AutoEclipse(
         NodeAccum,
-        AnomaAccum,
+        AnoAccum,
         AcrDeci,
         AvgDeci,
         AcrSd,
@@ -1199,13 +1199,13 @@ export const bindSunEclipse = (
 
 export const bindMoonEclipse = (
   NodeAccum,
-  AnomaAccum,
+  AnoAccum,
   AvgDeci,
   AvgSd,
   SolsDeci,
 ) => {
   NodeAccum = +NodeAccum;
-  AnomaAccum = +AnomaAccum;
+  AnoAccum = +AnoAccum;
   AvgDeci = +`.${AvgDeci}`;
   AvgSd = +AvgSd;
   SolsDeci = +`.${SolsDeci}`;
@@ -1213,7 +1213,7 @@ export const bindMoonEclipse = (
   const HalfTermLeng = Solar / 24;
   const StatusList = ["不食", "全食", "偏食", "微少"];
   if (NodeAccum > 27.212215) throw new Error("請輸入一交點月27.212215內的日數");
-  if (AnomaAccum > 27.5545) throw new Error("請輸入一近點月27.5545內的日數");
+  if (AnoAccum > 27.5545) throw new Error("請輸入一近點月27.5545內的日數");
   // 隋系是要根據月份來判斷的，這裏爲了簡化輸入，我改爲用節氣判斷季節，這不準確
   let i = 0;
   for (let j = 0; j <= 11; j++) {
@@ -1247,12 +1247,12 @@ export const bindMoonEclipse = (
       "Datong",
       "Datong2",
     ].map((Name) => {
-      const { Tcorr1, Tcorr2 } = AutoTcorr(AnomaAccum, AvgSd, Name);
+      const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
       const AcrSd = AvgSd + (Tcorr2 || Tcorr1);
       const { Magni, StartDeci, GreatDeci, EndDeci, Status } = AutoEclipse(
         NodeAccum,
-        AnomaAccum,
+        AnoAccum,
         AcrDeci,
         AvgDeci,
         AcrSd,
@@ -1299,12 +1299,12 @@ export const bindMoonEclipse = (
       "Chongtian",
       "Guantian",
     ].map((Name) => {
-      const { Tcorr1, Tcorr2 } = AutoTcorr(AnomaAccum, AvgSd, Name);
+      const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
       const AcrSd = AvgSd + (Tcorr2 || Tcorr1);
       const { Magni, StartDeci, GreatDeci, EndDeci, Status } = AutoEclipse(
         NodeAccum,
-        AnomaAccum,
+        AnoAccum,
         AcrDeci,
         AvgDeci,
         AcrSd,
@@ -1344,10 +1344,10 @@ export const bindMoonEclipse = (
 // console.log(bindMoonEclipse(1.1, 22, 22, 22))
 
 
-const ErrPrint_SunTcorr = (Name, AnomaAccum) => {
+const ErrPrint_SunTcorr = (Name, AnoAccum) => {
   const SunTcorrErr = [];
   for (let i = 1; i <= 182; i++) {
-    SunTcorrErr[i] = bindTcorr(AnomaAccum, i, Name).SunTcorrErr;
+    SunTcorrErr[i] = bindTcorr(AnoAccum, i, Name).SunTcorrErr;
   }
   return SunTcorrErr;
 };

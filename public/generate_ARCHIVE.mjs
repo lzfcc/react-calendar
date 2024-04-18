@@ -276,7 +276,7 @@ const test5 = function () {
 //         Last = TheNodeDif ** 2 / 100
 //         Last = isDescend ? 1112 - Last / 935 : 900 - Last / 1156
 //     }
-//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnomaAccum)]
+//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnoAccum)]
 // } else if (Name === 'Guantian') {
 //     if (isNewm) {
 //         Last = TheNodeDif < SunLimitYang ? (98 - TheNodeDif / 100) * (TheNodeDif / 100) / 2.5 : (140 - TheNodeDif / 100) * (TheNodeDif / 100) / 6.5 // 觀天只說250而一，沒說進二位                
@@ -284,29 +284,29 @@ const test5 = function () {
 //         Last = TheNodeDif ** 2 / 100
 //         Last = isDescend ? 1203 - Last / 1138 : 1083 - Last / 1264
 //     }
-//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnomaAccum)] // 這個計算還是很粗疏，都沒有算一日之中的具體速度，平行速也很粗疏
+//     Last *= 1337 / MoonAcrVList[Math.trunc(AcrAnoAccum)] // 這個計算還是很粗疏，都沒有算一日之中的具體速度，平行速也很粗疏
 // }
 
 // 以下是授時遲疾限下行度
 // 分別是授時曆立成和大統通軌，我把兩個平均，結果與MoonAcrVListA完全一樣，所以就只用第一個了
 const MoonAcrVListB = [.06793140, .06796518, .06799900, .06803285, .06806673, .06810631, .06814590, .06818559, .06822530, .06826506, .06831056, .06835611, .06840173, .06844749, .06849315, .06854467, .06859054, .06864222, .06869397, .06875257, .06880349, .06886125, .06891914, .06897713, .06903519, .06909916, .06616329, .06922167, .06928601, .06935633, .06942092, .06949152, .06956226, .06963315, .06970418, .06977535, .06985262, .06993006, .07000768, .07008547, .07016943, .07024757, .07033193, .07041648, .07050124, .07059228, .07067746, .07076896, .07086069, .07095266, .07105104, .07114350, .07124239, .07134156, .07144101, .07154074, .07164700, .07175358, .07186048, .07196770, .07207523, .07218945, .07229765, .07241257, .07252786, .07264995, .07276599, .07288888, .07301219, .07313592, .07326007, .07338464, .07351622, .07364828, .07378081, .07391382, .07405400, .07418800, .07432922, .07447098, .07461328, .07476294, .07477658, .07478340, .07481069, .07481751, .07483117, .07498171, .07512597, .07527079, .07541616, .07556210, .07570162, .07584165, .07598220, .07612328, .07626488, .07639988, .07654251, .07667851, .07681498, .07694473, .07708215, .07721280, .07734389, .07747543, .07760742, .07773284, .07786534, .07799125, .07811755, .07823680, .07836391, .07848399, .07860429, .07872503, .07884615, .07896764, .07908186, .07919644, .07931132, .07942657, .07954224, .07965031, .07975877, .07986753, .07997659, .08008594, .08018775, .08028982, .08039215, .08049474, .08059760, .08069277, .08078817, .08088384, .08097965, .08107573, .08116401, .08126052, .08134920, .08143807, .08151903, .08160828, .08168957, .08177104, .08185266, .08193445, .08200820, .08209029, .08216432, .08223849, .08231278, .08237894, .08244520, .08251987, .08258636, .08264462, .08271131, .08276975, .08282828, .08288687, .08294557, .08300439, .08305678, .08310527, .08315586, .08320649]
-// MoonAcrVd = (MoonAcrVListA[AnomaAccumPart] + PartRange / MoonAcrVListB[AnomaAccumPart]) / 2
+// MoonAcrVd = (MoonAcrVListA[AnoAccumPart] + PartRange / MoonAcrVListB[AnoAccumPart]) / 2
 
 // const a = MoonAcrVList[1]
 // let signB = 1
 // let AnomaXian = 0
-// if (AnomaAccumRaw <= 6.642) {
-//     AnomaXian = AnomaAccumRaw / PartRange
-// } else if (AnomaAccumRaw <= 7.052) {
-//     AnomaXian = AnomaAccumRaw / PartRange
+// if (AnoAccumRaw <= 6.642) {
+//     AnomaXian = AnoAccumRaw / PartRange
+// } else if (AnoAccumRaw <= 7.052) {
+//     AnomaXian = AnoAccumRaw / PartRange
 //     signB = 0
-// } else if (AnomaAccumRaw <= 20.4193) {
-//     AnomaXian = Math.abs(AnomaHalf - AnomaAccumRaw) / PartRange
+// } else if (AnoAccumRaw <= 20.4193) {
+//     AnomaXian = Math.abs(AnomaHalf - AnoAccumRaw) / PartRange
 //     signB = -1
-// } else if (AnomaAccumRaw <= 20.8293) {
-//     AnomaXian = Math.abs(AnomaHalf - AnomaAccumRaw) / PartRange
+// } else if (AnoAccumRaw <= 20.8293) {
+//     AnomaXian = Math.abs(AnomaHalf - AnoAccumRaw) / PartRange
 //     signB = 0
 // } else {
-//     AnomaXian = (Anoma - AnomaAccumRaw) / PartRange
+//     AnomaXian = (Anoma - AnoAccumRaw) / PartRange
 // }
 // MoonAcrVd = 1.0963 + signB * (.11081575 - .0005815 * AnomaXian - .00000975 * AnomaXian * (AnomaXian - 1)) // 限下行度

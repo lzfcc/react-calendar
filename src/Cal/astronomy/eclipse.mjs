@@ -97,7 +97,7 @@ const EcliTcorr2 = (
     Season,
     NodeDif,
     NodeDif12,
-    AnomaAccum,
+    AnoAccum,
     AcrDeci,
     Denom,
     Sd,
@@ -117,30 +117,30 @@ const EcliTcorr2 = (
                     else if (NodeDif >= 8 / 12) Tcorr1 = 24;
                 }
             } else if (["Wuyin", "WuyinB"].includes(Name)) {
-                if (AnomaAccum < 1) {
+                if (AnoAccum < 1) {
                     Tcorr1 = -280; // (isNewm ? 300 : 280)但是新唐根本沒有300
-                } else if (AnomaAccum < 13) {
-                } else if (AnomaAccum < 14) Tcorr1 = 550;
-                else if (AnomaAccum < 15) Tcorr1 = 280;
-                else if (AnomaAccum < 27) {
+                } else if (AnoAccum < 13) {
+                } else if (AnoAccum < 14) Tcorr1 = 550;
+                else if (AnoAccum < 15) Tcorr1 = 280;
+                else if (AnoAccum < 27) {
                 } else Tcorr1 = -550;
                 if (isYin) {
                     if (Season === 1) {
                         if (NodeDif > 1 / 3) {
-                            if (AnomaAccum > 1 && AnomaAccum < 13) Tcorr1 = 280;
-                            else if (AnomaAccum > 15 && AnomaAccum < 27) Tcorr1 = -280;
+                            if (AnoAccum > 1 && AnoAccum < 13) Tcorr1 = 280;
+                            else if (AnoAccum > 15 && AnoAccum < 27) Tcorr1 = -280;
                         }
                     } else if (Season === 2) {
-                        if (AnomaAccum > 1 && AnomaAccum < 13) Tcorr1 = 280;
-                        else if (AnomaAccum > 15 && AnomaAccum < 27) Tcorr1 = -280;
+                        if (AnoAccum > 1 && AnoAccum < 13) Tcorr1 = 280;
+                        else if (AnoAccum > 15 && AnoAccum < 27) Tcorr1 = -280;
                     } else if (Season === 3) {
                         if (NodeDif < 11 / 12) {
-                            if (AnomaAccum > 1 && AnomaAccum < 13) Tcorr1 = 280;
-                        } else if (AnomaAccum > 1 && AnomaAccum < 13) Tcorr1 = 550
-                        else if (AnomaAccum > 15 && AnomaAccum < 27) Tcorr1 = 280
+                            if (AnoAccum > 1 && AnoAccum < 13) Tcorr1 = 280;
+                        } else if (AnoAccum > 1 && AnoAccum < 13) Tcorr1 = 550
+                        else if (AnoAccum > 15 && AnoAccum < 27) Tcorr1 = 280
                     } else if (Season === 4) {
                         if (NodeDif < 5 / 12) {
-                            if (AnomaAccum > 1 && AnomaAccum < 13) Tcorr1 = 280;
+                            if (AnoAccum > 1 && AnoAccum < 13) Tcorr1 = 280;
                         }
                     }
                 }
@@ -182,12 +182,12 @@ const EcliTcorr2 = (
         }
     } else {
         if (["Wuyin", "WuyinB"].includes(Name)) {
-            if (AnomaAccum < 1)
+            if (AnoAccum < 1)
                 Tcorr1 = -280; // (isNewm ? 300 : 280)但是新唐根本沒有300
-            else if (AnomaAccum < 13) Tcorr1 = 280;
-            else if (AnomaAccum < 14) Tcorr1 = 550;
-            else if (AnomaAccum < 15) Tcorr1 = 280;
-            else if (AnomaAccum < 27) Tcorr1 = -280;
+            else if (AnoAccum < 13) Tcorr1 = 280;
+            else if (AnoAccum < 14) Tcorr1 = 550;
+            else if (AnoAccum < 15) Tcorr1 = 280;
+            else if (AnoAccum < 27) Tcorr1 = -280;
             else Tcorr1 = -550;
         }
         GreatDeci = AcrDeci + Tcorr1 / Denom;
@@ -605,7 +605,7 @@ const EcliMagni2 = (
     }
     return Magni;
 };
-const EcliLast2 = (Name, Magni, GreatDeci, AnomaAccum, Denom) => {
+const EcliLast2 = (Name, Magni, GreatDeci, AnoAccum, Denom) => {
     let Last = 0;
     const MagniInt = Math.trunc(Magni);
     if (["Daye", "Wuyin", "WuyinB"].includes(Name)) {
@@ -631,7 +631,7 @@ const EcliLast2 = (Name, Magni, GreatDeci, AnomaAccum, Denom) => {
             LastList[MagniInt] +
             deci(Magni) * (LastList[MagniInt + 1] - LastList[MagniInt]);
         const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
-            AnomaAccum,
+            AnoAccum,
             Name,
         ); // 紀元：食甚加時入轉算外損益率。應朒者依其損益，應朏者益減損加其副
         Last *= 1 + MoonTcorrDif / TheDenom / Denom; // 舊唐「以乘所入變增減率，總法而一，應速：增損減加，應遲：依其增減副」
@@ -650,7 +650,7 @@ const EcliLast2 = (Name, Magni, GreatDeci, AnomaAccum, Denom) => {
 // 春夏秋冬各三月，那麼閏月怎麼辦呢，所以輸入的時候應該用day的noleapmon，閏月還是上一個月
 const Eclipse2 = (
     NodeAccum,
-    AnomaAccum,
+    AnoAccum,
     AcrDeci,
     Sd,
     isNewm,
@@ -675,7 +675,7 @@ const Eclipse2 = (
     const NodeDif12 = (NodeDif * Denom) / 112; // 去交時。這裡的去交分是1日，為了方便，去交時轉爲日法爲單位
     const isYin = NodeAccum > NodeHalf;
     const isBefore = NodeAccumHalf > NodeQuar; // 交後，在交點之後
-    const isFast = AnomaAccum < Anoma / 2; // AnomaAccum > Anoma * .25 && AnomaAccum <= AnomaQuar3
+    const isFast = AnoAccum < Anoma / 2; // AnoAccum > Anoma * .25 && AnoAccum <= AnomaQuar3
     let Season = 1;
     if (Month >= 1 && Month <= 3) {
     } else if (Month >= 4 && Month <= 6) Season = 2;
@@ -693,7 +693,7 @@ const Eclipse2 = (
         Season,
         NodeDif,
         NodeDif12,
-        AnomaAccum,
+        AnoAccum,
         AcrDeci,
         Denom,
         Sd,
@@ -755,7 +755,7 @@ const Eclipse2 = (
         Name,
         Magni,
         GreatDeci,
-        AnomaAccum,
+        AnoAccum,
         Denom,
     );
     return { Magni, Status, StartDeci, GreatDeci, EndDeci };
@@ -1327,7 +1327,7 @@ const EcliMagni3 = (
     TheNodeAccum,
     TheNodeDif,
     GreatDeci,
-    AcrAnomaAccum,
+    AcrAnoAccum,
     StatusRaw,
     Std1,
     Std2,
@@ -1490,7 +1490,7 @@ const EcliMagni3 = (
             }
         }
     } else if (Name === 'Chongxuan') {
-        Last = 2000 - MoonAcrVList[Math.trunc(AcrAnomaAccum)] * 10 / 13.37
+        Last = 2000 - MoonAcrVList[Math.trunc(AcrAnoAccum)] * 10 / 13.37
         MoonLimit1 = Last * (isYin ? .41 : .34)
         MoonLimitDenom = 1480 - MoonLimit1
         Magni = TheNodeDif < MoonLimit1 ? MagniMax : MagniPortion * (1480 - TheNodeDif) / MoonLimitDenom
@@ -1533,8 +1533,8 @@ const EcliLast3 = (
     Denom,
     Anoma,
     MoonAcrVList,
-    AcrAnomaAccum,
-    AvgAnomaAccum,
+    AcrAnoAccum,
+    AvgAnoAccum,
     AnomaHalf,
     MoonLimit1,
     MoonLimitNone,
@@ -1544,7 +1544,7 @@ const EcliLast3 = (
 ) => {
     let StartDeci = 0,
         EndDeci = 0;
-    const AcrAnomaAccumInt = Math.trunc(AcrAnomaAccum);
+    const AcrAnoAccumInt = Math.trunc(AcrAnoAccum);
     if (Magni) {
         if (["Dayan", "Wuji", "Tsrengyuan", "Xuanming"].includes(Name)) {
             if (Name === "Dayan") {
@@ -1571,13 +1571,13 @@ const EcliLast3 = (
                 Last = Magni * (isNewm ? 6 / 5 : 4 / 3);
             }
             const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
-                AcrAnomaAccum,
+                AcrAnoAccum,
                 Name,
             );
             Last *= 1 + MoonTcorrDif / TheDenom / Denom; // 「應朒者，依其損益；應朓者，損加益減其副」
         } else if (Name === "Chongxuan") {
             if (isNewm) {
-                Last = 1800 - (MoonAcrVList[AcrAnomaAccumInt] * 9) / 13.37; // 日食泛用刻是月食的0.9 f(2674)=0
+                Last = 1800 - (MoonAcrVList[AcrAnoAccumInt] * 9) / 13.37; // 日食泛用刻是月食的0.9 f(2674)=0
                 Last *= Magni / 100000;
             } else {
                 // 月全食
@@ -1599,18 +1599,18 @@ const EcliLast3 = (
             } else {
                 Last = 417 - (1052 - TheNotEcli) ** 2 / 2654
             }
-            Last *= 1337.5 / MoonAcrVList[Math.trunc((AcrAnomaAccum / Anoma) * 248)]; // 平離963,963/72=13.375
+            Last *= 1337.5 / MoonAcrVList[Math.trunc((AcrAnoAccum / Anoma) * 248)]; // 平離963,963/72=13.375
         } else if (Name === "Yingtian") {
-            let AcrAnomaAccumHalfInt = Math.trunc(AcrAnomaAccum % AnomaHalf);
-            const Plus = AcrAnomaAccum > AnomaHalf ? 14 : 0;
-            AcrAnomaAccumHalfInt += Plus;
-            Last = (Magni * 133700) / MoonAcrVList[AcrAnomaAccumHalfInt];
+            let AcrAnoAccumHalfInt = Math.trunc(AcrAnoAccum % AnomaHalf);
+            const Plus = AcrAnoAccum > AnomaHalf ? 14 : 0;
+            AcrAnoAccumHalfInt += Plus;
+            Last = (Magni * 133700) / MoonAcrVList[AcrAnoAccumHalfInt];
             if (!isNewm) {
                 Last -= MoonLimit1;
                 if (GreatDeci - Last / Denom < 0) {
                     // 應天「如不足減者，卽以食限分如望定餘爲食定分」
                     Magni = (GreatDeci * Denom) / MoonLimit1;
-                    Last = (Magni * 133700) / MoonAcrVList[AcrAnomaAccumHalfInt];
+                    Last = (Magni * 133700) / MoonAcrVList[AcrAnoAccumHalfInt];
                 }
             }
         } else if (Name === "Qianyuan") {
@@ -1634,7 +1634,7 @@ const EcliLast3 = (
                 TheNodeDif / (TheNodeDif < SunLimitYang ? SunLimitYang : SunLimitYin);
             Last =
                 (0.09 * Denom * tmp * (2 - tmp) * 1337) /
-                MoonAcrVList[AcrAnomaAccumInt];
+                MoonAcrVList[AcrAnoAccumInt];
         } else if (Type === 9) {
             const LastMaxSun = Math.round((Denom * 583) / 7290);
             const LastDenomSunYin =
@@ -1650,22 +1650,22 @@ const EcliLast3 = (
                     : LastMaxSun - TheNodeDif ** 2 / LastDenomSunYang;
             else Last = LastMaxMoon - TheNodeDif ** 2 / LastDenomMoon;
             const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
-                (AvgAnomaAccum + Tcorr + AvgTcorr) % Anoma,
+                (AvgAnoAccum + Tcorr + AvgTcorr) % Anoma,
                 Name,
             ); // 食甚加時入轉算外損益率。應朒者依其損益，應朏者益減損加其副
             Last *= 1 + MoonTcorrDif / TheDenom / Denom;
         } else if (Type === 10) {
             if (isNewm)
-                Last = (Magni * (30 - Magni) * 2450) / MoonAcrVList[AcrAnomaAccumInt];
+                Last = (Magni * (30 - Magni) * 2450) / MoonAcrVList[AcrAnoAccumInt];
             else
-                Last = (Magni * (35 - Magni) * 2100) / MoonAcrVList[AcrAnomaAccumInt];
+                Last = (Magni * (35 - Magni) * 2100) / MoonAcrVList[AcrAnoAccumInt];
         } else if (Type === 11) {
             Last =
                 (Math.sqrt(((isNewm ? 20 : 30) - Magni) * Magni) *
                     (["Datong", "Datong2"].includes(Name) && !isNewm
                         ? 0.00492
                         : 0.00574)) /
-                (MoonFormula(AcrAnomaAccum, Name).MoonAcrVd - 0.082);
+                (MoonFormula(AcrAnoAccum, Name).MoonAcrVd - 0.082);
         }
         if (["Wuji", "Tsrengyuan"].includes(Name)) {
             let Portion = 0.5;
@@ -1691,7 +1691,7 @@ const EcliLast3 = (
 
 const Eclipse3 = (
     AvgNodeAccum,
-    AvgAnomaAccum,
+    AvgAnoAccum,
     AcrDeci,
     AvgDeci,
     AcrSd,
@@ -1742,8 +1742,8 @@ const Eclipse3 = (
         MoonAcrVd,
         MoonTcorr: AvgMoonTcorr,
         NodeAccumCorrA: AvgNodeTcorr,
-    } = AutoTcorr(AvgAnomaAccum, AvgSd, Name); // 經朔修正
-    const AcrAnomaAccum = (AvgAnomaAccum + AvgTcorr) % Anoma; // 定朔入轉
+    } = AutoTcorr(AvgAnoAccum, AvgSd, Name); // 經朔修正
+    const AcrAnoAccum = (AvgAnoAccum + AvgTcorr) % Anoma; // 定朔入轉
     const AvgNodeAccumCorr = AvgNodeAccum + SunTcorr; // 入交常日
     const AcrNodeAccum = AvgNodeAccum + AvgNodeTcorr; // 入交定日
     const AcrNewmNodeAccum = AvgNodeAccum + AvgTcorr; // 紀元定朔入交泛日
@@ -1758,13 +1758,13 @@ const Eclipse3 = (
         if (Type === 9) {
             // 紀元食甚泛餘，藤豔輝《紀元曆日食算法及精度分析》說卽定朔到眞食甚的改正，我覺得不是。最後《中》說加上經朔，藤豔輝說加上定朔
             const { MoonTcorrDifNeg: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
-                AcrAnomaAccum,
+                AcrAnoAccum,
                 Name,
             ); // 這個損益率應該是與定朔改正相反
             Tcorr0 = (AvgTcorr * MoonTcorrDif) / TheDenom / Denom;
             AvgGreatDeci = (AvgDeci + AvgTcorr + Tcorr0 + 1) % 1; // 紀元食甚泛餘 // 注意小數點加上修正變成負的情況，比如0.1退成了0.9
         } else {
-            Tcorr0 = (AvgTcorr * 1337) / MoonAcrVList[Math.trunc(AcrAnomaAccum)];
+            Tcorr0 = (AvgTcorr * 1337) / MoonAcrVList[Math.trunc(AcrAnoAccum)];
             AvgGreatDeci = (AvgDeci + Tcorr0 + 1) % 1; // 大明是加經朔
         }
         AvgGreatNoonDif = Math.abs(0.5 - AvgGreatDeci);
@@ -1868,7 +1868,7 @@ const Eclipse3 = (
         TheNodeAccum,
         TheNodeDifRaw,
         GreatDeci,
-        AcrAnomaAccum,
+        AcrAnoAccum,
         StatusRaw,
         Std1,
         Std2,
@@ -1893,8 +1893,8 @@ const Eclipse3 = (
         Denom,
         Anoma,
         MoonAcrVList,
-        AcrAnomaAccum,
-        AvgAnomaAccum,
+        AcrAnoAccum,
+        AvgAnoAccum,
         AnomaHalf,
         MoonLimit1,
         MoonLimitNone,
@@ -1908,10 +1908,10 @@ const Eclipse3 = (
 // console.log(Eclipse3(12.85874, .3524, .83546, .79093, 156.3253, 156.2809, 0, 0, 'Datong').Magni) // 2021年四月望
 // console.log(Eclipse3(13.81, 22, .674916, .22, 22.4549, 22, 8194819414.14, 1, 'Chongxuan')) // 這種情況其他曆都不食，只有授時食，這是月盈縮差帶來的，應該正常
 // console.log(Eclipse3(26 + 5644.4277 / 10590, 22.052297, .4495401228, .8172804533, 175.6583788196 + .02675303116, 175.6583788196, 0, 1, 'Chongtian')) // 1024年崇天曆日食，藤豔輝論文
-// (AvgNodeAccum, AvgAnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, SolsAccum, isNewm, Name)
+// (AvgNodeAccum, AvgAnoAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, SolsAccum, isNewm, Name)
 export const AutoEclipse = (
     NodeAccum,
-    AnomaAccum,
+    AnoAccum,
     AcrDeci,
     AvgDeci,
     AcrSd,
@@ -1929,25 +1929,25 @@ export const AutoEclipse = (
     if (Type <= 3 || ["Yuanjia", "Daming", "Yukuo"].includes(Name)) {
         Eclipse = Eclipse1(NodeAccum, Name);
     } else if (['Zhangmengbin', 'Liuxiaosun'].includes(Name)) {
-        NodeAccum += AutoTcorr(AnomaAccum, AvgSd, 'Daye', NodeAccum).NodeAccumCorrA
-        Eclipse = Eclipse2(NodeAccum, AnomaAccum, AcrDeci, AvgSd, isNewm, 'Daye', Month, Leap)
+        NodeAccum += AutoTcorr(AnoAccum, AvgSd, 'Daye', NodeAccum).NodeAccumCorrA
+        Eclipse = Eclipse2(NodeAccum, AnoAccum, AcrDeci, AvgSd, isNewm, 'Daye', Month, Leap)
     } else if (['Yisi', 'LindeB', 'Shenlong'].includes(Name)) {
-        NodeAccum += AutoTcorr(AnomaAccum, AvgSd, 'Linde', NodeAccum).NodeAccumCorrA
-        Eclipse = Eclipse2(NodeAccum, AnomaAccum, AcrDeci, AvgSd, isNewm, 'Linde', Month, Leap)
+        NodeAccum += AutoTcorr(AnoAccum, AvgSd, 'Linde', NodeAccum).NodeAccumCorrA
+        Eclipse = Eclipse2(NodeAccum, AnoAccum, AcrDeci, AvgSd, isNewm, 'Linde', Month, Leap)
     } else if (Type <= 6) {
-        NodeAccum += AutoTcorr(AnomaAccum, AvgSd, Name, NodeAccum).NodeAccumCorrA
-        Eclipse = Eclipse2(NodeAccum, AnomaAccum, AcrDeci, AvgSd, isNewm, Name, Month, Leap)
+        NodeAccum += AutoTcorr(AnoAccum, AvgSd, Name, NodeAccum).NodeAccumCorrA
+        Eclipse = Eclipse2(NodeAccum, AnoAccum, AcrDeci, AvgSd, isNewm, Name, Month, Leap)
     } else {
         SolsDeci = SolsDeci || deci(SolsAccum)
         const Rise = autoRise(AcrSd, SolsDeci, Name) / 100
         if (['Fengyuan', 'Zhantian'].includes(Name)) {
-            Eclipse = Eclipse3(NodeAccum, AnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Guantian')
+            Eclipse = Eclipse3(NodeAccum, AnoAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Guantian')
         } else if (['Chunyou', 'Huitian'].includes(Name)) {
-            Eclipse = Eclipse3(NodeAccum, AnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Chengtian')
+            Eclipse = Eclipse3(NodeAccum, AnoAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Chengtian')
         } else if (['Daming1', 'Daming2', 'Yiwei'].includes(Name)) {
-            Eclipse = Eclipse3(NodeAccum, AnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Daming3')
+            Eclipse = Eclipse3(NodeAccum, AnoAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, 0, isNewm, 'Daming3')
         } else if (Type <= 11) {
-            Eclipse = Eclipse3(NodeAccum, AnomaAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, SolsAccum, isNewm, Name)
+            Eclipse = Eclipse3(NodeAccum, AnoAccum, AcrDeci, AvgDeci, AcrSd, AvgSd, Rise, SolsAccum, isNewm, Name)
         }
     }
     return Eclipse;

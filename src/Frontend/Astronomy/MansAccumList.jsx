@@ -35,7 +35,7 @@ export default class Converter extends React.Component {
             return (
               <tr>
                 {row.map(d => {
-                  return <td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>
+                  return <td style={{ whiteSpace: 'pre-wrap' }}>{d}</td>
                 })}
               </tr>
             );
@@ -48,7 +48,7 @@ export default class Converter extends React.Component {
             return (
               <tr>
                 {row.map(d => {
-                  return <td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>
+                  return <td style={{ whiteSpace: 'pre-wrap' }}>{d}</td>
                 })}
               </tr>
             );

@@ -161,7 +161,7 @@ export default class Newm extends React.Component {
       showTableList: true,
     });
   }
-  
+
   renderTableList() {
     // Only display the section if showTableList is true
     if (!this.state.showTableList) {
@@ -235,7 +235,7 @@ export default class Newm extends React.Component {
           <tr className={key}>
             {[<th>{TableRowNameMap[key]}</th>].concat(
               value.map((x) => (
-                <td dangerouslySetInnerHTML={{ __html: x }}></td>
+                <td>{x}</td>
               ))
             )}
           </tr>

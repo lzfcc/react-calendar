@@ -95,7 +95,7 @@ export default class Day extends React.Component {
         {list.map((info, index) => (
           <div className="single-cal" key={index}>
             <h3>{MonName[index + 1]}</h3>
-            <p dangerouslySetInnerHTML={{ __html: MonInfo[index + 1] }}></p>
+            <p>{MonInfo[index + 1]}</p>
             {MonColor[index + 1] && (
               <span className="YearColor">
                 {this.renderYearColorTable(MonColor[index + 1])}

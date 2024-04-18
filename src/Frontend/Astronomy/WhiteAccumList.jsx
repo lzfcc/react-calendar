@@ -31,15 +31,17 @@ export default class Converter extends React.Component {
         <h3>九道宿鈐</h3>
         <p>月離九道 {this.state.WhiteDegMans}</p>
         <table>
-          {this.state.WhiteAccumPrint.map(row => {
-            return (
-              <tr>
-                {row.map(d => {
-                  return <td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>
-                })}
-              </tr>
-            );
-          })}
+          <tbody>
+            {this.state.WhiteAccumPrint.map(row => {
+              return (
+                <tr>
+                  {row.map(d => {
+                    return <td style={{ whiteSpace: 'pre-wrap' }}>{d}</td>
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </div>
     )
@@ -75,14 +77,14 @@ export default class Converter extends React.Component {
             this.setState({ NodeAccum: e.currentTarget.value });
           }}
         />
-        <span>平朔入轉</span>
+        <span>入轉</span>
         <input className='width3'
           value={this.state.AnoAccum}
           onChange={e => {
             this.setState({ AnoAccum: e.currentTarget.value });
           }}
         />
-        <span>平朔距冬至時長</span>
+        <span>距冬至時長</span>
         <input className='width3'
           value={this.state.Sd}
           onChange={e => {

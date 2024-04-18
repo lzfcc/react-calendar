@@ -9,6 +9,9 @@ export default class Converter extends React.Component {
     this.state = {
       calendars: '',
       Year: 1281,
+      NodeAccum: 3,
+      AnoAccum: 19,
+      Sd: 60
     }
     this.handle = this.handle.bind(this)
   }

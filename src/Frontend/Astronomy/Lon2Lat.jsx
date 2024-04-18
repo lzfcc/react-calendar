@@ -5,6 +5,7 @@ export default class Converter extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      a: 10,
       b: 5
     }
     this.handle = this.handle.bind(this)

@@ -46,27 +46,29 @@ export default class Equa extends React.Component {
     return (
       <div className='ans table2'>
         <table>
-          <tr>
-            <th></th>
-            <th><bc>赤 ⇒ 黃</bc></th>
-            <th>黃-赤</th>
-            <th>Δ‱</th>
-            <th><bc>黃 ⇒ 赤</bc></th>
-            <th>赤-黃</th>
-            <th>Δ‱</th>
-            <th><bc>赤緯</bc></th>
-            <th>Δ‱</th>
-          </tr>
-          {(this.state.output || []).map(row => {
-            return (
-              <tr>
-                <td className='RowTitle'>{row.title}</td>
-                {row.data.map(d => {
-                  return (<td>{d}</td>)
-                })}
-              </tr>
-            )
-          })}
+          <tbody>
+            <tr>
+              <th></th>
+              <th><bc>赤 ⇒ 黃</bc></th>
+              <th>黃-赤</th>
+              <th>Δ‱</th>
+              <th><bc>黃 ⇒ 赤</bc></th>
+              <th>赤-黃</th>
+              <th>Δ‱</th>
+              <th><bc>赤緯</bc></th>
+              <th>Δ‱</th>
+            </tr>
+            {(this.state.output || []).map(row => {
+              return (
+                <tr>
+                  <td className='RowTitle'>{row.title}</td>
+                  {row.data.map(d => {
+                    return (<td>{d}</td>)
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
     )

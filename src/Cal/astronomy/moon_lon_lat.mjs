@@ -13,7 +13,7 @@ import { deg2Mans, mans2Deg, solsMans } from './mans.mjs';
  * @param {*} Name
  * @returns
  */
-const MoonLonTable = (Node1EclpGong, Node1Dif, Name) => {
+const MoonLonTable = (NodeEclpGong, NewmNodeDif, Name) => {
   const { Solar, Type, Sidereal } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   const Xian = Name === 'Qintian' ? Sidereal / 72 : 5; // 欽天黃道8節72限。是交點週期還是黃道周長？
@@ -23,9 +23,9 @@ const MoonLonTable = (Node1EclpGong, Node1Dif, Name) => {
   const SolarQuar = Solar / 4;
   const SolarHalf = Solar / 2;
   const SolarQuar3 = Solar * 0.75;
-  const NodeDifHalf = Node1Dif % NodeHalf;
-  const NodeDifQuar = Node1Dif % NodeQuar;
-  const Node1EclpGongHalf = Node1EclpGong % SolarHalf; // 計去冬夏至以來度數
+  const NodeDifHalf = NewmNodeDif % NodeHalf;
+  const NodeDifQuar = NewmNodeDif % NodeQuar;
+  const NodeEclpGongHalf = NodeEclpGong % SolarHalf; // 計去冬夏至以來度數
   let NodeDifRev = NodeDifHalf;
   if (
     (NodeDifRev >= NodeQuar && NodeDifRev < NodeHalf)
@@ -128,136 +128,130 @@ const MoonLonTable = (Node1EclpGong, Node1Dif, Name) => {
 
 /**
  * 《數》頁361 白道度是以黃道度、正交黃經爲自變量的二元函數
- * @param {*} Node1EclpGong 正交距冬至定積度
- * @param {*} Node1Dif 距正交黃道度數
+ * @param {*} NodeEclpGong 正交距冬至定積度
+ * @param {*} NewmNodeDif 距正交黃道度數
  * @param {*} Name
  * @returns
  */
-const eclp2WhiteDif = (Node1EclpGong, Node1Dif, Name) => {
+const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
   const { Solar, Type } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   const NodeHalf = NodeQuar * 2;
   const NodeOcta = NodeQuar / 2;
+  const NodeOcta3 = NodeOcta * 3;
   const SolarQuar = Solar / 4;
   const SolarHalf = Solar / 2;
   const SolarQuar3 = Solar * 0.75;
   const Xian = Name === 'Qintian' ? Solar / 72 : 5; // 欽天黃道8節72限
-  const NodeDifQuar = Node1Dif % NodeQuar;
-  const NodeDifHalf = Node1Dif % NodeHalf;
-  const NodeDifRev = NodeDifQuar < NodeOcta ? NodeDifQuar : NodeQuar - NodeDifQuar; // 到正半交的前後距離
+  const NodeDifQuar = NewmNodeDif % NodeQuar;
+  const NodeDifHalf = NewmNodeDif % NodeHalf;
+  const NodeDifRev = NodeDifQuar < NodeOcta ? NodeDifQuar : NodeQuar - NodeDifQuar; // 到正半交的前後距離。紀元：置黃道宿積度，滿交象度去之，在半交象已下爲初限；已上者，以減交象度，餘爲入末限。
   // 判斷在正交前後還是半交前後
   let OfBoundary = 1 // 交點前後1，半交前後-1
   if (NodeDifHalf >= NodeOcta && NodeOcta < NodeOcta * 3) {
     OfBoundary = -1
   }
-  let ToBoundary = -1 // 往前到交點或半交是1，往後是-1（右手）
+  // 往前到交點或半交是1，往後是-1（右手）
+  let ToBoundary = -1
   if (NodeDifQuar < NodeOcta) {
     ToBoundary = 1
   }
-  const Node1EclpGongHalf = Node1EclpGong % SolarHalf; // 崇天：計去冬夏至以來度數
-  const Node1EclpGongEquinox = Math.abs(Node1EclpGongHalf - SolarQuar); // 紀元：正交距二分度數
+  const NodeEclpGongHalf = NodeEclpGong % SolarHalf; // 崇天：計去冬夏至以來度數
   let EquaWhiteDif = 0; // 月行與赤道差數
   let sign1 = 1; // 黃白差符號
   let sign2 = 1; // 赤白差符號
-  const EclpWhiteDifRaw = equa2EclpPoly(Name, NodeDifRev).Equa2EclpDif / 2; // 月行與黃道差數
+  const NodeEquiDif = Math.abs(SolarQuar - NodeEclpGongHalf) // 距二分度數
+  const NodeSolsDif = SolarQuar - NodeEquiDif // 距二至度數
+  const EclpWhiteDifRaw = equa2EclpPoly(Name, NodeDifRev).Equa2EclpDif / 2; // 月行與黃道差數（汎差）
+  const isYinSun = NodeEclpGong > SolarQuar && NodeEclpGong < SolarQuar3 ? 1 : -1; // 日行陰陽
+  const isYinMoon = NewmNodeDif < NodeHalf ? 1 : -1; // 月行陰陽
   let EclpWhiteDif = EclpWhiteDifRaw
-  // 【曲安京】紀元曆相比以前的改進：劃分月道與黃赤道的相對位置。【我】其實紀元應該是接續了應天的思路
-  if (['Qintian', 'Yingtian', 'Qianyuan', 'Yitian'].includes(Name)) { // ⚠️太詭異了
-    if (Node1Dif >= NodeOcta * 3 && Node1Dif < NodeOcta * 5) { // 降交點（欽天應天稱正交）前後各九限
-      if (Node1EclpGong >= SolarHalf) { // 冬至之後——交點退行，所以方向是反的
-        sign1 = -1;
+  let Dif1 = 0, Dif2 = 0
+  if (['Qintian', 'Yingtian', 'Qianyuan', 'Yitian'].includes(Name)) {
+    // sign1我重新整理了一遍思路
+    if (NewmNodeDif < NodeOcta || NewmNodeDif >= NodeOcta * 7) { // 在正交前後各九限
+      if (NodeEclpGong < SolarHalf) {
+        sign1 = -1
       }
-    } else if (Node1Dif >= NodeOcta * 7 || Node1Dif < NodeOcta) { // 升交點前後各九限
-      if (Node1EclpGong < SolarHalf) {
-        sign1 = -1;
+    } else if (NewmNodeDif >= NodeOcta && NewmNodeDif < NodeOcta3) { // 在陰半交
+      if (NodeEclpGong >= SolarQuar && NodeEclpGong < SolarQuar3) { // 春分之宿後入黃道內
+        sign1 = -1
       }
-    } // 半交前後各九限
-    else if (Node1EclpGong < SolarQuar || Node1EclpGong >= SolarQuar3) { // 春分之後——也是反的
-      if (Node1Dif < NodeHalf) { // 入黃道內
-        sign1 = -1;
+    } else if (NewmNodeDif >= NodeOcta3 || NewmNodeDif < NodeOcta * 5) { // 在中交
+      if (NodeEclpGong >= SolarHalf) {
+        sign1 = -1
       }
-    } else { // 秋分之後
-      if (Node1Dif > NodeHalf) { // 出黃道外
-        sign1 = -1;
+    } else { // 在陽半交
+      if (NodeEclpGong < SolarQuar || NodeEclpGong >= SolarQuar3) { // 秋分之宿後出黃道外
+        sign1 = -1
       }
     }
-    let XianNum = 0;
-    if (
-      (Node1Dif >= NodeOcta && Node1Dif < NodeOcta * 3)
-      || (Node1Dif >= NodeOcta * 5 && Node1Dif < NodeOcta * 7)
-    ) { // 半交前後
-      XianNum = Math.abs(Node1EclpGongHalf - SolarQuar) / Xian; // 距二分之宿限數
-    } else {
-      XianNum = (SolarQuar - Math.abs(SolarQuar - Node1EclpGongHalf)) / Xian; // 距二至之宿限數
+    sign2 = OfBoundary // 和大衍的sign1一樣
+    if (NodeDifHalf >= NodeOcta && NodeDifHalf < NodeOcta * 3) { // 半交前後，距二分之宿限數
+      EclpWhiteDif = EclpWhiteDifRaw * NodeEquiDif / Xian / 18
+    } else { // 正交中交前後，距二至之宿限數
+      EclpWhiteDif = EclpWhiteDifRaw * NodeSolsDif / Xian / 18
     }
-    EclpWhiteDif = EclpWhiteDifRaw * XianNum / 18;
     if (Name === 'Qintian') {
       EquaWhiteDif = EclpWhiteDifRaw / 4 - EclpWhiteDif;
     } else if (Name === 'Yingtian') {
       const a = sign1 === 1 ? 0.9 : 0.7;
-      EquaWhiteDif = ((EclpWhiteDifRaw * 2) / 10) * a - EclpWhiteDif; // 「遇減，身外除三；遇加，身外除一。」什麼意思啊？？這個是我猜的
+      EquaWhiteDif = EclpWhiteDifRaw * 2 / 10 * a - EclpWhiteDif; // 「遇減，身外除三；遇加，身外除一。」什麼意思啊？？這個是我猜的
     } else if (['Qianyuan', 'Yitian'].includes(Name)) {
-      EquaWhiteDif = (EclpWhiteDifRaw * 2) / 10 - EclpWhiteDif; // 「二曆皆不身外爲法」
+      EquaWhiteDif = EclpWhiteDifRaw * 2 / 10 - EclpWhiteDif; // 「二曆皆不身外爲法」
     }
-    // sign2 = Node1Dif < NodeOcta || Node1Dif > NodeOcta * 7 || (Node1Dif > NodeOcta * 3 && Node1Dif < NodeOcta * 5) ? 1 : -1
-    sign2 = NodeDifHalf < NodeQuar ? 1 : -1; // 改成和公式法曆法一樣。這幾曆的赤白差符號和大衍的黃白差符號一樣
-  } else if (Type === 6 || Type === 7 || Name === 'Chongxuan') {
-    EquaWhiteDif = (Node1EclpGongHalf / (Solar / 72) / 18) * EclpWhiteDif; // 大衍：「計去冬至夏至以來候數，乘黃道所差，十八而一」其實應該是整數    
+    Dif1 = ToBoundary * sign1 * EclpWhiteDif;
+    Dif2 = ToBoundary * sign2 * EquaWhiteDif;
+  } else if (Type >= 6 & Type <= 8) { // 大衍、崇玄曆按大衍，崇天明天觀天    
+    EquaWhiteDif = NodeSolsDif * EclpWhiteDif / Xian / 18; // 距二至之宿限數. 大衍：「計去冬至夏至以來候數，乘黃道所差，十八而一」按照欽天，其實應該是距離二至的距離。大衍曆用候數，所以常數是18，宋曆改用度數，所以是90=Xian*18。崇天：計去冬夏至以來度數，乘黃道所差，九十而一——和大衍一樣
     // sign1 = NodeDifHalf < NodeQuar ? 1 : -1; // 此處為公式法的思路，至後減分後加。最後也是只乘sign1，不乘ToBoundary
     sign1 = OfBoundary // 大衍：距半交前後各九限，以差數爲減；距正交前後各九限，以差數爲加    
-    const isYinSun = Node1EclpGong > SolarQuar && Node1EclpGong < SolarQuar3 ? 1 : -1;
-    const isYinMoon = Node1Dif < NodeHalf ? 1 : -1;
-    sign2 = sign1 * isYinSun * isYinMoon; // 赤白差符號
-  } else if (Type === 9 || Type === 10) {
-    if (Node1EclpGong > SolarHalf) {
-      // 同名黃白差較大
+    sign2 = sign1 * isYinSun * isYinMoon; // 赤白差符號。其在同名，以差數爲加者加之，減者減之；若在異名，以差數爲加者減之，減者加之
+    Dif1 = ToBoundary * sign1 * EclpWhiteDif;
+    Dif2 = ToBoundary * sign2 * EquaWhiteDif;
+  } else if (Type === 9 || Type === 10) { // 紀元
+    if (NodeEclpGong > SolarHalf) { // 夏至後同名黃白差較大
       EclpWhiteDif = EclpWhiteDifRaw * 1.125; // 月行與黃道定差      
-      EquaWhiteDif = (Node1EclpGongEquinox * EclpWhiteDif) / SolarQuar;
       sign1 = NodeDifHalf < NodeQuar ? 1 : -1;
     } else {
       EclpWhiteDif = EclpWhiteDifRaw * 0.875; // 月行與黃道定差
-      EquaWhiteDif = (Node1EclpGongEquinox * EclpWhiteDif) / SolarQuar;
-      sign1 = NodeDifHalf > NodeQuar ? 1 : -1; // 黃白差符號
+      sign1 = NodeDifHalf > NodeQuar ? 1 : -1;
     }
+    EquaWhiteDif = (NodeEquiDif * EclpWhiteDif) / SolarQuar; // 夏至後距秋分度數
     sign2 = -sign1;
-  } else { // 崇天明天觀天占天
-    EquaWhiteDif = (EclpWhiteDif * Node1EclpGongHalf) / 90; // 月行與赤道差數。大衍曆用候數，所以常數是18，宋曆改用度數，所以是90
-    sign1 = NodeDifHalf < NodeQuar ? 1 : -1; // 黃白差符號
-    const isYinSun = Node1EclpGong > SolarQuar && Node1EclpGong < SolarQuar3 ? 1 : -1;
-    const isYinMoon = Node1Dif < NodeHalf ? 1 : -1;
-    sign2 = sign1 * isYinSun * isYinMoon; // 赤白差符號
+    Dif1 = sign1 * EclpWhiteDif;
+    Dif2 = sign2 * EquaWhiteDif;
   }
-  const Dif1 = ToBoundary * sign1 * EclpWhiteDif
-  const Dif2 = sign2 * EquaWhiteDif;
-  const Dif = Dif1 + Dif2
-  return Dif
+  return Dif1 + Dif2
 };
-// console.log(eclp2WhiteDif(185, 92, 'Dayan').EclpWhiteDif)
+// console.log(eclp2WhiteDif(55, 92, 'Dayan'))
+// console.log(eclp2WhiteDif(55, 92, 'Qintian'))
+// console.log(eclp2WhiteDif(55, 92, 'Jiyuan'))
 
-const moonLonJiudao = (Node1EclpGong, NewmEclpGong, Name, Y) => {
+const moonLonJiudao = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   let { Solar, SolarRaw, Sidereal } = Para[Name];
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
   const WhiteAccumList = [];
   const { EclpAccumList, SolsEclpDeg } = solsMans(Name, Y);
-  const Node1EclpDeg = (Node1EclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
+  const Node1EclpDeg = (NodeEclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
   const { Name: Node1MansName, MansDeg: Node1EclpMansDeg } = deg2Mans(Node1EclpDeg, EclpAccumList);
   for (let i = 0; i < EclpAccumList.length; i++) {
     const MansNodeDif_Eclp = (EclpAccumList[i] - Node1EclpDeg + Sidereal) % Sidereal; // 每宿距交
-    WhiteAccumList[i] = EclpAccumList[i] + eclp2WhiteDif(Node1EclpGong, MansNodeDif_Eclp, Name);
+    WhiteAccumList[i] = EclpAccumList[i] + eclp2WhiteDif(NodeEclpGong, MansNodeDif_Eclp, Name);
   }
   const adj = WhiteAccumList[0] - Sidereal;
   for (let i = 0; i < WhiteAccumList.length; i++) {
     WhiteAccumList[i] = (WhiteAccumList[i] - adj + Sidereal) % Sidereal;
   }
   WhiteAccumList[28] = Sidereal;
-  const Node1WhiteMansDeg = Node1EclpMansDeg + eclp2WhiteDif(Node1EclpGong, Node1EclpMansDeg, Name); // 正交九道宿度
+  const Node1WhiteMansDeg = Node1EclpMansDeg + eclp2WhiteDif(NodeEclpGong, Node1EclpMansDeg, Name); // 正交九道宿度
   const Node1WhiteDeg = mans2Deg(
     Node1MansName + Node1WhiteMansDeg,
     WhiteAccumList,
   );
-  const NewmNode1_EclpDif = (NewmEclpGong - Node1EclpGong + Sidereal) % Sidereal
-  const NewmNode1_WhiteDif = NewmNode1_EclpDif + eclp2WhiteDif(Node1EclpGong, NewmNode1_EclpDif, Name)
+  const NewmNode1_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
+  const NewmNode1_WhiteDif = NewmNode1_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode1_EclpDif, Name)
   const NewmWhiteDeg = (Node1WhiteDeg + NewmNode1_WhiteDif) % Sidereal
   return { WhiteAccumList, NewmWhiteDeg };
 }
@@ -478,12 +472,12 @@ export const moonLonLat = (
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
   const MoonAvgVd = AutoMoonAvgV(Name);
-  const T_Node1Dif_Avg = Node - NodeAccum; // 朔後平交日分：朔之後的正交
-  const S_Node1Dif = T_Node1Dif_Avg * MoonAvgVd;
+  const T_NewmNodeDif_Avg = Node - NodeAccum; // 朔後平交日分：朔之後的正交
+  const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
   const S_NodeDif = NodeAccum * MoonAvgVd; // 朔前正交
-  // const NodeAnoAccum = (AvgNewmAnoAccum + T_Node1Dif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
-  // const T_Node1Dif = T_Node1Dif_Avg + AutoTcorr(NodeAnoAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
-  const Node1EclpGong = (AvgNewmSd + S_Node1Dif) % Sidereal; // 授時：正交距冬至定積度
+  // const NodeAnoAccum = (AvgNewmAnoAccum + T_NewmNodeDif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
+  // const T_NewmNodeDif = T_NewmNodeDif_Avg + AutoTcorr(NodeAnoAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
+  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal; // 授時：正交距冬至定積度
   let NodeEclp = Node1EclpGong // 崇天以後的
   if (Name === "Qintian") { // 欽天都要先加一個日躔改正
     const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr
@@ -546,6 +540,4 @@ export const moonLonLat = (
   }
   return { WhiteAccumList, NewmWhiteDeg, EclpLat, EquaLat };
 };
-
-// console.log(moonLonLat(21, 7, 34, 35, 'Dayan', 1200))
-// console.log(moonLonLat(7, 13, undefined, 'Shoushi', 1200, true))
+// console.log(moonLonLat(21, 7, 34, 35, 'Yingtian', 1200))

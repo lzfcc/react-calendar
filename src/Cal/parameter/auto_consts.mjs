@@ -100,7 +100,7 @@ export const nodeQuar = Name => {
     } else if (['Chongtian', 'Guantian', 'Tongyuan', 'Chunxi'].includes(Name)) {
         NodeCycle = 363.76
     } else if (Name === 'Mingtian') {
-        NodeCycle = 2270076578 / 6240000 // 363.7943 // 藤豔輝《宋代》頁96
+        NodeCycle = 363.7943 // 2270076578 / 6240000 // 藤豔輝《宋代》頁96
     } else if (['Jiyuan', 'Kaixi'].includes(Name)) {
         NodeCycle = 363.7944
     } else if (Name === 'Qiandao') {

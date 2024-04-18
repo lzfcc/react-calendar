@@ -808,12 +808,11 @@ export const bindMansAccumList = (Name, Y) => {
  * @returns 
  */
 export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
-  Name = Name.toString();
   Y = parseInt(Y);
   NodeAccum = +NodeAccum
   AvgNewmSd = +AvgNewmSd
   AnoAccum = +AnoAccum
-  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr2
+  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
   const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
   const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
@@ -839,8 +838,7 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
   const WhiteDegMans = deg2Mans(NewmWhiteDeg, WhiteAccumList).Print
   return { WhiteAccumPrint, WhiteDegMans }
 };
-// console.log(bindWhiteAccumList('Jiyuan', 1281, 10, 50))
-
+// console.log(bindWhiteAccumList('Yingtian', 1281, 3, 3, 3))
 
 export const bindMansAccumModernList = (Name, Jd) => {
   Jd = parseFloat(Jd);

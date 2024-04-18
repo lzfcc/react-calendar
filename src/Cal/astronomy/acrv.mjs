@@ -1010,7 +1010,7 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
 };
 // console.log(AutoDifAccum(9, 9, 'Chongxuan').MoonDifAccum)
 
-export const anomaS = (AnomaAccum, Name) => {
+export const anojour = (AnomaAccum, Name) => {
   const { Type, Anoma } = Para[Name];
   AnomaAccum = fmod(AnomaAccum, Anoma);
   let Anojour = 0;
@@ -1094,7 +1094,7 @@ export const anomaS = (AnomaAccum, Name) => {
   // }
   return { Anojour, AnomaCycle };
 };
-// console.log(anomaS(23, 'Qianxiang').AnomaCycle)
+// console.log(anojour(23, 'Qianxiang').AnomaCycle)
 
 const MoonDifAccumMax1 = (L) => {
   // 線性內插月遲疾積求極值

@@ -36,7 +36,7 @@ import {
   TouringGodConvert,
 } from "../ephemeris/luck.mjs";
 import CalNewm from "../newmoon/index.mjs";
-import { AutoTcorr, AutoDifAccum, anomaS } from "../astronomy/acrv.mjs";
+import { AutoTcorr, AutoDifAccum, anojour } from "../astronomy/acrv.mjs";
 import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/mans.mjs";
 import { nineOrbits } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
@@ -274,7 +274,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type === 1) {
         MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
-        NewmAnojour = anomaS(NewmAnomaAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
+        NewmAnojour = anojour(NewmAnomaAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
@@ -337,7 +337,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
-          const MidnAnojour = anomaS(AnomaAccumMidn, Name).Anojour;
+          const MidnAnojour = anojour(AnomaAccumMidn, Name).Anojour;
           if (Type <= 4) {
             const MoonEclpDeg = (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonEclp = deg2Mans(MoonEclpDeg, EclpAccumList).Print;

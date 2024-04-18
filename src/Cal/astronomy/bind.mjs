@@ -3,7 +3,7 @@ import { Hushigeyuan } from "../equation/geometry.mjs";
 import {
   AutoTcorr,
   AutoDifAccum,
-  anomaS,
+  anojour,
   ShoushiXianV,
 } from "./acrv.mjs";
 import {
@@ -120,7 +120,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { Anojour } = anomaS(AnomaAccum, Name);
+      const { Anojour } = anojour(AnomaAccum, Name);
       let SunTcorrPrint = "-";
       let NodeAccumCorrPrint = "-";
       const SunDifAccumPrint = SunDifAccum ? SunDifAccum.toFixed(5) : "-";
@@ -175,7 +175,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { Anojour } = anomaS(AnomaAccum, Name);
+      const { Anojour } = anojour(AnomaAccum, Name);
       const SunDifAccumPrint = SunDifAccum.toFixed(5);
       const SunDifAccumErrPrint =
         EllipseSun !== undefined
@@ -1015,8 +1015,8 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd)
       let LatPrint = "";
       let EquaLatPrint = "";
       const AcrNewmAnomaAccum = (AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
-      const AnojourNow = anomaS(AnomaAccum, Name).Anojour;
-      const AnojourNewm = anomaS(AcrNewmAnomaAccum, Name).Anojour;
+      const AnojourNow = anojour(AnomaAccum, Name).Anojour;
+      const AnojourNewm = anojour(AcrNewmAnomaAccum, Name).Anojour;
       const NowNewm_WhiteDif = (AnojourNow - AnojourNewm + Sidereal) % Sidereal
       const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr
       const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum

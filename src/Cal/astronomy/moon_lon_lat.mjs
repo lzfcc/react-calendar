@@ -2,7 +2,7 @@ import { Hushigeyuan, RoundL2H } from '../equation/geometry.mjs';
 import { Interpolate1 } from '../equation/sn.mjs';
 import { AutoMoonAvgV, nodeQuar } from '../parameter/auto_consts.mjs';
 import Para from '../parameter/calendars.mjs';
-import { AutoDifAccum, anomaS, AutoTcorr } from './acrv.mjs';
+import { AutoDifAccum, anojour, AutoTcorr } from './acrv.mjs';
 import { equa2EclpPoly } from './equa_eclp.mjs';
 import { deg2Mans, mans2Deg, solsMans } from './mans.mjs';
 
@@ -496,12 +496,12 @@ export const moonLonLat = (
     NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
   } else if (Name === "Yitian") {
     const AcrNewmAnomaAccum = AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, undefined, Name).MoonTcorr
-    const AcrNewmAnojour = anomaS(AcrNewmAnomaAccum, Name).Anojour
+    const AcrNewmAnojour = anojour(AcrNewmAnomaAccum, Name).Anojour
     if (NodeAccum < Node / 2) { // 儀天用距離最近的正交
-      const NodeAnojour = anomaS(AvgNewmAnomaAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
+      const NodeAnojour = anojour(AvgNewmAnomaAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
       NodeEclp = (NewmEclpGong - (AcrNewmAnojour - NodeAnojour) + Solar) % Solar
     } else {
-      const Node1Anojour = anomaS(AvgNewmAnomaAccum + Node - NodeAccum, Name).Anojour
+      const Node1Anojour = anojour(AvgNewmAnomaAccum + Node - NodeAccum, Name).Anojour
       NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
     }
   }

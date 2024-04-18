@@ -120,7 +120,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { MoonAcrS } = anomaS(AnomaAccum, Name);
+      const { Anojour } = anomaS(AnomaAccum, Name);
       let SunTcorrPrint = "-";
       let NodeAccumCorrPrint = "-";
       const SunDifAccumPrint = SunDifAccum ? SunDifAccum.toFixed(5) : "-";
@@ -139,7 +139,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
           ? Math.trunc(((MoonDifAccum - EllipseMoon) / EllipseMoon) * 10000)
           : "-";
       if (SunTcorr) SunTcorrPrint = SunTcorr.toFixed(5);
-      const MoonAcrSPrint = MoonAcrS.toFixed(4);
+      const AnojourPrint = Anojour.toFixed(4);
       const MoonTcorrPrint = MoonTcorr.toFixed(5);
       if (NodeAccumCorrA) NodeAccumCorrPrint = NodeAccumCorrA.toFixed(4);
       const Tcorr = +MoonTcorrPrint + (+SunTcorrPrint || 0);
@@ -152,7 +152,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
           MoonDifAccumPrint,
           MoonDifAccumErrPrint,
           MoonTcorrPrint,
-          MoonAcrSPrint,
+          AnojourPrint,
           MoonAcrVdPrint,
           Tcorr.toFixed(4),
           NodeAccumCorrPrint,
@@ -175,13 +175,13 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
         Sd,
         Name,
       );
-      const { MoonAcrS } = anomaS(AnomaAccum, Name);
+      const { Anojour } = anomaS(AnomaAccum, Name);
       const SunDifAccumPrint = SunDifAccum.toFixed(5);
       const SunDifAccumErrPrint =
         EllipseSun !== undefined
           ? Math.trunc(((SunDifAccum - EllipseSun) / EllipseSun) * 10000)
           : "-";
-      const MoonAcrSPrint = MoonAcrS.toFixed(4);
+      const AnojourPrint = Anojour.toFixed(4);
       const MoonDifAccumPrint = MoonDifAccum.toFixed(5);
       const MoonDifAccumErrPrint =
         EllipseMoon !== undefined
@@ -199,7 +199,7 @@ export const bindTcorr = (AnomaAccum, Sd, Name) => {
           MoonDifAccumPrint,
           MoonDifAccumErrPrint,
           MoonTcorrPrint,
-          MoonAcrSPrint,
+          AnojourPrint,
           Tcorr.toFixed(4),
           NodeAccumCorrA.toFixed(4),
         ],
@@ -1015,9 +1015,9 @@ export const bindMoonLat = (NodeAccum, AnomaAccum, AvgNewmAnomaAccum, AvgNewmSd)
       let LatPrint = "";
       let EquaLatPrint = "";
       const AcrNewmAnomaAccum = (AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
-      const MoonAcrSNow = anomaS(AnomaAccum, Name).MoonAcrS;
-      const MoonAcrSNewm = anomaS(AcrNewmAnomaAccum, Name).MoonAcrS;
-      const NowNewm_WhiteDif = (MoonAcrSNow - MoonAcrSNewm + Sidereal) % Sidereal
+      const AnojourNow = anomaS(AnomaAccum, Name).Anojour;
+      const AnojourNewm = anomaS(AcrNewmAnomaAccum, Name).Anojour;
+      const NowNewm_WhiteDif = (AnojourNow - AnojourNewm + Sidereal) % Sidereal
       const AcrNewmSd = AvgNewmSd + AutoTcorr(AnomaAccum, AvgNewmSd, Name).Tcorr
       const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
       const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AnomaAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)

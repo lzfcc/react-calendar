@@ -322,26 +322,26 @@ const MoonTcorrTable1 = (AnomaAccum, Name) => {
 };
 // console.log(MoonTcorrTable1(14, 'Jingchu').MoonDifAccum1)
 
-const MoonAcrSTable1 = (AnomaAccum, Name) => {
+const AnojourTable1 = (AnomaAccum, Name) => {
   const { MoonDifAccumList, ZhangRange } = Para[Name];
   const MoonAvgVd = AutoMoonAvgV(Name);
   const MoonAvgVddenom = parseFloat((MoonAvgVd * ZhangRange).toPrecision(12));
-  const MoonAcrSList = [];
+  const AnojourList = [];
   for (let i = 0; i <= 28; i++) {
-    MoonAcrSList[i] = parseFloat(
+    AnojourList[i] = parseFloat(
       (MoonDifAccumList[i] + i * MoonAvgVddenom).toPrecision(12),
     );
   }
   const AnomaAccumInt = Math.trunc(AnomaAccum);
   const AnomaAccumFract = AnomaAccum - AnomaAccumInt;
-  const MoonAcrS =
-    (MoonAcrSList[AnomaAccumInt] +
+  const Anojour =
+    (AnojourList[AnomaAccumInt] +
       AnomaAccumFract *
-      (MoonAcrSList[AnomaAccumInt + 1] - MoonAcrSList[AnomaAccumInt])) /
+      (AnojourList[AnomaAccumInt + 1] - AnojourList[AnomaAccumInt])) /
     ZhangRange;
-  return MoonAcrS;
+  return Anojour;
 };
-// console.log(MoonAcrSTable1(.1, 'Daming'))
+// console.log(AnojourTable1(.1, 'Daming'))
 
 const MoonTcorrTable = (AnomaAccum, Name) => {
   const { Type, MoonTcorrList, Anoma, Denom } = Para[Name];
@@ -554,7 +554,7 @@ const MoonDifAccumTable = (AnomaAccum, Name) => {
 };
 // console.log(MoonDifAccumTable(2.92, 'Jiyuan'))
 
-const MoonAcrSTable2 = (AnomaAccum, Name) => {
+const AnojourTable2 = (AnomaAccum, Name) => {
   const { Type, Anoma, MoonAcrVList, Denom } = Para[Name];
   const AnomaQuar = Anoma / 4;
   const AnomaHalf = Anoma / 2;
@@ -579,20 +579,20 @@ const MoonAcrSTable2 = (AnomaAccum, Name) => {
     MoonAcrVd[i] = MoonAcrVList[i] / MoonDegDenom;
     if (Name === "Qintian") MoonAcrVd[i] /= 9;
   }
-  let MoonAcrSList = MoonAcrVd.slice();
+  let AnojourList = MoonAcrVd.slice();
   for (let i = 1; i <= num; i++) {
-    MoonAcrSList[i] += MoonAcrSList[i - 1];
-    MoonAcrSList[i] = +MoonAcrSList[i].toFixed(4);
+    AnojourList[i] += AnojourList[i - 1];
+    AnojourList[i] = +AnojourList[i].toFixed(4);
   }
-  MoonAcrSList = [0, ...MoonAcrSList];
+  AnojourList = [0, ...AnojourList];
   let Plus = 0;
-  let MoonAcrS = 0;
+  let Anojour = 0;
   if (Name === "Qintian") {
     const XianNum = Math.trunc(AnomaAccum * 9);
     const XianFrac = AnomaAccum * 9 - XianNum; // 占一限的百分比，而非一日。
-    MoonAcrS =
-      MoonAcrSList[XianNum] +
-      XianFrac * (MoonAcrSList[XianNum + 1] - MoonAcrSList[XianNum]);
+    Anojour =
+      AnojourList[XianNum] +
+      XianFrac * (AnojourList[XianNum + 1] - AnojourList[XianNum]);
   } else {
     if (Name === "Yitian") {
       AnomaAccumInt = AnomaAccumQuarInt;
@@ -607,23 +607,23 @@ const MoonAcrSTable2 = (AnomaAccum, Name) => {
       if (AnomaAccum >= AnomaHalf) Plus = 14;
     }
     if (Math.trunc(AnomaAccum) <= num - 2) {
-      MoonAcrS = Interpolate1(AnomaAccumFrac + 1, [
-        MoonAcrSList[Plus + AnomaAccumInt],
-        MoonAcrSList[Plus + AnomaAccumInt + 1],
-        MoonAcrSList[Plus + AnomaAccumInt + 2],
+      Anojour = Interpolate1(AnomaAccumFrac + 1, [
+        AnojourList[Plus + AnomaAccumInt],
+        AnojourList[Plus + AnomaAccumInt + 1],
+        AnojourList[Plus + AnomaAccumInt + 2],
       ]);
     } else {
-      MoonAcrS = Interpolate1(AnomaAccumFrac + 3, [
-        MoonAcrSList[Plus + AnomaAccumInt - 2],
-        MoonAcrSList[Plus + AnomaAccumInt - 1],
-        MoonAcrSList[Plus + AnomaAccumInt],
+      Anojour = Interpolate1(AnomaAccumFrac + 3, [
+        AnojourList[Plus + AnomaAccumInt - 2],
+        AnojourList[Plus + AnomaAccumInt - 1],
+        AnojourList[Plus + AnomaAccumInt],
       ]);
     }
   }
-  return MoonAcrS;
+  return Anojour;
 };
-// console.log(MoonAcrSTable2(27.5, 'Jiyuan'))
-// console.log(MoonAcrSTable2(27.5, 'Qintian'))
+// console.log(AnojourTable2(27.5, 'Jiyuan'))
+// console.log(AnojourTable2(27.5, 'Qintian'))
 
 export const MoonFormula = (AnomaAccumRaw, Name) => {
   const { Type, Anoma, PartRange } = Para[Name];
@@ -689,8 +689,8 @@ export const MoonFormula = (AnomaAccumRaw, Name) => {
     }
     MoonDifAccum = (signB * AnomaAccum * (Anoma / 2 - AnomaAccum)) / 9.4;
   }
-  const MoonAcrS = AnomaAccumRaw * MoonAvgVd + MoonDifAccum;
-  return { MoonDifAccum, MoonAcrVd, MoonAcrS };
+  const Anojour = AnomaAccumRaw * MoonAvgVd + MoonDifAccum;
+  return { MoonDifAccum, MoonAcrVd, Anojour };
 };
 // console.log(MoonFormula(12.903, 'Shoushi').MoonAcrVd)
 
@@ -877,7 +877,7 @@ export const AutoTcorr = (AnomaAccum, Sd, Name, NodeAccum) => {
       moonFunc = MoonTcorrTable(
         (AnomaAccum + (Name === "Qintian" ? SunTcorr2 : 0) + Anoma) % Anoma,
         Name,
-      );
+      ); // 欽天求月離改正不是直接用經朔入轉，而是先要求太陽時間改正，加減經朔，再來入轉
       MoonTcorr1 = -moonFunc.MoonTcorr1;
       Tcorr2 = SunTcorr2 + MoonTcorr1;
     } else if (Type === 11) {
@@ -1013,7 +1013,7 @@ export const AutoDifAccum = (AnomaAccum, Sd, Name) => {
 export const anomaS = (AnomaAccum, Name) => {
   const { Type, Anoma } = Para[Name];
   AnomaAccum = fmod(AnomaAccum, Anoma);
-  let MoonAcrS = 0;
+  let Anojour = 0;
   let AnomaCycle = 0;
   if (
     [
@@ -1040,59 +1040,59 @@ export const anomaS = (AnomaAccum, Name) => {
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Qianxiang");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Qianxiang");
+      Anojour = AnojourTable1(AnomaAccum, "Qianxiang");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Qianxiang");
     } else if (["Liuzhi", "Wangshuozhi", "Sanji"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Jingchu");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Jingchu");
+      Anojour = AnojourTable1(AnomaAccum, "Jingchu");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Jingchu");
     } else if (Name === "Xuanshi") {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Tsrengguang");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Tsrengguang");
+      Anojour = AnojourTable1(AnomaAccum, "Tsrengguang");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Tsrengguang");
     } else if (["Jiayin", "Tianhe", "Daxiang"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Tianbao");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Tianbao");
+      Anojour = AnojourTable1(AnomaAccum, "Tianbao");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Tianbao");
     } else if (Name === "Kaihuang") {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Yuanjia");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Yuanjia");
+      Anojour = AnojourTable1(AnomaAccum, "Yuanjia");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Yuanjia");
     } else if (Name === "Yukuo") {
-      MoonAcrS = MoonAcrSTable1(AnomaAccum, "Daming");
-      AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, "Daming");
+      Anojour = AnojourTable1(AnomaAccum, "Daming");
+      AnomaCycle = AnojourTable1(Anoma - 1e-13, "Daming");
     } else if (["Zhangmengbin", "Liuxiaosun"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable2(AnomaAccum, "Daye");
-      AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, "Daye");
+      Anojour = AnojourTable2(AnomaAccum, "Daye");
+      AnomaCycle = AnojourTable2(Anoma - 1e-13, "Daye");
     } else if (["Yisi", "LindeB", "Shenlong"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable2(AnomaAccum, "Linde");
-      AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, "Linde");
+      Anojour = AnojourTable2(AnomaAccum, "Linde");
+      AnomaCycle = AnojourTable2(Anoma - 1e-13, "Linde");
     } else if (Name === "Zhide") {
-      MoonAcrS = MoonAcrSTable2(AnomaAccum, "Dayan");
-      AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, "Dayan");
+      Anojour = AnojourTable2(AnomaAccum, "Dayan");
+      AnomaCycle = AnojourTable2(Anoma - 1e-13, "Dayan");
     } else if (["Daming1", "Daming2"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable2(AnomaAccum, "Jiyuan");
-      AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, "Jiyuan");
+      Anojour = AnojourTable2(AnomaAccum, "Jiyuan");
+      AnomaCycle = AnojourTable2(Anoma - 1e-13, "Jiyuan");
     } else if (["Yiwei", "Gengwu"].includes(Name)) {
-      MoonAcrS = MoonAcrSTable2(AnomaAccum, "Daming3");
-      AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, "Daming3");
+      Anojour = AnojourTable2(AnomaAccum, "Daming3");
+      AnomaCycle = AnojourTable2(Anoma - 1e-13, "Daming3");
     }
   } else if (Type > 1 && Type < 5) {
-    MoonAcrS = MoonAcrSTable1(AnomaAccum, Name);
-    AnomaCycle = MoonAcrSTable1(Anoma - 1e-13, Name);
+    Anojour = AnojourTable1(AnomaAccum, Name);
+    AnomaCycle = AnojourTable1(Anoma - 1e-13, Name);
   } else if (Name === "Mingtian") {
-    MoonAcrS = MoonFormula(AnomaAccum, Name).MoonAcrS;
+    Anojour = MoonFormula(AnomaAccum, Name).Anojour;
     AnomaCycle = 368.3708;
   } else if (Name === "Futian" || Type === 11) {
-    MoonAcrS = MoonFormula(AnomaAccum, Name).MoonAcrS;
-    AnomaCycle = MoonFormula(Anoma - 1e-13, Name).MoonAcrS;
+    Anojour = MoonFormula(AnomaAccum, Name).Anojour;
+    AnomaCycle = MoonFormula(Anoma - 1e-13, Name).Anojour;
   } else {
-    MoonAcrS = MoonAcrSTable2(AnomaAccum, Name);
-    AnomaCycle = MoonAcrSTable2(Anoma - 1e-13, Name);
+    Anojour = AnojourTable2(AnomaAccum, Name);
+    AnomaCycle = AnojourTable2(Anoma - 1e-13, Name);
   }
   // if (['Xuanming', 'Yingtian', 'Yitian'].includes(Name)) {
   //     if (AnomaAccum > Anoma / 2) {
-  //         MoonAcrS += AnomaCycle
+  //         Anojour += AnomaCycle
   //     }
   //     AnomaCycle *= 2
   // }
-  return { MoonAcrS, AnomaCycle };
+  return { Anojour, AnomaCycle };
 };
 // console.log(anomaS(23, 'Qianxiang').AnomaCycle)
 

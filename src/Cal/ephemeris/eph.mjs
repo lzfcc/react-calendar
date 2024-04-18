@@ -265,7 +265,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       MonColor[i] = MonColorFunc.MonColor;
       // 合朔的情況
       let MoonEclpLonNewmMidn = 0,
-        MoonAcrSNewm = 0,
+        NewmAnojour = 0,
         NewmSd = 0;
       if (Type < 4)
         NewmSd = NewmRaw[i - 1] - SolsAccum; // 合朔加時
@@ -274,7 +274,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type === 1) {
         MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
-        MoonAcrSNewm = anomaS(NewmAnomaAccumPrint[i - 1], Name).MoonAcrS; // 定朔加時入轉度
+        NewmAnojour = anomaS(NewmAnomaAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
@@ -337,14 +337,14 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
-          const MoonAcrSMidn = anomaS(AnomaAccumMidn, Name).MoonAcrS;
+          const MidnAnojour = anomaS(AnomaAccumMidn, Name).Anojour;
           if (Type <= 4) {
-            const MoonEclpDeg = (NewmEclpDeg + MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal;
+            const MoonEclpDeg = (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonEclp = deg2Mans(MoonEclpDeg, EclpAccumList).Print;
           } else {
-            const MoonWhiteDeg = (NewmWhiteDeg + MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal;
+            const MoonWhiteDeg = (NewmWhiteDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
-            NowNewm_WhiteDif = (MoonAcrSMidn - MoonAcrSNewm + Sidereal) % Sidereal
+            NowNewm_WhiteDif = (MidnAnojour - NewmAnojour + Sidereal) % Sidereal
           }
         }
         const SunEquaLat = autoLat(SdMidn, Name);

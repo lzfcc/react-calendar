@@ -485,7 +485,7 @@ export const moonLonLat = (
   // const T_Node1Dif = T_Node1Dif_Avg + AutoTcorr(NodeAnomaAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
   const Node1EclpGong = (AvgNewmSd + S_Node1Dif) % Sidereal; // 授時：正交距冬至定積度
   let NodeEclp = Node1EclpGong // 崇天以後的
-  if (Name === "Qintian") { // 欽天
+  if (Name === "Qintian") { // 欽天都要先加一個日躔改正
     const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnomaAccum, AvgNewmSd, Name).Tcorr
     NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
   } else if (Type === 6 || Type === 7) { // 大衍
@@ -496,13 +496,13 @@ export const moonLonLat = (
     NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
   } else if (Name === "Yitian") {
     const AcrNewmAnomaAccum = AvgNewmAnomaAccum + AutoTcorr(AvgNewmAnomaAccum, undefined, Name).MoonTcorr
-    const AcrNewmAcrS = anomaS(AcrNewmAnomaAccum, Name).MoonAcrS
+    const AcrNewmAnojour = anomaS(AcrNewmAnomaAccum, Name).Anojour
     if (NodeAccum < Node / 2) { // 儀天用距離最近的正交
-      const NodeAcrS = anomaS(AvgNewmAnomaAccum - NodeAccum, Name).MoonAcrS // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
-      NodeEclp = (NewmEclpGong - (AcrNewmAcrS - NodeAcrS) + Solar) % Solar
+      const NodeAnojour = anomaS(AvgNewmAnomaAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
+      NodeEclp = (NewmEclpGong - (AcrNewmAnojour - NodeAnojour) + Solar) % Solar
     } else {
-      const Node1AcrS = anomaS(AvgNewmAnomaAccum + Node - NodeAccum, Name).MoonAcrS
-      NodeEclp = (NewmEclpGong + (Node1AcrS - AcrNewmAcrS)) % Solar
+      const Node1Anojour = anomaS(AvgNewmAnomaAccum + Node - NodeAccum, Name).Anojour
+      NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
     }
   }
   let WhiteAccumList = [];

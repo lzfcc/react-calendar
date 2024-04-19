@@ -91,6 +91,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
         (Morningstar[i] = []),
         (Duskstar[i] = []),
         Pos[i] = []
+      const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansModernList(NewmUT1Jd[i - 1] + 15, MansSystem) // 取月中的宿積度表，減少計算次數
       for (
         let k = 1;
         k <= Math.trunc(NewmUT1Jd[i] - .5) - Math.trunc(NewmUT1Jd[i - 1] - .5);
@@ -104,7 +105,6 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
         /// ///////天文曆///////////
         const { EquaLon, EquaLat, EclpLon, EclpLat, CeclpLon, CeclpLat, HoriLon, HoriLat } = bindTopo_vsop(MidnTTJd, Longitude, Latitude, h)
         const SunEclpLatNoon = calPos_vsop('Sun', MidnTTJd + .5).EquaLat
-        const { EclpAccumList, EquaAccumList, CeclpAccumList } = mansModernList(NewmUT1Jd[i - 1] + 15, MansSystem) // 取月中的宿積度表，減少計算次數        
         Pos[i][k] = []
         for (let j = 0; j < 7; j++) { // 七政赤道、極黃、黃道、入宿度
           const EquaMans = deg2MansModern(EquaLon[j] * R2D, EquaAccumList).Mans;
@@ -158,4 +158,4 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
   }
   return result;
 };
-// console.log(D3(1690, 1690, 116.428, 39.5))
+// console.log(D3(2024, 2024, 116.428, 39.5))

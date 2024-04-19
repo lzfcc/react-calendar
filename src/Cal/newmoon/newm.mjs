@@ -135,7 +135,7 @@ export default (Name, Y) => {
             let Tcorr1 = 0
             if (Anoma) {
                 AnoAccum[i] = +((FirstAnoAccum + (ZhengSd + i - 1) * SynodicAnomaDif + (isNewm ? 0 : Lunar / 2)) % Anoma).toFixed(fixed) // 上元積年幾千萬年，精度只有那麼多了，再多的話誤差更大
-                AnoAccumMidn[i] = Math.trunc(AnoAccum[i])
+                AnoAccumMidn[i] = AnoAccum[i] - AvgDeci[i]
                 const TcorrBindFunc = AutoTcorr(AnoAccum[i], Sd[i], Name)
                 if (Type <= 4) {
                     Tcorr[i] = TcorrBindFunc.Tcorr1
@@ -240,9 +240,9 @@ export default (Name, Y) => {
             }
             if (Node) {
                 NodeAccum[i] = +((FirstNodeAccum + (ZhengSd + i - 1) * Lunar + (isNewm ? 0 : SynodicNodeDif50)) % Node).toFixed(fixed)
-                NodeAccumMidn[i] = Math.trunc(NodeAccum[i])
+                NodeAccumMidn[i] = NodeAccum[i] - AvgDeci[i]
             }
-            NodeAccumMidn[i] += NewmPlus // 給曆書用，不知道這樣可不可以            
+            NodeAccumMidn[i] += NewmPlus
         }
         let LeapNumTerm = 0
         //////// 置閏

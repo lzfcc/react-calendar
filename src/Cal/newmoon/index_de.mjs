@@ -98,11 +98,12 @@ export default (YearStart, YearEnd, Longitude) => {
             }
         }
         const NewmSlice = array => array.slice(1 + NewmStart, 13 + NewmEnd)
+        const NewmSlice1 = array => array.slice(1 + NewmStart, 14 + NewmEnd)
         const TermSlice = array => array.slice(1 + TermStart, 13 + TermEnd)
         ////////////下爲調整輸出////////////
         const MonthPrint = MonthName.slice(1)
         const NewmScPrint = NewmSlice(ThisYear.NewmSc)
-        const NewmUT1JdPrint = NewmSlice(ThisYear.NewmUT1Jd)
+        const NewmUT1JdPrint = NewmSlice1(ThisYear.NewmUT1Jd)
         const NewmMmddPrint = NewmSlice(ThisYear.NewmMmdd)
         const NewmDeciUT18Print = NewmSlice(ThisYear.NewmDeci)
         const NewmEquaPrint = NewmSlice(NewmEqua)

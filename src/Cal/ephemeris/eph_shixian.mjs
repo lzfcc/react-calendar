@@ -4,15 +4,9 @@ import {
   ScList,
   StemList,
   BranchList,
-  StemList1,
-  BranchList1,
-  NayinList,
   WeekList,
-  WeekList1,
   MansNameList,
   MansAnimalNameList,
-  JianchuList,
-  HuangheiList,
   YuanList,
   NumList,
   MonNumList1,
@@ -82,9 +76,6 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const Duskstar = [];
     const Pos = []
     let DayAccum = 0;
-    const JieAccum = 0; // 各節積日
-    const JianchuDayAccum = NewmSmd[0]; // 建除
-    const JianchuOrigin = 0;
     for (let i = 1; i <= 12 + (LeapNumTerm > 0 ? 1 : 0); i++) {
       // 有閏就13
       let NoleapMon = i;

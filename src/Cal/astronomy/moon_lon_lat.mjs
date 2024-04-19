@@ -380,10 +380,8 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   const Sidereal = 365.2575
   const SiderealHalf = 182.62875
   const SiderealQuar = 91.314375
-  const Solar = 365.2425;
   const SolarHalf = 182.62125;
   const SolarQuar = 91.310625;
-  const SolarQuar3 = 273.931875;
   const SolarOcta = 45.6553125;
   const SiderealSext = 60.875; // 周天六之一是會圓術天球半徑
   const Sobliq = 23.9; // 黃赤大距
@@ -395,8 +393,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   const sign2 = Node1EclpGong < SolarHalf ? -1 : 1; // 月離黃道正交在冬至後宿度爲減，夏至後宿度爲加——右手
   const d = (Node1EclpHalfRev * k) / SolarQuar; // 定差EH
   const WhEqEquinoxDif = k - d; // 距差BH：白赤交點距二分距離
-  // const WhEqGong = sign1 * WhEqEquinoxDif + (Node1EclpGong < SolarHalf ? SolarQuar : SolarQuar3); // 白赤交點距冬至赤道度
-  const WhEqGong = sign1 * -sign2 * WhEqEquinoxDif + SolarQuar; // 以距差加減春秋二正赤道宿度，爲月離赤道正交宿度。冬至後，初限加末限減，視春正；夏至後，初限減末限加，視秋正
+  const WhEqGong = sign1 * -sign2 * WhEqEquinoxDif + SolarQuar; // 白赤交點距冬至赤道度。以距差加減春秋二正赤道宿度，爲月離赤道正交宿度。冬至後，初限加末限減，視春正；夏至後，初限減末限加，視秋正
   const Dingxian = 98 + (sign2 * 24 * d) / k; // 定限度。交在冬至後名減，夏至後名加——右手
   /// 白赤差  
   const equa2WhiteDif = X => {
@@ -405,8 +402,8 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
     const XQuarRev = XQuar < SolarOcta
       ? XQuar
       : SolarQuar - XQuar; // 大統「月道與赤道正交後積度 并入初末限」赤道二十八宿到白赤交點半交的距離，半「氣象限（Solar25）」以內
-    const sign4 = XHalf < SolarQuar ? -1 : 1; // 正交中交後為加，半交後為減——這裏暫定用左手法則
-    return sign4 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
+    const sign3 = XHalf < SolarQuar ? -1 : 1; // 正交中交後為加，半交後為減——這裏暫定用左手法則
+    return sign3 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
   }
   const NewmEquaGong = Hushigeyuan(NewmEclpGong).Eclp2Equa
   const Newm_WhEq_EquaDif = (NewmEquaGong - WhEqGong + Sidereal) % Sidereal
@@ -434,7 +431,7 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   /// 月赤緯
   let EquaLat = 0
   if (NowNewm_WhiteDif) {
-    const WhEqObliqMax = Sobliq + (sign2 * d * 25) / 61; // 白赤大距「赤道正交後半交白道出入赤道內外度」. k*25/61=6
+    const WhEqObliqMax = Sobliq + sign2 * d * 25 / 61; // 白赤大距「赤道正交後半交白道出入赤道內外度」. k*25/61=6。視月離黄道正交在冬至後宿度爲減，夏至後宿度爲加
     const NowWhEq_WhiteDif = (Newm_WhEq_WhiteDif + NowNewm_WhiteDif) % Sidereal // 每日月離赤道交後。原文沒有說怎麼求的，我覺得按道理是這樣。這種情況左手右手不影響
     const NowWhEq_WhiteDifHalf = NowWhEq_WhiteDif % SiderealHalf;
     const HM = NowWhEq_WhiteDifHalf < SiderealQuar ? NowWhEq_WhiteDifHalf : SiderealHalf - NowWhEq_WhiteDifHalf; // 每日月離赤道交後初末限

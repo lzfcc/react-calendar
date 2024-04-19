@@ -2,6 +2,7 @@ import React from 'react'
 import { NameDayList } from '../../Cal/parameter/constants.mjs'
 import { bindMansAccumList } from '../../Cal/astronomy/bind.mjs'
 import SingleSelectMenu from '../SingleSelectMenu'
+import Para from "Cal/parameter/calendars.mjs"
 
 export default class Converter extends React.Component {
   constructor(props) {
@@ -11,6 +12,18 @@ export default class Converter extends React.Component {
       Year: 1281,
     }
     this.handle = this.handle.bind(this)
+  }
+
+  renderTitle() {
+    const Name = this.state.calendars;
+    const { Type } = Para[Name]
+    let Title;
+    if (Type === 13) {
+      Title = "黃道"
+    } else {
+      Title = "極黃"
+    }
+    return Title;
   }
 
   handle() {
@@ -28,8 +41,8 @@ export default class Converter extends React.Component {
     }
     return (
       <div className='ans table2'>
-        <h3>極黃或黃道宿鈐</h3>
-        <p>冬至日躔黃道 {(this.state.SolsEclpPrint)}</p>
+        <h3>{this.renderTitle()}宿鈐</h3>
+        <p>冬至日躔{this.renderTitle()} {(this.state.SolsEclpPrint)}</p>
         <table>
           {this.state.EclpAccumPrint.map(row => {
             return (

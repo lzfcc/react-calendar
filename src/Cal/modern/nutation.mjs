@@ -109,7 +109,7 @@ const aa = T => { // 單位秒
 const aa1 = T => { // 單位弧度
     const F = [
         2.35555598 + 8328.6914269554 * T, //  Mean anomaly of the Moon. al
-        6.24006013 + 628.301955 * T, //Mean anomaly of the Sun. alsu
+        6.24006013 + 628.301955 * T, // Mean anomaly of the Sun. alsu
         1.627905234 + 8433.466158131 * T, //   Mean argument of the latitude of the Moon. af
         5.198466741 + 7771.3771468121 * T, // Mean elongation of the Moon from the Sun. ad
         2.18243920 - 33.757045 * T, // Mean longitude of the ascending node of the Moon. aom

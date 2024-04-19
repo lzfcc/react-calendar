@@ -35,7 +35,7 @@ export default class Equa extends React.Component {
           }}
         />
         <p></p>
-        <span> Δ</span>
+        <span> 差分</span>
         <input
           className="width5"
           value={this.state.Interpolate2Raw}

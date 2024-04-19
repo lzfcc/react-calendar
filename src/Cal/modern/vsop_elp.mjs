@@ -16,7 +16,7 @@ import {
     xyz2lonlat,
     rr1
 } from "../astronomy/pos_functions.mjs";
-import { cDay, pi2 } from "../parameter/functions.mjs";
+import { R2D, cDay, pi2 } from "../parameter/functions.mjs";
 
 // 計算位置、速度
 export const calXV_vsop = (Planet, Jd) => {
@@ -42,7 +42,6 @@ export const calXV_vsop = (Planet, Jd) => {
 // console.log(calXV_vsop('Mercury', 2424111))
 
 /**
- * 計算瞬時地心視黃經黃緯。在需要黃經導數的時候用calPos1，不需要的時候用calPos。注意：分析曆表的位置都是黃道座標，DE曆表是赤道座標
  * Xeq = N(t)P(t)X2000 = N(t)P(t)B·XICRS
  * Xec = R1(ε(t))Xeq = R1(ε(t))N(t)P(t)B·XICRS
  * Xeq = R1(-Ep)Xec
@@ -63,7 +62,7 @@ export const calXV_vsop = (Planet, Jd) => {
     // const Tmp = chain(R1EpsN).multiply(P).multiply(Fbmx).done()
  * @param {*} Planet 
  * @param {*} Jd 
- * @returns 
+ * @returns 赤道座標
  */
 export const calPos_vsop = (Planet, Jd) => {
     const T = (Jd - 2451545) / 36525; // 儒略世紀
@@ -92,9 +91,9 @@ export const calPos_vsop = (Planet, Jd) => {
     EquaLon = (EquaLon + pi2) % pi2;
     let { Lon, Lat } = xyz2lonlat(Eclp);
     Lon = (Lon + pi2) % pi2;
-    return { EquaLon, EquaLat, Lon, Lat, Lon1 };
+    return { EquaLon, EquaLat, Lon, Lat, Lon1};
 };
-// console.log(calPos_vsop('Sun', 2095178.05080473))
+// console.log(calPos_vsop('Moon', 2095172))
 // const startTime = performance.now();
 // console.log(calPos_vsop('Sun', 2433323))
 // const endTime = performance.now();

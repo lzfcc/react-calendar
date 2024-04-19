@@ -846,13 +846,16 @@ export const bindMansAccumModernList = (Name, Jd) => {
     EclpAccumList: EclpAccumListRaw,
     EquaAccumList: EquaAccumListRaw,
     CeclpAccumList: CeclpAccumListRaw,
+    CwhAccumList: CwhAccumListRaw,
     SolsEclpMans,
     SolsEquaMans,
-    SolsCeclpMans
+    SolsCeclpMans,
+    SolsCwhMans
   } = mansModern(Jd, Name);
   const EclpAccumList = {};
   const EquaAccumList = {};
-  const CeclpAccumList = {}
+  const CeclpAccumList = {};
+  const CwhAccumList = {};
   for (const Mans in EclpAccumListRaw) {
     EclpAccumList[Mans] =
       (EclpAccumListRaw[Mans] - EclpAccumListRaw["角"] + 360) % 360;
@@ -865,6 +868,10 @@ export const bindMansAccumModernList = (Name, Jd) => {
     CeclpAccumList[Mans] =
       (CeclpAccumListRaw[Mans] - CeclpAccumListRaw["角"] + 360) % 360;
   }
+  for (const Mans in CwhAccumListRaw) {
+    CwhAccumList[Mans] =
+      (CwhAccumListRaw[Mans] - CwhAccumListRaw["角"] + 360) % 360;
+  }
   const EclpSortedList = Object.entries(EclpAccumList).sort(
     (a, b) => a[1] - b[1],
   );
@@ -874,32 +881,42 @@ export const bindMansAccumModernList = (Name, Jd) => {
   const CeclpSortedList = Object.entries(CeclpAccumList).sort(
     (a, b) => a[1] - b[1],
   );
+  const CwhSortedList = Object.entries(CwhAccumList).sort(
+    (a, b) => a[1] - b[1],
+  );
   const EclpList = [];
   const EquaList = [];
   const CeclpList = [];
+  const CwhList = [];
   const EclpAccumPrint = [];
   const EquaAccumPrint = [];
   const CeclpAccumPrint = [];
+  const CwhAccumPrint = [];
   for (let i = 0; i < 27; i++) {
     EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(6);
     EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(6);
     CeclpList[i] = +(CeclpSortedList[i + 1][1] - CeclpSortedList[i][1]).toFixed(6);
+    CwhList[i] = +(CwhSortedList[i + 1][1] - CwhSortedList[i][1]).toFixed(6);
   }
   EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(6);
   EquaList[27] = +(360 - EquaSortedList[27][1]).toFixed(6);
   CeclpList[27] = +(360 - CeclpSortedList[27][1]).toFixed(6);
+  CwhList[27] = +(360 - CwhSortedList[27][1]).toFixed(6);
   for (let i = 0; i < 4; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
     CeclpAccumPrint.push([]);
+    CwhAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
     let CeclpSum = 0;
+    let CwhSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
       EclpSum += EclpList[index];
       EquaSum += EquaList[index];
       CeclpSum += CeclpList[index];
+      CwhSum += CwhList[index];
     }
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
@@ -918,25 +935,34 @@ export const bindMansAccumModernList = (Name, Jd) => {
           5,
         )}　\n${NumList[index]} ${CeclpList[index]}`,
       );
+      CwhAccumPrint[i].push(
+        `${CwhSortedList[index][0]} ${CwhSortedList[index][1].toFixed(
+          5,
+        )}　\n${NumList[index]} ${CwhList[index]}`,
+      );
     }
     EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3);
     CeclpAccumPrint[i][8] = DirList[i] + CeclpSum.toFixed(3);
+    CwhAccumPrint[i][8] = DirList[i] + CwhSum.toFixed(3);
   }
-  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CeclpAccumPrint[4] = ["下爲古度"]);
+  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CeclpAccumPrint[4] = ["下爲古度"]), (CwhAccumPrint[4] = ["下爲古度"]);
   const p = 360 / 365.25;
   for (let i = 5; i < 9; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
     CeclpAccumPrint.push([]);
+    CwhAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
     let CeclpSum = 0;
+    let CwhSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = (i - 5) * 7 + j;
       EclpSum += EclpList[index] / p;
       EquaSum += EquaList[index] / p;
       CeclpSum += CeclpList[index] / p;
+      CwhSum += CwhList[index] / p;
     }
     for (let j = 0; j < 7; j++) {
       const index = (i - 5) * 7 + j;
@@ -955,18 +981,26 @@ export const bindMansAccumModernList = (Name, Jd) => {
           4,
         )}　\n${NumList[index]} ${(CeclpList[index] / p).toFixed(5)}`,
       );
+      CwhAccumPrint[i].push(
+        `${CwhSortedList[index][0]} ${(CwhSortedList[index][1] / p).toFixed(
+          4,
+        )}　\n${NumList[index]} ${(CwhList[index] / p).toFixed(5)}`,
+      );
     }
     EclpAccumPrint[i][8] = DirList[i - 5] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i - 5] + EquaSum.toFixed(3);
     CeclpAccumPrint[i][8] = DirList[i - 5] + CeclpSum.toFixed(3);
+    CwhAccumPrint[i][8] = DirList[i - 5] + CwhSum.toFixed(3);
   }
   return {
     EclpAccumPrint,
     EquaAccumPrint,
     CeclpAccumPrint,
+    CwhAccumPrint,
     SolsEclpPrint: SolsEclpMans,
     SolsEquaPrint: SolsEquaMans,
     SolsCeclpPrint: SolsCeclpMans,
+    SolsCwhPrint: SolsCwhMans,
   };
 };
 // console.log(bindMansAccumModernList('Chongzhen', 2424222))

@@ -125,7 +125,6 @@ export const Interpolate1 = (n, initial, highPrecisionMode = false) => {
   }
   return S - S4;
 };
-// console.log(Interpolate1(1.5, [1, 9, 25])) // delta:1,8,8
 
 const Interpolate1_big = (n, initial) => {
   n = big(n);
@@ -157,7 +156,7 @@ const Interpolate1_big = (n, initial) => {
   delta = delta.reverse();
   const delta1 = delta[0]; // 一階
   const Print =
-    `Δ = ${delta}
+    `差分 = ${delta}
 sum (${n}) = ${S.toNumber()}` +
     (n1 === Number(n)
       ? ``
@@ -171,7 +170,7 @@ f (${n}) = ${y}` +
 f (${n1}) = ${y1}`);
   return { Print, S, delta, delta1, y };
 };
-// console.log(Interpolate1_big(1.5, [9, 16, 25]).Print)
+// console.log(Interpolate1_big(2, [1, 4, 9]).Print)
 // console.log(Interpolate1_big(3, [1,4,9]).delta1)
 // 算出來差分之後，求y。爲了節省算力。delta由低次到高次。
 

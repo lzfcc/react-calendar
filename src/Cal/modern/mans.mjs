@@ -7,6 +7,8 @@ import { Parsec, R2D, cDay } from "../parameter/functions.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
 import { equa2Ceclp } from "../astronomy/pos_convert_modern.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
+import { lonEqua2Cwh } from "../astronomy/pos_convert_modern.mjs";
+import { LonFlat2High } from "../astronomy/pos_convert.mjs";
 // [AT-HYG Subset v2.4](https://astronexus.com/hyg/) parsec
 // 由AT-HYG算出來的數據和廖育棟的有點點區別。以下直接取自廖育棟的starCharts/brightStars.js
 // 獲取brightStars.js信息的代碼
@@ -178,6 +180,7 @@ export const deg2MansModern = (Deg, AccumObj, fixed) => {
     if (index === -1) throw new Error("未找到所在宿度");
     const Name = SortedList[index][0];
     const MansDeg = (Deg - SortedList[index][1] + 360) % 360;
+    // 冬至日躔：其實應該每年都一樣，不過這裡直接是黃經270的宿度
     for (let i = SortedList.length - 1; i >= 0; i--) {
         if (SortedList[i][1] <= 270) {
             Solsindex = i;
@@ -192,20 +195,23 @@ export const deg2MansModern = (Deg, AccumObj, fixed) => {
 
 //根據廖育棟文檔14.3 14.4 
 export const mansModernList = (Jd, Name) => {
-    Name = Name || "Yixiang";
+    Name = Name || "Shi";
     const EclpAccumList = {};
     const EquaAccumList = {};
-    const CeclpAccumList = {}
+    const CeclpAccumList = {};
+    const CwhAccumList = {};
     const T = (Jd - 2451545) / 36525;
     const { N, Obliq } = nutaMx(T);
     const NP = multiply(precessionMx(T), N);
     const NPB = multiply(NP, Fbmx);
-    const { X: XSEclpRaw, V: VSEclpRaw } = calXV_vsop("Sun", Jd); // VSOP算出來的是黃道
+    const { X: XSEclpRaw, V: VSEclpRaw } = calXV_vsop("Sun", Jd); // VSOP算出來的是黃道。算太陽的目的是計算視差
     const XSRaw = multiply(rr1(-Obliq), XSEclpRaw);
     const XS = multiply(NPB, XSRaw);
     const VSRaw = multiply(rr1(-Obliq), VSEclpRaw);
     const VE = multiply(multiply(NP, VSRaw), -1);
     const Beta = divide(VE, cDay);
+    const { WhEqLon, WhEqObliq } = lonEqua2Cwh(Jd) // 白赤交點赤經，算九道用的
+    const tmp = 360 - LonFlat2High(WhEqObliq, (360 - WhEqLon) % 360) // 白道度CwhLon是從白赤交點起算，所以要根據白赤交點的赤經，歸算出應該加上的度數
     for (let i = 0; i < 28; i++) {
         const XSRawParsec = divide(XSRaw, Parsec);
         const X00 = add(
@@ -223,24 +229,27 @@ export const mansModernList = (Jd, Name) => {
         const XEclp = multiply(rr1(Obliq), XEqua).toArray(); // 乘法順序不能變！
         const EquaLon = (xyz2lonlat(XEqua).Lon * R2D + 360) % 360;
         EquaAccumList[MansNameList[i]] = EquaLon
-        CeclpAccumList[MansNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
         EclpAccumList[MansNameList[i]] = (xyz2lonlat(XEclp).Lon * R2D + 360) % 360;
+        CeclpAccumList[MansNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
+        CwhAccumList[MansNameList[i]] = (lonEqua2Cwh(Jd, EquaLon).CwhLon + tmp) % 360
     }
     return {
         EclpAccumList,
         EquaAccumList,
         CeclpAccumList,
+        CwhAccumList,
         XS,
         Obliq
     };
 };
 export const mansModern = (Jd, Name) => {
-    Name = Name || "Yixiang";
-    const { EclpAccumList, EquaAccumList, CeclpAccumList, XS, Obliq } = mansModernList(Jd, Name)
+    Name = Name || "Shi";
+    const { EclpAccumList, EquaAccumList, CeclpAccumList, CwhAccumList, XS, Obliq } = mansModernList(Jd, Name)
     const XSEclp = multiply(rr1(Obliq), XS); // 乘法順序不能變！！要不然transpose()也沒用
     const SunEclpLon = (xyz2lonlat(XSEclp.toArray()).Lon * R2D + 360) % 360;
     const SunEquaLon = (xyz2lonlat(XS.toArray()).Lon * R2D + 360) % 360;
     const SunCeclpLon = equa2Ceclp(Obliq * R2D, SunEquaLon, 0).CeclpLon
+    const SunCwhLon = lonEqua2Cwh(Jd, SunEquaLon).CwhLon
     const { Mans: Eclp, SolsMans: SolsEclpMans } = deg2MansModern(
         SunEclpLon,
         EclpAccumList
@@ -253,20 +262,27 @@ export const mansModern = (Jd, Name) => {
         SunCeclpLon,
         CeclpAccumList
     );
+    const { Mans: Cwh, SolsMans: SolsCwhMans } = deg2MansModern(
+        SunCwhLon,
+        CwhAccumList
+    );
     return {
         Eclp,
         Equa,
         Ceclp,
+        Cwh,
         EclpAccumList,
         EquaAccumList,
         CeclpAccumList,
+        CwhAccumList,
         SolsEclpMans,
         SolsEquaMans,
-        SolsCeclpMans
+        SolsCeclpMans,
+        SolsCwhMans
     };
 };
 // const S = performance.now()
-// console.log(mansModern(2453445, 'Yixiang'))
+// console.log(mansModern(2288579, 'Shi'))
 // const E = performance.now()
 // console.log(E - S) // 算一個7ms
 

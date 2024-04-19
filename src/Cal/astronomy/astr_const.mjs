@@ -1,31 +1,48 @@
-import { big, frc } from '../parameter/functions.mjs'
+import { big, fm360, frc } from '../parameter/functions.mjs'
 import { Frac2FalseFrac, DeciFrac2IntFrac } from '../equation/math.mjs'
+import { Interpolate2 } from '../equation/sn.mjs'
+import { date2Jd, jd2Date } from '../time/jd2date.mjs'
 
-export const constModern = Jd => { // 儒略世紀：36525日。我下面索性將100年作爲儒略世紀，要不然太麻煩
+export const modernConsts = Jd => { // 儒略世紀：36525日
     Jd = +Jd
     const T = (Jd - 2451545) / 36525 // J2000儒略世紀
-    const e = (84381.406 - 46.836769 * T - .0001831 * T ** 2 + .00200340 * T ** 3 - .000000576 * T ** 4 - .0000000434 * T ** 5) / 3600
-    //《古曆新探》頁322.近日點平黃經 ω // 也就是說近日點越來越向春分移動 。375年在大雪，1247年近日點在冬至
+    const e = (84381.406 - 46.836769 * T - .0001831 * T ** 2 + .00200340 * T ** 3 - .000000576 * T ** 4 - .0000000434 * T ** 5) / 3600 // IAU2006
     const T1 = (Jd - 2415021) / 36525
-    const perihelion = 281.22084 + 1.719175 * T1 + (1.63 / 3600) * T1 ** 2 + (.012 / 3600) * T1 ** 3
-    const eccentricity = .01670862 - .00004204 * T1 - .000000124 * T1 ** 2 // 黃道離心率
+    const perihelion = 281.22084 + 1.719175 * T1 + (1.63 / 3600) * T1 ** 2 + (.012 / 3600) * T1 ** 3 //《古曆新探》頁322.近日點平黃經 ω // 近日點375年在大雪，1247年在冬至
     const Solar = 365.242189623 - .000061522 * T - 6.09e-8 * T ** 2 + 2.6525e-7 * T ** 3 // VSOP87 曆表 Meeus J，Savoie D. The history of the tropical year[J]. Journal of the British Astronomical Association，1992，102( 1) : 42. 
-    const Sidereal = 365.25636042 + 1e-7 * T
+    const Sidereal = 365.256363425926 // 31558149.8s // 2. Astrophysical Constants and Parameters// P.A. Zyla et al. (Particle Data Group), Prog. Theor. Exp. Phys. 2020, 083C01 (2020)
     const Lunar = 29.530588853 + 2.162e-7 * T
     const Anoma = 27.554549878 - 1.039e-6 * T
     const Node = 27.21222082 + 3.8e-7 * T
+    // 以下根據IAU2006 https://github.com/brandon-rhodes/python-novas/Cdist/nutation.c
+    const AvgSorb = fm360(357.52910918 + (129596581.0481 * T - .5532 * T ** 2 + .000136 * T ** 3 - .00001149 * T ** 4) / 3600) // 太陽平近點角            
+    const AvgMorb = fm360(134.96340251 + (1717915923.2178 * T + 31.8792 * T ** 2 + .051635 * T ** 3 - .00024470 * T ** 4) / 3600) // 月球平近點角
+    const AvgWhEcLon = fm360(125.04455501 + (-6962890.5431 * T + 7.4722 * T ** 2 + .007702 * T ** 3 - .00005939 * T ** 4) / 3600) // 月軌升交平黃經
+    // delta根據La2010a_ecc3L.dat的4kyr內插：http://vo.imcce.fr/insola/earth/online/earth/earth.html
+    //  0  0.016702362
+    // -1  0.017161382
+    // -2  0.017496814
+    // -3  0.017845736
+    // -4  0.018210895
+    // const eccentricity = .01670862 - .00004204 * T1 - .000000124 * T1 ** 2 // 《古曆新探》黃道離心率
+    const Y = jd2Date(Jd).year
+    const YFrac = (Jd - date2Jd(Y)) / 365.2425
+    const Julian2kyr = (2000 - (Y + YFrac)) / 1000
+    const eccentricity = +Interpolate2(Julian2kyr, 0.016702362, [0.00045902, -0.000123588, 0.000137078, -0.000134331]).toFixed(9)
     const Print = `朔望月 ${Lunar} 日
 近點月 ${Anoma} 日
 交點月 ${Node} 日
 回歸年 ${Solar} 日
 恆星年 ${Sidereal} 日
 平黃赤交角 ${e}°
-黃道離心率 ${eccentricity}
-近日點平黃經 ${perihelion}°`
-    return { Print, e, perihelion, eccentricity, Anoma, Solar, Sidereal, Lunar }
+地球軌道離心率 ${eccentricity}
+近日點平黃經 ${perihelion}°
+日平近點角 ${AvgSorb}
+黃白升交平黃經 ${AvgWhEcLon}
+月平近點角 ${AvgMorb}`
+    return { Print, e, perihelion, eccentricity, Anoma, Solar, Sidereal, Lunar, AvgSorb, AvgMorb, AvgWhEcLon }
 }
-// console.log(constModern(-401).Print)
-
+// console.log(modernConsts(1355809).Print)
 export const BindSolarChange = year => {
     year = +year
     const year1 = year - 1194 // 現代値歸算爲統天曆元

@@ -15,6 +15,7 @@ import {
 import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { lonlat2xyz, rr1, xyz2lonlat } from "./pos_functions.mjs";
+import { modernConsts } from "./astr_const.mjs";
 
 const eclp2Equa_Mx = (Sobliq, Lon, Lat) => {
   const Ieclp = lonlat2xyz(Lon * D2R, Lat * D2R);
@@ -72,21 +73,66 @@ export const testEclpEclpDif = (Sobliq, Lat) => {
 };
 // console.log(testEclpEclpDif(23.5, 20))
 
+
 /**
- * 《數理》p347一行重新發明了九道術：將月亮的黃道度（即月亮與交點的極黃經差）換算成白道度。
- *  九道術的球面三角算法藪內清公式。算黃白差 abs(B-G) ，B: 月亮距升交點的黃道度，G: 月亮距升交點的白道度。白道度G是以黃道度B和交點黃經爲自變量的二元函數。
- * @param {*} Sobliq 黃赤大距Eps
- * @param {*} Mobliq 黃白大距 I
- * @param {*} NodeEclpLon 升交點黃經omega
- * @param {*} CeclpNodeDif 月亮距交點黃經B
+ * 見《數理天文學》白道交周
+ * @param {*} WhEcLon 黃白交點黃經
+ * @param {*} Sobliq 黃赤大距
+ * @param {*} Mobliq 黃白大距
+ * @returns 白赤交點赤經
  */
-export const Ceclp2CwhiteNodeDif = (Sobliq, Mobliq, NodeEclpLon, CeclpNodeDif) => {
-  const tmp1 = sind(CeclpNodeDif)
-  const tmp2 = cosd(CeclpNodeDif) * cosd(Mobliq) - sind(Mobliq) * cosd(NodeEclpLon + CeclpNodeDif) * tand(Sobliq)
-  const MoonNodeWhiteDif = atan2d(tmp1, tmp2)
-  return MoonNodeWhiteDif
+const whEcNode2WhEqNode = (WhEcLon, Sobliq, Mobliq) => {
+  const WhEcLonRev1 = WhEcLon <= 180 ? 180 - WhEcLon : WhEcLon - 180;// 圖像以秋分對稱，尖峰距秋分較近
+  Sobliq = Sobliq || 23.5559844; // 23.9度。1280理論值23.533°
+  Mobliq = Mobliq || 5.91363627; // 6度。理論平均值5.1453°
+  const tan_WhEqLonMax = tand(Mobliq) / sind(Sobliq); // 正交極數：白赤交點赤經最大值的tan()
+  const tan_WhEqLon =
+    (tan_WhEqLonMax * sind(WhEcLonRev1)) /
+    (1 - tan_WhEqLonMax * cosd(Sobliq) * cosd(WhEcLonRev1));
+  return {
+    WhEqLonMax: atand(tan_WhEqLonMax),
+    WhEqLon: atand(tan_WhEqLon),
+  };
+};
+
+/**
+ * 求白赤大距
+ * @param {*} WhEcLon 黃白交點黃經
+ * @param {*} Mobliq 黃白大距
+ */
+const whEqObliq = (WhEcLon, Sobliq, Mobliq) => {
+  const WhEcLonRev = WhEcLon <= 180 ? WhEcLon : 360 - WhEcLon; // 看圖像，黃經從0-180逐漸降低，那麼180-360應該是逐漸升高
+  Mobliq = Mobliq || 5.91363627;
+  const { WhEqLon } = whEcNode2WhEqNode(WhEcLon, Sobliq, Mobliq);
+  const sin_WhEqObliq =
+    (sind(Mobliq) * sind(WhEcLonRev)) / sind(WhEqLon); // 球面三角形BHG正弦定理
+  return {
+    WhEqLon,
+    WhEqObliq: asind(sin_WhEqObliq)
+  }
+};
+// LonHigh2Flat(whEqObliq, MoonWhiteLon) // 白經轉赤經
+// HighLon2FlatLat(whEqObliq, MoonWhiteLon) // 白經轉赤緯。MoonWhiteLon：月亮距離白赤正交
+// console.log(whEqObliq(150, 23.533, 5.1453))
+
+/**
+ * 赤道轉九道
+ * @param {*} Jd 
+ */
+export const lonEqua2Cwh = (Jd, EqauLon) => {
+  const { WhEqLon, WhEqObliq } = whEqObliq(modernConsts(Jd).AvgWhEcLon)
+  let WhEqDif = 0, CwhLon = 0;
+  if (EqauLon) {
+    WhEqDif = (EqauLon - WhEqLon + 360) % 360 // 某點距離白赤交點的赤道度
+    CwhLon = LonFlat2High(WhEqObliq, WhEqDif) // 距離白赤交點的白道度
+  }
+  return {
+    CwhLon,
+    WhEqLon, // 白赤交點赤經
+    WhEqObliq
+  }
 }
-// console.log(Ceclp2CwhiteNodeDif(23.5, 6, 50, 140))
+// console.log(lonEqua2Cwh(2343222, 199))
 
 /**
  * 一天之内太阳高度角的变化速率如何计算？ - Pjer https://www.zhihu.com/question/25909220/answer/1026387602 一年中太阳直射点在地球上的移动速度是多少？ - 黄诚赟的回答 https://www.zhihu.com/question/335690936/answer/754032487「太阳直射点的纬度变化不是匀速的，春分秋分最大，夏至冬至最小。」

@@ -72,6 +72,12 @@ export const lat2NS = (x) => {
   if (x) return (x > 0 ? "N" : "S") + abs(x).toFixed(4);
   else return undefined;
 };
+
+export const lat2NS1 = (x) => {
+  if (x) return (x > 0 ? "N" : "S") + deg2Hms(Math.abs(x));
+  else return undefined;
+}
+
 // const debounce = (fn, delay) => {
 //   let timer = 100; // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
 //   return (...args) => {

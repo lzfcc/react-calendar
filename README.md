@@ -556,9 +556,9 @@ a = [0, ...a]
 - Each directory has a index file that is used to export all functions and variables that are available in that directory, in order to make it easier to import the functions and variables in other files.
 - combine interpolate and interpolate_big
 
-4-17 前端 `1.12` GPT幫忙把朔閏表、曆書的樣式渲染移到前端
+4-17 前端 `1.12` GPT幫忙把朔閏表、曆書的樣式渲染移到前端。其他：刪了能刪掉的dangerouslySetInnerHTML
 
- `2.14` 重寫九道術、白道交周，難度很大。
+4-19 `2.14` 重寫九道術、白道交周，難度很大。增加現代九道宿鈐計算及展示。
 
 小修復：
 

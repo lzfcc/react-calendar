@@ -11,8 +11,8 @@ import {
     xyz2lonlat,
     rr1
 } from "../astronomy/pos_functions.mjs";
-import { R2D, pi2 } from "../parameter/functions.mjs";
-import { FlatLon2FlatLat, Lat2NS, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
+import { R2D, lat2NS, pi2 } from "../parameter/functions.mjs";
+import { FlatLon2FlatLat, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
 import { horizontal } from "../astronomy/pos_convert_modern.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
 import { PlanetList } from "../parameter/constants.mjs";
@@ -84,13 +84,13 @@ export const bindPos_vsop_Print = (Jd_UT10, Longitude, Latitude, h) => {
             title: PlanetList[i],
             data: [
                 deg2Hms(EquaLon[i] * R2D),
-                Lat2NS(EquaLat[i] * R2D),
+                lat2NS(EquaLat[i] * R2D),
                 deg2Hms(CeclpLon[i]), // deg
-                Lat2NS(CeclpLat[i]),
+                lat2NS(CeclpLat[i]),
                 deg2Hms(EclpLon[i] * R2D),
-                Lat2NS(EclpLat[i] * R2D),
+                lat2NS(EclpLat[i] * R2D),
                 deg2Hms(HoriLon[i] * R2D),
-                Lat2NS(HoriLat[i] * R2D)
+                lat2NS(HoriLat[i] * R2D)
             ]
         }
     }

@@ -18,7 +18,6 @@ import {
   HighLon2FlatLat,
   twilight,
   deg2Hms,
-  Lat2NS,
   Lon2Gong,
   moonRiseQing,
   sunRise
@@ -27,9 +26,8 @@ import CalNewm from "../newmoon/index.mjs";
 import { mansQing, midstarQing } from "../astronomy/mans.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
-import { nzh } from "../parameter/functions.mjs";
+import { lat2NS1, nzh } from "../parameter/functions.mjs";
 import { moonQing, sunQing } from "../astronomy/sun_moon_qing.mjs";
-
 export const D2 = (Name, YearStart, YearEnd) => {
   YearEnd = YearEnd || YearStart;
   const Main = (Name, Y) => {
@@ -147,11 +145,11 @@ export const D2 = (Name, YearStart, YearEnd) => {
           SunEquaLon,
         );
         Pos[i][k] = [
-          { SunEquaLon: deg2Hms(SunEquaLon), SunEquaLat: Lat2NS(SunLat) },
+          { SunEquaLon: deg2Hms(SunEquaLon), SunEquaLat: lat2NS1(SunLat) },
           { SunEclpLon: deg2Hms(SunLon) },
           { SunEqua: FuncSun.Equa, SunEclp: FuncSun.Eclp },
-          { MoonEquaLon: deg2Hms(MoonEquaLon), MoonEquaLat: Lat2NS(MoonEquaLat) },
-          { MoonEclpLon: deg2Hms(MoonLon), MoonEclpLat: Lat2NS(MoonLat) },
+          { MoonEquaLon: deg2Hms(MoonEquaLon), MoonEquaLat: lat2NS1(MoonEquaLat) },
+          { MoonEclpLon: deg2Hms(MoonLon), MoonEclpLat: lat2NS1(MoonLat) },
           {
             MoonEqua: mansQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa,
             MoonEclp: mansQing(Name, Y, MoonGong).Eclp

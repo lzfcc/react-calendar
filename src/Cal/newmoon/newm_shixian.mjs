@@ -21,7 +21,6 @@ import {
   aCb_Sph,
   LonHigh2FlatB,
   deg2Hms,
-  Lat2NS,
   sunRise
 } from "../astronomy/pos_convert.mjs";
 import {
@@ -41,11 +40,11 @@ import {
   fm360,
   t2,
   t3,
-  f3
+  f3,
+  lat2NS1
 } from "../parameter/functions.mjs";
 import { corrRingC, distEllipseA, moonGuimao, moonQing, sunCorrQing, sunQing } from "../astronomy/sun_moon_qing.mjs";
 import { timeAvg2Real } from "../time/eot_qing.mjs";
-
 export const N4 = (Name, Y) => {
   const {
     CloseOriginAd,
@@ -1174,13 +1173,13 @@ export const N4 = (Name, Y) => {
         if (isNewm) {
           EcliPrint[i] = {
             EclipseMon: "S" + NoleapMon,
-            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i],)} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon,)} ${Lat2NS(Ecli[i].GreatSLat)}`
+            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i],)} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon,)} ${lat2NS1(Ecli[i].GreatSLat)}`
           };
         } else {
           EcliPrint[i] = {
             EclipseMon: "M" + NoleapMon,
             EclipseInfo: `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
-              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon,)} ${Lat2NS(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon,)} ${Lat2NS(Ecli[i].GreatMEquaLat)}`
+              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon,)} ${lat2NS1(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon,)} ${lat2NS1(Ecli[i].GreatMEquaLat)}`
           }
           if (Ecli[i].Magni >= 99) {
             NowSc[i] += "●";

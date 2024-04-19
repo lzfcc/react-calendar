@@ -14,12 +14,11 @@ import { sunRise, twilight } from "../astronomy/pos_convert.mjs";
 import CalNewm from "../newmoon/index_de.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { deci2hms } from "../time/decimal2clock.mjs";
-import { R2D, nzh } from "../parameter/functions.mjs";
+import { R2D, lat2NS, nzh } from "../parameter/functions.mjs";
 import { deg2MansModern, mansModernList, midstarModern } from "../modern/mans.mjs";
 import { calPos_vsop } from "../modern/vsop_elp.mjs";
 import { deltaT } from "../time/delta-t.mjs";
 import { bindTopo_vsop } from "../modern/vsop_elp_bind.mjs";
-const Lat2NS = (X) => (X > 0 ? "N" : "S") + Math.abs(X).toFixed(4);
 /**
  * 
  * @param {*} YearStart 
@@ -111,10 +110,10 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
           const CeclpMans = deg2MansModern(CeclpLon[j], CeclpAccumList).Mans;
           const EclpMans = deg2MansModern(EclpLon[j] * R2D, EclpAccumList).Mans;
           Pos[i][k].push(
-            { [PlanetList[j] + "HoriLon"]: (HoriLon[j] * R2D).toFixed(4), [PlanetList[j] + "HoriLat"]: Lat2NS(HoriLat[j] * R2D) },
-            { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: Lat2NS(EquaLat[j] * R2D) },
-            { [PlanetList[j] + "CeclpLon"]: CeclpLon[j].toFixed(4), [PlanetList[j] + "CeclpLat"]: Lat2NS(CeclpLat[j]) },
-            { [PlanetList[j] + "EclpLon"]: (EclpLon[j] * R2D).toFixed(4), [PlanetList[j] + "EclpLat"]: Lat2NS(EclpLat[j] * R2D) },
+            { [PlanetList[j] + "HoriLon"]: (HoriLon[j] * R2D).toFixed(4), [PlanetList[j] + "HoriLat"]: lat2NS(HoriLat[j] * R2D) },
+            { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: lat2NS(EquaLat[j] * R2D) },
+            { [PlanetList[j] + "CeclpLon"]: CeclpLon[j].toFixed(4), [PlanetList[j] + "CeclpLat"]: lat2NS(CeclpLat[j]) },
+            { [PlanetList[j] + "EclpLon"]: (EclpLon[j] * R2D).toFixed(4), [PlanetList[j] + "EclpLat"]: lat2NS(EclpLat[j] * R2D) },
             { [PlanetList[j] + "Equa"]: EquaMans, [PlanetList[j] + "Ceclp"]: CeclpMans, [PlanetList[j] + "Eclp"]: EclpMans })
         }
         const TwilightLeng = twilight(Latitude, SunEclpLatNoon * R2D);

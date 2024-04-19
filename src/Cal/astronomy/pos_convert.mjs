@@ -190,7 +190,6 @@ export const deg2Hms = (deg) => {
   return `${Math.trunc(deg)}°${mStr}′${sStr}″`; // + ss
 };
 
-export const Lat2NS = (X) => (X > 0 ? "N" : "S") + deg2Hms(Math.abs(X));
 // 切線分外角法，見梅文鼎三角法舉要卷二。兩邊的輸入順序無所謂。已知邊角邊，求另外兩角。
 
 // console.log(abc_Sph(108, 50.08333333333, 90)) // 113度45分36秒

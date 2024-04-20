@@ -137,7 +137,7 @@ export const AutoNodePortion = Name => {
     } else if (Name === 'Chongxuan') {
         p = 263 / 3350 // 原文是262，還沒有校勘記
     } else if (Name === 'Qintian') {
-        p = 72 / 963 // 這個數字差得有點多
+        p = 72 / 963 // 藪內清近似算法和這個值一樣
     } else if (Name === 'Qianyuan') {
         p = 142 / 1802
     } else if (Name === 'Yitian') {

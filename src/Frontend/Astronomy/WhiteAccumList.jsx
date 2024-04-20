@@ -73,7 +73,7 @@ export default class Converter extends React.Component {
             this.setState({ Year: e.currentTarget.value });
           }}
         />
-        <span>年 平朔入交</span>
+        <span>年 經朔入交</span>
         <input className='width3'
           value={this.state.NodeAccum}
           onChange={e => {

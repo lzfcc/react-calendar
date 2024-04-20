@@ -131,15 +131,15 @@ export const Regression = (Sidereal, Node, Lunar) => {
         Sidereal = +('365.' + Sidereal)
         Node = +('27.' + Node)
         Lunar = +('29.' + Lunar)
-        Regression = (Sidereal / Node - Sidereal / Lunar - 1).toFixed(8)
-        Portion = ((1 + Regression) / (Sidereal / Lunar + 1 + Regression)).toFixed(8)
+        Regression = (Sidereal / Node - Sidereal / Lunar - 1)
+        Portion = (1 + Regression) / (Sidereal / Lunar + 1 + Regression)
     } else {
         throw (new Error('請同時輸入小數或分數'))
     }
     return `交點退行速度 ${Regression} 度/日\n交率/交數 ${Portion}`
 }
 // console.log(Regression('1875.2125/7290', '1547.0880/7290', '3868/7290'))
-// console.log(Regression('3084.57/12030', '2553.0026/12030', '6383/12030'))
+// console.log(Regression('2575', '212224', '530593'))
 
 const MingtianNode = () => {
     const v = frc('9901159/6240000').div('1151693/39000') // 9901159/184270880交點退行速度

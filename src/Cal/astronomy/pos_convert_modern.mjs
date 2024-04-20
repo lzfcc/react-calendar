@@ -100,7 +100,7 @@ const whEcNode2WhEqNode = (WhEcLon, Sobliq, Mobliq) => {
  * @param {*} WhEcLon 黃白交點黃經
  * @param {*} Mobliq 黃白大距
  */
-const whEqObliq = (WhEcLon, Sobliq, Mobliq) => {
+export const whEqObliq = (WhEcLon, Sobliq, Mobliq) => {
   const WhEcLonRev = WhEcLon <= 180 ? WhEcLon : 360 - WhEcLon; // 看圖像，黃經從0-180逐漸降低，那麼180-360應該是逐漸升高
   Mobliq = Mobliq || 5.91363627;
   const { WhEqLon } = whEcNode2WhEqNode(WhEcLon, Sobliq, Mobliq);

@@ -43,7 +43,7 @@ import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
 import { deci, fm60, fmod, lat2NS, nzh } from "../parameter/functions.mjs";
 import { equaEclp } from "../astronomy/equa_eclp.mjs";
-import { moonLonLat } from "../astronomy/moon_lon_lat.mjs";
+import { moonEclpLat, moonJiudao, moonShoushi } from "../astronomy/moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "../astronomy/lat_rise_dial.mjs";
 
 export const D1 = (Name, YearStart, YearEnd) => {
@@ -278,11 +278,20 @@ export const D1 = (Name, YearStart, YearEnd) => {
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
-      const NewmEclpGong = NewmSd + AutoDifAccum(0, NewmSd, Name).SunDifAccum
+      const NewmEclpGong = NewmSd + AutoDifAccum(0, NewmSd, Name).SunDifAccum // 定朔距冬至實行度
       const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg
       const NewmEclpDeg = NewmEclpGong + SolsEclpDeg
-      if (Type >= 6) {
-        const FuncNewm = moonLonLat(
+      if (Type === 11) {
+        const FuncNewm = moonShoushi(
+          NewmNodeAccumPrint[i - 1],
+          AvgNewmSd,
+          NewmEclpGong,
+          Y
+        );
+        NewmWhiteDeg = FuncNewm.NewmWhiteDeg
+        NewmWhiteAccumList = FuncNewm.WhiteAccumList;
+      } else if (Type >= 6) {
+        const FuncNewm = moonJiudao(
           NewmNodeAccumPrint[i - 1],
           NewmAnoAccumPrint[i - 1],
           AvgNewmSd,
@@ -351,7 +360,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? Dial.toFixed(3) + "尺" : undefined;
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
-        const { EclpLat: MoonEclpLat, EquaLat: MoonEquaLat } = moonLonLat(NodeAccumMidn, AnoAccumMidn, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif);
+        let MoonEquaLat = 0, MoonEclpLat = 0;
+        if (Type === 11) {
+          MoonEquaLat = moonShoushi(NewmNodeAccumPrint[i - 1], AvgNewmSd, NewmEclpGong, undefined, NowNewm_WhiteDif).EquaLat
+        } else {
+          MoonEclpLat = moonEclpLat(NodeAccumMidn, AnoAccumMidn, SdMidn, Name)
+        }
         let OrbColor
         if (Type >= 6 && Type <= 10) {
           OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name)

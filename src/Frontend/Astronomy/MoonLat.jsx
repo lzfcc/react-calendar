@@ -5,6 +5,11 @@ export default class Converter extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      a: 5,
+      b: 5,
+      c: 55,
+      d: 4,
+      f: 54
     }
     this.handle = this.handle.bind(this)
   }
@@ -18,25 +23,32 @@ export default class Converter extends React.Component {
             this.setState({ a: e.currentTarget.value });
           }}
         />
-        <span>此時入轉</span>
+        <span>入轉</span>
         <input className='width3'
           value={this.state.b}
           onChange={e => {
             this.setState({ b: e.currentTarget.value });
           }}
         />
-        <span>此前平朔入轉</span>
+        <span>距冬至時間</span>
         <input className='width3'
           value={this.state.c}
           onChange={e => {
             this.setState({ c: e.currentTarget.value });
           }}
         />
-        <span>平朔距冬至時間</span>
+        <span>此前經朔入轉</span>
         <input className='width3'
           value={this.state.d}
           onChange={e => {
             this.setState({ d: e.currentTarget.value });
+          }}
+        />
+        <span>距冬至時間</span>
+        <input className='width3'
+          value={this.state.f}
+          onChange={e => {
+            this.setState({ f: e.currentTarget.value });
           }}
         />
       </span>
@@ -45,7 +57,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c, this.state.d)
+      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c, this.state.d, this.state.f)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)
@@ -63,6 +75,8 @@ export default class Converter extends React.Component {
             <th></th>
             <th>極黃緯</th>
             <th>赤緯</th>
+            <th>極黃經</th>
+            <th>赤經</th>
           </tr>
           {(this.state.output || []).map(row => {
             return (

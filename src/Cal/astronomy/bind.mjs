@@ -34,6 +34,9 @@ import {
   GongFlat2High,
   GongHigh2Flat,
   HighLon2FlatLat,
+  Lon2Gong,
+  LonFlat2High,
+  LonHigh2Flat,
   sunRise,
 } from "./pos_convert.mjs";
 import { mansModern } from "../modern/mans.mjs";
@@ -44,9 +47,10 @@ import {
   ceclp2Equa,
   equa2Eclp,
   testEclpEclpDif,
+  whEqObliq
 } from "./pos_convert_modern.mjs";
 import { equaEclp } from "./equa_eclp.mjs";
-import { moonLonLat } from "./moon_lon_lat.mjs";
+import { moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
@@ -812,9 +816,12 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
   NodeAccum = +NodeAccum
   AvgNewmSd = +AvgNewmSd
   AnoAccum = +AnoAccum
+  const { Type } = Para[Name]
   const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
   const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-  const { WhiteAccumList, NewmWhiteDeg } = moonLonLat(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
+  const { WhiteAccumList, NewmWhiteDeg } = Type === 11
+    ? moonShoushi(NodeAccum, AvgNewmSd, NewmEclpGong, Y)
+    : moonJiudao(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -1009,23 +1016,52 @@ export const bindMansAccumModernList = (Name, Jd) => {
  * 
  * @param {*} NodeAccum 此時入交
  * @param {*} AnoAccum 此時入轉
- * @param {*} AvgNewmAnoAccum 平朔入轉
- * @param {*} AvgNewmSd 平朔距冬至時間
+ * @param {*} Sd 此時距冬至時間 
+ * @param {*} AvgNewmAnoAccum 此前經朔入轉
+ * @param {*} AvgNewmSd 此前經朔距冬至
  * @returns 
  */
-export const bindMoonLat = (NodeAccum, AnoAccum, AvgNewmAnoAccum, AvgNewmSd) => {
+export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd) => {
   // 該時刻入交日、距冬至日數
   NodeAccum = +NodeAccum;
-  AnoAccum = +AnoAccum
-  AvgNewmAnoAccum = +AvgNewmAnoAccum
+  AnoAccum = +AnoAccum;
+  AvgNewmAnoAccum = +AvgNewmAnoAccum;
+  Sd = +Sd;
   AvgNewmSd = +AvgNewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  if (AvgNewmSd >= 365.246 || AvgNewmSd < 0)
+  if (Sd >= 365.246 || Sd < 0)
     throw new Error("請輸入一週天度內的度數");
   if (AnoAccum >= 27.21221 || AvgNewmAnoAccum > 27.21221 || AnoAccum < 0 || AvgNewmAnoAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  let Print = [];
+  //以下根據授時曆參數算球面三角
+  const Sidereal = 365.2575
+  const p = 360 / Sidereal
+  const Node1EclpGong = ((Sd + (27.212224 - NodeAccum) * 13.36875) % Sidereal) * p
+  const { WhEqLon, WhEqObliq } = whEqObliq(Gong2Lon(Node1EclpGong))
+  const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, Sd, "Shoushi").Tcorr + 27.5546) % 27.5546
+  const AnojourNow = anojour(AnoAccum, "Shoushi").Anojour;
+  const AnojourNewm = anojour(AcrNewmAnoAccum, "Shoushi").Anojour;
+  const NowNewm_WhiteDif = ((AnojourNow - AnojourNewm + Sidereal) % Sidereal) * p
+  const AcrNewmSd = Sd + AutoTcorr(AnoAccum, Sd, "Shoushi").Tcorr
+  const NewmEclpGong = (AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, "Shoushi").SunDifAccum) * p
+  const NewmEquaGong = GongHigh2Flat(23.5559844, NewmEclpGong)
+  const Newm_WhEq_EquaDif = (NewmEquaGong - Lon2Gong(WhEqLon) + 360) % 360
+  const Newm_WhEq_WhiteDif = LonFlat2High(WhEqObliq, Newm_WhEq_EquaDif)
+  const NowWhEq_WhiteDif = (Newm_WhEq_WhiteDif + NowNewm_WhiteDif) % 360
+  const NowWhEq_EquaDif = LonHigh2Flat(WhEqObliq, NowWhEq_WhiteDif)
+  const NowEquaLon = NowWhEq_EquaDif + WhEqLon
+  const NowEquaLat = HighLon2FlatLat(WhEqObliq, NowWhEq_WhiteDif)
+  const { CeclpLon, CeclpLat } = equa2Ceclp(23.5559844, NowEquaLon, NowEquaLat)
+  let Print = [{
+    title: "球面三角",
+    data: [
+      (CeclpLat / p).toFixed(4),
+      lat2NS(NowEquaLat / p),
+      (CeclpLon / p).toFixed(4),
+      (NowEquaLon / p).toFixed(4)
+    ]
+  }]
   Print = Print.concat(
     [
       "Qianxiang",
@@ -1043,16 +1079,23 @@ export const bindMoonLat = (NodeAccum, AnoAccum, AvgNewmAnoAccum, AvgNewmSd) => 
       "Jiyuan",
       "Shoushi"
     ].map((Name) => {
-      const { Sidereal, Anoma } = Para[Name]
+      const { Sidereal, Anoma, Type } = Para[Name]
       let LatPrint = "";
       let EquaLatPrint = "";
-      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
-      const AnojourNow = anojour(AnoAccum, Name).Anojour;
-      const AnojourNewm = anojour(AcrNewmAnoAccum, Name).Anojour;
-      const NowNewm_WhiteDif = (AnojourNow - AnojourNewm + Sidereal) % Sidereal
-      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
-      const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-      const { EclpLat, EquaLat } = moonLonLat(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, undefined, NowNewm_WhiteDif)
+      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, Sd, Name).Tcorr + Anoma) % Anoma
+      const AcrNewmSd = Sd + AutoTcorr(AnoAccum, Sd, Name).Tcorr
+      let EclpLat = 0, EquaLat = 0;
+      if (Type === 11) {
+        EquaLat = moonShoushi(
+          NodeAccum,
+          AvgNewmSd,
+          AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum,
+          undefined,
+          (anojour(AnoAccum, Name).Anojour - anojour(AcrNewmAnoAccum, Name).Anojour + Sidereal) % Sidereal
+        ).EquaLat
+      } else {
+        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name)
+      }
       if (EclpLat) {
         LatPrint = lat2NS(EclpLat)
       }
@@ -1064,13 +1107,13 @@ export const bindMoonLat = (NodeAccum, AnoAccum, AvgNewmAnoAccum, AvgNewmSd) => 
         data: [
           LatPrint,
           EquaLatPrint,
-        ],
+        ]
       };
     }),
   );
   return Print;
 };
-// console.log(bindMoonLat(3, 5, 4, 33))
+// console.log(bindMoonLat(7, 5, 4, 55))
 
 export const bindSunEclipse = (
   NodeAccum,

@@ -893,7 +893,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
     MoonTcorr = MoonTcorr2 || MoonTcorr1;
     if (Type >= 5 && Type <= 10) {
       const Portion = AutoNodePortion(Name);
-      NodeAccumCorrA = SunTcorr + Portion * MoonTcorr; //  // 劉金沂《麟德曆交食計算法》。 const signNodeAccum = 1 // NodeAccumHalf > NodeQuar ? -1 : 1// 交前、先交。交後交在後，符號同定朔改正，交前，與定朔相反。 // 至少大衍的符號和定朔完全相同「⋯⋯以朓減朒加入交常」
+      NodeAccumCorrA = SunTcorr + Portion * MoonTcorr; //  // 劉金沂《麟德曆交食計算法》。 const signNodeAccum = 1 // NodeAccumHalf > NodeQuar ? -1 : 1// 交前、先交。交後符號同定朔改正，交前，與定朔相反。 // 至少大衍的符號和定朔完全相同「⋯⋯以朓減朒加入交常」
       NodeAccumCorrB = Portion * SunTcorr + MoonTcorr; // 太陽入交定日，上面是月亮入交定日
     }
   }

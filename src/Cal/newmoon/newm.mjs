@@ -103,9 +103,7 @@ export default (Name, Y) => {
         FirstNodeAccum = fmod(OriginAccumThis - LeapSurAvg + NodeConst + (YinyangConst === -1 ? Node / 2 : 0), Node)
     }
     FirstAccum += ZoneDif
-    if (Name === 'Qianxiang') {
-        FirstAnoAccum = (Math.floor((OriginYear + 1) * ZhangMon / ZhangRange) * Lunar) % Anoma // 算外。我也不知道怎麼積年就要+1。劉洪濤頁133，突然想到的！！存疑！！
-    } else if (Type < 11) {
+    if (Type <= 10) {
         FirstAnoAccum = fmod(FirstAccum + AnomaConst + (Name === 'Shenlong' ? Anoma / 2 : 0), Anoma)
     } else if (Type === 11) {
         FirstAnoAccum = fmod(OriginAccumThis - LeapSurAvg + AnomaConst, Anoma)
@@ -312,4 +310,4 @@ export default (Name, Y) => {
         SyzygyNodeAccum, SyzygyAnoAccum, SyzygyDeci, SyzygyAvgDeci, SyzygySd, SyzygyAcrSd,
     }
 }
-// console.log(cal('Jingchu', 1158))
+// console.log(cal('Qianxiang', 206))

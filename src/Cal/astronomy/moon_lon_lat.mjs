@@ -8,8 +8,8 @@ import { deg2Mans, mans2Deg, solsMans } from './mans.mjs';
 
 /**
  * 黃白差、赤白差。大衍欽天應天的黃赤差極大值是黃白差的兩倍。大衍Max黃白差=1.5。
- * @param {*} Sd
- * @param {*} NodeAccumRaw
+ * @param {*} NodeEclpGong
+ * @param {*} NewmNodeDif
  * @param {*} Name
  * @returns
  */
@@ -228,16 +228,16 @@ const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
 // console.log(eclp2WhiteDif(55, 92, 'Qintian'))
 // console.log(eclp2WhiteDif(55, 92, 'Jiyuan'))
 
-const moonLonJiudao = (NodeEclpGong, NewmEclpGong, Name, Y) => {
+const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   let { Solar, SolarRaw, Sidereal } = Para[Name];
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
   const WhiteAccumList = [];
   const { EclpAccumList, SolsEclpDeg } = solsMans(Name, Y);
-  const Node1EclpDeg = (NodeEclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
-  const { Name: Node1MansName, MansDeg: Node1EclpMansDeg } = deg2Mans(Node1EclpDeg, EclpAccumList);
+  const NodeEclpDeg = (NodeEclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
+  const { Name: NodeMansName, MansDeg: NodeEclpMansDeg } = deg2Mans(NodeEclpDeg, EclpAccumList);
   for (let i = 0; i < EclpAccumList.length; i++) {
-    const MansNodeDif_Eclp = (EclpAccumList[i] - Node1EclpDeg + Sidereal) % Sidereal; // 每宿距交
+    const MansNodeDif_Eclp = (EclpAccumList[i] - NodeEclpDeg + Sidereal) % Sidereal; // 每宿距交
     WhiteAccumList[i] = EclpAccumList[i] + eclp2WhiteDif(NodeEclpGong, MansNodeDif_Eclp, Name);
   }
   const adj = WhiteAccumList[0] - Sidereal;
@@ -245,16 +245,72 @@ const moonLonJiudao = (NodeEclpGong, NewmEclpGong, Name, Y) => {
     WhiteAccumList[i] = (WhiteAccumList[i] - adj + Sidereal) % Sidereal;
   }
   WhiteAccumList[28] = Sidereal;
-  const Node1WhiteMansDeg = Node1EclpMansDeg + eclp2WhiteDif(NodeEclpGong, Node1EclpMansDeg, Name); // 正交九道宿度
-  const Node1WhiteDeg = mans2Deg(
-    Node1MansName + Node1WhiteMansDeg,
+  const NodeWhiteMansDeg = NodeEclpMansDeg + eclp2WhiteDif(NodeEclpGong, NodeEclpMansDeg, Name); // 正交九道宿度
+  const NodeWhiteDeg = mans2Deg(
+    NodeMansName + NodeWhiteMansDeg,
     WhiteAccumList,
   );
-  const NewmNode1_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
-  const NewmNode1_WhiteDif = NewmNode1_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode1_EclpDif, Name)
-  const NewmWhiteDeg = (Node1WhiteDeg + NewmNode1_WhiteDif) % Sidereal
+  const NewmNode_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
+  const NewmNode_WhiteDif = NewmNode_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode_EclpDif, Name)
+  const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal
   return { WhiteAccumList, NewmWhiteDeg };
 }
+
+/**
+ * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
+ * @param {*} AvgNewmNodeAccum 經朔入交
+ * @param {*} AvgNewmAnoAccum 經朔入轉
+ * @param {*} AvgNewmSd 經朔距冬至日數
+ * @param {*} NewmEclpGong 定朔距冬至實行度
+ * @param {*} Name
+ * @param {*} Y 年份
+ * @returns
+ */
+export const moonJiudao = (
+  AvgNewmNodeAccum,
+  AvgNewmAnoAccum,
+  AvgNewmSd,
+  NewmEclpGong,
+  Name,
+  Y,
+) => {
+  let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
+  Solar = Solar || SolarRaw;
+  Sidereal = Sidereal || Solar;
+  if (Type <= 5) {
+    return
+  }
+  const MoonAvgVd = AutoMoonAvgV(Name);
+  const T_NewmNodeDif_Avg = Node - AvgNewmNodeAccum; // 朔後平交日分：朔之後的正交
+  const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
+  const S_NodeDif = AvgNewmNodeAccum * MoonAvgVd; // 朔前正交
+  // const NodeAnoAccum = (AvgNewmAnoAccum + T_NewmNodeDif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
+  // const T_NewmNodeDif = T_NewmNodeDif_Avg + AutoTcorr(NodeAnoAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
+  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal;
+  let NodeEclp = Node1EclpGong // 崇天以後的
+  if (Name === "Qintian") { // 欽天都要先加一個日躔改正
+    const AcrNewmNodeAccum = AvgNewmNodeAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr
+    NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
+  } else if (Type === 6 || Type === 7) { // 大衍
+    const AvgNodeEclpGong = AvgNewmSd - S_NodeDif; // 朔前平交
+    NodeEclp = (AvgNodeEclpGong + AutoDifAccum(undefined, AvgNodeEclpGong, Name).SunDifAccum + Solar) % Solar
+  } else if (Name === "Yingtian" || Name === "Qianyuan") {
+    const AcrNewmNodeAccum = AvgNewmNodeAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
+    NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
+  } else if (Name === "Yitian") {
+    const AcrNewmAnoAccum = AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
+    const AcrNewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour
+    if (AvgNewmNodeAccum < Node / 2) { // 儀天用距離最近的正交
+      const NodeAnojour = anojour(AvgNewmAnoAccum - AvgNewmNodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
+      NodeEclp = (NewmEclpGong - (AcrNewmAnojour - NodeAnojour) + Solar) % Solar
+    } else {
+      const Node1Anojour = anojour(AvgNewmAnoAccum + Node - AvgNewmNodeAccum, Name).Anojour
+      NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
+    }
+  }
+  const { WhiteAccumList, NewmWhiteDeg } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
+  return { WhiteAccumList, NewmWhiteDeg };
+};
 
 export const MoonLatTable = (NodeAccum, Name) => {
   const { Type, Node, MoonLatAccumList } = Para[Name];
@@ -263,16 +319,15 @@ export const MoonLatTable = (NodeAccum, Name) => {
   let Portion = 10;
   if (Type <= 4) Portion = 12;
   else if (Name === 'Dayan') Portion = 120;
-  else if (Name === 'Wuji') Portion = 50 / 3; // 五紀正元找不到比例，瞎填
-  else if (Name === 'Tsrengyuan') Portion = 219 / 4;
+  else if (Name === 'Wuji') Portion = 50 / 3; // 交率交數61、777，去交度乘數十一，除數千一百六十五
+  else if (Name === 'Tsrengyuan') Portion = 219 / 4; // 交率交數61、777，去交度乘數十一，除數九百四十五
   const NodeAccumHalf = NodeAccum % (Node / 2);
   const NodeAccumHalfInt = Math.trunc(NodeAccumHalf);
-  const Yinyang = NodeAccum > Node / 2 ? 1 : -1;
+  const Yinyang = NodeAccum < Node / 2 ? 1 : -1;
   let Lat = 0;
-  if (Type < 6) {
+  if (Type <= 4) {
     Lat = Yinyang * (MoonLatAccumList[NodeAccumHalfInt] + ((NodeAccumHalf - NodeAccumHalfInt) * MoonLatDifList[NodeAccumHalfInt]) / Portion);
-  } else if (Type === 6 || ['Wuji', 'Tsrengyuan'].includes(Name)) {
-    // 二次
+  } else if (Type === 6 || ['Wuji', 'Tsrengyuan'].includes(Name)) { // 二次
     let Initial = [
       MoonLatAccumList[NodeAccumHalfInt],
       MoonLatAccumList[NodeAccumHalfInt + 1],
@@ -315,25 +370,30 @@ export const MoonLatTable = (NodeAccum, Name) => {
     const G = ((G1 + Gn) * Frac) / 2;
     Lat = (Yinyang * (MoonLatAccumList[k] + G)) / Portion;
   }
-  const Lat1 = 91.31 - Lat;
-  return { Lat, Lat1 };
+  return Lat;
 };
 // 大衍：《中國古代曆法》頁530
 // console.log(MoonLatTable(10, 'Dayan'))
 
-export const MoonLatFormula = (NodeAccum, Name, AnoAccum, Sd) => {
-  // 《中國古代曆法》頁146,陳美東《中國古代月亮極黃緯計算法》；《數》頁410
+/**
+ *  《中國古代曆法》頁146,陳美東《中國古代月亮極黃緯計算法》；《數》頁410
+ * @param {*} NodeAccum 紀元：以經朔入交汎日加減日月時間改正，得定朔入交汎日。乘月平行速，得入交積度。加減定朔月亮遲疾，得入交定積度。
+ * @param {*} Name 
+ * @param {*} AnoAccum 
+ * @param {*} Sd 
+ * @returns 
+ */
+const MoonLatFormula = (NodeAccum, Name) => {
   const { Node } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   let MoonAvgVd = AutoMoonAvgV(Name); // 大衍：15*NodeAccum，0,1,...11 。其他都是13
   if (Name === 'Qintian') MoonAvgVd = 1;
   const NodeHalf = NodeQuar * 2;
   const NodeOcta = NodeQuar / 2;
-  const Lon = NodeAccum * MoonAvgVd;
+  const Lon = NodeAccum * MoonAvgVd
   const LonHalf = Lon % NodeHalf;
   const LonHalfRev = NodeQuar - Math.abs(LonHalf - NodeQuar);
   let Lat = 0;
-  // 崇玄「以四百一乘朔望加時入交常日⋯⋯得定朔望入交定積度分」，也就是說應該不用加入NodeAccumCorr
   // 崇玄崇天是反減半交，觀天紀元是反減交中度。但經過試驗，全部都是反減交中度
   if (Name === 'Chongxuan') {
     const f1 = ((NodeHalf - LonHalfRev) * LonHalfRev) / (10000 / 7.3);
@@ -342,8 +402,7 @@ export const MoonLatFormula = (NodeAccum, Name, AnoAccum, Sd) => {
     if (LonHalfRev < 30) Lat = f1 - f2;
     else Lat = f1 - f3;
   } else if (Name === 'Qintian') {
-    NodeAccum += AutoTcorr(AnoAccum, Sd, Name, NodeAccum).NodeAccumCorrA; // 欽天用入交定日
-    const NodeAccumHalf = NodeAccum % NodeHalf;
+    const NodeAccumHalf = NodeAccum % (Node / 2);
     Lat = ((Node / 2 - NodeAccumHalf) * NodeAccumHalf) / (556 / 72);
   } else if (Name === 'Chongtian') {
     const f1 = ((1010 - 5 * LonHalfRev) * LonHalfRev) / 8400;
@@ -361,22 +420,67 @@ export const MoonLatFormula = (NodeAccum, Name, AnoAccum, Sd) => {
     const tmp = LonHalfRev - ((NodeQuar - LonHalfRev) * LonHalfRev) / 500;
     Lat = ((NodeHalf - tmp) * tmp) / 1375;
   }
-  if (Lon < NodeHalf) Lat = -Lat; // 調用需要注意：此處統一先陽曆後陰曆
-  const Lat1 = 91.311 - Lat;
-  return { Lat, Lat1 };
+  if (Lon > NodeHalf) Lat = -Lat;
+  return Lat
 };
 // console.log(MoonLatFormula(15, 'Jiyuan'))
 
 /**
+ * 古曆求月亮黃緯
+ * @param {*} NodeAccum 此時入交汎日
+ * @param {*} AnoAccum 此時入轉
+ * @param {*} Sd 此時距冬至時間
+ * @param {*} Name 
+ * @returns 
+ */
+export const moonEclpLat = (NodeAccum, AnoAccum, Sd, Name) => {
+  const { Type } = Para[Name];
+  if (Sd) { // 算定朔望
+    NodeAccum += AutoTcorr(AnoAccum, Sd, Name, NodeAccum).NodeAccumCorrA
+  } else { // 算其他任意時刻
+    NodeAccum += AutoTcorr(AnoAccum, undefined, Name).MoonTcorr // 紀元的算法看起來跟之前不一樣，其實是一樣的
+  }
+  let EclpLat = 0
+  if (Type <= 3) {
+    EclpLat = MoonLatTable(NodeAccum, 'Qianxiang');
+  } else if (Name === 'Yuanjia') {
+    EclpLat = MoonLatTable(NodeAccum, Name);
+  } else if (Type === 4) {
+    EclpLat = MoonLatTable(NodeAccum, 'Daming');
+  } else if (Type === 6) {
+    EclpLat = MoonLatTable(NodeAccum, 'Huangji');
+  } else if (['Xuanming', 'Zhide'].includes(Name)) {
+    EclpLat = MoonLatTable(NodeAccum, 'Dayan');
+  } else if (Name === "Qintian") {
+    EclpLat = MoonLatFormula(NodeAccum, Name);
+  } else if (Type === 7) {
+    EclpLat = MoonLatTable(NodeAccum, Name);
+  } else if (['Chongxuan', 'Yingtian', 'Qianyuan', 'Yitian'].includes(Name)) {
+    EclpLat = MoonLatFormula(NodeAccum, 'Chongxuan');
+  } else if (['Chongtian'].includes(Name)) {
+    EclpLat = MoonLatFormula(NodeAccum, Name);
+  } else if (
+    ['Guantian', 'Mingtian', 'Fengyuan', 'Zhantian'].includes(Name)
+  ) {
+    EclpLat = MoonLatFormula(NodeAccum, 'Guantian');
+  } else if (Type === 9 || Type === 10) {
+    EclpLat = MoonLatFormula(NodeAccum, 'Jiyuan');
+  }
+  return EclpLat
+}
+// console.log(moonEclpLat(8.3139682, 0.5482519901, 0, "Qianxiang")) // 《古代曆法計算法》p161：206建安十一年八月乙未朔，經朔入陰陽曆8+(2472+410/2209)/7874=8.3139682，月黃緯 5 + (((781 + 12748 / 16129) / 2209 + 3167) / 7874 + 9) / 12=5.78352123陽曆黃道南。// 入交8.280673，去黃道5.7831486。入轉程序沒問題，入交差了0.03日
+
+/**
  * 曲安京《授時曆的白赤道座標變換法》、《數理天文學》5.5、《中國古代曆法》頁127
  * 授時放棄了九道術的黃白轉換，改從白赤轉換入手。
- * @param {*} Node1EclpGong 黃白交點距冬至黃道度數
+ * @param {*} AvgNewmNodeAccum 經朔入交
+ * @param {*} AvgNewmSd 經朔距冬至
  * @param {*} NewmEclpGong 定朔距冬至黃道度數。如果是定朔，就是太陽距冬至實行度，因為定朔日月同度
  * @param {*} Y 年份。有Y才求九道宿鈐
  * @param {*} NowNewm_WhiteDif 此時月亮距離合朔的實行度。有NowNewm_WhiteDif才求月緯
  * @returns
  */
-const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => {
+export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNewm_WhiteDif) => {
   const Sidereal = 365.2575
   const SiderealHalf = 182.62875
   const SiderealQuar = 91.314375
@@ -386,6 +490,11 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   const SiderealSext = 60.875; // 周天六之一是會圓術天球半徑
   const Sobliq = 23.9; // 黃赤大距
   const k = 14.66; // 正交極數：二至白赤正交與黃白正交的距離WhEq_WhEc_DifMax。推導見p368
+  const MoonAvgVd = 13.36875
+  const Node = 27.212224
+  const T_NewmNodeDif_Avg = Node - AvgNewmNodeAccum; // 朔後平交日分：經朔之後的正交
+  const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
+  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal; // 授時：正交距冬至定積度
   /// 白赤交點距二分度數
   const Node1EclpHalf = Node1EclpGong % SolarHalf;
   const Node1EclpHalfRev = Node1EclpHalf < SolarQuar ? Node1EclpHalf : SolarHalf - Node1EclpHalf; // 求正交在二至後初末限：置冬至距正交積度及分，在半歲周已下，為冬至後；已上，去之，爲夏至後。其二至後，在象限已下，爲初限，已上，減去半歲周，爲末限——右手
@@ -442,99 +551,4 @@ const moonLonLatShoushi = (Node1EclpGong, NewmEclpGong, Y, NowNewm_WhiteDif) => 
   }
   return { WhiteAccumList, NewmWhiteDeg, EquaLat };
 };
-// console.log(moonLonLatShoushi(45.65625 + 91.3125, 70, 1280, 0));
-
-/**
- * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
- * ⚠️注意有隱式開關
- * @param {*} NodeAccum 求月緯是此時入交，其他是經朔入交
- * @param {*} AvgNewmAnoAccum 欽天求月黃緯是此時入轉，其他都是經朔入轉
- * @param {*} AvgNewmSd 平朔距冬至日數
- * @param {*} NewmEclpGong 定朔距冬至實行度
- * @param {*} Name
- * @param {*} Y 年份。有Y就求九道宿鈐，沒有就求月緯
- * @param {*} NowNewm_WhiteDif 此時距離合朔的實行度，僅在算月緯時要用
- * @returns
- */
-export const moonLonLat = (
-  NodeAccum,
-  AvgNewmAnoAccum,
-  AvgNewmSd,
-  NewmEclpGong,
-  Name,
-  Y,
-  NowNewm_WhiteDif
-) => {
-  let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
-  Solar = Solar || SolarRaw;
-  Sidereal = Sidereal || Solar;
-  const MoonAvgVd = AutoMoonAvgV(Name);
-  const T_NewmNodeDif_Avg = Node - NodeAccum; // 朔後平交日分：朔之後的正交
-  const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
-  const S_NodeDif = NodeAccum * MoonAvgVd; // 朔前正交
-  // const NodeAnoAccum = (AvgNewmAnoAccum + T_NewmNodeDif_Avg) % Anoma // 某後平交入轉=某後平交（=交終-某入交）+某入轉
-  // const T_NewmNodeDif = T_NewmNodeDif_Avg + AutoTcorr(NodeAnoAccum, 0, Name).MoonTcorr // （朔後）正交日分。授時：遲加疾減之——方向和定朔改正一樣（盈遲爲加，縮疾爲減）。紀元：與定朔日辰相距，即所在月日——加上改正之後就能直接與定朔相比較
-  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal; // 授時：正交距冬至定積度
-  let NodeEclp = Node1EclpGong // 崇天以後的
-  if (Name === "Qintian") { // 欽天都要先加一個日躔改正
-    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr
-    NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
-  } else if (Type === 6 || Type === 7) { // 大衍
-    const AvgNodeEclpGong = AvgNewmSd - S_NodeDif; // 朔前平交
-    NodeEclp = (AvgNodeEclpGong + AutoDifAccum(undefined, AvgNodeEclpGong, Name).SunDifAccum + Solar) % Solar
-  } else if (Name === "Yingtian" || Name === "Qianyuan") {
-    const AcrNewmNodeAccum = NodeAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
-    NodeEclp = (NewmEclpGong - MoonAvgVd * AcrNewmNodeAccum + Solar) % Solar
-  } else if (Name === "Yitian") {
-    const AcrNewmAnoAccum = AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, undefined, Name).MoonTcorr
-    const AcrNewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour
-    if (NodeAccum < Node / 2) { // 儀天用距離最近的正交
-      const NodeAnojour = anojour(AvgNewmAnoAccum - NodeAccum, Name).Anojour // 「正交曆積度」。但是儀天沒有說怎麼求，按道理應該是這樣
-      NodeEclp = (NewmEclpGong - (AcrNewmAnojour - NodeAnojour) + Solar) % Solar
-    } else {
-      const Node1Anojour = anojour(AvgNewmAnoAccum + Node - NodeAccum, Name).Anojour
-      NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
-    }
-  }
-  let WhiteAccumList = [];
-  let EclpLat = 0, EquaLat = 0, NewmWhiteDeg = 0
-  if (Type === 11) {
-    const Func = moonLonLatShoushi(NodeEclp, NewmEclpGong, Y, NowNewm_WhiteDif);
-    WhiteAccumList = Func.WhiteAccumList
-    NewmWhiteDeg = Func.NewmWhiteDeg
-    EquaLat = Func.EquaLat
-  } else {
-    if (Y !== undefined && Type >= 6) {
-      const Func = moonLonJiudao(NodeEclp, NewmEclpGong, Name, Y)
-      WhiteAccumList = Func.WhiteAccumList
-      NewmWhiteDeg = Func.NewmWhiteDeg
-    }
-    if (Y === undefined) {
-      if (Type <= 3) {
-        EclpLat = MoonLatTable(NodeAccum, 'Qianxiang').Lat;
-      } else if (Name === 'Yuanjia') {
-        EclpLat = MoonLatTable(NodeAccum, Name).Lat;
-      } else if (Type === 4) {
-        EclpLat = MoonLatTable(NodeAccum, 'Daming').Lat;
-      } else if (Type === 6) {
-        EclpLat = MoonLatTable(NodeAccum, 'Huangji').Lat;
-      } else if (['Qintian', 'Xuanming', 'Zhide', 'Dayan'].includes(Name)) {
-        EclpLat = MoonLatTable(NodeAccum, 'Dayan').Lat;
-      } else if (Type === 7) {
-        EclpLat = MoonLatTable(NodeAccum, Name).Lat;
-      } else if (['Chongxuan', 'Yingtian', 'Qianyuan', 'Yitian'].includes(Name)) {
-        EclpLat = MoonLatFormula(NodeAccum, 'Chongxuan').Lat;
-      } else if (['Chongtian'].includes(Name)) {
-        EclpLat = MoonLatFormula(NodeAccum, Name).Lat;
-      } else if (
-        ['Guantian', 'Mingtian', 'Fengyuan', 'Zhantian'].includes(Name)
-      ) {
-        EclpLat = MoonLatFormula(NodeAccum, 'Guantian').Lat;
-      } else if (Type === 9 || Type === 10) {
-        EclpLat = MoonLatFormula(NodeAccum, 'Jiyuan').Lat;
-      }
-    }
-  }
-  return { WhiteAccumList, NewmWhiteDeg, EclpLat, EquaLat };
-};
-// console.log(moonLonLat(21, 7, 34, 35, 'Yingtian', 1200))
+// console.log(moonShoushi(45.65625 + 91.3125, 70, 1280, 0));

@@ -37,6 +37,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
+        <p>年干支序 = ((公元年 - 3) mod 60 + 60) mod 60</p>
         <p>{this.state.output}</p>
       </div>
     );

@@ -27,7 +27,7 @@ class SingleSelectMenu extends Component {
         return (
             <div className="select-menu">
                 <button onClick={this.toggleDropDown} className="dropdown-button">
-                    {selected ? Calendars[selected] : '請選擇曆法'}
+                    {selected ? Calendars[selected] : '請選擇'}
                 </button>
                 {dropDownVisible && (
                     <ul className="dropdown-list">

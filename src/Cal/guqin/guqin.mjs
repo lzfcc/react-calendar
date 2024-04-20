@@ -51,11 +51,32 @@ class Interval {
     return Number(frc(this.freq));
   }
 }
+
+export const TuningList = {
+  "1": "宮調",
+  "2": "商調",
+  "4": "徵調",
+  "5": "羽調",
+  "6": "蕤賓",
+  "7": "清商",
+  "8": "慢角",
+  "9": "慢宮",
+  "10": "楚商",
+  "11": "黃鐘",
+  "12": "无媒",
+  "13": "間弦一",
+  "14": "間弦二",
+  "15": "徽法日傳平調",
+  "16": "徽法側商",
+  "17": "徽法側羽",
+  "18": "徽法側蜀",
+  "19": "徽法側楚"
+}
+// console.log(TuningList["商調"])
 // 0  1  2
 // 音名
 // 唱名
 // 頻率比
-
 const FushionListB = [
   new Interval(0, "C", 0, 0, "1"),
   new Interval(2, "C", 0, 1, "243/240"),
@@ -2325,12 +2346,12 @@ export const Tuning = (TuningMode, Freq = 432, n = 0) => {
   for (let i = 1; i <= 7; i++) {
     const Tmp = Zhun
       ? [
-          Zhun[i],
-          PitchZhun[i],
-          NameZhun[i],
-          +ZhunFreq[i].toFixed(4),
-          DifZhun[i - 1],
-        ]
+        Zhun[i],
+        PitchZhun[i],
+        NameZhun[i],
+        +ZhunFreq[i].toFixed(4),
+        DifZhun[i - 1],
+      ]
       : ["", "", "", "", ""];
     const Tmp1 = Hui
       ? [Hui[i], PitchHui[i], NameHui[i], +HuiFreq[i].toFixed(4), DifHui[i - 1]]

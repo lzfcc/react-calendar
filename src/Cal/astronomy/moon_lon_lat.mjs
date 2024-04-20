@@ -121,7 +121,7 @@ const MoonLonTable = (NodeEclpGong, NewmNodeDif, Name) => {
       (NodeDifRev - XianAccum[XianOrder - 1])) /
     (XianAccum[XianOrder] - XianAccum[XianOrder - 1]); // 線性內插
   // 公式法
-  // const EclpWhiteDifRaw = equa2EclpPoly(Name, NodeDifQuarRev, true).Equa2EclpDif / 2;
+  // const EclpWhiteDifRaw = equa2EclpPoly(NodeDifQuarRev,Name, true).Equa2EclpDif / 2;
   // 赤白差
   return 0 // sign1 * EclpWhiteDif + sign2 * EquaWhiteDif;
 };
@@ -162,7 +162,7 @@ const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
   let sign2 = 1; // 赤白差符號
   const NodeEquiDif = Math.abs(SolarQuar - NodeEclpGongHalf) // 距二分度數
   const NodeSolsDif = SolarQuar - NodeEquiDif // 距二至度數
-  const EclpWhiteDifRaw = equa2EclpPoly(Name, NodeDifRev).Equa2EclpDif / 2; // 月行與黃道差數（汎差）
+  const EclpWhiteDifRaw = equa2EclpPoly(NodeDifRev, Name).Equa2EclpDif / 2; // 月行與黃道差數（汎差）
   const isYinSun = NodeEclpGong > SolarQuar && NodeEclpGong < SolarQuar3 ? 1 : -1; // 日行陰陽
   const isYinMoon = NewmNodeDif < NodeHalf ? 1 : -1; // 月行陰陽
   let EclpWhiteDif = EclpWhiteDifRaw

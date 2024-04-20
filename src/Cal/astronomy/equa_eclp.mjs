@@ -10,10 +10,14 @@ import { deci } from "../parameter/functions.mjs";
  * @param {*} isWhite 用於欽天的特例
  * @returns 黃赤差、赤黃差
  */
-export const equa2EclpPoly = (Name, Lon, isWhite) => {
-  const { Type } = Para[Name]
+export const equa2EclpPoly = (LonHalf, Name, isWhite) => {
+  const { Type, Solar } = Para[Name]
+  const SolarQuar = Solar / 4;
+  const SolarOcta = Solar / 8;
+  const LonQuar = LonHalf % SolarQuar; // 滿象限去之
+  const Lon = SolarOcta - Math.abs(LonQuar - SolarOcta); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
   const main = (Lon, a, b, c) => {
-    c = c || 1
+    c = Math.abs(c) || 1
     const Equa2EclpDif = Lon * (a - c * Lon) / b
     const h = Math.sqrt(((b - a) / c / 2) ** 2 + b / c * Lon) - (b - a) / c / 2 //  x - x(a - x) / b 的反函數
     return { Equa2EclpDif, h }
@@ -31,14 +35,16 @@ export const equa2EclpPoly = (Name, Lon, isWhite) => {
       Math.sqrt((694 + 57742 / 122107) * Lon + (301 + 81608 / 122107) ** 2) -
       (301 + 81608 / 122107);
   } else {
-    let a = 0
-    let b = 0
-    let c = 1
+    let a = 0, b = 0, c = 1
+    let a2 = 0, b2 = 0, c2 = 1
     let MaxX = 0
+    // a, b, c 見我的《律曆初階·天文計算·黃赤轉換》
     if (Type === 6) {
-      a = 772 // x/4(97/450+(x/4-1)/450/2)
-      b = 14400
+      a = 772
+      b = 14400 // 分母1800/4=450
       c = -1
+      a2 = 956
+      b2 = 14400
       MaxX = 44 // 表格法依平 4*11
     } else if (Name === 'Qintian') { // 通解p496
       if (isWhite === true) { // 欽天黃白限不是5，是5.07
@@ -90,6 +96,11 @@ export const equa2EclpPoly = (Name, Lon, isWhite) => {
       // }
     }
     MaxX = MaxX || a / c / 2 // 函數最大值的x
+    if (Type === 6 && LonHalf > SolarQuar) { // 皇極的冬至到春分和春分到夏至不一樣
+      a = a2
+      b = b2
+      c = c2
+    }
     if (MaxX <= 45) {
       if (Lon > MaxX) {
         const Func = main(MaxX, a, b, c)
@@ -271,22 +282,16 @@ export const Equa2EclpTable = (LonRaw, Name) => {
   const Eclp2Equa = LonRaw + Eclp2EquaDif;
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
-// console.log(Equa2EclpTable(1, 'Qintian'))
-// console.log(Equa2EclpTable(20, 'Dayan'))
-// console.log(Equa2EclpTable(1, 'Huangji'))
 
 export const Equa2EclpFormula = (LonRaw, Name) => {
   // 公式化的，週天度就用自己的
   const Solar = AutoSidereal(Name);
   const SolarQuar = Solar / 4;
   const SolarHalf = Solar / 2;
-  const SolarOcta = Solar / 8;
   let Equa2Eclp = 0;
   let Eclp2Equa = 0;
   const LonHalf = LonRaw % SolarHalf;
-  const LonQuar = LonRaw % SolarQuar; // 滿象限去之
-  const Lon = SolarOcta - Math.abs(LonQuar - SolarOcta); // 觀天：若在四十五度六十五分、秒五十四半已下爲初限；已上，用減象限，餘爲末限。
-  let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(Name, Lon)
+  let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(LonHalf, Name)
   const sign1 = LonHalf < SolarQuar ? -1 : 1;
   Equa2EclpDif *= sign1;
   Eclp2EquaDif *= -sign1;
@@ -294,11 +299,15 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   Eclp2Equa = LonRaw + Eclp2EquaDif;
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
-// console.log(Equa2EclpFormula(40, 'Guantian').Equa2EclpDif)
-// console.log(Equa2EclpTable(23, 'Dayan').Equa2EclpDif) // 公式和表格很接近
+// console.log(Equa2EclpFormula(24, "Jiyuan"))
 
+/**
+ * 只有公式法的才有黃轉赤。表格的是直接取符號相反
+ * @param {*} Gong 度數而非距冬至時間
+ * @param {*} Name 
+ * @returns 
+ */
 export const equaEclp = (Gong, Name) => {
-  // 輸入度數而非距冬至時間 // 只有公式法的才有黃轉赤。表格的是直接取符號相反
   const { Type, Sidereal, Solar, SolarRaw } = Para[Name];
   Gong %= Sidereal || Solar || SolarRaw;
   let Func = {};

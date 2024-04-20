@@ -48,7 +48,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
-        <p>日干支序 = (儒略日 -11) mod 60 + 1</p>
+        <p>日干支序 = mod(儒略日 -11, 60) + 1</p>
         <p>{this.state.Date}</p>
         <p>平太陽時 {this.state.LMSolarPrint} 真太陽時 {this.state.LASolarPrint} 時差 {this.state.EOTPrint}</p>
         <p>ΔT = {this.state.DeltaT} ± {this.state.DeltaTErr}s, TT儒略日 {this.state.Jd} {this.state.TThms}</p>

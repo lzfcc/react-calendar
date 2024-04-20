@@ -214,7 +214,7 @@ p {
   background-size: cover;
   height: 800px;
   /* margin-bottom: .6em; */
-  margin-bottom: -2.5em;
+  margin-bottom: -4em;
   text-shadow: 5px 5px 20px var(--yellow), 5px 5px 20px var(--yellow);
   border-bottom: 1px solid var(--shallowgray);
 }
@@ -240,34 +240,32 @@ p {
   position: sticky;
   z-index: 99;
   top: 0;
-  margin: 0em auto 5em;
-  padding: .5em 0;
-  border-radius: .6em;
+  margin: 0em auto 10em;
+  padding: .75em .5em;
+  border-radius: 1em;
+  border: .2em solid var(--shallowgray);
   background: var(--bg);
 }
 
 .section-select {
   color: var(--gray);
   letter-spacing: .1em;
-  padding: .3em .45em;
+  padding: .25em;
   margin: 0 0;
   -webkit-transition: .3s;
   transition: .3s;
 }
 
 .section-select.active {
-  border: .2em solid var(--darkyellow);
   color: var(--black);
   font-weight: bold;
   border-radius: .6em;
 }
 
 .section-select:hover {
-  color: var(--black);
+  color: var(--gray);
   font-weight: bold;
   cursor: pointer;
-  /* background: var(--yellow); */
-  /* border-radius: .6em; */
 }
 
 .main-render {

@@ -24,22 +24,25 @@ export default class Converter extends React.Component {
     }
     return (
       <div className='ans table2 table-vertical bigger' style={{ whiteSpace: "nowrap" }}>
+        <p>獨立算得兩卦，陰陽變了的作為變爻</p>
         <table>
-          <tr>
-            <th>爻</th>
-            <th>本卦</th>
-            <th>之卦</th>
-          </tr>
-          {(this.state.output || []).map(row => {
-            return (
-              <tr>
-                <td className='RowTitle'>{row.title}</td>
-                {row.data.map(d => {
-                  return (<td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>)
-                })}
-              </tr>
-            )
-          })}
+          <tbody>
+            <tr>
+              <th>爻</th>
+              <th>本卦</th>
+              <th>之卦</th>
+            </tr>
+            {(this.state.output || []).map(row => {
+              return (
+                <tr>
+                  <td className='RowTitle'>{row.title}</td>
+                  {row.data.map(d => {
+                    return (<td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>)
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
     )

@@ -301,7 +301,7 @@ export const ZhangModulo = (SolarFrac, SolarDenom, LunarFrac, Denom) => {
     const YuanDay = big(YuanRange).mul(SolarNumerRaw).div(SolarDenom)
     const YuanBuNum = big(YuanRange).div(BuRange)
     const BuZhangNum = big(BuRange).div(ZhangRange)
-    const Print = '章法 ' + ZhangRange + '，章閏 ' + ZhangLeap + '，章月 ' + ZhangMon + `。\n蔀（紀）法 ` + BuRange + '，蔀（紀）月 ' + BuMon.toString() + `。\n元法 ` + YuanRange + '，元日 ' + YuanDay.toString() + `。\n1 元 = ` + YuanBuNum.toString() + ' 蔀，1 蔀 = ' + BuZhangNum.toString() + ' 章'
+    const Print = '章法 ' + ZhangRange + '，章閏 ' + ZhangLeap + '，章月 ' + ZhangMon + `\n蔀（紀）法 ` + BuRange + '，蔀（紀）月 ' + BuMon.toString() + `\n元法 ` + YuanRange + '，元日 ' + YuanDay.toString() + `\n1 元 = ` + YuanBuNum.toString() + ' 蔀，1 蔀 = ' + BuZhangNum.toString() + ' 章'
     return { ZhangRange, YuanRange, Print }
 }
 // console.log(ZhangModulo(1, 4, 499, 940).Print) // 四分

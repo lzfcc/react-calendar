@@ -621,7 +621,7 @@ export const degAccumList = (Name, Y) => {
     }
     return { EclpAccumList, EquaAccumList };
 };
-// console.log(degAccumList('Wuji', 1300))
+// console.log(degAccumList('Linde', 725))
 
 export const mans2Deg = (Mans, AccumList) => {
     let Print = 0;
@@ -685,10 +685,13 @@ export const solsMans = (Name, Y) => {
     } // 置中積，以加周應爲通積，滿周天分，（上推往古，每百年消一；下算將來，每百年長一。）去之，不盡，以日周約之爲度，不滿，退約爲分秒。命起赤道虛宿六度外，去之，至不滿宿，卽所求天正冬至加時日𨇠赤道宿度及分秒。（上考者，以周應減中積，滿周天，去之；不盡，以減周天，餘以日周約之爲度；餘同上。如當時有宿度者，止依當時宿度命之。） // 試了一下，按上面這樣區分1281前後，沒有任何變化
     const OriginDeg = EquaAccumList[MansRaw[0]] + MansRaw[1]; // 曆元宿度積度
     /// ///// 黃道度
+    if (Name === "Linde"||Name==="LindeB") { // 麟德：今亦依黃道推步
+        // 置冬至初日躔差率，加總法，乘冬至小餘，如總法而一，以減天宿度分。其餘命起黃道斗十二度⋯⋯即冬至夜半所在宿度算及分
+    }
     const OriginAccum = OriginYear * Solar + (MansConst || 0);
     const SolsEquaDeg = isPrecession
-        ? fmod(OriginAccum + OriginDeg, Sidereal)
-        : OriginDeg; // 赤道冬至。算例參《古曆新探》p85
+        ? fmod(OriginAccum + OriginDeg, Sidereal) // 赤道冬至。算例參《古曆新探》p85
+        : OriginDeg; // 沒有歲差的是夜半宿度，所以要減去冬至當日實行度分
     const { Name: SolsMansName, MansDeg: SolsEquaMansDeg } = deg2Mans(SolsEquaDeg, EquaAccumList);
     const SolsEclpMansDeg = equaEclp(SolsEquaMansDeg, Name).Equa2Eclp; // 根據《太陽通軌》（《明大統曆法彙編》p128），直接用冬至赤道宿度（例如在箕5，即用5）赤轉黃即冬至黃道宿度。又如紀元曆「求天正冬至加時黃道日度」：「以冬至加時赤道日度及分秒，減一百一度⋯⋯」就是指這個5
     const SolsEclpMans = SolsMansName + SolsEclpMansDeg;

@@ -66,6 +66,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
+        <p>依次輸入斗分、歲實分母、朔餘、日法，計算相應的章法、蔀法、紀法、元法，可以用來復原一些失傳魏晉南北曆法的參數</p>
         <p>{this.state.outputZhang}</p>
       </div>
     );

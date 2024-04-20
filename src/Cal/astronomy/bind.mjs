@@ -150,9 +150,11 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
       return {
         title: NameList[Name],
         data: [
+          cS ? cS.toFixed(4) : "",
           SunDifAccumPrint,
           SunDifAccumErrPrint,
           SunTcorrPrint,
+          cM ? cM.toFixed(4) : "",
           MoonDifAccumPrint,
           MoonDifAccumErrPrint,
           MoonTcorrPrint,
@@ -197,9 +199,11 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
       return {
         title: NameList[Name],
         data: [
+          cS ? cS.toFixed(4) : "",
           SunDifAccumPrint,
           SunDifAccumErrPrint,
           SunTcorrPrint,
+          cM ? cM.toFixed(4) : "",
           MoonDifAccumPrint,
           MoonDifAccumErrPrint,
           MoonTcorrPrint,

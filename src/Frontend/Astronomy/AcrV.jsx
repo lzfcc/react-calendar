@@ -51,16 +51,18 @@ export default class Converter extends React.Component {
         <table>
           <tr>
             <th></th>
-            <th><bc>日</bc>盈縮積</th>
+            <th><bc>日</bc>偏心率</th>
+            <th>盈縮積</th>
             <th>Δ‱</th>
             <th>時間改正</th>
-            <th><bc>月</bc>遲疾積</th>
+            <th><bc>月</bc>偏心率</th>
+            <th>遲疾積</th>
             <th>Δ‱</th>
             <th>時間改正</th>
             <th>實行</th>
             <th>實速</th>
             <th><bc>日月</bc>改正</th>
-            <th>入交改正</th>
+            <th>朔交改正</th>
           </tr>
           {(this.state.output1 || []).map(row => {
             return (
@@ -77,15 +79,17 @@ export default class Converter extends React.Component {
         <table>
           <tr>
             <th></th>
-            <th><bc>日</bc>盈縮積</th>
+            <th><bc>日</bc>偏心率</th>
+            <th>盈縮積</th>
             <th>Δ‱</th>
             <th>時間改正</th>
-            <th><bc>月</bc>遲疾積</th>
+            <th><bc>月</bc>偏心率</th>
+            <th>遲疾積</th>
             <th>Δ‱</th>
             <th>時間改正</th>
             <th>實行</th>
             <th><bc>日月</bc>改正</th>
-            <th>入交改正</th>
+            <th>朔交改正</th>
           </tr>
           {(this.state.output2 || []).map(row => {
             return (

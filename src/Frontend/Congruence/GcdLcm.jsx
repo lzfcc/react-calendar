@@ -4,6 +4,7 @@ export default class a extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      GcdLcmIn: "4,6,8,18"
     }
     this.handle = this.handle.bind(this)
   }
@@ -40,6 +41,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
+        <p>求多個整數或小數的最大公因數 gcd、最小公倍數 lcm</p>
         <p>{this.state.output}</p>
       </div>
     );

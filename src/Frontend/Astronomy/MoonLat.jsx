@@ -16,28 +16,31 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <span>此時入交</span>
-        <input className='width3'
-          value={this.state.a}
-          onChange={e => {
-            this.setState({ a: e.currentTarget.value });
-          }}
-        />
-        <span>入轉</span>
-        <input className='width3'
-          value={this.state.b}
-          onChange={e => {
-            this.setState({ b: e.currentTarget.value });
-          }}
-        />
-        <span>距冬至時間</span>
-        <input className='width3'
-          value={this.state.c}
-          onChange={e => {
-            this.setState({ c: e.currentTarget.value });
-          }}
-        />
-        <span>此前經朔入轉</span>
+        <div>
+          <span>此時：入交</span>
+          <input className='width3'
+            value={this.state.a}
+            onChange={e => {
+              this.setState({ a: e.currentTarget.value });
+            }}
+          />
+          <span>入轉</span>
+          <input className='width3'
+            value={this.state.b}
+            onChange={e => {
+              this.setState({ b: e.currentTarget.value });
+            }}
+          />
+          <span>距冬至時間</span>
+          <input className='width3'
+            value={this.state.c}
+            onChange={e => {
+              this.setState({ c: e.currentTarget.value });
+            }}
+          />
+        </div>
+
+        <span>此前經朔：入轉</span>
         <input className='width3'
           value={this.state.d}
           onChange={e => {
@@ -98,7 +101,7 @@ export default class Converter extends React.Component {
       <div>
         <h3>太陰緯度</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-8'>月行陰陽</button>
+        <button onClick={this.handle} className='button4-2'>月行陰陽</button>
         {this.result()}
       </div>
     )

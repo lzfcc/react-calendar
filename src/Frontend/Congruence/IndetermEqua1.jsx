@@ -3,7 +3,11 @@ import { IndetermEqua1 } from "../../Cal/congruence/origin.mjs"
 export default class a extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      a: 3,
+      b: 4,
+      z: 5
+    }
     this.handle = this.handle.bind(this)
   }
 
@@ -59,6 +63,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans">
+        <p>ax - by = c 等價於 ax ≡ c (mod b)，有解的充要條件：(a,b)|c，卽 c 能被 a、b 的最大公因數整除</p>
         <div>{this.state.output1}</div>
         <div>{this.state.output2}</div>
       </div>

@@ -167,14 +167,12 @@ export default class Newm extends React.Component {
     if (!this.state.showTableList) {
       return null;
     }
-
     // Helper function to render YearInfo as JSX
     const renderYearInfo = (yearInfo) => {
       // Check if yearInfo is an array and not null or undefined
       if (Array.isArray(yearInfo)) {
         // Initialize an array to hold all spans and line breaks
         const elements = [];
-
         // Process each object in the array
         yearInfo.forEach((obj, objIndex) => {
           if (obj) { // Make sure the object is not null or undefined
@@ -203,10 +201,9 @@ export default class Newm extends React.Component {
       // If yearInfo is not an array or is null/undefined, return an empty fragment
       return <></>;
     }
-
-
     return (
       <section className="main-render">
+        <p>此處提供現代天文學朔閏表，採用的模型是：DE441（-2499–1599）440（1600–2499）曆表、Vondrak 等歲差模型、IAU2000A 章動模型、Stephenson, Morrison 等 ΔT 公式。</p>
         {(this.state.output || []).map((CalData, index) => {
           return CalData.map((calInfo, index2) => {
             return (
@@ -253,7 +250,6 @@ export default class Newm extends React.Component {
         <button onClick={this.handleRetrieve} className="button1">
           密合天行
         </button>
-
         {this.renderTableList()}
       </>
     );

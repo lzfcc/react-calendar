@@ -41,6 +41,7 @@ export default class a extends React.Component {
     }
     return (
       <div className="ans">
+        <p>求多組分數的最小公倍數 lcm，依次輸入各組分子、分母（整數分母用 1 表示）</p>
         <p>{this.state.output}</p>
       </div>
     );

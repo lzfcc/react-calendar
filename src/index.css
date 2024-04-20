@@ -1201,6 +1201,10 @@ hr {
   margin-top: 3em;
 }
 
+.tl {
+  text-align: left;
+}
+
 /* 菜單組件 */
 .select-menu {
   position: relative;

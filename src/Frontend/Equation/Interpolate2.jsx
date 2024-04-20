@@ -70,6 +70,7 @@ export default class Equa extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
+        <p>已知差分（由低次到高次排列），求 y(n)。次數爲差分的箇數。第一箇數的 n 是 0，上面的是 1</p>
         <p>{this.state.output}</p>
       </div>
     );

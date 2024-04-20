@@ -12,7 +12,7 @@ export default class Converter extends React.Component {
       ZhiString: '0',
       f: '432',
       g: '2',
-      h: '1'
+      h: '0'
     }
     this.handle = this.handle.bind(this)
   }
@@ -103,6 +103,16 @@ export default class Converter extends React.Component {
     }
     return (
       <div className='ans' style={{ whiteSpace: "pre-wrap" }}>
+        <ul className='tl'>
+          <li>【格式】「類型，徽位，弦;」。s 散音 「s,6;」。f 泛音；長段泛音用 「[]」 包裹，如 「[7,6;9,3];」 = 「f,7,6;f,9,3;」。l 連音（上滑下滑）「7,7;l,7」，zh 撞，「7,7;zh;」。qi 起，「7,7;qi;」 空弦帶起；「7,7;qi,7.6;」 七徽六搯起。shang 上，xia 下 「9,1;shang」，（fenkai 分開。suo3 璅三聲，suo7 璅七聲，suo9 璅九聲 「s,7;suo7;」dayuan 打圓。）</li>
+          <li> 【品弦法】見上「品弦法」部分</li>
+          <li> 【律制】1 徽法律一，2 徽法律二，3 徽法律三，4 徽法律四，5 準法律。近代琴曲一般都是準法律</li>
+          <li> 【宮弦】以幾弦爲宮音。大多數曲子都是以三弦爲宮的正調【徵弦】一些調沒有宮音散音，就填徵弦。如果填了徵弦，會覆蓋宮弦的輸入參數</li>
+          <li> 【基準頻率】卽正調五弦頻率</li>
+          <li>【輸出模式】1 音名；2 唱名；3 與宮弦的頻率比</li>
+          <li>【嚴格模式】默認否，程序會自動將音準歸到標準音高，例如按音徽分大多是約值，程序將自動調整。如果輸入 1 開啟嚴格模式，輸出模式 1、2 顯示 undefined，可以將輸出模式切換到 3，查看頻率比。</li>
+          <li>【顯示結果】৹ 泛音；◠ 連音；^ 撞；· 在左表示高一個八度，· 在右表示低一個八度；<span class="upline1">上劃線</span>、<span class="upline2">上劃線</span> 高一、兩個普通音差，<span class="dnline1">下劃線</span>、<span class="dnline2">下劃線</span> 低一、兩個普通音差。普通音差＝ 大全音 ﹣ 小全音 ＝ 81/80 = 21.5 音分。</li>
+        </ul>
         <p dangerouslySetInnerHTML={{ __html: this.state.output }}></p>
       </div>
     )

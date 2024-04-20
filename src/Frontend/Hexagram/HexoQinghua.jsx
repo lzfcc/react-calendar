@@ -25,19 +25,21 @@ export default class Converter extends React.Component {
     return (
       <div className='ans table2 table-vertical bigger' style={{ whiteSpace: "nowrap" }}>
         <table>
-          <tr>
-            <th>左卦</th>
-            <th>右卦</th>
-          </tr>
-          {(this.state.output || []).map(row => {
-            return (
-              <tr>
-                {row.data.map(d => {
-                  return (<td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>)
-                })}
-              </tr>
-            )
-          })}
+          <tbody>
+            <tr>
+              <th>左卦</th>
+              <th>右卦</th>
+            </tr>
+            {(this.state.output || []).map(row => {
+              return (
+                <tr>
+                  {row.data.map(d => {
+                    return (<td style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: d }}></td>)
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       </div>
     )

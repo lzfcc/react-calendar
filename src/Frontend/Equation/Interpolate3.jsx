@@ -54,6 +54,7 @@ export default class Equa extends React.Component {
     }
     return (
       <div className="ans" style={{ whiteSpace: "pre-wrap" }}>
+        <p>數列中依次輸入各組 x, y 値。拉格朗日不等間距內插公式：y = Σ(n,1) yiLi, Li = Π(n,j=1,j≠i) (x-xj)/(xi-xj)</p>
         <p>{this.state.output}</p>
       </div>
     );

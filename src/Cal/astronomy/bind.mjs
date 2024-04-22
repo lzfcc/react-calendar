@@ -50,7 +50,7 @@ import {
   whEqObliq
 } from "./pos_convert_modern.mjs";
 import { equaEclp } from "./equa_eclp.mjs";
-import { moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
+import { chooseNode, eclp2WhiteDif, moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
@@ -1017,20 +1017,23 @@ export const bindMansAccumModernList = (Name, Jd) => {
 // console.log(bindMansAccumModernList('Chongzhen', 2424222))
 
 /**
- * 
+ * @param {*} NodeDif 黃道某點距交點黃道度
  * @param {*} NodeAccum 此時入交
  * @param {*} AnoAccum 此時入轉
  * @param {*} Sd 此時距冬至時間 
+ * @param {*} AvgNewmNodeAccum 此前經朔入交
  * @param {*} AvgNewmAnoAccum 此前經朔入轉
  * @param {*} AvgNewmSd 此前經朔距冬至
  * @returns 
  */
-export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd) => {
-  // 該時刻入交日、距冬至日數
+export const bindMoonLat = (NodeDif, NodeAccum, AnoAccum, Sd,
+  AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd) => {
+  NodeDif = +NodeDif
   NodeAccum = +NodeAccum;
   AnoAccum = +AnoAccum;
-  AvgNewmAnoAccum = +AvgNewmAnoAccum;
   Sd = +Sd;
+  AvgNewmAnoAccum = +AvgNewmAnoAccum;  
+  AvgNewmNodeAccum = +AvgNewmNodeAccum
   AvgNewmSd = +AvgNewmSd;
   if (NodeAccum >= 27.21221 || NodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
@@ -1041,13 +1044,13 @@ export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd)
   //以下根據授時曆參數算球面三角
   const Sidereal = 365.2575
   const p = 360 / Sidereal
-  const Node1EclpGong = ((Sd + (27.212224 - NodeAccum) * 13.36875) % Sidereal) * p
+  const Node1EclpGong = ((AvgNewmSd + (27.212224 - AvgNewmNodeAccum) * 13.36875) % Sidereal) * p
   const { WhEqLon, WhEqObliq } = whEqObliq(Gong2Lon(Node1EclpGong))
-  const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, Sd, "Shoushi").Tcorr + 27.5546) % 27.5546
+  const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, "Shoushi").Tcorr + 27.5546) % 27.5546
   const AnojourNow = anojour(AnoAccum, "Shoushi").Anojour;
   const AnojourNewm = anojour(AcrNewmAnoAccum, "Shoushi").Anojour;
   const NowNewm_WhiteDif = ((AnojourNow - AnojourNewm + Sidereal) % Sidereal) * p
-  const AcrNewmSd = Sd + AutoTcorr(AnoAccum, Sd, "Shoushi").Tcorr
+  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, "Shoushi").Tcorr
   const NewmEclpGong = (AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, "Shoushi").SunDifAccum) * p
   const NewmEquaGong = GongHigh2Flat(23.5559844, NewmEclpGong)
   const Newm_WhEq_EquaDif = (NewmEquaGong - Lon2Gong(WhEqLon) + 360) % 360
@@ -1060,6 +1063,7 @@ export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd)
   let Print = [{
     title: "球面三角",
     data: [
+      (Node1EclpGong / p).toFixed(4),
       lat2NS(CeclpLat / p),
       lat2NS(NowEquaLat / p),
       (CeclpLon / p).toFixed(4),
@@ -1086,14 +1090,15 @@ export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd)
       const { Sidereal, Anoma, Type } = Para[Name]
       let LatPrint = "";
       let EquaLatPrint = "";
-      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, Sd, Name).Tcorr + Anoma) % Anoma
-      const AcrNewmSd = Sd + AutoTcorr(AnoAccum, Sd, Name).Tcorr
+      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
+      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
+      const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
       let EclpLat = 0, EquaLat = 0;
       if (Type === 11) {
         EquaLat = moonShoushi(
           NodeAccum,
           AvgNewmSd,
-          AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum,
+          NewmEclpGong,
           undefined,
           (anojour(AnoAccum, Name).Anojour - anojour(AcrNewmAnoAccum, Name).Anojour + Sidereal) % Sidereal
         ).EquaLat
@@ -1106,18 +1111,25 @@ export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd)
       if (EquaLat) {
         EquaLatPrint = lat2NS(EquaLat)
       }
+      // 九道術      
+      const NodeEclpGong = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
+      const Eclp2WhiteDif = eclp2WhiteDif(NodeEclpGong, NodeDif, Name)
       return {
         title: NameList[Name],
         data: [
+          NodeEclpGong.toFixed(4),
           LatPrint,
           EquaLatPrint,
+          "",
+          "",
+          Eclp2WhiteDif ? Eclp2WhiteDif.toFixed(4) : ""
         ]
       };
     }),
   );
   return Print;
 };
-// console.log(bindMoonLat(7, 5, 4, 55))
+// console.log(bindMoonLat(10, 6, 6, 56, 4, 4, 54))
 
 export const bindSunEclipse = (
   NodeAccum,

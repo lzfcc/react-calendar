@@ -9,11 +9,11 @@ import { deg2Mans, mans2Deg, solsMans } from './mans.mjs';
 /**
  * 黃白差、赤白差。大衍欽天應天的黃赤差極大值是黃白差的兩倍。大衍Max黃白差=1.5。
  * @param {*} NodeEclpGong
- * @param {*} NewmNodeDif
+ * @param {*} NowNodeDif
  * @param {*} Name
  * @returns
  */
-const MoonLonTable = (NodeEclpGong, NewmNodeDif, Name) => {
+const MoonLonTable = (NodeEclpGong, NowNodeDif, Name) => {
   const { Solar, Type, Sidereal } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   const Xian = Name === 'Qintian' ? Sidereal / 72 : 5; // 欽天黃道8節72限。是交點週期還是黃道周長？
@@ -23,8 +23,8 @@ const MoonLonTable = (NodeEclpGong, NewmNodeDif, Name) => {
   const SolarQuar = Solar / 4;
   const SolarHalf = Solar / 2;
   const SolarQuar3 = Solar * 0.75;
-  const NodeDifHalf = NewmNodeDif % NodeHalf;
-  const NodeDifQuar = NewmNodeDif % NodeQuar;
+  const NodeDifHalf = NowNodeDif % NodeHalf;
+  const NodeDifQuar = NowNodeDif % NodeQuar;
   const NodeEclpGongHalf = NodeEclpGong % SolarHalf; // 計去冬夏至以來度數
   let NodeDifRev = NodeDifHalf;
   if (
@@ -129,11 +129,11 @@ const MoonLonTable = (NodeEclpGong, NewmNodeDif, Name) => {
 /**
  * 《數》頁361 白道度是以黃道度、正交黃經爲自變量的二元函數
  * @param {*} NodeEclpGong 正交距冬至定積度
- * @param {*} NewmNodeDif 距正交黃道度數
+ * @param {*} NowNodeDif 距正交黃道度數
  * @param {*} Name
  * @returns
  */
-const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
+export const eclp2WhiteDif = (NodeEclpGong, NowNodeDif, Name) => {
   const { Solar, Type } = Para[Name];
   const NodeQuar = nodeQuar(Name);
   const NodeHalf = NodeQuar * 2;
@@ -143,8 +143,8 @@ const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
   const SolarHalf = Solar / 2;
   const SolarQuar3 = Solar * 0.75;
   const Xian = Name === 'Qintian' ? Solar / 72 : 5; // 欽天黃道8節72限
-  const NodeDifQuar = NewmNodeDif % NodeQuar;
-  const NodeDifHalf = NewmNodeDif % NodeHalf;
+  const NodeDifQuar = NowNodeDif % NodeQuar;
+  const NodeDifHalf = NowNodeDif % NodeHalf;
   const NodeDifRev = NodeDifQuar < NodeOcta ? NodeDifQuar : NodeQuar - NodeDifQuar; // 到正半交的前後距離。紀元：置黃道宿積度，滿交象度去之，在半交象已下爲初限；已上者，以減交象度，餘爲入末限。
   // 判斷在正交前後還是半交前後
   let OfBoundary = 1 // 交點前後1，半交前後-1
@@ -164,20 +164,20 @@ const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
   const NodeSolsDif = SolarQuar - NodeEquiDif // 距二至度數
   const EclpWhiteDifRaw = equa2EclpPoly(NodeDifRev, Name).Equa2EclpDif / 2; // 月行與黃道差數（汎差）
   const isYinSun = NodeEclpGong > SolarQuar && NodeEclpGong < SolarQuar3 ? 1 : -1; // 日行陰陽
-  const isYinMoon = NewmNodeDif < NodeHalf ? 1 : -1; // 月行陰陽
+  const isYinMoon = NowNodeDif < NodeHalf ? 1 : -1; // 月行陰陽
   let EclpWhiteDif = EclpWhiteDifRaw
   let Dif1 = 0, Dif2 = 0
   if (['Qintian', 'Yingtian', 'Qianyuan', 'Yitian'].includes(Name)) {
     // sign1我重新整理了一遍思路
-    if (NewmNodeDif < NodeOcta || NewmNodeDif >= NodeOcta * 7) { // 在正交前後各九限
+    if (NowNodeDif < NodeOcta || NowNodeDif >= NodeOcta * 7) { // 在正交前後各九限
       if (NodeEclpGong < SolarHalf) {
         sign1 = -1
       }
-    } else if (NewmNodeDif >= NodeOcta && NewmNodeDif < NodeOcta3) { // 在陽半交
+    } else if (NowNodeDif >= NodeOcta && NowNodeDif < NodeOcta3) { // 在陽半交
       if (NodeEclpGong < SolarQuar || NodeEclpGong >= SolarQuar3) { // 秋分之宿後出黃道外
         sign1 = -1
       }
-    } else if (NewmNodeDif >= NodeOcta3 || NewmNodeDif < NodeOcta * 5) { // 在中交
+    } else if (NowNodeDif >= NodeOcta3 || NowNodeDif < NodeOcta * 5) { // 在中交
       if (NodeEclpGong >= SolarHalf) {
         sign1 = -1
       }
@@ -256,30 +256,10 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   return { WhiteAccumList, NewmWhiteDeg };
 }
 
-/**
- * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
- * @param {*} AvgNewmNodeAccum 經朔入交
- * @param {*} AvgNewmAnoAccum 經朔入轉
- * @param {*} AvgNewmSd 經朔距冬至日數
- * @param {*} NewmEclpGong 定朔距冬至實行度
- * @param {*} Name
- * @param {*} Y 年份
- * @returns
- */
-export const moonJiudao = (
-  AvgNewmNodeAccum,
-  AvgNewmAnoAccum,
-  AvgNewmSd,
-  NewmEclpGong,
-  Name,
-  Y,
-) => {
+export const chooseNode = (NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name) => {
   let { Type, Solar, SolarRaw, Sidereal, Node } = Para[Name];
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
-  if (Type <= 5) {
-    return
-  }
   const MoonAvgVd = AutoMoonAvgV(Name);
   const T_NewmNodeDif_Avg = Node - AvgNewmNodeAccum; // 朔後平交日分：朔之後的正交
   const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
@@ -308,6 +288,28 @@ export const moonJiudao = (
       NodeEclp = (NewmEclpGong + (Node1Anojour - AcrNewmAnojour)) % Solar
     }
   }
+  return NodeEclp
+}
+
+/**
+ * * 《數理》p349 中国古代的历法家认为，以黄白道交点，半交点为节点，将周天划分为四个象限，节点处的黄白道差为0，并且在每个象限内的黄白道差星镜面对称。我们可以根据公式(5-15)判断，这个认识是不对的，仅仅这一点，就决定了九道术自身不可弥补的缺陷。
+ * @param {*} AvgNewmNodeAccum 經朔入交
+ * @param {*} AvgNewmAnoAccum 經朔入轉
+ * @param {*} AvgNewmSd 經朔距冬至日數
+ * @param {*} NewmEclpGong 定朔距冬至實行度
+ * @param {*} Name
+ * @param {*} Y 年份
+ * @returns
+ */
+export const moonJiudao = (
+  AvgNewmNodeAccum,
+  AvgNewmAnoAccum,
+  AvgNewmSd,
+  NewmEclpGong,
+  Name,
+  Y,
+) => {
+  const NodeEclp = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
   const { WhiteAccumList, NewmWhiteDeg } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
   return { WhiteAccumList, NewmWhiteDeg };
 };
@@ -341,7 +343,7 @@ export const MoonLatTable = (NodeAccum, Name) => {
       ];
       n = 3 + NodeAccumHalf - NodeAccumHalfInt;
     }
-    Lat =  Interpolate1(n, Initial) / Portion;
+    Lat = Interpolate1(n, Initial) / Portion;
   } else if (Name === 'Dayan') {
     // 大衍的入交度數另有算式，我直接用月平行速來算 // 三次差：前半段 Δ = 171,-24,-8 後半段 Δ = -75,-40,8// 曲安京《曆法》頁251
     const MoonAvgVd = AutoMoonAvgV(Name);
@@ -367,9 +369,9 @@ export const MoonLatTable = (NodeAccum, Name) => {
     const G1 = Start + D / 2; // 定初率。「以加減初率（少象減之，老象加之）」
     const Gn = G1 + (Frac - 1) * D; // 「以度差累加減之（少象以差減，老象以差加）」
     const G = ((G1 + Gn) * Frac) / 2;
-    Lat =  (MoonLatAccumList[k] + G) / Portion;
+    Lat = (MoonLatAccumList[k] + G) / Portion;
   }
-  if (Lon < NodeHalf) Lat = -Lat;
+  if (NodeAccum < Node / 2) Lat = -Lat;
   return Lat;
 };
 // 大衍：《中國古代曆法》頁530

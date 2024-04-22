@@ -5,10 +5,12 @@ export default class Converter extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      NodeDif: 10,
       a: 5,
       b: 5,
       c: 55,
       d: 4,
+      e: 4,
       f: 54
     }
     this.handle = this.handle.bind(this)
@@ -16,7 +18,14 @@ export default class Converter extends React.Component {
   input() {
     return (
       <span className='year-select'>
-        <div>
+        <div>          
+          <span>黃道某點距正交黃道度</span>
+          <input className='width3'
+            value={this.state.NodeDif}
+            onChange={e => {
+              this.setState({ NodeDif: e.currentTarget.value });
+            }}
+          />
           <span>此時：入交</span>
           <input className='width3'
             value={this.state.a}
@@ -40,11 +49,18 @@ export default class Converter extends React.Component {
           />
         </div>
 
-        <span>此前經朔：入轉</span>
+        <span>此前經朔：入交</span>
         <input className='width3'
           value={this.state.d}
           onChange={e => {
             this.setState({ d: e.currentTarget.value });
+          }}
+        />
+        <span>入轉</span>
+        <input className='width3'
+          value={this.state.e}
+          onChange={e => {
+            this.setState({ e: e.currentTarget.value });
           }}
         />
         <span>距冬至時間</span>
@@ -60,7 +76,7 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const Print = bindMoonLat(this.state.a, this.state.b, this.state.c, this.state.d, this.state.f)
+      const Print = bindMoonLat(this.state.NodeDif, this.state.a, this.state.b, this.state.c, this.state.d, this.state.e, this.state.f)
       this.setState({ output: Print })
     } catch (e) {
       alert(e.message)
@@ -76,10 +92,12 @@ export default class Converter extends React.Component {
         <table>
           <tr>
             <th></th>
+            <th>交點距冬至度</th>
             <th>極黃緯</th>
             <th>赤緯</th>
             <th>極黃經</th>
             <th>赤經</th>
+            <th>黃轉月道差</th>
           </tr>
           {(this.state.output || []).map(row => {
             return (

@@ -233,7 +233,7 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
   const WhiteAccumList = [];
-  const { EclpAccumList, SolsEclpDeg } = solsMans(Name, Y);
+  const { EclpAccumList, SolsEclpDeg, SolsMansName, SolsEclpMansDeg } = solsMans(Name, Y);
   const NodeEclpDeg = (NodeEclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
   const { Name: NodeMansName, MansDeg: NodeEclpMansDeg } = deg2Mans(NodeEclpDeg, EclpAccumList);
   for (let i = 0; i < EclpAccumList.length; i++) {
@@ -253,7 +253,10 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   const NewmNode_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
   const NewmNode_WhiteDif = NewmNode_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode_EclpDif, Name)
   const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal
-  return { WhiteAccumList, NewmWhiteDeg };
+  // 冬至九道度
+  const SolsWhiteMansDeg = SolsEclpMansDeg - eclp2WhiteDif(NodeEclpGong, SolsEclpMansDeg, Name)
+  const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
+  return { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg };
 }
 
 export const chooseNode = (NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name) => {
@@ -310,8 +313,8 @@ export const moonJiudao = (
   Y,
 ) => {
   const NodeEclp = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
-  const { WhiteAccumList, NewmWhiteDeg } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
-  return { WhiteAccumList, NewmWhiteDeg };
+  const { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
+  return { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg };
 };
 
 export const MoonLatTable = (NodeAccum, Name) => {
@@ -521,9 +524,9 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const Newm_WhEq_WhiteDif = Newm_WhEq_EquaDif + equa2WhiteDif(Newm_WhEq_EquaDif)
   /// 九道宿鈐
   const WhiteAccumList = [];
-  let NewmWhiteDeg = 0
+  let NewmWhiteDeg = 0, SolsWhiteDeg = 0
   if (Y !== undefined) { // 如果有Y就是朔，就要求九道宿鈐
-    const { EquaAccumList, SolsEquaDeg } = solsMans('Shoushi', Y);
+    const { EquaAccumList, SolsEquaDeg, SolsMansName, SolsEquaMansDeg } = solsMans('Shoushi', Y);
     const WhEq_EquaDeg = (SolsEquaDeg + WhEqGong) % Sidereal;
     for (let i = 0; i < EquaAccumList.length; i++) {
       const Mans_WhEq_Dif = (EquaAccumList[i] - WhEq_EquaDeg + Sidereal) % Sidereal; // 「正交後積度」
@@ -538,6 +541,9 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     const WhEq_WhiteMansDeg = WhEq_EquaMansDeg + equa2WhiteDif(WhEq_EquaMansDeg)
     const WhEq_WhiteDeg = mans2Deg(WhEq_MansName + WhEq_WhiteMansDeg, WhiteAccumList) // 正交宿度赤轉白，授時曆沒有，我覺得按道理應該有
     NewmWhiteDeg = (WhEq_WhiteDeg + Newm_WhEq_WhiteDif) % Sidereal // 定朔白道宿積度
+    /// 冬至月道宿度
+    const SolsWhiteMansDeg = SolsEquaMansDeg - equa2WhiteDif(SolsEquaMansDeg)
+    SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
   }
   /// 月赤緯
   let EquaLat = 0
@@ -551,6 +557,6 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     // const Theta1 = WhEqObliqMax / SiderealSext; // 定差。注意，有兩個「定差」。下一步：「餘以定差乘之」
     EquaLat = (NowWhEq_WhiteDif < SiderealHalf ? 1 : -1) * (WhEqObliqMax * (SiderealSext - UK)) / SiderealSext; // 與《數理》p383核驗無誤。每日月離赤道內外度。內減外加象限，爲每日月離白道去極度
   }
-  return { WhiteAccumList, NewmWhiteDeg, EquaLat };
+  return { WhiteAccumList, NewmWhiteDeg, EquaLat, SolsWhiteDeg };
 };
 // console.log(moonShoushi(45.65625 + 91.3125, 70, 1280, 0));

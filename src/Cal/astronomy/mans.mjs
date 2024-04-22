@@ -712,6 +712,8 @@ export const solsMans = (Name, Y) => {
         SolsEquaDeg,
         SolsEclpDeg,
         SolsMansName,
+        SolsEclpMansDeg,
+        SolsEquaMansDeg,
         SolsEclpMans: SolsMansName + SolsEclpMansDeg.toFixed(3),
         SolsEquaMans: SolsMansName + SolsEquaMansDeg.toFixed(3),
     };

@@ -794,7 +794,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
       MoonTcorr2 = TcorrFunc.MoonTcorr2;
       MoonTcorr1 = TcorrFunc.MoonTcorr1;
     }
-  } else {
+  } else if (Type >= 2) {
     if (["Daye", "Wuyin", "WuyinB"].includes(Name)) {
       SunTcorr1 = SunTcorrTable(Sd, Name).SunTcorr1;
       MoonTcorr1 = MoonTcorrTable1(AnoAccum, Name).MoonTcorr1;

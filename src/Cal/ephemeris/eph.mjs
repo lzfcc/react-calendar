@@ -277,11 +277,11 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const AcrNewmAnoAccum = (NewmAnoAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmRaw[i - 1], Name).Tcorr + Anoma) % Anoma
         NewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour; // 定朔加時入轉度
       }
-      let NewmWhiteDeg = 0;
+      let NewmWhiteDeg = 0, SolsWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
-      const NewmEclpGong = NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum // 定朔距冬至實行度
-      const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg
-      const NewmEclpDeg = NewmEclpGong + SolsEclpDeg
+      const NewmEclpGong = NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum; // 定朔距冬至實行度
+      const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg;
+      const NewmEclpDeg = NewmEclpGong + SolsEclpDeg;
       if (Type === 11) {
         const FuncNewm = moonShoushi(
           NewmNodeAccumPrint[i - 1],
@@ -291,6 +291,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         );
         NewmWhiteDeg = FuncNewm.NewmWhiteDeg
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
+        SolsWhiteDeg = FuncNewm.SolsWhiteDeg;
       } else if (Type >= 6) {
         const FuncNewm = moonJiudao(
           NewmNodeAccumPrint[i - 1],
@@ -302,6 +303,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         );
         NewmWhiteDeg = FuncNewm.NewmWhiteDeg
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
+        SolsWhiteDeg = FuncNewm.SolsWhiteDeg;
       }
       Sc[i] = [];
       Jd[i] = [];
@@ -335,6 +337,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SunLon = SdMidn % Solar;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Solar;
           MoonEclpLon = (MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd) % Sidereal;
+          MoonEclp = deg2Mans((MoonEclpLon + SolsEclpDeg) % Solar, EclpAccumList).Print;
         } else {
           NodeAccumMidn = (NewmNodeAccumMidnPrint[i - 1] + k - 1) % Node;
           AnoAccumMidn = (NewmAnoAccumMidnPrint[i - 1] + k - 1) % Anoma;
@@ -350,10 +353,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
           const MidnAnojour = anojour(AnoAccumMidn, Name).Anojour;
           if (Type <= 4) {
             const MoonEclpDeg = (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
+            MoonEclpLon = (MoonEclpDeg - SolsEclpDeg + Sidereal) % Sidereal
             MoonEclp = deg2Mans(MoonEclpDeg, EclpAccumList).Print;
           } else {
             const MoonWhiteDeg = (NewmWhiteDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
+            MoonWhiteLon = (MoonWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal
             NowNewm_WhiteDif = (MidnAnojour - NewmAnojour + Sidereal) % Sidereal
           }
         }
@@ -377,8 +382,8 @@ export const D1 = (Name, YearStart, YearEnd) => {
           { SunEqua: SunEqua, SunCeclp: SunEclp },
           { MoonEquaLon: MoonEquaLon ? MoonEquaLon.toFixed(4) : undefined, MoonEquaLat: lat2NS(MoonEquaLat) },
           { MoonCeclpLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined, MoonCeclpLat: lat2NS(MoonEclpLat), OrbColor: OrbColor },
-          { MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined },
-          { MoonCeclp: MoonEclp, MoonWhite: MoonWhite }
+          { MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined, MoonWhite: MoonWhite },
+          { MoonCeclp: MoonEclp }
         ]
         const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci);
         const Rise = autoRise(SdMidn, SolsDeci, Name);
@@ -597,4 +602,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Shoushi', 1111))
+// console.log(D1('Easthan', 1111))

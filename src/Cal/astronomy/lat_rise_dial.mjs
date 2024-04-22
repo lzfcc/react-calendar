@@ -404,8 +404,8 @@ export const autoLat = (Sd, Name, isBare) => {
     if (
       [
         "Linde",
-        "Yisi",
         "LindeB",
+        "Yisi",
         "Shenlong",
         "Chongxuan",
         "Qintian",

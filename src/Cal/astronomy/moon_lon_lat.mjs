@@ -254,7 +254,7 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   const NewmNode_WhiteDif = NewmNode_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode_EclpDif, Name)
   const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal
   // 冬至九道度
-  const SolsWhiteMansDeg = SolsEclpMansDeg - eclp2WhiteDif(NodeEclpGong, SolsEclpMansDeg, Name)
+  const SolsWhiteMansDeg = SolsEclpMansDeg + eclp2WhiteDif(NodeEclpGong, SolsEclpMansDeg, Name)
   const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
   return { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg };
 }
@@ -475,6 +475,18 @@ export const moonEclpLat = (NodeAccum, AnoAccum, Sd, Name) => {
 }
 // console.log(moonEclpLat(8.3139682, 0.5482519901, 0, "Qianxiang")) // 《古代曆法計算法》p161：206建安十一年八月乙未朔，經朔入陰陽曆8+(2472+410/2209)/7874=8.3139682，月黃緯 5 + (((781 + 12748 / 16129) / 2209 + 3167) / 7874 + 9) / 12=5.78352123陽曆黃道南。// 入交8.280673，去黃道5.7831486。入轉程序沒問題，入交差了0.03日
 
+export const equa2WhiteDif = (Dingxian, WhEq_Dif) => {
+  const SolarHalf = 182.62125;
+  const SolarOcta = 45.6553125;
+  const SolarQuar = 91.310625;
+  const XHalf = WhEq_Dif % SolarHalf;
+  const XQuar = WhEq_Dif % SolarQuar;
+  const XQuarRev = XQuar < SolarOcta
+    ? XQuar
+    : SolarQuar - XQuar; // 大統「月道與赤道正交後積度 并入初末限」赤道二十八宿到白赤交點半交的距離，半「氣象限（Solar25）」以內
+  const sign3 = XHalf < SolarQuar ? 1 : -1; // 正交中交後為加，半交後為減
+  return sign3 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
+}
 /**
  * 曲安京《授時曆的白赤道座標變換法》、《數理天文學》5.5、《中國古代曆法》頁127
  * 授時放棄了九道術的黃白轉換，改從白赤轉換入手。
@@ -491,7 +503,6 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const SiderealQuar = 91.314375
   const SolarHalf = 182.62125;
   const SolarQuar = 91.310625;
-  const SolarOcta = 45.6553125;
   const SiderealSext = 60.875; // 周天六之一是會圓術天球半徑
   const Sobliq = 23.9; // 黃赤大距
   const k = 14.66; // 正交極數：二至白赤正交與黃白正交的距離WhEq_WhEc_DifMax。推導見p368
@@ -509,19 +520,10 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const WhEqEquinoxDif = k - d; // 距差BH：白赤交點距二分距離
   const WhEqGong = sign1 * -sign2 * WhEqEquinoxDif + SolarQuar; // 白赤交點距冬至赤道度。以距差加減春秋二正赤道宿度，爲月離赤道正交宿度。冬至後，初限加末限減，視春正；夏至後，初限減末限加，視秋正
   const Dingxian = 98 + (sign2 * 24 * d) / k; // 定限度。交在冬至後名減，夏至後名加——右手
-  /// 白赤差  
-  const equa2WhiteDif = X => {
-    const XHalf = X % SolarHalf;
-    const XQuar = X % SolarQuar;
-    const XQuarRev = XQuar < SolarOcta
-      ? XQuar
-      : SolarQuar - XQuar; // 大統「月道與赤道正交後積度 并入初末限」赤道二十八宿到白赤交點半交的距離，半「氣象限（Solar25）」以內
-    const sign3 = XHalf < SolarQuar ? 1 : -1; // 正交中交後為加，半交後為減
-    return sign3 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
-  }
+  /// 白赤差
   const NewmEquaGong = Hushigeyuan(NewmEclpGong).Eclp2Equa
   const Newm_WhEq_EquaDif = (NewmEquaGong - WhEqGong + Sidereal) % Sidereal
-  const Newm_WhEq_WhiteDif = Newm_WhEq_EquaDif + equa2WhiteDif(Newm_WhEq_EquaDif)
+  const Newm_WhEq_WhiteDif = Newm_WhEq_EquaDif + equa2WhiteDif(Dingxian, Newm_WhEq_EquaDif)
   /// 九道宿鈐
   const WhiteAccumList = [];
   let NewmWhiteDeg = 0, SolsWhiteDeg = 0
@@ -530,7 +532,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     const WhEq_EquaDeg = (SolsEquaDeg + WhEqGong) % Sidereal;
     for (let i = 0; i < EquaAccumList.length; i++) {
       const Mans_WhEq_Dif = (EquaAccumList[i] - WhEq_EquaDeg + Sidereal) % Sidereal; // 「正交後積度」
-      WhiteAccumList[i] = Mans_WhEq_Dif + equa2WhiteDif(Mans_WhEq_Dif);
+      WhiteAccumList[i] = Mans_WhEq_Dif + equa2WhiteDif(Dingxian, Mans_WhEq_Dif);
     }
     const adj = WhiteAccumList[0] - Sidereal;
     for (let i = 0; i < WhiteAccumList.length; i++) {
@@ -538,11 +540,11 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     }
     WhiteAccumList[28] = Sidereal;
     const { Name: WhEq_MansName, MansDeg: WhEq_EquaMansDeg } = deg2Mans(WhEq_EquaDeg, EquaAccumList) // 白赤正交宿度
-    const WhEq_WhiteMansDeg = WhEq_EquaMansDeg + equa2WhiteDif(WhEq_EquaMansDeg)
+    const WhEq_WhiteMansDeg = WhEq_EquaMansDeg + equa2WhiteDif(Dingxian, WhEq_EquaMansDeg)
     const WhEq_WhiteDeg = mans2Deg(WhEq_MansName + WhEq_WhiteMansDeg, WhiteAccumList) // 正交宿度赤轉白，授時曆沒有，我覺得按道理應該有
     NewmWhiteDeg = (WhEq_WhiteDeg + Newm_WhEq_WhiteDif) % Sidereal // 定朔白道宿積度
     /// 冬至月道宿度
-    const SolsWhiteMansDeg = SolsEquaMansDeg - equa2WhiteDif(SolsEquaMansDeg)
+    const SolsWhiteMansDeg = SolsEquaMansDeg + equa2WhiteDif(Dingxian, SolsEquaMansDeg)
     SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
   }
   /// 月赤緯
@@ -557,6 +559,6 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     // const Theta1 = WhEqObliqMax / SiderealSext; // 定差。注意，有兩個「定差」。下一步：「餘以定差乘之」
     EquaLat = (NowWhEq_WhiteDif < SiderealHalf ? 1 : -1) * (WhEqObliqMax * (SiderealSext - UK)) / SiderealSext; // 與《數理》p383核驗無誤。每日月離赤道內外度。內減外加象限，爲每日月離白道去極度
   }
-  return { WhiteAccumList, NewmWhiteDeg, EquaLat, SolsWhiteDeg };
+  return { WhiteAccumList, NewmWhiteDeg, EquaLat, SolsWhiteDeg, Dingxian, WhEqGong };
 };
 // console.log(moonShoushi(45.65625 + 91.3125, 70, 1280, 0));

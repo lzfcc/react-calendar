@@ -18,28 +18,28 @@ export const nineOrbits = (NodeAccum, NewmSd, Name) => {
     const Limit = (Lunar - Node) / 2 // 望差
     const HalfTermLeng = Solar / 24
     const NodeGong = (NewmSd - (NodeAccum % NodeHalf) * AutoMoonAvgV(Name) + Solar) % Solar // 正交黃道度
-    // OrbColor 黃0青0白1黑2朱3
+    // OrbColor 黃0青1白2黑3朱4
     let OrbColor = 0
     if (NodeGong < 3 * HalfTermLeng || NodeGong >= 21 * HalfTermLeng) { // 冬
-        if (NodeAccum < NodeHalf) {
+        if (NodeAccum > NodeHalf) {
             OrbColor = 1
         } else {
             OrbColor = 2
         }
     } else if (NodeGong >= 3 * HalfTermLeng && NodeGong < 9 * HalfTermLeng) { // 春
-        if (NodeAccum < NodeHalf) {
+        if (NodeAccum > NodeHalf) {
             OrbColor = 3
         } else {
             OrbColor = 4
         }
     } else if (NodeGong >= 9 * HalfTermLeng && NodeGong < 15 * HalfTermLeng) { // 夏
-        if (NodeAccum < NodeHalf) {
+        if (NodeAccum > NodeHalf) {
             OrbColor = 2
         } else {
             OrbColor = 1
         }
     } else { // 秋
-        if (NodeAccum < NodeHalf) {
+        if (NodeAccum > NodeHalf) {
             OrbColor = 4
         } else {
             OrbColor = 3

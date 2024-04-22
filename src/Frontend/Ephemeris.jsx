@@ -165,6 +165,7 @@ export default class Day extends React.Component {
           <p>月</p>
           <p>&nbsp;</p>
           <p>&nbsp;</p>
+          <p>&nbsp;</p>
           <p>旦</p>
           <p>昏</p>
           <p>神</p>
@@ -180,6 +181,7 @@ export default class Day extends React.Component {
           <p>&nbsp;</p>
           <p>&nbsp;</p>
           <p>月</p>
+          <p>&nbsp;</p>
           <p>&nbsp;</p>
           <p>旦</p>
           <p>昏</p>

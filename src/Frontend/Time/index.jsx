@@ -7,6 +7,9 @@ import Date from './Date'
 import JD from './JD'
 import SC from './SC'
 import Year from './Year'
+import HexaZhuxi from './HexaZhuxi'
+import HexaZhuxiB from './HexaZhuxiB'
+import HexaQinghua from './HexaQinghua'
 
 export default class Time extends React.Component {
   constructor(props) {
@@ -18,6 +21,7 @@ export default class Time extends React.Component {
   render() {
     return (
       <section className="modulo">
+        <h2>時間</h2>
         <Deci2Clock />
         <br />
         <Clock2Deci />
@@ -29,6 +33,10 @@ export default class Time extends React.Component {
         <Year />
         <br />
         <SC />
+        <h2>筮占</h2>
+        <HexaZhuxi />
+        <HexaZhuxiB />
+        <HexaQinghua />
       </section>
     );
   }

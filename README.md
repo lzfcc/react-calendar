@@ -555,12 +555,13 @@ a = [0, ...a]
 - Each directory has a index file that is used to export all functions and variables that are available in that directory, in order to make it easier to import the functions and variables in other files.
 - combine interpolate and interpolate_big
 
-4-17 前端 `1.12` GPT幫忙把朔閏表、曆書的樣式渲染移到前端。其他：刪了能刪掉的dangerouslySetInnerHTML，把各處的簡要說明分散到答案框中。
+4-17 前端 `1.12` GPT幫忙把朔閏表、曆書的樣式渲染移到前端。其他：刪了能刪掉的dangerouslySetInnerHTML，把各處的簡要說明分散到答案框中。把筮占板塊合併到時間板塊，優化封面樣式邏輯。
 
 4-21 `2.14` 重寫九道術、白道交周，難度很大。增加現代九道宿鈐計算及展示。
 
 小修復：
 
+- 曆書把古曆的月亮黃赤經緯都補出來了。
 - 修復四分到開皇朔閏表沒有宿度，刪掉四分曆朔閏表中星
 - 修復會圓術展示
 - 修復元嘉曆書開頭日度是負數

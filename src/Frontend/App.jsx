@@ -7,7 +7,6 @@ import Equation from "./Equation";
 import Astronomy from "./Astronomy";
 import Time from "./Time";
 import Guqin from "./Guqin";
-import Hexagram from "./Hexagram";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,12 +15,11 @@ export default class App extends React.Component {
       { title: "朔閏表", Component: Newm },
       { title: "曆書", Component: Ephemeris },
       { title: "現代曆表", Component: Modern },
-      { title: "同餘", Component: Congruence },
-      { title: "招差", Component: Equation },
       { title: "天文", Component: Astronomy },
+      { title: "同餘", Component: Congruence },
+      { title: "招差", Component: Equation },      
       { title: "時間", Component: Time },
       { title: "琴律", Component: Guqin },
-      { title: "筮占", Component: Hexagram },
     ];
     this.state = {
       activeTab: 0,
@@ -58,7 +56,7 @@ export default class App extends React.Component {
   renderTabContent() {
     const { activeTab } = this.state;
     const tabComponents = this.tabs.map(({ title, Component }, index) => (
-      <div
+      <div className="App-main"
         style={{ display: activeTab === index ? "block" : "none" }}
         key={title}
       >

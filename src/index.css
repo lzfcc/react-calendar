@@ -205,6 +205,14 @@ p {
   margin: 1.3em auto
 }
 
+.App {
+  margin-top: 6em;
+}
+
+.App-main {
+  margin-top: 6em;
+}
+
 .cover {
   /* 黃赤道 */
   background-image: url("https://pic.imgdb.cn/item/60519ee6524f85ce298dbe26.jpg");
@@ -212,15 +220,14 @@ p {
   /* background-image: url("https://pic.imgdb.cn/item/60554600524f85ce2988ce4a.jpg"); */
   /* background-image: url("https://pic.imgdb.cn/item/60554b2b524f85ce298b0236.jpg"); */
   background-size: cover;
-  height: 800px;
-  /* margin-bottom: .6em; */
-  margin-bottom: -4em;
-  text-shadow: 5px 5px 20px var(--yellow), 5px 5px 20px var(--yellow);
+  min-height: 300px;
+  margin-bottom: -10em;
+  /* text-shadow: 5px 5px 20px var(--yellow), 5px 5px 20px var(--yellow); */
   border-bottom: 1px solid var(--shallowgray);
 }
 
 .cover h1 {
-  margin-top: 190px
+  margin-top: 2em
 }
 
 .cover h2 {
@@ -230,17 +237,11 @@ p {
   margin: 1em auto 0
 }
 
-.cover p {
-  color: var(--gray);
-  margin: 1em auto 7em;
-  text-align: center;
-}
-
 .section-select-container {
   position: sticky;
   z-index: 99;
   top: 0;
-  margin: 0em auto 10em;
+  margin: auto;
   padding: .75em .5em;
   border-radius: 1em;
   border: .2em solid var(--shallowgray);

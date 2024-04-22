@@ -274,11 +274,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
       if (Type === 1) {
         MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
-        NewmAnojour = anojour(NewmAnoAccumPrint[i - 1], Name).Anojour; // 定朔加時入轉度
+        const AcrNewmAnoAccum = (NewmAnoAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmRaw[i - 1], Name).Tcorr + Anoma) % Anoma
+        NewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour; // 定朔加時入轉度
       }
       let NewmWhiteDeg = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
-      const NewmEclpGong = NewmSd + AutoDifAccum(0, NewmSd, Name).SunDifAccum // 定朔距冬至實行度
+      const NewmEclpGong = NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum // 定朔距冬至實行度
       const SolsEclpDeg = solsMans(Name, Y).SolsEclpDeg
       const NewmEclpDeg = NewmEclpGong + SolsEclpDeg
       if (Type === 11) {

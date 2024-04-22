@@ -1060,7 +1060,7 @@ export const bindMoonLat = (NodeAccum, AnoAccum, Sd, AvgNewmAnoAccum, AvgNewmSd)
   let Print = [{
     title: "球面三角",
     data: [
-      (CeclpLat / p).toFixed(4),
+      lat2NS(CeclpLat / p),
       lat2NS(NowEquaLat / p),
       (CeclpLon / p).toFixed(4),
       (NowEquaLon / p).toFixed(4)

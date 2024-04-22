@@ -173,16 +173,16 @@ const eclp2WhiteDif = (NodeEclpGong, NewmNodeDif, Name) => {
       if (NodeEclpGong < SolarHalf) {
         sign1 = -1
       }
-    } else if (NewmNodeDif >= NodeOcta && NewmNodeDif < NodeOcta3) { // 在陰半交
-      if (NodeEclpGong >= SolarQuar && NodeEclpGong < SolarQuar3) { // 春分之宿後入黃道內
+    } else if (NewmNodeDif >= NodeOcta && NewmNodeDif < NodeOcta3) { // 在陽半交
+      if (NodeEclpGong < SolarQuar || NodeEclpGong >= SolarQuar3) { // 秋分之宿後出黃道外
         sign1 = -1
       }
     } else if (NewmNodeDif >= NodeOcta3 || NewmNodeDif < NodeOcta * 5) { // 在中交
       if (NodeEclpGong >= SolarHalf) {
         sign1 = -1
       }
-    } else { // 在陽半交
-      if (NodeEclpGong < SolarQuar || NodeEclpGong >= SolarQuar3) { // 秋分之宿後出黃道外
+    } else { // 在陰半交
+      if (NodeEclpGong >= SolarQuar && NodeEclpGong < SolarQuar3) { // 春分之宿後入黃道內
         sign1 = -1
       }
     }
@@ -323,10 +323,9 @@ export const MoonLatTable = (NodeAccum, Name) => {
   else if (Name === 'Tsrengyuan') Portion = 219 / 4; // 交率交數61、777，去交度乘數十一，除數九百四十五
   const NodeAccumHalf = NodeAccum % (Node / 2);
   const NodeAccumHalfInt = Math.trunc(NodeAccumHalf);
-  const Yinyang = NodeAccum < Node / 2 ? 1 : -1;
   let Lat = 0;
   if (Type <= 4) {
-    Lat = Yinyang * (MoonLatAccumList[NodeAccumHalfInt] + ((NodeAccumHalf - NodeAccumHalfInt) * MoonLatDifList[NodeAccumHalfInt]) / Portion);
+    Lat = MoonLatAccumList[NodeAccumHalfInt] + ((NodeAccumHalf - NodeAccumHalfInt) * MoonLatDifList[NodeAccumHalfInt]) / Portion;
   } else if (Type === 6 || ['Wuji', 'Tsrengyuan'].includes(Name)) { // 二次
     let Initial = [
       MoonLatAccumList[NodeAccumHalfInt],
@@ -342,7 +341,7 @@ export const MoonLatTable = (NodeAccum, Name) => {
       ];
       n = 3 + NodeAccumHalf - NodeAccumHalfInt;
     }
-    Lat = (Yinyang * Interpolate1(n, Initial)) / Portion;
+    Lat =  Interpolate1(n, Initial) / Portion;
   } else if (Name === 'Dayan') {
     // 大衍的入交度數另有算式，我直接用月平行速來算 // 三次差：前半段 Δ = 171,-24,-8 後半段 Δ = -75,-40,8// 曲安京《曆法》頁251
     const MoonAvgVd = AutoMoonAvgV(Name);
@@ -368,8 +367,9 @@ export const MoonLatTable = (NodeAccum, Name) => {
     const G1 = Start + D / 2; // 定初率。「以加減初率（少象減之，老象加之）」
     const Gn = G1 + (Frac - 1) * D; // 「以度差累加減之（少象以差減，老象以差加）」
     const G = ((G1 + Gn) * Frac) / 2;
-    Lat = (Yinyang * (MoonLatAccumList[k] + G)) / Portion;
+    Lat =  (MoonLatAccumList[k] + G) / Portion;
   }
+  if (Lon < NodeHalf) Lat = -Lat;
   return Lat;
 };
 // 大衍：《中國古代曆法》頁530
@@ -420,7 +420,7 @@ const MoonLatFormula = (NodeAccum, Name) => {
     const tmp = LonHalfRev - ((NodeQuar - LonHalfRev) * LonHalfRev) / 500;
     Lat = ((NodeHalf - tmp) * tmp) / 1375;
   }
-  if (Lon > NodeHalf) Lat = -Lat;
+  if (Lon < NodeHalf) Lat = -Lat;
   return Lat
 };
 // console.log(MoonLatFormula(15, 'Jiyuan'))
@@ -497,7 +497,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal; // 授時：正交距冬至定積度
   /// 白赤交點距二分度數
   const Node1EclpHalf = Node1EclpGong % SolarHalf;
-  const Node1EclpHalfRev = Node1EclpHalf < SolarQuar ? Node1EclpHalf : SolarHalf - Node1EclpHalf; // 求正交在二至後初末限：置冬至距正交積度及分，在半歲周已下，為冬至後；已上，去之，爲夏至後。其二至後，在象限已下，爲初限，已上，減去半歲周，爲末限——右手
+  const Node1EclpHalfRev = Node1EclpHalf < SolarQuar ? Node1EclpHalf : SolarHalf - Node1EclpHalf; // 求正交在二至後初末限：置冬至距正交積度及分，在半歲周已下，為冬至後；已上，去之，爲夏至後。其二至後，在象限已下，爲初限，已上，減去半歲周，爲末限
   const sign1 = Node1EclpHalf < SolarQuar ? 1 : -1; // 初限加，末限減
   const sign2 = Node1EclpGong < SolarHalf ? -1 : 1; // 月離黃道正交在冬至後宿度爲減，夏至後宿度爲加——右手
   const d = (Node1EclpHalfRev * k) / SolarQuar; // 定差EH
@@ -511,7 +511,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     const XQuarRev = XQuar < SolarOcta
       ? XQuar
       : SolarQuar - XQuar; // 大統「月道與赤道正交後積度 并入初末限」赤道二十八宿到白赤交點半交的距離，半「氣象限（Solar25）」以內
-    const sign3 = XHalf < SolarQuar ? -1 : 1; // 正交中交後為加，半交後為減——這裏暫定用左手法則
+    const sign3 = XHalf < SolarQuar ? 1 : -1; // 正交中交後為加，半交後為減
     return sign3 * Math.abs((Dingxian - XQuarRev) * XQuarRev) / 1000;
   }
   const NewmEquaGong = Hushigeyuan(NewmEclpGong).Eclp2Equa
@@ -541,7 +541,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   let EquaLat = 0
   if (NowNewm_WhiteDif) {
     const WhEqObliqMax = Sobliq + sign2 * d * 25 / 61; // 白赤大距「赤道正交後半交白道出入赤道內外度」. k*25/61=6。視月離黄道正交在冬至後宿度爲減，夏至後宿度爲加
-    const NowWhEq_WhiteDif = (Newm_WhEq_WhiteDif + NowNewm_WhiteDif) % Sidereal // 每日月離赤道交後。原文沒有說怎麼求的，我覺得按道理是這樣。這種情況左手右手不影響
+    const NowWhEq_WhiteDif = (Newm_WhEq_WhiteDif + NowNewm_WhiteDif) % Sidereal // 每日月離赤道交後。原文沒有說怎麼求的，我覺得按道理是這樣
     const NowWhEq_WhiteDifHalf = NowWhEq_WhiteDif % SiderealHalf;
     const HM = NowWhEq_WhiteDifHalf < SiderealQuar ? NowWhEq_WhiteDifHalf : SiderealHalf - NowWhEq_WhiteDifHalf; // 每日月離赤道交後初末限
     const MK = SiderealQuar - HM; // 白道積

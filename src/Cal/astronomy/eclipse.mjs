@@ -674,7 +674,7 @@ const Eclipse2 = (
     let NodeDif = NodeQuar - Math.abs(NodeAccumHalf - NodeQuar); // 麟德去交前後分。百一十二約前後分，爲去交時
     const NodeDif12 = (NodeDif * Denom) / 112; // 去交時。這裡的去交分是1日，為了方便，去交時轉爲日法爲單位
     const isYin = NodeAccum > NodeHalf;
-    const isBefore = NodeAccumHalf > NodeQuar; // 交後，在交點之後
+    const isBefore = NodeAccumHalf > NodeQuar; // 交後——左手？
     const isFast = AnoAccum < Anoma / 2; // AnoAccum > Anoma * .25 && AnoAccum <= AnomaQuar3
     let Season = 1;
     if (Month >= 1 && Month <= 3) {

@@ -196,6 +196,26 @@ export const deg2MansModern = (Deg, AccumObj, fixed) => {
 //根據廖育棟文檔14.3 14.4 
 export const mansModernList = (Jd, Name) => {
     Name = Name || "Shi";
+    let PosList, VelList
+    if (Name === "Shanggu") {
+        PosList = ShangguPosList
+        VelList = ShangguVelList
+    } else if (Name === "Shi") {
+        PosList = ShiPosList
+        VelList = ShiVelList
+    } else if (Name === "Chongzhen") {
+        PosList = ChongzhenPosList
+        VelList = ChongzhenVelList
+    } else if (Name === "Xinfa") {
+        PosList = XinfaPosList
+        VelList = XinfaVelList
+    } else if (Name === "Lingtai") {
+        PosList = LingtaiPosList
+        VelList = LingtaiVelList
+    } else if (Name === "Yixiang") {
+        PosList = YixiangPosList
+        VelList = YixiangVelList
+    }
     const EclpAccumList = {};
     const EquaAccumList = {};
     const CeclpAccumList = {};
@@ -215,8 +235,8 @@ export const mansModernList = (Jd, Name) => {
     for (let i = 0; i < 28; i++) {
         const XSRawParsec = divide(XSRaw, Parsec);
         const X00 = add(
-            eval(`${Name}PosList`)[i],
-            multiply(T, eval(`${Name}VelList`)[i]),
+            PosList[i],
+            multiply(T, VelList[i]),
         );
         const X01 = add(X00, XSRawParsec); // =r-rE=r+rS 視差修正之後
         const X02 = multiply(NP, X01); // 歲差章動變化之後
@@ -242,6 +262,7 @@ export const mansModernList = (Jd, Name) => {
         Obliq
     };
 };
+
 export const mansModern = (Jd, Name) => {
     Name = Name || "Shi";
     const { EclpAccumList, EquaAccumList, CeclpAccumList, CwhAccumList, XS, Obliq } = mansModernList(Jd, Name)

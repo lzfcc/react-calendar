@@ -214,7 +214,7 @@ export default class Newm extends React.Component {
                 </p>
                 <table>
                   <tbody>
-                    <tr>{this.RenderTableContent(calInfo)}</tr>
+                    {this.RenderTableContent(calInfo)}
                   </tbody>
                 </table>
               </div>

@@ -277,7 +277,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const AcrNewmAnoAccum = (NewmAnoAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmRaw[i - 1], Name).Tcorr + Anoma) % Anoma
         NewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour; // 定朔加時入轉度
       }
-      let NewmWhiteDeg = 0, SolsWhiteDeg = 0, Dingxian = 0, WhEqGong = 0;
+      let NewmWhiteDeg = 0, NewmWhiteGong = 0, Dingxian = 0, NodeWhiteGong = 0, WhEq_WhiteGong = 0, WhEqGong = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
       const NewmEclpGong = NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum; // 定朔距冬至實行度
       const { SolsEclpDeg, SolsEquaDeg } = solsMans(Name, Y);
@@ -290,10 +290,11 @@ export const D1 = (Name, YearStart, YearEnd) => {
           Y
         );
         NewmWhiteDeg = FuncNewm.NewmWhiteDeg
+        NewmWhiteGong = FuncNewm.NewmWhiteGong
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
-        SolsWhiteDeg = FuncNewm.SolsWhiteDeg;
         Dingxian = FuncNewm.Dingxian;
-        WhEqGong = FuncNewm.WhEqGong;
+        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong
+        WhEqGong = FuncNewm.WhEqGong
       } else if (Type >= 6) {
         const FuncNewm = moonJiudao(
           NewmNodeAccumPrint[i - 1],
@@ -304,8 +305,9 @@ export const D1 = (Name, YearStart, YearEnd) => {
           Y
         );
         NewmWhiteDeg = FuncNewm.NewmWhiteDeg
+        NewmWhiteGong = FuncNewm.NewmWhiteGong
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
-        SolsWhiteDeg = FuncNewm.SolsWhiteDeg;
+        NodeWhiteGong = FuncNewm.NodeWhiteGong
       }
       Sc[i] = [];
       Jd[i] = [];
@@ -366,22 +368,22 @@ export const D1 = (Name, YearStart, YearEnd) => {
           } else { // 有九道術的
             const MoonWhiteDeg = (NewmWhiteDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
-            MoonWhiteLon = (MoonWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal
+            MoonWhiteLon = (NewmWhiteGong + MidnAnojour - NewmAnojour + Sidereal) % Sidereal
           }
           if (Type >= 6) { // 分授時與九道術
             const NodeEclpGong = chooseNode(NewmEclpGong, NewmNodeAccumPrint[i - 1], NewmAnoAccumPrint[i - 1], AvgNewmSd, Name)
             if (Type === 11) {
-              // const NodeEquaGong = Hushigeyuan(NodeEquaGong).Eclp2Equa
-              const WhEq_WhiteGong = WhEqGong + equa2WhiteDif(Dingxian, Solar - WhEqGong)
-              MoonEquaLon = MoonWhiteLon - equa2WhiteDif(Dingxian, (MoonWhiteLon - WhEq_WhiteGong + Solar) % Solar)
+              const Moon_WhEq_WhiteDif = (MoonWhiteLon - WhEq_WhiteGong + Solar) % Solar
+              const Moon_WhEq_EquaDif = Moon_WhEq_WhiteDif - equa2WhiteDif(Dingxian, Moon_WhEq_WhiteDif)
+              MoonEquaLon = (WhEqGong + Moon_WhEq_EquaDif) % Solar
               MoonEclpLon = equaEclp(MoonEquaLon, Name).Equa2Eclp
               MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
               MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
               NowNewm_WhiteDif = (MidnAnojour - NewmAnojour + Sidereal) % Sidereal
             } else {
-              const NodeWhiteGong = NodeEclpGong + eclp2WhiteDif(NodeEclpGong, Solar - NodeEclpGong, Name) // 黃白交點黃經轉白經
-              // 此處Gong和Lon是一樣的，沒有區別
-              MoonEclpLon = MoonWhiteLon - eclp2WhiteDif(NodeEclpGong, (MoonWhiteLon - NodeWhiteGong + Solar) % Solar, Name) // 白轉黃只需要符號反過來
+              const MoonNode_WhiteDif = (MoonWhiteLon - NodeWhiteGong + Solar) % Solar// 此處Gong和Lon是一樣的，沒有區別
+              const MoonNode_EclpDif = MoonNode_WhiteDif - eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name)
+              MoonEclpLon = (NodeEclpGong + MoonNode_EclpDif) % Solar
               MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
               MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
               MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
@@ -633,4 +635,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Jiyuan', 1111))
+// console.log(D1('Shoushi', 1282))

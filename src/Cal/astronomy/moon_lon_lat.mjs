@@ -256,7 +256,11 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   // 冬至九道度
   const SolsWhiteMansDeg = SolsEclpMansDeg + eclp2WhiteDif(NodeEclpGong, SolsEclpMansDeg, Name)
   const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
-  return { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg };
+  return {
+    WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg,
+    NodeWhiteGong: (NodeWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal,
+    NewmWhiteGong: (NewmWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal,
+  };
 }
 
 export const chooseNode = (NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name) => {
@@ -313,8 +317,13 @@ export const moonJiudao = (
   Y,
 ) => {
   const NodeEclp = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
-  const { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
-  return { WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg };
+  const { WhiteAccumList, NewmWhiteDeg, NewmWhiteGong, NodeWhiteGong } = moonJiudaoFormula(NodeEclp, NewmEclpGong, Name, Y)
+  return {
+    WhiteAccumList,
+    NewmWhiteDeg,
+    NewmWhiteGong,
+    NodeWhiteGong
+  };
 };
 
 export const MoonLatTable = (NodeAccum, Name) => {
@@ -501,6 +510,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const Sidereal = 365.2575
   const SiderealHalf = 182.62875
   const SiderealQuar = 91.314375
+  const Solar = 365.2425;
   const SolarHalf = 182.62125;
   const SolarQuar = 91.310625;
   const SiderealSext = 60.875; // 周天六之一是會圓術天球半徑
@@ -510,7 +520,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const Node = 27.212224
   const T_NewmNodeDif_Avg = Node - AvgNewmNodeAccum; // 朔後平交日分：經朔之後的正交
   const S_NewmNodeDif = T_NewmNodeDif_Avg * MoonAvgVd;
-  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Sidereal; // 授時：正交距冬至定積度
+  const Node1EclpGong = (AvgNewmSd + S_NewmNodeDif) % Solar; // 授時：正交距冬至定積度
   /// 白赤交點距二分度數
   const Node1EclpHalf = Node1EclpGong % SolarHalf;
   const Node1EclpHalfRev = Node1EclpHalf < SolarQuar ? Node1EclpHalf : SolarHalf - Node1EclpHalf; // 求正交在二至後初末限：置冬至距正交積度及分，在半歲周已下，為冬至後；已上，去之，爲夏至後。其二至後，在象限已下，爲初限，已上，減去半歲周，爲末限
@@ -522,11 +532,11 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const Dingxian = 98 + (sign2 * 24 * d) / k; // 定限度。交在冬至後名減，夏至後名加——右手
   /// 白赤差
   const NewmEquaGong = Hushigeyuan(NewmEclpGong).Eclp2Equa
-  const Newm_WhEq_EquaDif = (NewmEquaGong - WhEqGong + Sidereal) % Sidereal
+  const Newm_WhEq_EquaDif = (NewmEquaGong - WhEqGong + Solar) % Solar
   const Newm_WhEq_WhiteDif = Newm_WhEq_EquaDif + equa2WhiteDif(Dingxian, Newm_WhEq_EquaDif)
   /// 九道宿鈐
   const WhiteAccumList = [];
-  let NewmWhiteDeg = 0, SolsWhiteDeg = 0
+  let NewmWhiteDeg = 0, NewmWhiteGong = 0, WhEq_WhiteGong = 0
   if (Y !== undefined) { // 如果有Y就是朔，就要求九道宿鈐
     const { EquaAccumList, SolsEquaDeg, SolsMansName, SolsEquaMansDeg } = solsMans('Shoushi', Y);
     const WhEq_EquaDeg = (SolsEquaDeg + WhEqGong) % Sidereal;
@@ -545,7 +555,9 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     NewmWhiteDeg = (WhEq_WhiteDeg + Newm_WhEq_WhiteDif) % Sidereal // 定朔白道宿積度
     /// 冬至月道宿度
     const SolsWhiteMansDeg = SolsEquaMansDeg + equa2WhiteDif(Dingxian, SolsEquaMansDeg)
-    SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
+    const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
+    WhEq_WhiteGong = (WhEq_WhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal // 白赤交點距冬至度數
+    NewmWhiteGong = (NewmWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal
   }
   /// 月赤緯
   let EquaLat = 0
@@ -559,6 +571,14 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     // const Theta1 = WhEqObliqMax / SiderealSext; // 定差。注意，有兩個「定差」。下一步：「餘以定差乘之」
     EquaLat = (NowWhEq_WhiteDif < SiderealHalf ? 1 : -1) * (WhEqObliqMax * (SiderealSext - UK)) / SiderealSext; // 與《數理》p383核驗無誤。每日月離赤道內外度。內減外加象限，爲每日月離白道去極度
   }
-  return { WhiteAccumList, NewmWhiteDeg, EquaLat, SolsWhiteDeg, Dingxian, WhEqGong };
+  return {
+    WhiteAccumList,
+    EquaLat,
+    Dingxian,
+    NewmWhiteDeg,
+    NewmWhiteGong,
+    WhEqGong,
+    WhEq_WhiteGong
+  };
 };
 // console.log(moonShoushi(45.65625 + 91.3125, 70, 1280, 0));

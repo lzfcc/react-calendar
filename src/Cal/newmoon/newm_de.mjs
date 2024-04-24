@@ -22,6 +22,7 @@ function findClosest(a, list) {
 }
 // 安排DE曆表的朔望節氣
 export const N6 = (Y, Longitude) => {
+    Longitude = Longitude || 116.428
     if (Y > 2499 || Y < -2499) throw (new Error('Year range of DE440/1: -2499 to 2499'))
     const EpoSolsJd = 2451534.749 // 取癸卯曆1999年12月22日平冬至時間儒略日
     const ChouConst = 15.68 // 採用癸卯曆首朔應，即十二月平朔距冬至的時間。與時憲曆用冬至次日夜半，我直接用冬至

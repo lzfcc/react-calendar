@@ -111,7 +111,7 @@ export default (YearStart, YearEnd, Longitude, Latitude, h, MansSystem) => {
           const EclpMans = deg2MansModern(EclpLon[j] * R2D, EclpAccumList).Mans;
           Pos[i][k].push(
             { [PlanetList[j] + "HoriLon"]: (HoriLon[j] * R2D).toFixed(4), [PlanetList[j] + "HoriLat"]: lat2NS(HoriLat[j] * R2D) },
-            { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: lat2NS(EquaLat[j] * R2D) },
+            { [PlanetList[j] + "EquaLon"]: (EquaLon[j] * R2D).toFixed(4), [PlanetList[j] + "EquaLat"]: lat2NS(EquaLat[j] * R2D) },            
             { [PlanetList[j] + "CeclpLon"]: CeclpLon[j].toFixed(4), [PlanetList[j] + "CeclpLat"]: lat2NS(CeclpLat[j]) },
             { [PlanetList[j] + "EclpLon"]: (EclpLon[j] * R2D).toFixed(4), [PlanetList[j] + "EclpLat"]: lat2NS(EclpLat[j] * R2D) },
             { [PlanetList[j] + "Equa"]: EquaMans, [PlanetList[j] + "Ceclp"]: CeclpMans, [PlanetList[j] + "Eclp"]: EclpMans })

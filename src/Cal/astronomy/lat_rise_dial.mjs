@@ -413,10 +413,9 @@ export const autoLat = (Sd, Name, isBare) => {
         "Mingtian",
         "Guantian",
         "Fengyuan",
-        "Zhantian",
-        "Jiyuan",
+        "Zhantian"
       ].includes(Name) ||
-      Type === 11
+      Type >= 9
     ) {
       Corr = AutoDifAccum(0, Sd, Name).SunDifAccum;
     }
@@ -468,10 +467,9 @@ export const autoRise = (Sd, SolsDeci, Name) => {
       "Mingtian",
       "Guantian",
       "Fengyuan",
-      "Zhantian",
-      "Jiyuan",
+      "Zhantian"
     ].includes(Name) ||
-    Type === 11
+    Type >= 9
   ) {
     Corr = AutoDifAccum(0, SdNoon, Name).SunDifAccum;
   }
@@ -519,8 +517,8 @@ export const autoDial = (Sd, SolsDeci, Name) => {
   if (
     [
       "Linde",
-      "Yisi",
       "LindeB",
+      "Yisi",
       "Shenlong",
       "Chongxuan",
       "Qintian",
@@ -529,10 +527,9 @@ export const autoDial = (Sd, SolsDeci, Name) => {
       "Mingtian",
       "Guantian",
       "Fengyuan",
-      "Zhantian",
-      "Jiyuan",
+      "Zhantian"
     ].includes(Name) ||
-    Type === 11
+    Type >= 9
   ) {
     Corr = AutoDifAccum(0, SdNoon, Name).SunDifAccum;
   }
@@ -545,7 +542,7 @@ export const autoDial = (Sd, SolsDeci, Name) => {
     Dial = dialTable1(X, "Easthan");
   } else if (Type === 4) {
     Dial = dialTable1(X, Name);
-  } else if (["Linde", "Yisi", "LindeB", "Shenlong"].includes(Name)) {
+  } else if (["Linde", "LindeB", "Yisi", "Shenlong"].includes(Name)) {
     Dial = dialTable2(X, "Linde");
   } else if (Type === 6) {
     Dial = dialTable2(X, Name);
@@ -566,3 +563,4 @@ export const autoDial = (Sd, SolsDeci, Name) => {
   }
   return Dial;
 };
+// console.log(autoDial(33.2614, 0.7386, "Huiyuan"))

@@ -1124,7 +1124,7 @@ hr {
 
 .color-white {
   color: var(--black);
-  background: var(--bggray);
+  background: white;
 }
 
 .color-black {

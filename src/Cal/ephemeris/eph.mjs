@@ -381,7 +381,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
               MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
               NowNewm_WhiteDif = (MidnAnojour - NewmAnojour + Sidereal) % Sidereal
             } else {
-              const MoonNode_WhiteDif = (MoonWhiteLon - NodeWhiteGong + Solar) % Solar// 此處Gong和Lon是一樣的，沒有區別
+              const MoonNode_WhiteDif = (MoonWhiteLon - NodeWhiteGong + Solar) % Solar // 此處Gong和Lon是一樣的，沒有區別
               const MoonNode_EclpDif = MoonNode_WhiteDif - eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name)
               MoonEclpLon = (NodeEclpGong + MoonNode_EclpDif) % Solar
               MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
@@ -635,4 +635,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Shoushi', 1282))
+// console.log(D1('Jiyuan', 1282))

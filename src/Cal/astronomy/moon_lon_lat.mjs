@@ -233,7 +233,7 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   Solar = Solar || SolarRaw;
   Sidereal = Sidereal || Solar;
   const WhiteAccumList = [];
-  const { EclpAccumList, SolsEclpDeg, SolsMansName, SolsEclpMansDeg } = solsMans(Name, Y);
+  const { EclpAccumList, SolsEclpDeg } = solsMans(Name, Y);
   const NodeEclpDeg = (NodeEclpGong + SolsEclpDeg) % Sidereal; // 正交加時黃道宿積度
   const { Name: NodeMansName, MansDeg: NodeEclpMansDeg } = deg2Mans(NodeEclpDeg, EclpAccumList);
   for (let i = 0; i < EclpAccumList.length; i++) {
@@ -250,15 +250,16 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
     NodeMansName + NodeWhiteMansDeg,
     WhiteAccumList,
   );
+  const SolsNode_EclpDif = Solar - NodeEclpGong
+  const SolsNode_WhiteDif = SolsNode_EclpDif + eclp2WhiteDif(NodeEclpGong, SolsNode_EclpDif, Name)
+  const NodeWhiteGong = Solar - SolsNode_WhiteDif
+  const SolsWhiteDeg = (NodeWhiteDeg - NodeWhiteGong + Sidereal) % Sidereal
   const NewmNode_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
   const NewmNode_WhiteDif = NewmNode_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode_EclpDif, Name)
-  const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal
-  // 冬至九道度
-  const SolsWhiteMansDeg = SolsEclpMansDeg + eclp2WhiteDif(NodeEclpGong, SolsEclpMansDeg, Name)
-  const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
+  const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal  
   return {
     WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg,
-    NodeWhiteGong: (NodeWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal,
+    NodeWhiteGong,
     NewmWhiteGong: (NewmWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal,
   };
 }
@@ -538,7 +539,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
   const WhiteAccumList = [];
   let NewmWhiteDeg = 0, NewmWhiteGong = 0, WhEq_WhiteGong = 0
   if (Y !== undefined) { // 如果有Y就是朔，就要求九道宿鈐
-    const { EquaAccumList, SolsEquaDeg, SolsMansName, SolsEquaMansDeg } = solsMans('Shoushi', Y);
+    const { EquaAccumList, SolsEquaDeg } = solsMans('Shoushi', Y);
     const WhEq_EquaDeg = (SolsEquaDeg + WhEqGong) % Sidereal;
     for (let i = 0; i < EquaAccumList.length; i++) {
       const Mans_WhEq_Dif = (EquaAccumList[i] - WhEq_EquaDeg + Sidereal) % Sidereal; // 「正交後積度」
@@ -554,9 +555,10 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     const WhEq_WhiteDeg = mans2Deg(WhEq_MansName + WhEq_WhiteMansDeg, WhiteAccumList) // 正交宿度赤轉白，授時曆沒有，我覺得按道理應該有
     NewmWhiteDeg = (WhEq_WhiteDeg + Newm_WhEq_WhiteDif) % Sidereal // 定朔白道宿積度
     /// 冬至月道宿度
-    const SolsWhiteMansDeg = SolsEquaMansDeg + equa2WhiteDif(Dingxian, SolsEquaMansDeg)
-    const SolsWhiteDeg = mans2Deg(SolsMansName + SolsWhiteMansDeg, WhiteAccumList)
-    WhEq_WhiteGong = (WhEq_WhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal // 白赤交點距冬至度數
+    const Sols_WhEq_EquaDif = Solar - WhEqGong
+    const Sols_WhEq_WhiteDif = Sols_WhEq_EquaDif + equa2WhiteDif(Dingxian, Sols_WhEq_EquaDif)
+    WhEq_WhiteGong = Solar - Sols_WhEq_WhiteDif
+    const SolsWhiteDeg = (WhEq_WhiteDeg - WhEq_WhiteGong + Sidereal) % Sidereal  
     NewmWhiteGong = (NewmWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal
   }
   /// 月赤緯

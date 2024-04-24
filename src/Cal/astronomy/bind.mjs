@@ -563,7 +563,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
   return Print;
 };
 // console.log(bindLon2Lat(0, 2)[14].data[3])
-export const bindDeg2Mans = (Deg) => {
+const bindDeg2Mans = (Deg) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
     EclpAccumList: EclpAccumListTaichu,
@@ -619,7 +619,7 @@ export const bindDeg2Mans = (Deg) => {
 };
 // console.log(bindDeg2Mans(23.1511, 'Jiazi'))
 
-export const bindMans2Deg = (Mans) => {
+const bindMans2Deg = (Mans) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
     EclpAccumList: EclpAccumListTaichu,

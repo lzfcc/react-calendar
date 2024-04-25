@@ -32,17 +32,17 @@ export const equa2Eclp = (Sobliq, EquaLon, EquaLat) => {
 // console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60))
 // console.log(eclp2Equa_Geom(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60))
 // 赤道經緯轉古代極黃經緯
-export const equa2Ceclp = (Sobliq, EquaLon, EquaLat) => {
+export const equa2Cec = (Sobliq, EquaLon, EquaLat) => {
   return {
-    CeclpLon: LonFlat2High(Sobliq, EquaLon),
-    CeclpLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon),
+    CecLon: LonFlat2High(Sobliq, EquaLon),
+    CecLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon),
   };
 };
-export const ceclp2Equa = (Sobliq, CeclpLon, CeclpLat) => {
-  const EquaLon = LonHigh2Flat(Sobliq, CeclpLon)
+export const ceclp2Equa = (Sobliq, CecLon, CecLat) => {
+  const EquaLon = LonHigh2Flat(Sobliq, CecLon)
   return {
     EquaLon,
-    EquaLat: CeclpLat + FlatLon2FlatLat(Sobliq, EquaLon),
+    EquaLat: CecLat + FlatLon2FlatLat(Sobliq, EquaLon),
   };
 };
 /**
@@ -51,17 +51,17 @@ export const ceclp2Equa = (Sobliq, CeclpLon, CeclpLat) => {
  * @param {*} Lon 黃經
  * @param {*} Lat 黃緯
  */
-export const eclp2Ceclp = (Sobliq, Lon, Lat) => {
+export const eclp2Cec = (Sobliq, Lon, Lat) => {
   const { EquaLon, EquaLat } = eclp2Equa_Mx(Sobliq, Lon, Lat);
-  const { CeclpLon, CeclpLat } = equa2Ceclp(Sobliq, EquaLon, EquaLat);
-  return { CeclpLon, CeclpLat, EquaLon, EquaLat };
+  const { CecLon, CecLat } = equa2Cec(Sobliq, EquaLon, EquaLat);
+  return { CecLon, CecLat, EquaLon, EquaLat };
 };
-// console.log(eclp2Ceclp(23.5, 10, 10))
+// console.log(eclp2Cec(23.5, 10, 10))
 export const testEclpEclpDif = (Sobliq, Lat) => {
   // 看極黃經和黃經差多少
   const Dif = [];
   for (let i = 0; i < 180; i++) {
-    Dif[i] = (eclp2Ceclp(Sobliq, i, Lat).CeclpLon - i) % 360;
+    Dif[i] = (eclp2Cec(Sobliq, i, Lat).CecLon - i) % 360;
     if (Dif[i] > 180) Dif[i] -= 360;
     Dif[i] = +Dif[i].toFixed(5);
   }

@@ -346,7 +346,7 @@ export default class Day extends React.Component {
               <span className="SunEqua">紅色：赤道經緯宿度</span>
             </li>
             <li>
-              <span className="SunCeclp">黑色：極黃經緯宿度</span>
+              <span className="SunCec">黑色：極黃經緯宿度</span>
             </li>
             <li>
               <span className="SunEclp">黃色：黃道經緯宿度</span>

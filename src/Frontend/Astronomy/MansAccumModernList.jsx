@@ -15,8 +15,8 @@ export default class Converter extends React.Component {
 
   handle() {
     try {
-      const { EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, CwhAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint, SolsCwhPrint } = bindMansAccumModernList(this.state.calendars, this.state.Jd)
-      this.setState({ EclpAccumPrint, EquaAccumPrint, CeclpAccumPrint, CwhAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCeclpPrint, SolsCwhPrint })
+      const { EclpAccumPrint, EquaAccumPrint, CecAccumPrint, CwhAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCecPrint, SolsCwhPrint } = bindMansAccumModernList(this.state.calendars, this.state.Jd)
+      this.setState({ EclpAccumPrint, EquaAccumPrint, CecAccumPrint, CwhAccumPrint, SolsEclpPrint, SolsEquaPrint, SolsCecPrint, SolsCwhPrint })
     } catch (e) {
       alert(e.message)
     }
@@ -44,10 +44,10 @@ export default class Converter extends React.Component {
           </tbody>
         </table>
         <h3>極黃宿鈐</h3>
-        <p>冬至日躔極黃 {(this.state.SolsCeclpPrint)}</p>
+        <p>冬至日躔極黃 {(this.state.SolsCecPrint)}</p>
         <table>
           <tbody>
-            {this.state.CeclpAccumPrint.map(row => {
+            {this.state.CecAccumPrint.map(row => {
               return (
                 <tr>
                   {row.map(d => {
@@ -75,7 +75,7 @@ export default class Converter extends React.Component {
         </table>
         <h3>九道宿鈐</h3>
         <p>平黃白交點黃經用IAU2006的基本輻角公式，黃白大距用古曆的6度5.91363627°，黃赤大距用古曆23.9度或24度，白赤轉換見曲安京《中國數理天文學》白道交周部分</p>
-        <p>冬至日躔九道 {(this.state.SolsCwhPrint)}</p>        
+        <p>冬至日躔九道 {(this.state.SolsCwhPrint)}</p>
         <table>
           <tbody>
             {this.state.CwhAccumPrint.map(row => {

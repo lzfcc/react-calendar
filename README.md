@@ -133,7 +133,7 @@ lastmod: 2021-04-21
 - LeapLimit 閏限 The limit for arranging a leap
 - Equa 赤道 equator
 - Eclp 黃道 ecliptic
-- Ceclp 極黃
+- Cec 極黃
 - Ecli 交食 eclipse
 - Lon 經度 longitude
 - Lat 緯度 latitude
@@ -568,7 +568,7 @@ a = [0, ...a]
 - 修復授時曆元前值日
 - 修復現代曆書每日儒略日算法
 - 修復現代曆書沒有十二月
-- 修正古曆Ano/NodeAccumMidn算法
+- 修正古曆曆書Ano/NodeAccumMidn算法
 - 修正乾象入轉
 - 修正麟德入宿度
 - 修復皇極黃赤轉換
@@ -578,5 +578,4 @@ a = [0, ...a]
 - 修復欽天月黃緯符號
 - 更換現代地軌偏心率算法
 - 下線 bindDeg2Mans
-
-其他：改名，AutoMoonAcrS --> anojour, MoonAcrS --> Anojour, AnomaAccum --> AnoAccum
+- 改名：AutoMoonAcrS –> anojour, MoonAcrS –> Anojour, AnomaAccum –> AnoAccum, Ceclp –> Cec

@@ -346,7 +346,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Solar
           MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
           MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
-        } else {          
+        } else {
           AnoAccumMidn = (NewmAnoAccumMidnPrint[i - 1] + k - 1) % Anoma;
           NodeAccumMidn = (AcrNewmNodeAccum - deci(NewmAcrRaw[i - 1]) + k - 1 + Node) % Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
@@ -405,11 +405,11 @@ export const D1 = (Name, YearStart, YearEnd) => {
         }
         Pos[i][k] = [
           { SunEquaLon: SunEquaLon.toFixed(4), SunEquaLat: lat2NS(SunEquaLat) },
-          { SunCeclpLon: SunLon.toFixed(4), Dial: Dial },
-          { SunEqua: SunEqua, SunCeclp: SunEclp },
+          { SunCecLon: SunLon.toFixed(4), Dial: Dial },
+          { SunEqua: SunEqua, SunCec: SunEclp },
           { MoonEquaLon: MoonEquaLon ? MoonEquaLon.toFixed(4) : undefined, MoonEquaLat: lat2NS(MoonEquaLat) },
-          { MoonCeclpLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined, MoonCeclpLat: lat2NS(MoonEclpLat) },
-          { MoonEqua: MoonEqua, MoonCeclp: MoonEclp },
+          { MoonCecLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined, MoonCecLat: lat2NS(MoonEclpLat) },
+          { MoonEqua: MoonEqua, MoonCec: MoonEclp },
           { MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined, MoonWhite: MoonWhite, OrbColor: OrbColor }
         ]
         const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci);

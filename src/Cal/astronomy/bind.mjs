@@ -42,8 +42,8 @@ import {
 import { mansModern } from "../modern/mans.mjs";
 import {
   Lon2DialWest,
-  eclp2Ceclp,
-  equa2Ceclp,
+  eclp2Cec,
+  equa2Cec,
   ceclp2Equa,
   equa2Eclp,
   testEclpEclpDif,
@@ -372,13 +372,13 @@ export const bindEquaEclp = (GongRaw) => {
 // console.log(bindEquaEclp(3))
 export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
   (Sobliq = +Sobliq), (Lon = +Lon), (Lat = +Lat);
-  const { CeclpLon, CeclpLat, EquaLon, EquaLat } = eclp2Ceclp(Sobliq, Lon, Lat);
+  const { CecLon, CecLat, EquaLon, EquaLat } = eclp2Cec(Sobliq, Lon, Lat);
   const DifMax = testEclpEclpDif(Sobliq, Lat);
-  let CeclpLonDif = CeclpLon - Lon;
+  let CecLonDif = CecLon - Lon;
   let EquaLonDif = EquaLon - Lon;
-  if (CeclpLonDif > 180) CeclpLonDif -= 360;
+  if (CecLonDif > 180) CecLonDif -= 360;
   if (EquaLonDif > 180) EquaLonDif -= 360;
-  const CeclpLatDif = CeclpLat - Lat;
+  const CecLatDif = CecLat - Lat;
   const EquaLatDif = EquaLat - Lat;
   let Print = [];
   let Print2 = [];
@@ -395,34 +395,34 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
   Print = Print.concat({
     title: "極黃",
     data: [
-      CeclpLon.toFixed(8),
-      CeclpLonDif.toFixed(4),
-      CeclpLat.toFixed(8),
-      CeclpLatDif.toFixed(4),
+      CecLon.toFixed(8),
+      CecLonDif.toFixed(4),
+      CecLat.toFixed(8),
+      CecLatDif.toFixed(4),
     ],
   });
   Print = Print.concat({ title: "黃道", data: [Lon, "-", Lat, "-"] });
 
   const { Lon: EclpLon2, Lat: EclpLat2 } = equa2Eclp(Sobliq, Lon, Lat);
-  const { CeclpLon: CeclpLon2, CeclpLat: CeclpLat2 } = equa2Ceclp(
+  const { CecLon: CecLon2, CecLat: CecLat2 } = equa2Cec(
     Sobliq,
     Lon,
     Lat,
   );
-  let CeclpLonDif2 = CeclpLon2 - Lon;
+  let CecLonDif2 = CecLon2 - Lon;
   let EclpLonDif2 = EclpLon2 - Lon;
-  if (CeclpLonDif2 > 180) CeclpLonDif2 -= 360;
+  if (CecLonDif2 > 180) CecLonDif2 -= 360;
   if (EclpLonDif2 > 180) EclpLonDif2 -= 360;
-  const CeclpLatDif2 = CeclpLat2 - Lat;
+  const CecLatDif2 = CecLat2 - Lat;
   const EclpLatDif2 = EclpLat2 - Lat;
   Print2 = Print2.concat({ title: "赤道", data: [Lon, "-", Lat, "-"] });
   Print2 = Print2.concat({
     title: "極黃",
     data: [
-      CeclpLon2.toFixed(8),
-      CeclpLonDif2.toFixed(4),
-      CeclpLat2.toFixed(8),
-      CeclpLatDif2.toFixed(4),
+      CecLon2.toFixed(8),
+      CecLonDif2.toFixed(4),
+      CecLat2.toFixed(8),
+      CecLatDif2.toFixed(4),
     ],
   });
   Print2 = Print2.concat({
@@ -856,16 +856,16 @@ export const bindMansAccumModernList = (Name, Jd) => {
   const {
     EclpAccumList: EclpAccumListRaw,
     EquaAccumList: EquaAccumListRaw,
-    CeclpAccumList: CeclpAccumListRaw,
+    CecAccumList: CecAccumListRaw,
     CwhAccumList: CwhAccumListRaw,
     SolsEclpMans,
     SolsEquaMans,
-    SolsCeclpMans,
+    SolsCecMans,
     SolsCwhMans
   } = mansModern(Jd, Name);
   const EclpAccumList = {};
   const EquaAccumList = {};
-  const CeclpAccumList = {};
+  const CecAccumList = {};
   const CwhAccumList = {};
   for (const Mans in EclpAccumListRaw) {
     EclpAccumList[Mans] =
@@ -875,9 +875,9 @@ export const bindMansAccumModernList = (Name, Jd) => {
     EquaAccumList[Mans] =
       (EquaAccumListRaw[Mans] - EquaAccumListRaw["角"] + 360) % 360;
   }
-  for (const Mans in CeclpAccumListRaw) {
-    CeclpAccumList[Mans] =
-      (CeclpAccumListRaw[Mans] - CeclpAccumListRaw["角"] + 360) % 360;
+  for (const Mans in CecAccumListRaw) {
+    CecAccumList[Mans] =
+      (CecAccumListRaw[Mans] - CecAccumListRaw["角"] + 360) % 360;
   }
   for (const Mans in CwhAccumListRaw) {
     CwhAccumList[Mans] =
@@ -889,7 +889,7 @@ export const bindMansAccumModernList = (Name, Jd) => {
   const EquaSortedList = Object.entries(EquaAccumList).sort(
     (a, b) => a[1] - b[1],
   );
-  const CeclpSortedList = Object.entries(CeclpAccumList).sort(
+  const CecSortedList = Object.entries(CecAccumList).sort(
     (a, b) => a[1] - b[1],
   );
   const CwhSortedList = Object.entries(CwhAccumList).sort(
@@ -897,36 +897,36 @@ export const bindMansAccumModernList = (Name, Jd) => {
   );
   const EclpList = [];
   const EquaList = [];
-  const CeclpList = [];
+  const CecList = [];
   const CwhList = [];
   const EclpAccumPrint = [];
   const EquaAccumPrint = [];
-  const CeclpAccumPrint = [];
+  const CecAccumPrint = [];
   const CwhAccumPrint = [];
   for (let i = 0; i < 27; i++) {
     EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(6);
     EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(6);
-    CeclpList[i] = +(CeclpSortedList[i + 1][1] - CeclpSortedList[i][1]).toFixed(6);
+    CecList[i] = +(CecSortedList[i + 1][1] - CecSortedList[i][1]).toFixed(6);
     CwhList[i] = +(CwhSortedList[i + 1][1] - CwhSortedList[i][1]).toFixed(6);
   }
   EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(6);
   EquaList[27] = +(360 - EquaSortedList[27][1]).toFixed(6);
-  CeclpList[27] = +(360 - CeclpSortedList[27][1]).toFixed(6);
+  CecList[27] = +(360 - CecSortedList[27][1]).toFixed(6);
   CwhList[27] = +(360 - CwhSortedList[27][1]).toFixed(6);
   for (let i = 0; i < 4; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
-    CeclpAccumPrint.push([]);
+    CecAccumPrint.push([]);
     CwhAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
-    let CeclpSum = 0;
+    let CecSum = 0;
     let CwhSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
       EclpSum += EclpList[index];
       EquaSum += EquaList[index];
-      CeclpSum += CeclpList[index];
+      CecSum += CecList[index];
       CwhSum += CwhList[index];
     }
     for (let j = 0; j < 7; j++) {
@@ -941,10 +941,10 @@ export const bindMansAccumModernList = (Name, Jd) => {
           5,
         )}　\n${NumList[index]} ${EquaList[index]}`,
       );
-      CeclpAccumPrint[i].push(
-        `${CeclpSortedList[index][0]} ${CeclpSortedList[index][1].toFixed(
+      CecAccumPrint[i].push(
+        `${CecSortedList[index][0]} ${CecSortedList[index][1].toFixed(
           5,
-        )}　\n${NumList[index]} ${CeclpList[index]}`,
+        )}　\n${NumList[index]} ${CecList[index]}`,
       );
       CwhAccumPrint[i].push(
         `${CwhSortedList[index][0]} ${CwhSortedList[index][1].toFixed(
@@ -954,25 +954,25 @@ export const bindMansAccumModernList = (Name, Jd) => {
     }
     EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i] + EquaSum.toFixed(3);
-    CeclpAccumPrint[i][8] = DirList[i] + CeclpSum.toFixed(3);
+    CecAccumPrint[i][8] = DirList[i] + CecSum.toFixed(3);
     CwhAccumPrint[i][8] = DirList[i] + CwhSum.toFixed(3);
   }
-  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CeclpAccumPrint[4] = ["下爲古度"]), (CwhAccumPrint[4] = ["下爲古度"]);
+  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CecAccumPrint[4] = ["下爲古度"]), (CwhAccumPrint[4] = ["下爲古度"]);
   const p = 360 / 365.25;
   for (let i = 5; i < 9; i++) {
     EclpAccumPrint.push([]);
     EquaAccumPrint.push([]);
-    CeclpAccumPrint.push([]);
+    CecAccumPrint.push([]);
     CwhAccumPrint.push([]);
     let EclpSum = 0;
     let EquaSum = 0;
-    let CeclpSum = 0;
+    let CecSum = 0;
     let CwhSum = 0;
     for (let j = 0; j < 7; j++) {
       const index = (i - 5) * 7 + j;
       EclpSum += EclpList[index] / p;
       EquaSum += EquaList[index] / p;
-      CeclpSum += CeclpList[index] / p;
+      CecSum += CecList[index] / p;
       CwhSum += CwhList[index] / p;
     }
     for (let j = 0; j < 7; j++) {
@@ -987,10 +987,10 @@ export const bindMansAccumModernList = (Name, Jd) => {
           4,
         )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(5)}`,
       );
-      CeclpAccumPrint[i].push(
-        `${CeclpSortedList[index][0]} ${(CeclpSortedList[index][1] / p).toFixed(
+      CecAccumPrint[i].push(
+        `${CecSortedList[index][0]} ${(CecSortedList[index][1] / p).toFixed(
           4,
-        )}　\n${NumList[index]} ${(CeclpList[index] / p).toFixed(5)}`,
+        )}　\n${NumList[index]} ${(CecList[index] / p).toFixed(5)}`,
       );
       CwhAccumPrint[i].push(
         `${CwhSortedList[index][0]} ${(CwhSortedList[index][1] / p).toFixed(
@@ -1000,17 +1000,17 @@ export const bindMansAccumModernList = (Name, Jd) => {
     }
     EclpAccumPrint[i][8] = DirList[i - 5] + EclpSum.toFixed(3);
     EquaAccumPrint[i][8] = DirList[i - 5] + EquaSum.toFixed(3);
-    CeclpAccumPrint[i][8] = DirList[i - 5] + CeclpSum.toFixed(3);
+    CecAccumPrint[i][8] = DirList[i - 5] + CecSum.toFixed(3);
     CwhAccumPrint[i][8] = DirList[i - 5] + CwhSum.toFixed(3);
   }
   return {
     EclpAccumPrint,
     EquaAccumPrint,
-    CeclpAccumPrint,
+    CecAccumPrint,
     CwhAccumPrint,
     SolsEclpPrint: SolsEclpMans,
     SolsEquaPrint: SolsEquaMans,
-    SolsCeclpPrint: SolsCeclpMans,
+    SolsCecPrint: SolsCecMans,
     SolsCwhPrint: SolsCwhMans,
   };
 };

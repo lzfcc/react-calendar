@@ -5,7 +5,7 @@ import { MansNameList } from "../parameter/constants.mjs";
 import { Fbmx, rr1, xyz2lonlat } from "../astronomy/pos_functions.mjs";
 import { Parsec, R2D, cDay } from "../parameter/functions.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
-import { equa2Ceclp } from "../astronomy/pos_convert_modern.mjs";
+import { equa2Cec } from "../astronomy/pos_convert_modern.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { lonEqua2Cwh } from "../astronomy/pos_convert_modern.mjs";
 import { LonFlat2High } from "../astronomy/pos_convert.mjs";
@@ -218,7 +218,7 @@ export const mansModernList = (Jd, Name) => {
     }
     const EclpAccumList = {};
     const EquaAccumList = {};
-    const CeclpAccumList = {};
+    const CecAccumList = {};
     const CwhAccumList = {};
     const T = (Jd - 2451545) / 36525;
     const { N, Obliq } = nutaMx(T);
@@ -250,13 +250,13 @@ export const mansModernList = (Jd, Name) => {
         const EquaLon = (xyz2lonlat(XEqua).Lon * R2D + 360) % 360;
         EquaAccumList[MansNameList[i]] = EquaLon
         EclpAccumList[MansNameList[i]] = (xyz2lonlat(XEclp).Lon * R2D + 360) % 360;
-        CeclpAccumList[MansNameList[i]] = equa2Ceclp(Obliq * R2D, EquaLon, 0).CeclpLon
+        CecAccumList[MansNameList[i]] = equa2Cec(Obliq * R2D, EquaLon, 0).CecLon
         CwhAccumList[MansNameList[i]] = (lonEqua2Cwh(Jd, EquaLon).CwhLon + tmp) % 360
     }
     return {
         EclpAccumList,
         EquaAccumList,
-        CeclpAccumList,
+        CecAccumList,
         CwhAccumList,
         XS,
         Obliq
@@ -265,11 +265,11 @@ export const mansModernList = (Jd, Name) => {
 
 export const mansModern = (Jd, Name) => {
     Name = Name || "Shi";
-    const { EclpAccumList, EquaAccumList, CeclpAccumList, CwhAccumList, XS, Obliq } = mansModernList(Jd, Name)
+    const { EclpAccumList, EquaAccumList, CecAccumList, CwhAccumList, XS, Obliq } = mansModernList(Jd, Name)
     const XSEclp = multiply(rr1(Obliq), XS); // 乘法順序不能變！！要不然transpose()也沒用
     const SunEclpLon = (xyz2lonlat(XSEclp.toArray()).Lon * R2D + 360) % 360;
     const SunEquaLon = (xyz2lonlat(XS.toArray()).Lon * R2D + 360) % 360;
-    const SunCeclpLon = equa2Ceclp(Obliq * R2D, SunEquaLon, 0).CeclpLon
+    const SunCecLon = equa2Cec(Obliq * R2D, SunEquaLon, 0).CecLon
     const SunCwhLon = lonEqua2Cwh(Jd, SunEquaLon).CwhLon
     const { Mans: Eclp, SolsMans: SolsEclpMans } = deg2MansModern(
         SunEclpLon,
@@ -279,9 +279,9 @@ export const mansModern = (Jd, Name) => {
         SunEquaLon,
         EquaAccumList
     );
-    const { Mans: Ceclp, SolsMans: SolsCeclpMans } = deg2MansModern(
-        SunCeclpLon,
-        CeclpAccumList
+    const { Mans: Cec, SolsMans: SolsCecMans } = deg2MansModern(
+        SunCecLon,
+        CecAccumList
     );
     const { Mans: Cwh, SolsMans: SolsCwhMans } = deg2MansModern(
         SunCwhLon,
@@ -290,15 +290,15 @@ export const mansModern = (Jd, Name) => {
     return {
         Eclp,
         Equa,
-        Ceclp,
+        Cec,
         Cwh,
         EclpAccumList,
         EquaAccumList,
-        CeclpAccumList,
+        CecAccumList,
         CwhAccumList,
         SolsEclpMans,
         SolsEquaMans,
-        SolsCeclpMans,
+        SolsCecMans,
         SolsCwhMans
     };
 };

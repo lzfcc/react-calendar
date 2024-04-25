@@ -74,7 +74,7 @@ export default class Converter extends React.Component {
           </tbody>
         </table>
         <h3>九道宿鈐</h3>
-        <p>平黃白交點黃經用IAU2006的基本輻角公式，黃白大距用古曆的6度5.91363627°，黃赤大距用古曆23.9度23.5559844°，白赤轉換見曲安京《中國數理天文學》白道交周部分</p>
+        <p>平黃白交點黃經用IAU2006的基本輻角公式，黃白大距用古曆的6度5.91363627°，黃赤大距用古曆23.9度或24度，白赤轉換見曲安京《中國數理天文學》白道交周部分</p>
         <p>冬至日躔九道 {(this.state.SolsCwhPrint)}</p>        
         <table>
           <tbody>

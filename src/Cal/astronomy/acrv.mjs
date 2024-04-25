@@ -483,7 +483,7 @@ const MoonDifAccumTable = (AnoAccum, Name) => {
   let MoonDegDenom = Denom;
   if (Name === "Qintian" || Type >= 8) {
     MoonDegDenom = 100;
-    if (["Yingtian", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
+    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
   }
   const MoonAcrVd = [];
   const num = Name === "Qintian" ? 248 : 27;
@@ -552,7 +552,7 @@ const MoonDifAccumTable = (AnoAccum, Name) => {
   // const MoonDifAccum1 = MoonDifAccum[AnoAccumDay1] + MoonAcrAvgDif1 * AnoAccumFract
   return MoonDifAccum2;
 };
-// console.log(MoonDifAccumTable(2.92, 'Jiyuan'))
+// console.log(MoonDifAccumTable(2, 'Dayan'))
 
 const AnojourTable2 = (AnoAccum, Name) => {
   const { Type, Anoma, MoonAcrVList, Denom } = Para[Name];
@@ -571,7 +571,7 @@ const AnojourTable2 = (AnoAccum, Name) => {
   let MoonDegDenom = Denom;
   if (Name === "Qintian" || Type >= 8) {
     MoonDegDenom = 100;
-    if (["Yingtian", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
+    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
   }
   const MoonAcrVd = [];
   const num = Name === "Qintian" ? 248 : 27;

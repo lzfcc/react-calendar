@@ -69,7 +69,7 @@ export default class Converter extends React.Component {
               <tr>
                 <td className='RowTitle'>{row.title}</td>
                 {row.data.map(d => {
-                  return (<td style={{ whiteSpace: 'pre-wrap' }}>{d}</td>)
+                  return (<td>{d}</td>)
                 })}
               </tr>
             )

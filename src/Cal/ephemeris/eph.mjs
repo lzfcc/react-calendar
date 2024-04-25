@@ -69,7 +69,6 @@ export const D1 = (Name, YearStart, YearEnd) => {
       NewmAcrRaw,
       NewmAvgRaw,
       NewmNodeAccumPrint,
-      NewmNodeAccumMidnPrint,
       NewmAnoAccumPrint,
       NewmAnoAccumMidnPrint,
     } = CalNewm(Name, Y)[0];
@@ -86,7 +85,6 @@ export const D1 = (Name, YearStart, YearEnd) => {
     const HexagramLeng = Solar / 60;
     const MoonAvgVd = AutoMoonAvgV(Name);
     const ZhengScOrder = fm60((Math.floor(NewmInt[0]) + (ScConst || 0)))
-    const ZhengSdMidn = +((NewmInt[0] - SolsAccum + Solar) % Solar).toFixed(5); // 正月夜半到冬至距離
     const ZhengSdInt = Math.floor(NewmInt[0]) - Math.floor(SolsAccum); // 正月朔日夜半距離冬至夜半整數日
     const SolsDeci = deci(SolsAccum);
     const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
@@ -309,6 +307,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
         NodeWhiteGong = FuncNewm.NodeWhiteGong
       }
+      const AcrNewmNodeAccum = NewmNodeAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmSd, Name, NewmNodeAccumPrint[i - 1]).NodeAccumCorrA
       Sc[i] = [];
       Jd[i] = [];
       Nayin[i] = [];
@@ -347,14 +346,9 @@ export const D1 = (Name, YearStart, YearEnd) => {
           MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Solar
           MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
           MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
-        } else {
-          NodeAccumMidn = (NewmNodeAccumMidnPrint[i - 1] + k - 1) % Node;
+        } else {          
           AnoAccumMidn = (NewmAnoAccumMidnPrint[i - 1] + k - 1) % Anoma;
-          NodeAccumMidn =
-            (NodeAccumMidn +
-              AutoTcorr(AnoAccumMidn, SdMidn, Name, NodeAccumMidn)
-                .NodeAccumCorrA) %
-            Node;
+          NodeAccumMidn = (AcrNewmNodeAccum - deci(NewmAcrRaw[i - 1]) + k - 1 + Node) % Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
@@ -635,4 +629,4 @@ export const D1 = (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(D1('Jiyuan', 11))
+// console.log(D1('Jiyuan', 1111))

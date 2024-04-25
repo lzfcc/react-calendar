@@ -12,7 +12,7 @@ import {
   atand,
   atan2d,
 } from "../parameter/functions.mjs";
-import { FlatLon2FlatLat, HighLon2FlatLat, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
+import { FlatLon2FlatLat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { lonlat2xyz, rr1, xyz2lonlat } from "./pos_functions.mjs";
 import { modernConsts } from "./astr_const.mjs";
@@ -89,12 +89,18 @@ const whEcNode2WhEqNode = (WhEcLon, Sobliq, Mobliq) => {
   const tan_WhEqLon =
     (tan_WhEqLonMax * sind(WhEcLonRev1)) /
     (1 - tan_WhEqLonMax * cosd(Sobliq) * cosd(WhEcLonRev1));
+  const WhEqEquinoxDif = atand(tan_WhEqLon)
+  const WhEcGong = Lon2Gong(WhEcLon)
+  const WhEcGongHalf = WhEcGong % 180;
+  const sign1 = WhEcGongHalf < 90 ? 1 : -1;
+  const sign2 = WhEcGong < 180 ? -1 : 1; // 符號照抄授時曆
   return {
     WhEqLonMax: atand(tan_WhEqLonMax),
-    WhEqLon: atand(tan_WhEqLon),
+    // WhEqLon: (sign1 * -sign2 * WhEqEquinoxDif + 360) % 360,
+    WhEqLon: WhEqEquinoxDif,
   };
 };
-
+// console.log(whEcNode2WhEqNode(190))
 /**
  * 求白赤大距
  * @param {*} WhEcLon 黃白交點黃經

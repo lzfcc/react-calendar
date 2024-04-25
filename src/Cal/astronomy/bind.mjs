@@ -50,7 +50,7 @@ import {
   whEqObliq
 } from "./pos_convert_modern.mjs";
 import { equaEclp } from "./equa_eclp.mjs";
-import { chooseNode, eclp2WhiteDif, moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
+import { chooseNode, eclp2WhiteDif, equa2WhiteDif, moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
@@ -1017,119 +1017,167 @@ export const bindMansAccumModernList = (Name, Jd) => {
 // console.log(bindMansAccumModernList('Chongzhen', 2424222))
 
 /**
- * @param {*} NodeDif 黃道某點距交點黃道度
- * @param {*} NodeAccum 此時入交
- * @param {*} AnoAccum 此時入轉
- * @param {*} Sd 此時距冬至時間 
  * @param {*} AvgNewmNodeAccum 此前經朔入交
  * @param {*} AvgNewmAnoAccum 此前經朔入轉
  * @param {*} AvgNewmSd 此前經朔距冬至
+ * @param {*} D 此時距離經朔時間
  * @returns 
  */
-export const bindMoonLat = (NodeDif, NodeAccum, AnoAccum, Sd,
-  AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd) => {
-  NodeDif = +NodeDif
-  NodeAccum = +NodeAccum;
-  AnoAccum = +AnoAccum;
-  Sd = +Sd;
-  AvgNewmAnoAccum = +AvgNewmAnoAccum;  
-  AvgNewmNodeAccum = +AvgNewmNodeAccum
+export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) => {
+  D = +D
+  AvgNewmNodeAccum = +AvgNewmNodeAccum;
+  AvgNewmAnoAccum = +AvgNewmAnoAccum;
   AvgNewmSd = +AvgNewmSd;
-  if (NodeAccum >= 27.21221 || NodeAccum < 0)
+  if (AvgNewmNodeAccum >= 27.21221 || AvgNewmNodeAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  if (Sd >= 365.246 || Sd < 0)
+  if (AvgNewmSd >= 365.246 || AvgNewmSd < 0)
     throw new Error("請輸入一週天度內的度數");
-  if (AnoAccum >= 27.21221 || AvgNewmAnoAccum > 27.21221 || AnoAccum < 0 || AvgNewmAnoAccum < 0)
+  if (AvgNewmAnoAccum >= 27.21221 || AvgNewmAnoAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  //以下根據授時曆參數算球面三角
-  const Sidereal = 365.2575
-  const p = 360 / Sidereal
-  const Node1EclpGong = ((AvgNewmSd + (27.212224 - AvgNewmNodeAccum) * 13.36875) % Sidereal) * p
-  const { WhEqLon, WhEqObliq } = whEqObliq(Gong2Lon(Node1EclpGong))
-  const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, "Shoushi").Tcorr + 27.5546) % 27.5546
-  const AnojourNow = anojour(AnoAccum, "Shoushi").Anojour;
-  const AnojourNewm = anojour(AcrNewmAnoAccum, "Shoushi").Anojour;
-  const NowNewm_WhiteDif = ((AnojourNow - AnojourNewm + Sidereal) % Sidereal) * p
-  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, "Shoushi").Tcorr
-  const NewmEclpGong = (AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, "Shoushi").SunDifAccum) * p
-  const NewmEquaGong = GongHigh2Flat(23.5559844, NewmEclpGong)
-  const Newm_WhEq_EquaDif = (NewmEquaGong - Lon2Gong(WhEqLon) + 360) % 360
-  const Newm_WhEq_WhiteDif = LonFlat2High(WhEqObliq, Newm_WhEq_EquaDif)
-  const NowWhEq_WhiteDif = (Newm_WhEq_WhiteDif + NowNewm_WhiteDif) % 360
-  const NowWhEq_EquaDif = LonHigh2Flat(WhEqObliq, NowWhEq_WhiteDif)
-  const NowEquaLon = NowWhEq_EquaDif + WhEqLon
-  const NowEquaLat = HighLon2FlatLat(WhEqObliq, NowWhEq_WhiteDif)
-  const { CeclpLon, CeclpLat } = equa2Ceclp(23.5559844, NowEquaLon, NowEquaLat)
-  let Print = [{
-    title: "球面三角",
-    data: [
-      (Node1EclpGong / p).toFixed(4),
-      lat2NS(CeclpLat / p),
-      lat2NS(NowEquaLat / p),
-      (CeclpLon / p).toFixed(4),
-      (NowEquaLon / p).toFixed(4)
-    ]
-  }]
+  let Print = []
   Print = Print.concat(
     [
       "Qianxiang",
       "Yuanjia",
       "Daming",
       "Huangji",
-      "Dayan",
       "Qintian",
+      "Mingtian",
+      "Jiyuan",
+      "Shoushi",
+      "Dayan",
       "Yingtian",
       "Qianyuan",
       "Yitian",
       "Chongtian",
-      "Mingtian",
       "Guantian",
-      "Jiyuan",
-      "Shoushi"
     ].map((Name) => {
-      const { Sidereal, Anoma, Type } = Para[Name]
-      let LatPrint = "";
-      let EquaLatPrint = "";
-      const AcrNewmAnoAccum = (AvgNewmAnoAccum + AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name).Tcorr + Anoma) % Anoma
+      let { Solar, SolarRaw, Sidereal, Anoma, Node, Type, Sobliq } = Para[Name]
+      Solar = Solar || SolarRaw
+      const p = 360 / Sidereal
+      const AnoAccum = (AvgNewmAnoAccum + D) % Anoma
+      const Sd = (AvgNewmSd + D) % Solar
+      const { Tcorr, NodeAccumCorrA } = AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name) // 經朔到定朔的時間
+      const NodeAccum = (AvgNewmNodeAccum + NodeAccumCorrA - Tcorr + D + Node) % Node // 此時入交
+      const AcrNewmAnoAccum = (AvgNewmAnoAccum + Tcorr + Anoma) % Anoma
       const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
       const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-      let EclpLat = 0, EquaLat = 0;
+      // 九道術
+      let NewmWhiteGong = 0, Dingxian = 0, NodeWhiteGong = 0, WhEq_WhiteGong = 0, WhEqGong = 0;
+      const NodeEclpGong = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
+      const NowNewm_WhiteDif = (anojour(AnoAccum, Name).Anojour - anojour(AcrNewmAnoAccum, Name).Anojour + Sidereal) % Sidereal
+      let NowEclpGong,
+        NowEquaGong,
+        EclpLat,
+        EquaLat;
       if (Type === 11) {
-        EquaLat = moonShoushi(
-          NodeAccum,
+        const FuncNewm = moonShoushi(
+          AvgNewmNodeAccum,
           AvgNewmSd,
           NewmEclpGong,
-          undefined,
-          (anojour(AnoAccum, Name).Anojour - anojour(AcrNewmAnoAccum, Name).Anojour + Sidereal) % Sidereal
-        ).EquaLat
+          1281,
+          NowNewm_WhiteDif
+        );
+        NewmWhiteGong = FuncNewm.NewmWhiteGong
+        Dingxian = FuncNewm.Dingxian;
+        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong
+        WhEqGong = FuncNewm.WhEqGong
+        EquaLat = FuncNewm.EquaLat
+      } else if (Type >= 6) {
+        const FuncNewm = moonJiudao(
+          AvgNewmNodeAccum,
+          AvgNewmAnoAccum,
+          AvgNewmSd,
+          NewmEclpGong,
+          Name,
+          1281
+        );
+        NewmWhiteGong = FuncNewm.NewmWhiteGong
+        NodeWhiteGong = FuncNewm.NodeWhiteGong
+        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name)
       } else {
         EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name)
       }
-      if (EclpLat) {
-        LatPrint = lat2NS(EclpLat)
+      const NowWhiteGong = NewmWhiteGong ? (NewmWhiteGong + NowNewm_WhiteDif) % Sidereal : undefined
+      const Now_WhEq_WhiteDif = (NowWhiteGong - WhEq_WhiteGong + Solar) % Solar
+      if (Type === 11) {
+        const Now_WhEq_EquaDif = Now_WhEq_WhiteDif - equa2WhiteDif(Dingxian, Now_WhEq_WhiteDif)
+        NowEquaGong = (WhEqGong + Now_WhEq_EquaDif) % Solar
+        NowEclpGong = equaEclp(NowEquaGong, Name).Equa2Eclp
+      } else {
+        const MoonNode_WhiteDif = (NowWhiteGong - NodeWhiteGong + Solar) % Solar // 此處Gong和Lon是一樣的，沒有區別
+        const MoonNode_EclpDif = MoonNode_WhiteDif - eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name)
+        NowEclpGong = (NodeEclpGong + MoonNode_EclpDif) % Solar
+        NowEquaGong = equaEclp(NowEclpGong, Name).Eclp2Equa
       }
-      if (EquaLat) {
-        EquaLatPrint = lat2NS(EquaLat)
+      const Moon2SunEquaLat = autoLat(NowEclpGong, Name, true) // 月亮所在黃道度對應的太陽的赤緯
+      if (Type === 11) {
+        EclpLat = EquaLat - Moon2SunEquaLat
+      } else {
+        EquaLat = EclpLat + Moon2SunEquaLat
       }
-      // 九道術      
-      const NodeEclpGong = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
-      const Eclp2WhiteDif = eclp2WhiteDif(NodeEclpGong, NodeDif, Name)
+      /// 球面三角
+      const Sobliq360 = Sobliq * p
+      const { WhEqLon, WhEqObliq } = whEqObliq(Gong2Lon(NodeEclpGong * p), Sobliq360)
+      const NowWhEq_EquaDif = LonHigh2Flat(WhEqObliq, Now_WhEq_WhiteDif * p)
+      const NowEquaLon = (WhEqLon + NowWhEq_EquaDif) % 360
+      const NowCecLonWest = LonFlat2High(Sobliq360, NowEquaLon)
+      const NowEquaLatWest = HighLon2FlatLat(WhEqObliq, Now_WhEq_WhiteDif * p)
+      const Moon2SunEquaLatWest = HighLon2FlatLat(Sobliq360, NowCecLonWest)
+      const NowCecLatWest = NowEquaLatWest - Moon2SunEquaLatWest
+      const NowCecGongWest = Lon2Gong(NowCecLonWest) / p
+      const NowEquaGongWest = Lon2Gong(NowEquaLon) / p
+      const NowEclpGongErr =
+        NowEclpGong
+          ? Math.trunc(((NowEclpGong - NowCecGongWest) / NowCecGongWest) * 10000)
+          : "";
+      const NowEquaGongErr =
+        NowEquaGong
+          ? Math.trunc(((NowEquaGong - NowEquaGongWest) / NowEquaGongWest) * 10000)
+          : "";
+      const EclpLatErr =
+        EclpLat
+          ? Math.trunc(((EclpLat - NowCecLatWest / p) / (NowCecLatWest / p)) * 10000)
+          : "";
+      const EquaLatErr =
+        EquaLat
+          ? Math.trunc(((EquaLat - NowEquaLatWest / p) / (NowEquaLatWest / p)) * 10000)
+          : "";
       return {
         title: NameList[Name],
+        // data: [
+        //   NowWhiteGong ? NowWhiteGong.toFixed(4) : "",
+        //   NowEclpGong ? NowEclpGong.toFixed(4) : "",
+        //   NowEclpGong ? NowCecGongWest.toFixed(4) : "",
+        //   NowEclpGongErr,
+        //   lat2NS(EclpLat),
+        //   NowWhiteGong ? lat2NS(NowCecLatWest / p) : "",
+        //   NowWhiteGong ? EclpLatErr : "",
+        //   NowEquaGong ? NowEquaGong.toFixed(4) : "",
+        //   NowEquaGong ? NowEquaGongWest.toFixed(4) : "",
+        //   NowEquaGong ? NowEquaGongErr : "",
+        //   lat2NS(EquaLat),
+        //   EquaLat ? lat2NS(NowEquaLatWest / p) : "",
+        //   NowWhiteGong ? EquaLatErr : "",
+        //   NodeEclpGong.toFixed(4),
+        //   WhEqGong ? WhEqGong.toFixed(4) : "",
+        //   NowWhiteGong ? (Lon2Gong(WhEqLon) / p).toFixed(4) : ""
+        // ]
         data: [
+          NowWhiteGong ? NowWhiteGong.toFixed(4) : "",
+          NowEclpGong ? NowEclpGong.toFixed(4) : "",
+          lat2NS(EclpLat),
+          NowEquaGong ? NowEquaGong.toFixed(4) : "",
+          lat2NS(EquaLat),
           NodeEclpGong.toFixed(4),
-          LatPrint,
-          EquaLatPrint,
-          "",
-          "",
-          Eclp2WhiteDif ? Eclp2WhiteDif.toFixed(4) : ""
+          WhEqGong ? WhEqGong.toFixed(4) : ""
         ]
       };
     }),
   );
   return Print;
 };
-// console.log(bindMoonLat(10, 6, 6, 56, 4, 4, 54))
+// console.log(bindMoonLonLat(11, 4, 54, 1))
 
 export const bindSunEclipse = (
   NodeAccum,

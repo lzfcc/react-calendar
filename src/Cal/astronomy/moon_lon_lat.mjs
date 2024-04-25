@@ -256,7 +256,7 @@ const moonJiudaoFormula = (NodeEclpGong, NewmEclpGong, Name, Y) => {
   const SolsWhiteDeg = (NodeWhiteDeg - NodeWhiteGong + Sidereal) % Sidereal
   const NewmNode_EclpDif = (NewmEclpGong - NodeEclpGong + Sidereal) % Sidereal
   const NewmNode_WhiteDif = NewmNode_EclpDif + eclp2WhiteDif(NodeEclpGong, NewmNode_EclpDif, Name)
-  const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal  
+  const NewmWhiteDeg = (NodeWhiteDeg + NewmNode_WhiteDif) % Sidereal
   return {
     WhiteAccumList, NewmWhiteDeg, SolsWhiteDeg,
     NodeWhiteGong,
@@ -435,10 +435,10 @@ const MoonLatFormula = (NodeAccum, Name) => {
     const tmp = LonHalfRev - ((NodeQuar - LonHalfRev) * LonHalfRev) / 500;
     Lat = ((NodeHalf - tmp) * tmp) / 1375;
   }
-  if (Lon < NodeHalf) Lat = -Lat;
+  if (NodeAccum < Node / 2) Lat = -Lat;
   return Lat
 };
-// console.log(MoonLatFormula(15, 'Jiyuan'))
+// console.log(MoonLatFormula(1, 'Jiyuan'))
 
 /**
  * 古曆求月亮黃緯
@@ -558,7 +558,7 @@ export const moonShoushi = (AvgNewmNodeAccum, AvgNewmSd, NewmEclpGong, Y, NowNew
     const Sols_WhEq_EquaDif = Solar - WhEqGong
     const Sols_WhEq_WhiteDif = Sols_WhEq_EquaDif + equa2WhiteDif(Dingxian, Sols_WhEq_EquaDif)
     WhEq_WhiteGong = Solar - Sols_WhEq_WhiteDif
-    const SolsWhiteDeg = (WhEq_WhiteDeg - WhEq_WhiteGong + Sidereal) % Sidereal  
+    const SolsWhiteDeg = (WhEq_WhiteDeg - WhEq_WhiteGong + Sidereal) % Sidereal
     NewmWhiteGong = (NewmWhiteDeg - SolsWhiteDeg + Sidereal) % Sidereal
   }
   /// 月赤緯

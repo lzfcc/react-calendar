@@ -573,6 +573,10 @@ a = [0, ...a]
 - 修正麟德入宿度
 - 修復皇極黃赤轉換
 - 修復交率交數不能計算浮點數
+- 修復紀元會元11年第一二天晷長相等
+- 調整乾元月實速
+- 修復欽天月黃緯符號
 - 更換現代地軌偏心率算法
+- 下線 bindDeg2Mans
 
-其他：改名，AutoMoonAcrS --> anomaS, MoonAcrS --> Anojour, anomaS --> anojour, AnomaAccum --> AnoAccum
+其他：改名，AutoMoonAcrS --> anojour, MoonAcrS --> Anojour, AnomaAccum --> AnoAccum

@@ -762,7 +762,7 @@ input {
 
 .modulo h2 {
   font-size: 1.8em;
-  color: var(--darkyellow);
+  color: var(--shallowgray);
   letter-spacing: .2em;
   margin: 4em auto 2em;
   /* border-bottom: .1em solid var(--yellow); */

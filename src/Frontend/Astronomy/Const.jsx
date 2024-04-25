@@ -47,9 +47,9 @@ export default class Converter extends React.Component {
   render() {
     return (
       <div>
-        <h3>天文常數</h3>
+        <h3>現代天文</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-5'>每年都在變</button>
+        <button onClick={this.handle} className='button4-5'>click</button>
         {this.result()}
       </div>
     )

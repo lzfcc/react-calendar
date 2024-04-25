@@ -29,17 +29,17 @@ export const modernConsts = Jd => { // 儒略世紀：36525日
     const YFrac = (Jd - date2Jd(Y)) / 365.2425
     const Julian2kyr = (2000 - (Y + YFrac)) / 1000
     const eccentricity = +Interpolate2(Julian2kyr, 0.016702362, [0.00045902, -0.000123588, 0.000137078, -0.000134331]).toFixed(9)
-    const Print = `朔望月 ${Lunar} 日
-近點月 ${Anoma} 日
-交點月 ${Node} 日
-回歸年 ${Solar} 日
-恆星年 ${Sidereal} 日
-平黃赤交角 ${e}°
+    const Print = `朔望月 ${Lunar.toFixed(9)} 日
+近點月 ${Anoma.toFixed(9)} 日
+交點月 ${Node.toFixed(9)} 日
+回歸年 ${Solar.toFixed(9)} 日
+恆星年 ${Sidereal.toFixed(9)} 日
+平黃赤交角 ${e.toFixed(9)}
 地球軌道離心率 ${eccentricity}
-近日點平黃經 ${perihelion}°
-日平近點角 ${AvgSorb}
-黃白升交平黃經 ${AvgWhEcLon}
-月平近點角 ${AvgMorb}`
+近日點平黃經 ${perihelion.toFixed(9)}
+日平近點角 ${AvgSorb.toFixed(9)}
+黃白升交平黃經 ${AvgWhEcLon.toFixed(9)}
+月平近點角 ${AvgMorb.toFixed(9)}`
     return { Print, e, perihelion, eccentricity, Anoma, Solar, Sidereal, Lunar, AvgSorb, AvgMorb, AvgWhEcLon }
 }
 // console.log(modernConsts(1355809).Print)

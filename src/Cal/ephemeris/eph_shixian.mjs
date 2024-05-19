@@ -9,7 +9,7 @@ import {
   MansAnimalNameList,
   YuanList,
   NumList,
-  MonNumList1,
+  MonNumList1
 } from "../parameter/constants.mjs";
 import { YearGodConvert, YearColorConvert, MonColorConvert } from "./luck.mjs";
 import {
@@ -42,7 +42,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
       NodeRoot,
       NewmSmd,
       SolsmorScOrder,
-      MansDaySolsmor,
+      MansDaySolsmor
     } = CalNewm(Name, Y)[0];
     /// ////
     const YearScOrder = (((Y - 3) % 60) + 60) % 60;
@@ -62,7 +62,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const YearColor = YearColorConvert(YuanYear);
     // const ZhengMonScOrder = Math.round((YearStem * 12 - 9) % 60.1) // 正月月建
     const ZhengMonScOrder = (YearStem * 12 - 9) % 60;
-    const SmJd = 2086292 + (Solar * (Y - 1000)) + 1
+    const SmJd = 2086292 + Solar * (Y - 1000) + 1;
     const MonName = [];
     const MonInfo = [];
     const MonColor = [];
@@ -72,7 +72,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const Week = [];
     const Morningstar = [];
     const Duskstar = [];
-    const Pos = []
+    const Pos = [];
     let DayAccum = 0;
     for (let i = 1; i <= 12 + (LeapNumTerm > 0 ? 1 : 0); i++) {
       // 有閏就13
@@ -90,7 +90,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
       const MonColorFunc = MonColorConvert(
         YuanYear,
         NoleapMon,
-        ZhengMonScOrder,
+        ZhengMonScOrder
       );
       MonInfo[i] = MonColorFunc.MonInfo;
       MonColor[i] = MonColorFunc.MonColor;
@@ -100,7 +100,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
         (Week[i] = []),
         (Morningstar[i] = []),
         (Duskstar[i] = []),
-        Pos[i] = []
+        (Pos[i] = []);
       for (
         let k = 1;
         k <= Math.trunc(NewmSmd[i]) - Math.trunc(NewmSmd[i - 1]);
@@ -115,13 +115,13 @@ export const D2 = (Name, YearStart, YearEnd) => {
           Name,
           SunRoot,
           SperiRoot,
-          SmdMidn,
+          SmdMidn
         );
         const { SunLon: SunLonMor } = sunQing(
           Name,
           SunRoot,
           SperiRoot,
-          SmdMidn + 1,
+          SmdMidn + 1
         );
         const { MoonGong, MoonLon, MoonLat, Node, Mapo } = moonQing(
           Name,
@@ -132,54 +132,84 @@ export const D2 = (Name, YearStart, YearEnd) => {
           SunCorr,
           SunGong,
           Speri,
-          Sorb,
+          Sorb
         );
         const FuncSun = mansQing(Name, Y, SunGong);
         const SunEquaLon = LonHigh2Flat(Sobliq, SunLon);
-        const SunLat = HighLon2FlatLat(Sobliq, SunLon)
-        const { EquaLon: MoonEquaLon, EquaLat: MoonEquaLat } = eclp2Equa(Sobliq, MoonLon, MoonLat);
+        const SunLat = HighLon2FlatLat(Sobliq, SunLon);
+        const { EquaLon: MoonEquaLon, EquaLat: MoonEquaLat } = eclp2Equa(
+          Sobliq,
+          MoonLon,
+          MoonLat
+        );
         const { MoonRise: MoonRiseTmp, MoonSet: MoonSetTmp } = moonRiseQing(
           RiseLat,
           MoonEquaLon,
           MoonEquaLat,
-          SunEquaLon,
+          SunEquaLon
         );
         Pos[i][k] = [
           { SunEquaLon: deg2Hms(SunEquaLon), SunEquaLat: lat2NS1(SunLat) },
           { SunEclpLon: deg2Hms(SunLon) },
           { SunEqua: FuncSun.Equa, SunEclp: FuncSun.Eclp },
-          { MoonEquaLon: deg2Hms(MoonEquaLon), MoonEquaLat: lat2NS1(MoonEquaLat) },
+          {
+            MoonEquaLon: deg2Hms(MoonEquaLon),
+            MoonEquaLat: lat2NS1(MoonEquaLat)
+          },
           { MoonEclpLon: deg2Hms(MoonLon), MoonEclpLat: lat2NS1(MoonLat) },
           {
             MoonEqua: mansQing(Name, Y, Lon2Gong(MoonEquaLon), true).Equa,
             MoonEclp: mansQing(Name, Y, MoonGong).Eclp
           },
-          { MoonRise: deci2hms(MoonRiseTmp).hm, MoonSet: deci2hms(MoonSetTmp).hm },
+          {
+            MoonRise: deci2hms(MoonRiseTmp).hm,
+            MoonSet: deci2hms(MoonSetTmp).hm
+          },
           { Node: deg2Hms(Node), Mapo: deg2Hms(Mapo) }
-        ]
+        ];
         const TwilightLeng = twilight(RiseLat, SunLat);
         const Rise = sunRise(RiseLat, SunLat).t0;
         const FuncMidstar = midstarQing(Name, Y, SunLon, SunLonMor, Rise);
         Morningstar[i][k] = [
-          { Morningstar: FuncMidstar.Morningstar, Morning: deci2hms(Rise - TwilightLeng).hm, SunRise: deci2hms(Rise).hm },
-          { SunSet: deci2hms(1 - Rise).hm, Dusk: deci2hms(1 - Rise + TwilightLeng).hm, Duskstar: FuncMidstar.Duskstar }]
+          {
+            Morningstar: FuncMidstar.Morningstar,
+            Morning: deci2hms(Rise - TwilightLeng).hm,
+            SunRise: deci2hms(Rise).hm
+          },
+          {
+            SunSet: deci2hms(1 - Rise).hm,
+            Dusk: deci2hms(1 - Rise + TwilightLeng).hm,
+            Duskstar: FuncMidstar.Duskstar
+          }
+        ];
         /// ////////具注曆////////////
         const ScOrder = Math.trunc(SolsmorScOrder + SmdMidn) % 60;
         Sc[i][k] = `${NumList[k]}日${ScList[ScOrder]}`;
-        const JdTmp = Math.trunc(SmJd + SmdMidn)
-        const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder
-        Jd[i][k] = JdTmp - (JdScDif > 50 ? JdScDif - 60 : (JdScDif < -50 ? JdScDif + 60 : JdScDif));
+        const JdTmp = Math.trunc(SmJd + SmdMidn);
+        const JdScDif = jd2Date(JdTmp).ScOrder - ScOrder;
+        Jd[i][k] =
+          JdTmp -
+          (JdScDif > 50
+            ? JdScDif - 60
+            : JdScDif < -50
+              ? JdScDif + 60
+              : JdScDif);
         const MansOrder = (MansDaySolsmor + DayAccum - 1) % 28;
         const WeekOrder = (MansDaySolsmor + DayAccum + 2) % 7;
         const date = jd2Date(Jd[i][k]);
-        Jd[i][k] += ' ' + date.mm + '.' + date.dd + ' ' +
+        Jd[i][k] +=
+          " " +
+          date.mm +
+          "." +
+          date.dd +
+          " " +
           WeekList[WeekOrder] +
           MansNameList[MansOrder] +
           MansAnimalNameList[MansOrder];
       }
     }
     DayAccum =
-      `僞造者依律處斬有能吿捕者官給賞銀五十兩如無本監曆日印信即同私造` +
+      "僞造者依律處斬有能吿捕者官給賞銀五十兩如無本監曆日印信即同私造" +
       `\n凡${nzh.encodeS(DayAccum)}日　${Yuan}`;
     return {
       Era,
@@ -194,7 +224,7 @@ export const D2 = (Name, YearStart, YearEnd) => {
       Jd,
       Nayin,
       Pos,
-      Morningstar,
+      Morningstar
     };
   };
   const result = [];

@@ -1,99 +1,136 @@
-import {
-    transpose,
-    multiply,
-} from "mathjs";
+import { transpose, multiply } from "mathjs";
 import { deltaT } from "../time/delta-t.mjs";
 import { precessionMx } from "../modern/precession.mjs";
 import { nutaMx } from "../modern/nutation.mjs";
 import {
-    Fbmx,
-    lightAber,
-    xyz2lonlat,
-    rr1
+  Fbmx,
+  lightAber,
+  xyz2lonlat,
+  rr1
 } from "../astronomy/pos_functions.mjs";
 import { R2D, lat2NS, pi2 } from "../parameter/functions.mjs";
-import { FlatLon2FlatLat, LonFlat2High, deg2Hms } from "../astronomy/pos_convert.mjs";
+import {
+  FlatLon2FlatLat,
+  LonFlat2High,
+  deg2Hms
+} from "../astronomy/pos_convert.mjs";
 import { horizontal } from "../astronomy/pos_convert_modern.mjs";
 import { calXV_vsop } from "./vsop_elp.mjs";
 import { PlanetList } from "../parameter/constants.mjs";
 
 // 這單獨放一個為了避免循環依賴
 const equa2Cec = (Sobliq, EquaLon, EquaLat) => {
-    Sobliq *= R2D
-    EquaLon *= R2D
-    EquaLat *= R2D
-    return {
-        CecLon: LonFlat2High(Sobliq, EquaLon),
-        CecLat: (EquaLat - FlatLon2FlatLat(Sobliq, EquaLon)),
-    };
+  Sobliq *= R2D;
+  EquaLon *= R2D;
+  EquaLat *= R2D;
+  return {
+    CecLon: LonFlat2High(Sobliq, EquaLon),
+    CecLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon)
+  };
 };
 
 // 一次性輸出七政位置 ⚠️ 轉換爲 topocentric，不是geocentric
 export const bindTopo_vsop = (Jd, Longitude, Latitude, h) => {
-    const T = (Jd - 2451545) / 36525; // 儒略世紀
-    const { N, Obliq } = nutaMx(T);
-    const P = precessionMx(T); // 歲差矩陣 P(t)
-    const NP = multiply(N, P);
-    const R1Eps = rr1(Obliq);
-    const EquaLon = [], EquaLat = [], EclpLon = [], EclpLat = [], CecLon = [], CecLat = [], HoriLon = [], HoriLat = []
-    for (let i = 0; i < PlanetList.length; i++) {
-        const { X: Xreal, V: Vreal } = calXV_vsop(PlanetList[i], Jd); // 實際位置    
-        // const Jdr = lightTimeCorr(Jd, Xreal); // 推遲時
-        const X = lightAber(Xreal, Vreal); // 光行差修正後的位置。這樣精確的算法和近似公式其實幾乎沒有區別，只相差5e-12rad
-        // const { V: Vraw } = calXV_vsop(PlanetList[i], Jdr); // 視位置
-        // const RadialV = radialV(X, Vraw);
-        // const V = divide(Vraw, 1 + RadialV / cDay);
-        const X2000 = multiply(Fbmx, X);
-        // const V2000 = multiply(Fbmx, V);
-        const Equa = multiply(NP, multiply(transpose(R1Eps), X2000)).toArray();
-        // const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray();        
-        // const Eclp1 = multiply(R1Eps, Equa1).toArray();
-        const { TopoLon: EquaLonTmp, TopoLat: EquaLatTmp, HoriLon: HoriLonTmp, HoriLat: HoriLatTmp, X1 } = horizontal(Equa, Jd, Longitude, Latitude, h)
-        EquaLon[i] = (EquaLonTmp + pi2) % pi2;
-        EquaLat[i] = EquaLatTmp
-        HoriLon[i] = HoriLonTmp
-        HoriLat[i] = HoriLatTmp
-        const Eclp = multiply(R1Eps, X1).toArray();
-        const { Lon: LonTmp, Lat: LatTmp } = xyz2lonlat(Eclp)
-        EclpLon[i] = (LonTmp + pi2) % pi2;
-        EclpLat[i] = LatTmp
-        const { CecLon: CecLonTmp, CecLat: CecLatTmp } = equa2Cec(Obliq, EquaLon[i], EquaLat[i])
-        CecLon[i] = CecLonTmp // deg
-        CecLat[i] = CecLatTmp
-    }
-    return { EquaLon, EquaLat, EclpLon, EclpLat, CecLon, CecLat, HoriLon, HoriLat, Obliq }
-}
+  const T = (Jd - 2451545) / 36525; // 儒略世紀
+  const { N, Obliq } = nutaMx(T);
+  const P = precessionMx(T); // 歲差矩陣 P(t)
+  const NP = multiply(N, P);
+  const R1Eps = rr1(Obliq);
+  const EquaLon = [],
+    EquaLat = [],
+    EclpLon = [],
+    EclpLat = [],
+    CecLon = [],
+    CecLat = [],
+    HoriLon = [],
+    HoriLat = [];
+  for (let i = 0; i < PlanetList.length; i++) {
+    const { X: Xreal, V: Vreal } = calXV_vsop(PlanetList[i], Jd); // 實際位置
+    // const Jdr = lightTimeCorr(Jd, Xreal); // 推遲時
+    const X = lightAber(Xreal, Vreal); // 光行差修正後的位置。這樣精確的算法和近似公式其實幾乎沒有區別，只相差5e-12rad
+    // const { V: Vraw } = calXV_vsop(PlanetList[i], Jdr); // 視位置
+    // const RadialV = radialV(X, Vraw);
+    // const V = divide(Vraw, 1 + RadialV / cDay);
+    const X2000 = multiply(Fbmx, X);
+    // const V2000 = multiply(Fbmx, V);
+    const Equa = multiply(NP, multiply(transpose(R1Eps), X2000)).toArray();
+    // const Equa1 = multiply(NP, multiply(transpose(R1Eps), V2000)).toArray();
+    // const Eclp1 = multiply(R1Eps, Equa1).toArray();
+    const {
+      TopoLon: EquaLonTmp,
+      TopoLat: EquaLatTmp,
+      HoriLon: HoriLonTmp,
+      HoriLat: HoriLatTmp,
+      X1
+    } = horizontal(Equa, Jd, Longitude, Latitude, h);
+    EquaLon[i] = (EquaLonTmp + pi2) % pi2;
+    EquaLat[i] = EquaLatTmp;
+    HoriLon[i] = HoriLonTmp;
+    HoriLat[i] = HoriLatTmp;
+    const Eclp = multiply(R1Eps, X1).toArray();
+    const { Lon: LonTmp, Lat: LatTmp } = xyz2lonlat(Eclp);
+    EclpLon[i] = (LonTmp + pi2) % pi2;
+    EclpLat[i] = LatTmp;
+    const { CecLon: CecLonTmp, CecLat: CecLatTmp } = equa2Cec(
+      Obliq,
+      EquaLon[i],
+      EquaLat[i]
+    );
+    CecLon[i] = CecLonTmp; // deg
+    CecLat[i] = CecLatTmp;
+  }
+  return {
+    EquaLon,
+    EquaLat,
+    EclpLon,
+    EclpLat,
+    CecLon,
+    CecLat,
+    HoriLon,
+    HoriLat,
+    Obliq
+  };
+};
 /**
- * 
+ *
  * @param {*} Jd_UT10 0時區UT1
- * @param {*} Longitude 
- * @param {*} Latitude 
- * @param {*} h 
- * @returns 
+ * @param {*} Longitude
+ * @param {*} Latitude
+ * @param {*} h
+ * @returns
  */
 export const bindPos_vsop_Print = (Jd_UT10, Longitude, Latitude, h) => {
-    Longitude = +Longitude
-    Latitude = +Latitude
-    h = +h
-    Jd_UT10 = +Jd_UT10
-    const Jd = Jd_UT10 + deltaT(Jd_UT10) // TT
-    const { EquaLon, EquaLat, EclpLon, EclpLat, CecLon, CecLat, HoriLon, HoriLat } = bindTopo_vsop(Jd, Longitude, Latitude, h)
-    const Print = []
-    for (let i = 0; i < PlanetList.length; i++) {
-        Print[i] = {
-            title: PlanetList[i],
-            data: [
-                deg2Hms(EquaLon[i] * R2D),
-                lat2NS(EquaLat[i] * R2D),
-                deg2Hms(CecLon[i]), // deg
-                lat2NS(CecLat[i]),
-                deg2Hms(EclpLon[i] * R2D),
-                lat2NS(EclpLat[i] * R2D),
-                deg2Hms(HoriLon[i] * R2D),
-                lat2NS(HoriLat[i] * R2D)
-            ]
-        }
-    }
-    return Print
-}
+  Longitude = +Longitude;
+  Latitude = +Latitude;
+  h = +h;
+  Jd_UT10 = +Jd_UT10;
+  const Jd = Jd_UT10 + deltaT(Jd_UT10); // TT
+  const {
+    EquaLon,
+    EquaLat,
+    EclpLon,
+    EclpLat,
+    CecLon,
+    CecLat,
+    HoriLon,
+    HoriLat
+  } = bindTopo_vsop(Jd, Longitude, Latitude, h);
+  const Print = [];
+  for (let i = 0; i < PlanetList.length; i++) {
+    Print[i] = {
+      title: PlanetList[i],
+      data: [
+        deg2Hms(EquaLon[i] * R2D),
+        lat2NS(EquaLat[i] * R2D),
+        deg2Hms(CecLon[i]), // deg
+        lat2NS(CecLat[i]),
+        deg2Hms(EclpLon[i] * R2D),
+        lat2NS(EclpLat[i] * R2D),
+        deg2Hms(HoriLon[i] * R2D),
+        lat2NS(HoriLat[i] * R2D)
+      ]
+    };
+  }
+  return Print;
+};
 // console.log(bindPos_vsop_Print(2432111))

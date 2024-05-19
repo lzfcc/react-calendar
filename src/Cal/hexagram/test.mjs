@@ -1,6 +1,6 @@
-import { ListPAll, ListPSheleAll } from '../parameter/hexa.mjs'
-import { HexoSub2, HexoSub3 } from '../hexagram/sub.mjs'
-import { big } from '../parameter/functions.mjs'
+import { ListPAll, ListPSheleAll } from "../parameter/hexa.mjs";
+import { HexoSub2, HexoSub3 } from "../hexagram/sub.mjs";
+import { big } from "../parameter/functions.mjs";
 // 阶乘
 const F = (n) => {
   let result = 1;
@@ -27,7 +27,10 @@ const FF = (n) => {
 };
 // 组合公式
 const C = (a, b) => {
-  return FF(b).div(FF(a)).div(FF(b - a)).toNumber();
+  return FF(b)
+    .div(FF(a))
+    .div(FF(b - a))
+    .toNumber();
 };
 // console.log(C(10, 75));
 const Random = (n, m) => Math.floor(Math.random() * (m - n + 1)) + n;
@@ -46,15 +49,15 @@ const Sigma = (n) => {
   const sigma = Math.sqrt(tmp / length);
   const interval95 = [
     (mean - 1.96 * sigma).toFixed(1),
-    (mean + 1.96 * sigma).toFixed(1),
+    (mean + 1.96 * sigma).toFixed(1)
   ];
   const interval90 = [
     (mean - 1.645 * sigma).toFixed(1),
-    (mean + 1.645 * sigma).toFixed(1),
+    (mean + 1.645 * sigma).toFixed(1)
   ];
   const interval80 = [
     (mean - 1.28 * sigma).toFixed(1),
-    (mean + 1.28 * sigma).toFixed(1),
+    (mean + 1.28 * sigma).toFixed(1)
   ];
   return { mean, sigma, interval90, interval95, interval80 };
 };
@@ -87,7 +90,7 @@ const Sigma1 = (n) => {
   const sigma = Math.sqrt(tmp / (length - 1));
   const interval90 = [
     (mean - 1.645 * sigma).toFixed(1),
-    (mean + 1.645 * sigma).toFixed(1),
+    (mean + 1.645 * sigma).toFixed(1)
   ];
   return { mean, sigma, interval90 };
 };
@@ -148,7 +151,7 @@ const AllShele = (Type, b, gua, loop) => {
               "四" + j + "变" + bian + "揲" + she,
               c,
               d,
-              tmpYang.toFixed(1),
+              tmpYang.toFixed(1)
             ]);
           }
         } else if (
@@ -168,7 +171,7 @@ const AllShele = (Type, b, gua, loop) => {
               "五" + j + "变" + bian + "揲" + she,
               c,
               d,
-              tmpYang.toFixed(1),
+              tmpYang.toFixed(1)
             ]);
           }
         } else if (
@@ -188,14 +191,14 @@ const AllShele = (Type, b, gua, loop) => {
               "六" + j + "变" + bian + "揲" + she,
               c,
               d,
-              tmpYang.toFixed(1),
+              tmpYang.toFixed(1)
             ]);
           }
         }
       }
     }
   }
-  return [...output4, ...output5, ...output6].join(`\n`);
+  return [...output4, ...output5, ...output6].join("\n");
 };
 // console.log(AllShele(2, [3, 5], 0, 10000000));
 // console.log(AllShele(2, [3, 5], 1, 10000000));
@@ -228,7 +231,7 @@ const Theory = (Type, all, bian, she, gua, isRandomGua, count, loop) => {
       p += ((value * 100) / loop).toFixed(2) + " , ";
     }
     // p += "]" + `\n`;
-    p += `\n`;
+    p += "\n";
   }
   return p;
 };
@@ -319,7 +322,7 @@ const MonteCarlo = (Type, all, bian, she, gua, ListPAll, portion, loop) => {
       output[l] += Sigma(seArr).interval90 + " | ";
     }
   }
-  return output.join(`\n`);
+  return output.join("\n");
 };
 
 // 分位法：[.00, .33] | [.65, 3.59] | [15.36, 24.18] | [35.62, 46.73] | [24.84, 34.97] | [4.58, 10.46]
@@ -385,7 +388,7 @@ const Boot = (ListP, ListPSheleAll, loop) => {
       output[m] += Sigma(seArr).interval90 + " | ";
     }
   }
-  return output.join(`\n`);
+  return output.join("\n");
 };
 const Mean = (n) => {
   const length = n.length;
@@ -459,7 +462,7 @@ const BootH = (ListP, ListPSheleAll, loop) => {
       output[m] += Reduce(seArr) + " | ";
     }
   }
-  return output.join(`\n`);
+  return output.join("\n");
 };
 // 1楚S1、1殷周、1殷周S1、7殷周S2、1晚S1、1晚S2、双
 // console.log(

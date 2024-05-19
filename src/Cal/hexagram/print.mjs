@@ -1,5 +1,5 @@
-import { HexoList64, HexoList8 } from '../parameter/hexa.mjs'
-import { HexoSub2, HexoSub3 } from './sub.mjs'
+import { HexoList64, HexoList8 } from "../parameter/hexa.mjs";
+import { HexoSub2, HexoSub3 } from "./sub.mjs";
 
 const HexoConceive = (isTriple, all, bian, she, gua) => {
   // 是否是贾连翔的三分法，实用蓍草总数，变数，
@@ -73,7 +73,7 @@ export const HexoZhuxiPrint = () => {
     }
     Print1[i] = {
       title: NumList[5 - i], // 上下顛倒
-      data: [result[5 - i], resultBian[5 - i]],
+      data: [result[5 - i], resultBian[5 - i]]
     };
   }
   const Print2Ben = NameBen;
@@ -82,15 +82,15 @@ export const HexoZhuxiPrint = () => {
   const Print3Bian = `<div style="font-size:2.5em">${GraphBian}</div>`;
   Print1[6] = {
     title: "",
-    data: [Print2Ben, Print2Bian],
+    data: [Print2Ben, Print2Bian]
   };
   Print1[7] = {
     title: "",
-    data: [Print3Ben, Print3Bian],
+    data: [Print3Ben, Print3Bian]
   };
   Print1[8] = {
     title: "變爻",
-    data: [NumBian],
+    data: [NumBian]
   };
   return Print1;
 };
@@ -100,12 +100,12 @@ export const HexoZhuxiBPrint = () => {
   const {
     result: resultA,
     BinaryBen: BinaryA,
-    isYangBen: isYangA,
+    isYangBen: isYangA
   } = HexoZhuxi();
   const {
     result: resultB,
     BinaryBen: BinaryB,
-    isYangBen: isYangB,
+    isYangBen: isYangB
   } = HexoZhuxi();
   const HexoAllA = HexoList64[BinaryA];
   const NameA = HexoAllA.slice(0, HexoAllA.length - 1);
@@ -121,7 +121,7 @@ export const HexoZhuxiBPrint = () => {
     }
     Print1[i] = {
       title: NumList[5 - i], // 上下顛倒
-      data: [resultA[5 - i], resultB[5 - i]],
+      data: [resultA[5 - i], resultB[5 - i]]
     };
   }
   const Print2A = NameA;
@@ -130,15 +130,15 @@ export const HexoZhuxiBPrint = () => {
   const Print3B = `<div style="font-size:2.5em">${GraphB}</div>`;
   Print1[6] = {
     title: "",
-    data: [Print2A, Print2B],
+    data: [Print2A, Print2B]
   };
   Print1[7] = {
     title: "",
-    data: [Print3A, Print3B],
+    data: [Print3A, Print3B]
   };
   Print1[8] = {
     title: "變爻",
-    data: [NumBian],
+    data: [NumBian]
   };
   return Print1;
 };
@@ -160,23 +160,23 @@ export const HexoQinghuaPrint = () => {
     Print1[i] = {
       data: [
         `<div style="margin:0 0 -.5em 0">${result[11 - i]}</div>`,
-        `<div style="margin:0 2em -.5em 0">${result[5 - i]}</div>`,
-      ], // 倒序
+        `<div style="margin:0 2em -.5em 0">${result[5 - i]}</div>`
+      ] // 倒序
     };
   }
   Print1[3] = {
-    data: [HexoAllD, HexoAllB],
+    data: [HexoAllD, HexoAllB]
   };
   for (let i = 4; i < 7; i++) {
     Print1[i] = {
       data: [
         `<div style="margin:0 0 -.5em 0">${result[12 - i]}</div>`,
-        `<div style="margin:0 2em -.5em 0">${result[6 - i]}</div>`,
-      ], // 倒序
+        `<div style="margin:0 2em -.5em 0">${result[6 - i]}</div>`
+      ] // 倒序
     };
   }
   Print1[7] = {
-    data: [HexoAllC, HexoAllA],
+    data: [HexoAllC, HexoAllA]
   };
   return Print1;
 };

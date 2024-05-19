@@ -3,13 +3,13 @@ import {
   Interpolate1,
   Interpolate3,
   Make2DPoints,
-  MeasureSols,
+  MeasureSols
 } from "../equation/sn.mjs";
 import {
   AutoMoonAvgV,
   AutoNodePortion,
   AutoQuar,
-  AutoMoonTcorrDif,
+  AutoMoonTcorrDif
 } from "../parameter/auto_consts.mjs";
 import { deci, fmod } from "../parameter/functions.mjs";
 
@@ -21,7 +21,7 @@ export const SunDifAccumTable = (Sd, Name) => {
     TermRangeA,
     TermRangeS,
     SolarRaw,
-    AcrTermList,
+    AcrTermList
   } = Para[Name];
   const { Denom, Solar } = Para[Name];
   const S = Solar || SolarRaw;
@@ -54,7 +54,7 @@ export const SunDifAccumTable = (Sd, Name) => {
     }
     SunDifAccum2 = Interpolate3(
       Sd,
-      Make2DPoints(AcrTermList, SunDifAccumList, TermNum),
+      Make2DPoints(AcrTermList, SunDifAccumList, TermNum)
     ); // 直接用拉格朗日內插，懶得寫了
   } else {
     let TermRange = 0;
@@ -71,7 +71,7 @@ export const SunDifAccumTable = (Sd, Name) => {
     SunDifAccum2 = Interpolate1(n + 1, [
       SunDifAccumList[TermNum1],
       SunDifAccumList[TermNum1 + 1],
-      SunDifAccumList[TermNum1 + 2],
+      SunDifAccumList[TermNum1 + 2]
     ]);
     // const SunAcrAvgDif1 = SunAcrAvgDifListList[TermNum1]
     // const SunAcrAvgDif2 = SunAcrAvgDifListList[TermNum2]
@@ -98,7 +98,7 @@ const SunTcorrTable = (Sd, Name) => {
     SunTcorrList,
     AcrTermList,
     TermRangeA,
-    TermRangeS,
+    TermRangeS
   } = Para[Name];
   let { Denom } = Para[Name];
   const HalfTermLeng = (Solar || SolarRaw) / 24;
@@ -131,14 +131,14 @@ const SunTcorrTable = (Sd, Name) => {
       }
       SunTcorr2 = Interpolate3(
         Sd,
-        Make2DPoints(AcrTermList, SunTcorrList, TermNum),
+        Make2DPoints(AcrTermList, SunTcorrList, TermNum)
       );
       TermRange = AcrTermList[TermNum + 1] - AcrTermList[TermNum]; // 本氣長度
       SunTcorr1 =
         SunTcorrList[TermNum] +
         ((SunTcorrList[TermNum + 1] - SunTcorrList[TermNum]) *
           (Sd - AcrTermList[TermNum])) /
-        TermRange;
+          TermRange;
     } else {
       const D1 = SunTcorrList[TermNum + 1] - SunTcorrList[TermNum];
       const D2 = SunTcorrList[TermNum + 2] - SunTcorrList[TermNum + 1];
@@ -297,7 +297,7 @@ const MoonTcorrTable1 = (AnoAccum, Name) => {
   let MoonDifAccum1 =
     MoonDifAccumList[AnoAccumInt] +
     AnoAccumFract *
-    (MoonDifAccumList[AnoAccumInt + 1] - MoonDifAccumList[AnoAccumInt]); //* MoonAcrAvgDifList[AnoAccumInt]
+      (MoonDifAccumList[AnoAccumInt + 1] - MoonDifAccumList[AnoAccumInt]); //* MoonAcrAvgDifList[AnoAccumInt]
   const SunAvgV = ZhangRange;
   let MoonTcorr1 = 0;
   if (
@@ -311,8 +311,7 @@ const MoonTcorrTable1 = (AnoAccum, Name) => {
       MoonAcrDayDif[i] = MoonAcrVList[i + 1] - MoonAcrVList[i];
     }
     const MoonAcrV1 =
-      MoonAcrVList[AnoAccumInt] +
-      AnoAccumFract * MoonAcrDayDif[AnoAccumInt];
+      MoonAcrVList[AnoAccumInt] + AnoAccumFract * MoonAcrDayDif[AnoAccumInt];
     MoonTcorr1 = -MoonDifAccum1 / (MoonAcrV1 - SunAvgV);
   } else if (["Tsrengguang", "Xinghe", "Tianbao"].includes(Name)) {
     MoonTcorr1 = -MoonDifAccum1 / MoonAvgVddenom;
@@ -329,7 +328,7 @@ const AnojourTable1 = (AnoAccum, Name) => {
   const AnojourList = [];
   for (let i = 0; i <= 28; i++) {
     AnojourList[i] = parseFloat(
-      (MoonDifAccumList[i] + i * MoonAvgVddenom).toPrecision(12),
+      (MoonDifAccumList[i] + i * MoonAvgVddenom).toPrecision(12)
     );
   }
   const AnoAccumInt = Math.trunc(AnoAccum);
@@ -337,7 +336,7 @@ const AnojourTable1 = (AnoAccum, Name) => {
   const Anojour =
     (AnojourList[AnoAccumInt] +
       AnoAccumFract *
-      (AnojourList[AnoAccumInt + 1] - AnojourList[AnoAccumInt])) /
+        (AnojourList[AnoAccumInt + 1] - AnojourList[AnoAccumInt])) /
     ZhangRange;
   return Anojour;
 };
@@ -369,7 +368,7 @@ const MoonTcorrTable = (AnoAccum, Name) => {
   } else {
     const { MoonTcorrDifPos: MoonTcorrDif, TheDenom } = AutoMoonTcorrDif(
       AnoAccum,
-      Name,
+      Name
     );
     if (Name === "Yitian") {
       AnoAccumInt = AnoAccumQuarInt;
@@ -404,20 +403,17 @@ const MoonTcorrTable = (AnoAccum, Name) => {
           MoonTcorrList[Plus + AnoAccumInt] + MoonTcorrDif * AnoAccumFrac;
       }
     } else if (AnoAccum >= 6 && AnoAccum < AnomaQuar) {
-      MoonTcorr1 =
-        MoonTcorrList[6] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+      MoonTcorr1 = MoonTcorrList[6] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
     } else if (AnoAccum >= AnomaQuar && AnoAccum < 7) {
       MoonTcorr1 =
         MoonTcorrList[7] - (MoonTcorrDif * (1 - AnoAccumFrac)) / TheDenom;
     } else if (AnoAccum >= 20 && AnoAccum < AnomaQuar3) {
-      MoonTcorr1 =
-        MoonTcorrList[20] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+      MoonTcorr1 = MoonTcorrList[20] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
     } else if (AnoAccum >= AnomaQuar3 && AnoAccum < 21) {
       MoonTcorr1 =
         MoonTcorrList[21] - (MoonTcorrDif * (1 - AnoAccumFrac)) / TheDenom;
     } else if (AnoAccum >= 27) {
-      MoonTcorr1 =
-        MoonTcorrList[27] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
+      MoonTcorr1 = MoonTcorrList[27] + (MoonTcorrDif * AnoAccumFrac) / TheDenom;
     } else {
       MoonTcorr1 = MoonTcorrList[AnoAccumInt] + MoonTcorrDif * AnoAccumFrac;
     }
@@ -431,26 +427,26 @@ const MoonTcorrTable = (AnoAccum, Name) => {
         MoonTcorr2 = Interpolate1(AnoAccumFrac + 1, [
           MoonTcorrList[Plus + AnoAccumInt],
           MoonTcorrList[Plus + AnoAccumInt + 1],
-          MoonTcorrList[Plus + AnoAccumInt + 2],
+          MoonTcorrList[Plus + AnoAccumInt + 2]
         ]);
       } else {
         MoonTcorr2 = Interpolate1(AnoAccumFrac + 3, [
           MoonTcorrList[Plus + AnoAccumInt - 2],
           MoonTcorrList[Plus + AnoAccumInt - 1],
-          MoonTcorrList[Plus + AnoAccumInt],
+          MoonTcorrList[Plus + AnoAccumInt]
         ]);
       }
     } else if (Math.trunc(AnoAccum) <= 25) {
       MoonTcorr2 = Interpolate1(AnoAccumFrac + 1, [
         MoonTcorrList[Plus + AnoAccumInt],
         MoonTcorrList[Plus + AnoAccumInt + 1],
-        MoonTcorrList[Plus + AnoAccumInt + 2],
+        MoonTcorrList[Plus + AnoAccumInt + 2]
       ]);
     } else {
       MoonTcorr2 = Interpolate1(AnoAccumFrac + 3, [
         MoonTcorrList[Plus + AnoAccumInt - 2],
         MoonTcorrList[Plus + AnoAccumInt - 1],
-        MoonTcorrList[Plus + AnoAccumInt],
+        MoonTcorrList[Plus + AnoAccumInt]
       ]);
     }
   }
@@ -483,7 +479,8 @@ const MoonDifAccumTable = (AnoAccum, Name) => {
   let MoonDegDenom = Denom;
   if (Name === "Qintian" || Type >= 8) {
     MoonDegDenom = 100;
-    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
+    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name))
+      MoonDegDenom = Denom / 100;
   }
   const MoonAcrVd = [];
   const num = Name === "Qintian" ? 248 : 27;
@@ -493,7 +490,7 @@ const MoonDifAccumTable = (AnoAccum, Name) => {
   }
   for (let i = 0; i <= num; i++) {
     MoonAcrAvgDifList[i] = parseFloat(
-      (MoonAcrVd[i] - (MoonAvgVxian || MoonAvgVd)).toPrecision(8),
+      (MoonAcrVd[i] - (MoonAvgVxian || MoonAvgVd)).toPrecision(8)
     );
   }
   MoonDifAccumList = MoonAcrAvgDifList.slice(); // 盈縮積
@@ -527,13 +524,13 @@ const MoonDifAccumTable = (AnoAccum, Name) => {
       MoonDifAccum2 = Interpolate1(AnoAccumFrac + 1, [
         MoonDifAccumList[Plus + AnoAccumInt],
         MoonDifAccumList[Plus + AnoAccumInt + 1],
-        MoonDifAccumList[Plus + AnoAccumInt + 2],
+        MoonDifAccumList[Plus + AnoAccumInt + 2]
       ]);
     } else {
       MoonDifAccum2 = Interpolate1(AnoAccumFrac + 3, [
         MoonDifAccumList[Plus + AnoAccumInt - 2],
         MoonDifAccumList[Plus + AnoAccumInt - 1],
-        MoonDifAccumList[Plus + AnoAccumInt],
+        MoonDifAccumList[Plus + AnoAccumInt]
       ]);
     }
   }
@@ -571,7 +568,8 @@ const AnojourTable2 = (AnoAccum, Name) => {
   let MoonDegDenom = Denom;
   if (Name === "Qintian" || Type >= 8) {
     MoonDegDenom = 100;
-    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name)) MoonDegDenom = Denom / 100;
+    if (["Yingtian", "Qianyuan", "Yitian"].includes(Name))
+      MoonDegDenom = Denom / 100;
   }
   const MoonAcrVd = [];
   const num = Name === "Qintian" ? 248 : 27;
@@ -610,13 +608,13 @@ const AnojourTable2 = (AnoAccum, Name) => {
       Anojour = Interpolate1(AnoAccumFrac + 1, [
         AnojourList[Plus + AnoAccumInt],
         AnojourList[Plus + AnoAccumInt + 1],
-        AnojourList[Plus + AnoAccumInt + 2],
+        AnojourList[Plus + AnoAccumInt + 2]
       ]);
     } else {
       Anojour = Interpolate1(AnoAccumFrac + 3, [
         AnojourList[Plus + AnoAccumInt - 2],
         AnojourList[Plus + AnoAccumInt - 1],
-        AnojourList[Plus + AnoAccumInt],
+        AnojourList[Plus + AnoAccumInt]
       ]);
     }
   }
@@ -661,7 +659,7 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
       1.0138, 1.0126, 1.0114, 1.0103, 1.0091, 1.008, 1.0069, 1.0059, 1.0048,
       1.0038, 1.0028, 1.0018, 1.0008, 0.9999, 0.9985, 0.998, 0.9971, 0.9962,
       0.9954, 0.9946, 0.9937, 0.9929, 0.9922, 0.9914, 0.9907, 0.99, 0.9893,
-      0.9886, 0.9879, 0.9873, 0.9867, 0.9861, 0.9855,
+      0.9886, 0.9879, 0.9873, 0.9867, 0.9861, 0.9855
     ];
     MoonAcrVd = MoonAcrVListA[AnoAccumPart];
   } else if (Name === "Mingtian") {
@@ -716,10 +714,10 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
   if (Sd) {
-    Sd = fmod(Sd, Solar)
+    Sd = fmod(Sd, Solar);
   }
   if (AnoAccum) {
-    AnoAccum = fmod(AnoAccum, Anoma)
+    AnoAccum = fmod(AnoAccum, Anoma);
   }
   let sunFunc = {};
   let moonFunc = {};
@@ -758,7 +756,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
       "Daming1",
       "Daming2",
       "Yiwei",
-      "Gengwu",
+      "Gengwu"
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
@@ -876,7 +874,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
       SunTcorr2 = sunFunc.SunTcorr2;
       moonFunc = MoonTcorrTable(
         (AnoAccum + (Name === "Qintian" ? SunTcorr2 : 0) + Anoma) % Anoma,
-        Name,
+        Name
       ); // 欽天求月離改正不是直接用經朔入轉，而是先要求太陽時間改正，加減經朔，再來入轉
       MoonTcorr1 = -moonFunc.MoonTcorr1;
       Tcorr2 = SunTcorr2 + MoonTcorr1;
@@ -897,7 +895,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
       NodeAccumCorrB = Portion * SunTcorr + MoonTcorr; // 太陽入交定日，上面是月亮入交定日
     }
   }
-  const Tcorr = Tcorr2 || Tcorr1
+  const Tcorr = Tcorr2 || Tcorr1;
   return {
     SunTcorr,
     SunTcorr2,
@@ -910,7 +908,7 @@ export const AutoTcorr = (AnoAccum, Sd, Name, NodeAccum) => {
     Tcorr2,
     Tcorr1,
     NodeAccumCorrA,
-    NodeAccumCorrB,
+    NodeAccumCorrB
   };
 };
 // console.log(AutoTcorr(6, 9, 'Qintian').MoonTcorr)
@@ -920,10 +918,10 @@ export const AutoDifAccum = (AnoAccum, Sd, Name) => {
   let { Solar } = Para[Name];
   Solar = Solar || SolarRaw;
   if (AnoAccum) {
-    AnoAccum = fmod(AnoAccum, Anoma)
+    AnoAccum = fmod(AnoAccum, Anoma);
   }
   if (Sd) {
-    Sd = fmod(Sd, Solar)
+    Sd = fmod(Sd, Solar);
   }
   let DifAccumFunc = {};
   let SunDifAccum = 0;
@@ -949,7 +947,7 @@ export const AutoDifAccum = (AnoAccum, Sd, Name) => {
       "Daming1",
       "Daming2",
       "Yiwei",
-      "Gengwu",
+      "Gengwu"
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
@@ -1036,7 +1034,7 @@ export const anojour = (AnoAccum, Name) => {
       "Daming1",
       "Daming2",
       "Yiwei",
-      "Gengwu",
+      "Gengwu"
     ].includes(Name)
   ) {
     if (Name === "Huangchu") {
@@ -1113,7 +1111,7 @@ const MoonDifAccumMax2 = (Name) => {
     Denom,
     Sidereal,
     Solar,
-    SolarRaw,
+    SolarRaw
   } = Para[Name];
   const S = Sidereal || Solar || SolarRaw;
   let cS = 0;
@@ -1153,7 +1151,7 @@ const MoonDifAccumMax2 = (Name) => {
     }
     for (let i = 0; i <= 27; i++) {
       MoonAcrAvgDifList[i] = parseFloat(
-        (MoonAcrVd[i] - MoonAvgVd).toPrecision(8),
+        (MoonAcrVd[i] - MoonAvgVd).toPrecision(8)
       );
     }
     MoonDifAccumList = MoonAcrAvgDifList.slice(); // 盈縮積
@@ -1168,14 +1166,14 @@ const MoonDifAccumMax2 = (Name) => {
       2,
       MoonDifAccumList[7],
       3,
-      MoonDifAccumList[8],
+      MoonDifAccumList[8]
     ]).f;
     cM = (((Max * 360) / S) * Math.PI) / 180 / 2;
   }
 
   return {
     cS: +cS.toFixed(8),
-    cM: +cM.toFixed(8),
+    cM: +cM.toFixed(8)
   };
 };
 // console.log(MoonDifAccumMax2('Qintian'))

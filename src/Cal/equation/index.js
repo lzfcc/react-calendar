@@ -6,6 +6,6 @@ export {
   MeasureSols,
   Interpolate1,
   Interpolate2,
-  Interpolate3,
+  Interpolate3
 } from "./sn.mjs";
 export { HighEqua1 } from "./high.mjs";

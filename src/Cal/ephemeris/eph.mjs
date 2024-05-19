@@ -23,7 +23,7 @@ import {
   HexagramSymbolListB,
   FiveList2,
   NumList,
-  MonNumList1,
+  MonNumList1
 } from "../parameter/constants.mjs";
 import {
   YearGodConvert,
@@ -33,17 +33,30 @@ import {
   FubaoConvert,
   LsStarConvert,
   BloodConvert,
-  TouringGodConvert,
+  TouringGodConvert
 } from "../ephemeris/luck.mjs";
 import CalNewm from "../newmoon/index.mjs";
 import { AutoTcorr, AutoDifAccum, anojour } from "../astronomy/acrv.mjs";
-import { deg2Mans, degAccumList, mans, midstar, solsMans } from "../astronomy/mans.mjs";
+import {
+  deg2Mans,
+  degAccumList,
+  mans,
+  midstar,
+  solsMans
+} from "../astronomy/mans.mjs";
 import { nineOrbits } from "../astronomy/nineorbits.mjs";
 import { jd2Date } from "../time/jd2date.mjs";
 import { AutoLightRange, AutoMoonAvgV } from "../parameter/auto_consts.mjs";
 import { deci, fm60, fmod, lat2NS, nzh } from "../parameter/functions.mjs";
 import { equaEclp } from "../astronomy/equa_eclp.mjs";
-import { chooseNode, eclp2WhiteDif, equa2WhiteDif, moonEclpLat, moonJiudao, moonShoushi } from "../astronomy/moon_lon_lat.mjs";
+import {
+  chooseNode,
+  eclp2WhiteDif,
+  equa2WhiteDif,
+  moonEclpLat,
+  moonJiudao,
+  moonShoushi
+} from "../astronomy/moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "../astronomy/lat_rise_dial.mjs";
 
 export const D1 = (Name, YearStart, YearEnd) => {
@@ -58,7 +71,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       WeekConst,
       MansDayConst,
       ScConst,
-      CloseOriginAd,
+      CloseOriginAd
     } = Para[Name];
     let { Solar, Sidereal, Lunar } = Para[Name];
     const {
@@ -70,7 +83,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       NewmAvgRaw,
       NewmNodeAccumPrint,
       NewmAnoAccumPrint,
-      NewmAnoAccumMidnPrint,
+      NewmAnoAccumMidnPrint
     } = CalNewm(Name, Y)[0];
     if (["Shoushi", "Shoushi2"].includes(Name)) {
       Solar = +(
@@ -84,10 +97,10 @@ export const D1 = (Name, YearStart, YearEnd) => {
     const HalfTermLeng = Solar / 24;
     const HexagramLeng = Solar / 60;
     const MoonAvgVd = AutoMoonAvgV(Name);
-    const ZhengScOrder = fm60((Math.floor(NewmInt[0]) + (ScConst || 0)))
+    const ZhengScOrder = fm60(Math.floor(NewmInt[0]) + (ScConst || 0));
     const ZhengSdInt = Math.floor(NewmInt[0]) - Math.floor(SolsAccum); // 正月朔日夜半距離冬至夜半整數日
     const SolsDeci = deci(SolsAccum);
-    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y)
+    const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y);
     /////////// 預處理72候、五行、八卦列表//////////
     let HouList = [],
       Hexagram64List = [],
@@ -180,7 +193,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       const FirstMie = Math.ceil(SolsAccum / MieLeng) * MieLeng;
       for (let i = 0; i <= 7; i++) {
         MieSd[i] = parseFloat(
-          (FirstMie + i * MieLeng - SolsAccum).toPrecision(14),
+          (FirstMie + i * MieLeng - SolsAccum).toPrecision(14)
         );
       }
     }
@@ -223,7 +236,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       FiveName = [],
       ManGod = [],
       Luck = [];
-    let HouName = []
+    let HouName = [];
     let DayAccum = 0,
       JieAccum = 0,
       SummsolsDayAccum = 0,
@@ -257,7 +270,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       const MonColorFunc = MonColorConvert(
         YuanYear,
         NoleapMon,
-        ZhengMonScOrder,
+        ZhengMonScOrder
       );
       MonInfo[i] = MonColorFunc.MonInfo;
       MonColor[i] = MonColorFunc.MonColor;
@@ -270,14 +283,25 @@ export const D1 = (Name, YearStart, YearEnd) => {
       else NewmSd = NewmAcrRaw[i - 1] - SolsAccum;
       const AvgNewmSd = NewmAvgRaw[i - 1] - SolsAccum;
       if (Type === 1) {
-        MoonEclpLonNewmMidn = (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
+        MoonEclpLonNewmMidn =
+          (NewmSd - deci(NewmRaw[i - 1]) * MoonAvgVd + Solar) % Solar;
       } else {
-        const AcrNewmAnoAccum = (NewmAnoAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmRaw[i - 1], Name).Tcorr + Anoma) % Anoma
+        const AcrNewmAnoAccum =
+          (NewmAnoAccumPrint[i - 1] +
+            AutoTcorr(NewmAnoAccumPrint[i - 1], NewmRaw[i - 1], Name).Tcorr +
+            Anoma) %
+          Anoma;
         NewmAnojour = anojour(AcrNewmAnoAccum, Name).Anojour; // 定朔加時入轉度
       }
-      let NewmWhiteDeg = 0, NewmWhiteGong = 0, Dingxian = 0, NodeWhiteGong = 0, WhEq_WhiteGong = 0, WhEqGong = 0;
+      let NewmWhiteDeg = 0,
+        NewmWhiteGong = 0,
+        Dingxian = 0,
+        NodeWhiteGong = 0,
+        WhEq_WhiteGong = 0,
+        WhEqGong = 0;
       let NewmWhiteAccumList = []; // 九道宿鈐
-      const NewmEclpGong = NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum; // 定朔距冬至實行度
+      const NewmEclpGong =
+        NewmSd + AutoDifAccum(undefined, NewmSd, Name).SunDifAccum; // 定朔距冬至實行度
       const { SolsEclpDeg, SolsEquaDeg } = solsMans(Name, Y);
       const NewmEclpDeg = NewmEclpGong + SolsEclpDeg;
       if (Type === 11) {
@@ -287,12 +311,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
           NewmEclpGong,
           Y
         );
-        NewmWhiteDeg = FuncNewm.NewmWhiteDeg
-        NewmWhiteGong = FuncNewm.NewmWhiteGong
+        NewmWhiteDeg = FuncNewm.NewmWhiteDeg;
+        NewmWhiteGong = FuncNewm.NewmWhiteGong;
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
         Dingxian = FuncNewm.Dingxian;
-        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong
-        WhEqGong = FuncNewm.WhEqGong
+        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong;
+        WhEqGong = FuncNewm.WhEqGong;
       } else if (Type >= 6) {
         const FuncNewm = moonJiudao(
           NewmNodeAccumPrint[i - 1],
@@ -302,12 +326,19 @@ export const D1 = (Name, YearStart, YearEnd) => {
           Name,
           Y
         );
-        NewmWhiteDeg = FuncNewm.NewmWhiteDeg
-        NewmWhiteGong = FuncNewm.NewmWhiteGong
+        NewmWhiteDeg = FuncNewm.NewmWhiteDeg;
+        NewmWhiteGong = FuncNewm.NewmWhiteGong;
         NewmWhiteAccumList = FuncNewm.WhiteAccumList;
-        NodeWhiteGong = FuncNewm.NodeWhiteGong
+        NodeWhiteGong = FuncNewm.NodeWhiteGong;
       }
-      const AcrNewmNodeAccum = NewmNodeAccumPrint[i - 1] + AutoTcorr(NewmAnoAccumPrint[i - 1], NewmSd, Name, NewmNodeAccumPrint[i - 1]).NodeAccumCorrA
+      const AcrNewmNodeAccum =
+        NewmNodeAccumPrint[i - 1] +
+        AutoTcorr(
+          NewmAnoAccumPrint[i - 1],
+          NewmSd,
+          Name,
+          NewmNodeAccumPrint[i - 1]
+        ).NodeAccumCorrA;
       Sc[i] = [];
       Jd[i] = [];
       Nayin[i] = [];
@@ -322,7 +353,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       Luck[i] = [];
       for (let k = 1; k <= NewmInt[i] - NewmInt[i - 1]; k++) {
         // 每月日數
-        const SdMidn = (NewmInt[i - 1] - SolsAccum + Solar) % Solar + k - 1; // 每日夜半距冬至時長
+        const SdMidn = ((NewmInt[i - 1] - SolsAccum + Solar) % Solar) + k - 1; // 每日夜半距冬至時長
         const SdInt = ZhengSdInt + DayAccum; // 每日夜半距冬至夜半整日數。冬至當日爲0
         DayAccum++; // 這個位置不能變
         //////////天文曆///////////
@@ -343,81 +374,130 @@ export const D1 = (Name, YearStart, YearEnd) => {
           SunLon = SdMidn % Solar;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Solar;
           MoonEclpLon = (MoonEclpLonNewmMidn + (k - 1) * MoonAvgVd) % Sidereal;
-          MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Solar
-          MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
-          MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
+          MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Solar;
+          MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa;
+          MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal;
         } else {
           AnoAccumMidn = (NewmAnoAccumMidnPrint[i - 1] + k - 1) % Anoma;
-          NodeAccumMidn = (AcrNewmNodeAccum - deci(NewmAcrRaw[i - 1]) + k - 1 + Node) % Node;
+          NodeAccumMidn =
+            (AcrNewmNodeAccum - deci(NewmAcrRaw[i - 1]) + k - 1 + Node) % Node;
           const SunDifAccumMidn = AutoDifAccum(0, SdMidn, Name).SunDifAccum;
           SunLon = (SdMidn + SunDifAccumMidn) % Sidereal;
           SunEquaLon = equaEclp(SunLon, Name).Eclp2Equa % Sidereal;
           // 《中》頁514 月度：欽天以後，先求正交至平朔月行度、平朔太陽黃度，由於平朔日月平黃經相同，所以相加減卽得正交月黃度
           const MidnAnojour = anojour(AnoAccumMidn, Name).Anojour;
           if (Type <= 4) {
-            MoonEclpDeg = (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
-            MoonEclpLon = (MoonEclpDeg - SolsEclpDeg + Sidereal) % Sidereal
-            MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
-            MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
-          } else { // 有九道術的
-            const MoonWhiteDeg = (NewmWhiteDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
+            MoonEclpDeg =
+              (NewmEclpDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
+            MoonEclpLon = (MoonEclpDeg - SolsEclpDeg + Sidereal) % Sidereal;
+            MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa;
+            MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal;
+          } else {
+            // 有九道術的
+            const MoonWhiteDeg =
+              (NewmWhiteDeg + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             MoonWhite = deg2Mans(MoonWhiteDeg, NewmWhiteAccumList).Print;
-            MoonWhiteLon = (NewmWhiteGong + MidnAnojour - NewmAnojour + Sidereal) % Sidereal
+            MoonWhiteLon =
+              (NewmWhiteGong + MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
           }
-          if (Type >= 6) { // 分授時與九道術
-            const NodeEclpGong = chooseNode(NewmEclpGong, NewmNodeAccumPrint[i - 1], NewmAnoAccumPrint[i - 1], AvgNewmSd, Name)
+          if (Type >= 6) {
+            // 分授時與九道術
+            const NodeEclpGong = chooseNode(
+              NewmEclpGong,
+              NewmNodeAccumPrint[i - 1],
+              NewmAnoAccumPrint[i - 1],
+              AvgNewmSd,
+              Name
+            );
             if (Type === 11) {
-              const Moon_WhEq_WhiteDif = (MoonWhiteLon - WhEq_WhiteGong + Solar) % Solar
-              const Moon_WhEq_EquaDif = Moon_WhEq_WhiteDif - equa2WhiteDif(Dingxian, Moon_WhEq_WhiteDif)
-              MoonEquaLon = (WhEqGong + Moon_WhEq_EquaDif) % Solar
-              MoonEclpLon = equaEclp(MoonEquaLon, Name).Equa2Eclp
-              MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
-              MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
-              NowNewm_WhiteDif = (MidnAnojour - NewmAnojour + Sidereal) % Sidereal
+              const Moon_WhEq_WhiteDif =
+                (MoonWhiteLon - WhEq_WhiteGong + Solar) % Solar;
+              const Moon_WhEq_EquaDif =
+                Moon_WhEq_WhiteDif -
+                equa2WhiteDif(Dingxian, Moon_WhEq_WhiteDif);
+              MoonEquaLon = (WhEqGong + Moon_WhEq_EquaDif) % Solar;
+              MoonEclpLon = equaEclp(MoonEquaLon, Name).Equa2Eclp;
+              MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal;
+              MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal;
+              NowNewm_WhiteDif =
+                (MidnAnojour - NewmAnojour + Sidereal) % Sidereal;
             } else {
-              const MoonNode_WhiteDif = (MoonWhiteLon - NodeWhiteGong + Solar) % Solar // 此處Gong和Lon是一樣的，沒有區別
-              const MoonNode_EclpDif = MoonNode_WhiteDif - eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name)
-              MoonEclpLon = (NodeEclpGong + MoonNode_EclpDif) % Solar
-              MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal
-              MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa
-              MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal
+              const MoonNode_WhiteDif =
+                (MoonWhiteLon - NodeWhiteGong + Solar) % Solar; // 此處Gong和Lon是一樣的，沒有區別
+              const MoonNode_EclpDif =
+                MoonNode_WhiteDif -
+                eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name);
+              MoonEclpLon = (NodeEclpGong + MoonNode_EclpDif) % Solar;
+              MoonEclpDeg = (MoonEclpLon + SolsEclpDeg) % Sidereal;
+              MoonEquaLon = equaEclp(MoonEclpLon, Name).Eclp2Equa;
+              MoonEquaDeg = (MoonEquaLon + SolsEquaDeg) % Sidereal;
             }
           }
         }
-        MoonEclp = MoonEclpDeg ? deg2Mans(MoonEclpDeg, EclpAccumList).Print : undefined;
-        MoonEqua = MoonEquaDeg ? deg2Mans(MoonEquaDeg, EquaAccumList).Print : undefined;
-        const Moon2SunEquaLat = autoLat(MoonEclpLon, Name, true) // 月亮所在黃道度對應的太陽的赤緯
+        MoonEclp = MoonEclpDeg
+          ? deg2Mans(MoonEclpDeg, EclpAccumList).Print
+          : undefined;
+        MoonEqua = MoonEquaDeg
+          ? deg2Mans(MoonEquaDeg, EquaAccumList).Print
+          : undefined;
+        const Moon2SunEquaLat = autoLat(MoonEclpLon, Name, true); // 月亮所在黃道度對應的太陽的赤緯
         const SunEquaLat = autoLat(SdMidn, Name);
         let Dial = autoDial(SdMidn, SolsDeci, Name);
         Dial = Dial ? Dial.toFixed(3) + "尺" : undefined;
         const { Equa: SunEqua, Eclp: SunEclp } = mans(Name, Y, SunLon);
-        let MoonEquaLat = 0, MoonEclpLat = 0;
+        let MoonEquaLat = 0,
+          MoonEclpLat = 0;
         if (Type === 11) {
-          MoonEquaLat = moonShoushi(NewmNodeAccumPrint[i - 1], AvgNewmSd, NewmEclpGong, undefined, NowNewm_WhiteDif).EquaLat
-          MoonEclpLat = MoonEquaLat - Moon2SunEquaLat
+          MoonEquaLat = moonShoushi(
+            NewmNodeAccumPrint[i - 1],
+            AvgNewmSd,
+            NewmEclpGong,
+            undefined,
+            NowNewm_WhiteDif
+          ).EquaLat;
+          MoonEclpLat = MoonEquaLat - Moon2SunEquaLat;
         } else {
-          MoonEclpLat = moonEclpLat(NodeAccumMidn, AnoAccumMidn, SdMidn, Name)
-          MoonEquaLat = MoonEclpLat + Moon2SunEquaLat
+          MoonEclpLat = moonEclpLat(NodeAccumMidn, AnoAccumMidn, SdMidn, Name);
+          MoonEquaLat = MoonEclpLat + Moon2SunEquaLat;
         }
-        let OrbColor
+        let OrbColor;
         if (Type >= 6 && Type <= 10) {
-          OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name)
+          OrbColor = nineOrbits(NodeAccumMidn, NewmSd, Name);
         }
         Pos[i][k] = [
           { SunEquaLon: SunEquaLon.toFixed(4), SunEquaLat: lat2NS(SunEquaLat) },
           { SunCecLon: SunLon.toFixed(4), Dial: Dial },
           { SunEqua: SunEqua, SunCec: SunEclp },
-          { MoonEquaLon: MoonEquaLon ? MoonEquaLon.toFixed(4) : undefined, MoonEquaLat: lat2NS(MoonEquaLat) },
-          { MoonCecLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined, MoonCecLat: lat2NS(MoonEclpLat) },
+          {
+            MoonEquaLon: MoonEquaLon ? MoonEquaLon.toFixed(4) : undefined,
+            MoonEquaLat: lat2NS(MoonEquaLat)
+          },
+          {
+            MoonCecLon: MoonEclpLon ? MoonEclpLon.toFixed(4) : undefined,
+            MoonCecLat: lat2NS(MoonEclpLat)
+          },
           { MoonEqua: MoonEqua, MoonCec: MoonEclp },
-          { MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined, MoonWhite: MoonWhite, OrbColor: OrbColor }
-        ]
+          {
+            MoonWhiteLon: MoonWhiteLon ? MoonWhiteLon.toFixed(4) : undefined,
+            MoonWhite: MoonWhite,
+            OrbColor: OrbColor
+          }
+        ];
         const FuncDusk = midstar(Name, Y, SunLon, SdMidn, SolsDeci);
         const Rise = autoRise(SdMidn, SolsDeci, Name);
         const LightRange = AutoLightRange(Name) * 100;
-        Morningstar[i][k] =
-          [{ Morningstar: FuncDusk.Morningstar, Morning: (Rise - LightRange).toFixed(2), SunRise: Rise.toFixed(2) + "刻" },
-          { SunSet: (100 - Rise).toFixed(2), Dusk: (100 - Rise + LightRange).toFixed(2) + "刻 ", Duskstar: FuncDusk.Duskstar }]
+        Morningstar[i][k] = [
+          {
+            Morningstar: FuncDusk.Morningstar,
+            Morning: (Rise - LightRange).toFixed(2),
+            SunRise: Rise.toFixed(2) + "刻"
+          },
+          {
+            SunSet: (100 - Rise).toFixed(2),
+            Dusk: (100 - Rise + LightRange).toFixed(2) + "刻 ",
+            Duskstar: FuncDusk.Duskstar
+          }
+        ];
         ///////////具注曆////////////
         const ScOrder = (ZhengScOrder + DayAccum) % 60;
         Sc[i][k] = ScList[ScOrder];
@@ -435,16 +515,18 @@ export const D1 = (Name, YearStart, YearEnd) => {
         const Stem = StemList.indexOf(Sc[i][k][0]);
         const Branch = BranchList.indexOf(Sc[i][k][1]);
         const JieNum = Math.round(
-          (Math.ceil(Math.trunc(SdMidn / HalfTermLeng) / 2) + 11) % 12.1,
+          (Math.ceil(Math.trunc(SdMidn / HalfTermLeng) / 2) + 11) % 12.1
         );
         // 順序不一樣！立春1，驚蟄2，清明3，立夏4，芒種5，小暑6，立秋7，白露8，寒露9，立冬10，大雪11，小寒12
         const JieDifInt = Math.trunc(
-          (SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar,
+          (SdMidn - (JieNum * 2 + 1) * HalfTermLeng + SolsDeci + Solar) % Solar
         );
         if (Type >= 6) {
           const WeekOrder = fmod(NewmInt[i - 1] + k + 3 + (WeekConst || 0), 7);
-          const MansOrder =
-            fmod(NewmInt[i - 1] + k + 21 + (MansDayConst || 0), 28);
+          const MansOrder = fmod(
+            NewmInt[i - 1] + k + 21 + (MansDayConst || 0),
+            28
+          );
           Week[i][k] =
             WeekList[WeekOrder] +
             MansNameList[MansOrder] +
@@ -455,11 +537,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
           if (HouAccum[j] >= SdMidn && HouAccum[j] < SdMidn + 1) {
             HouOrder = j % 72;
             const TermOrder = HouOrder % 3 ? -1 : Math.round(HouOrder / 3) % 24;
-            HouName[i][k] = []
+            HouName[i][k] = [];
             if (Type >= 3) {
               HouName[i][k].push({
                 Term: TermOrder >= 0 ? HalfTermNameList[TermOrder] : undefined,
-                Hou: HouList[HouOrder] +
+                Hou:
+                  HouList[HouOrder] +
                   deci(HouAccum[j] + SolsAccum)
                     .toFixed(4)
                     .slice(2, 6)
@@ -527,7 +610,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
         } else if (DayAccum === Fu3DayAccum) {
           Fu = { Sanfu: "末伏" };
         }
-        HouName[i][k].push(Fu)
+        HouName[i][k].push(Fu);
         for (let j = 0; j < 7; j++) {
           if (MieSd[j] >= SdMidn && MieSd[j] < SdMidn + 1) {
             HouName[i][k].push({
@@ -552,10 +635,12 @@ export const D1 = (Name, YearStart, YearEnd) => {
           if (SdMidn >= FiveAccumList[l] && SdMidn < FiveAccumList[l] + 1) {
             FiveOrder = l % 8;
             const FiveDeci = (SdMidn - FiveAccumList[l]).toFixed(4).slice(2, 6);
-            FiveName[i][k] = [{
-              FiveNameSymbol: FiveList2[FiveOrder],
-              FiveNameDeci: FiveDeci
-            }];
+            FiveName[i][k] = [
+              {
+                FiveNameSymbol: FiveList2[FiveOrder],
+                FiveNameDeci: FiveDeci
+              }
+            ];
             break;
           }
         }
@@ -571,8 +656,13 @@ export const D1 = (Name, YearStart, YearEnd) => {
               const HexagramDeci = (SdMidn - HexagramAccumList[m])
                 .toFixed(4)
                 .slice(2, 6);
-              HexagramName[i][k] =
-                [{ HexagramName: Hexagram64List[HexagramOrder], HexagramSymbol: HexagramSymbolList[HexagramOrder], HexagramDeci: HexagramDeci }];
+              HexagramName[i][k] = [
+                {
+                  HexagramName: Hexagram64List[HexagramOrder],
+                  HexagramSymbol: HexagramSymbolList[HexagramOrder],
+                  HexagramDeci: HexagramDeci
+                }
+              ];
               break;
             } else {
               HexagramName[i][k] = undefined;
@@ -584,7 +674,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
           Stem,
           Branch,
           JieNum,
-          JieDifInt,
+          JieDifInt
         );
         const Fubao = FubaoConvert(NoleapMon, Stem);
         const LongShortStar = LsStarConvert(NoleapMon, k);
@@ -620,7 +710,7 @@ export const D1 = (Name, YearStart, YearEnd) => {
       HexagramName,
       FiveName,
       ManGod,
-      Luck,
+      Luck
     };
   };
   const result = [];

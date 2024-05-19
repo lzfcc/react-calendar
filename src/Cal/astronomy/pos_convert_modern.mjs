@@ -10,9 +10,15 @@ import {
   asind,
   acosd,
   atand,
-  atan2d,
+  atan2d
 } from "../parameter/functions.mjs";
-import { FlatLon2FlatLat, HighLon2FlatLat, Lon2Gong, LonFlat2High, LonHigh2Flat } from "./pos_convert.mjs";
+import {
+  FlatLon2FlatLat,
+  HighLon2FlatLat,
+  Lon2Gong,
+  LonFlat2High,
+  LonHigh2Flat
+} from "./pos_convert.mjs";
 import { siderealTime } from "../time/sidereal_time.mjs";
 import { lonlat2xyz, rr1, xyz2lonlat } from "./pos_functions.mjs";
 import { modernConsts } from "./astr_const.mjs";
@@ -35,14 +41,14 @@ export const equa2Eclp = (Sobliq, EquaLon, EquaLat) => {
 export const equa2Cec = (Sobliq, EquaLon, EquaLat) => {
   return {
     CecLon: LonFlat2High(Sobliq, EquaLon),
-    CecLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon),
+    CecLat: EquaLat - FlatLon2FlatLat(Sobliq, EquaLon)
   };
 };
 export const ceclp2Equa = (Sobliq, CecLon, CecLat) => {
-  const EquaLon = LonHigh2Flat(Sobliq, CecLon)
+  const EquaLon = LonHigh2Flat(Sobliq, CecLon);
   return {
     EquaLon,
-    EquaLat: CecLat + FlatLon2FlatLat(Sobliq, EquaLon),
+    EquaLat: CecLat + FlatLon2FlatLat(Sobliq, EquaLon)
   };
 };
 /**
@@ -73,7 +79,6 @@ export const testEclpEclpDif = (Sobliq, Lat) => {
 };
 // console.log(testEclpEclpDif(23.5, 20))
 
-
 /**
  * 見《數理天文學》白道交周
  * @param {*} WhEcLon 黃白交點黃經
@@ -82,22 +87,22 @@ export const testEclpEclpDif = (Sobliq, Lat) => {
  * @returns 白赤交點赤經
  */
 const whEcNode2WhEqNode = (WhEcLon, Sobliq, Mobliq) => {
-  const WhEcLonRev1 = WhEcLon <= 180 ? 180 - WhEcLon : WhEcLon - 180;// 圖像以秋分對稱，尖峰距秋分較近
+  const WhEcLonRev1 = WhEcLon <= 180 ? 180 - WhEcLon : WhEcLon - 180; // 圖像以秋分對稱，尖峰距秋分較近
   Sobliq = Sobliq || 23.5559844; // 23.9度。1280理論值23.533°
   Mobliq = Mobliq || 5.91363627; // 6度。理論平均值5.1453°
   const tan_WhEqLonMax = tand(Mobliq) / sind(Sobliq); // 正交極數：白赤交點赤經最大值的tan()
   const tan_WhEqLon =
     (tan_WhEqLonMax * sind(WhEcLonRev1)) /
     (1 - tan_WhEqLonMax * cosd(Sobliq) * cosd(WhEcLonRev1));
-  const WhEqEquinoxDif = atand(tan_WhEqLon)
-  const WhEcGong = Lon2Gong(WhEcLon)
+  const WhEqEquinoxDif = atand(tan_WhEqLon);
+  const WhEcGong = Lon2Gong(WhEcLon);
   const WhEcGongHalf = WhEcGong % 180;
   const sign1 = WhEcGongHalf < 90 ? 1 : -1;
   const sign2 = WhEcGong < 180 ? -1 : 1; // 符號照抄授時曆
   return {
     WhEqLonMax: atand(tan_WhEqLonMax),
     // WhEqLon: (sign1 * -sign2 * WhEqEquinoxDif + 360) % 360,
-    WhEqLon: WhEqEquinoxDif,
+    WhEqLon: WhEqEquinoxDif
   };
 };
 // console.log(whEcNode2WhEqNode(190))
@@ -110,12 +115,11 @@ export const whEqObliq = (WhEcLon, Sobliq, Mobliq) => {
   const WhEcLonRev = WhEcLon <= 180 ? WhEcLon : 360 - WhEcLon; // 看圖像，黃經從0-180逐漸降低，那麼180-360應該是逐漸升高
   Mobliq = Mobliq || 5.91363627;
   const { WhEqLon } = whEcNode2WhEqNode(WhEcLon, Sobliq, Mobliq);
-  const sin_WhEqObliq =
-    (sind(Mobliq) * sind(WhEcLonRev)) / sind(WhEqLon); // 球面三角形BHG正弦定理
+  const sin_WhEqObliq = (sind(Mobliq) * sind(WhEcLonRev)) / sind(WhEqLon); // 球面三角形BHG正弦定理
   return {
     WhEqLon,
     WhEqObliq: asind(sin_WhEqObliq)
-  }
+  };
 };
 // LonHigh2Flat(whEqObliq, MoonWhiteLon) // 白經轉赤經
 // HighLon2FlatLat(whEqObliq, MoonWhiteLon) // 白經轉赤緯。MoonWhiteLon：月亮距離白赤正交
@@ -123,21 +127,22 @@ export const whEqObliq = (WhEcLon, Sobliq, Mobliq) => {
 
 /**
  * 赤道轉九道
- * @param {*} Jd 
+ * @param {*} Jd
  */
 export const lonEqua2Cwh = (Jd, EqauLon) => {
-  const { WhEqLon, WhEqObliq } = whEqObliq(modernConsts(Jd).AvgWhEcLon)
-  let WhEqDif = 0, CwhLon = 0;
+  const { WhEqLon, WhEqObliq } = whEqObliq(modernConsts(Jd).AvgWhEcLon);
+  let WhEqDif = 0,
+    CwhLon = 0;
   if (EqauLon) {
-    WhEqDif = (EqauLon - WhEqLon + 360) % 360 // 某點距離白赤交點的赤道度
-    CwhLon = LonFlat2High(WhEqObliq, WhEqDif) // 距離白赤交點的白道度
+    WhEqDif = (EqauLon - WhEqLon + 360) % 360; // 某點距離白赤交點的赤道度
+    CwhLon = LonFlat2High(WhEqObliq, WhEqDif); // 距離白赤交點的白道度
   }
   return {
     CwhLon,
     WhEqLon, // 白赤交點赤經
     WhEqObliq
-  }
-}
+  };
+};
 // console.log(lonEqua2Cwh(2343222, 199))
 
 /**

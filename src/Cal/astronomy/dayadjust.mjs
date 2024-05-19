@@ -50,7 +50,7 @@ export const newmPlus = (Deci, Sd, SolsDeci, Name) => {
   } else if (Sd > SolarQuar && Sd < Solar * 0.75) {
     standard = 0.75 + (Rise - SpringequinoxSunrise) / Portion;
   }
-  return Deci >= standard ? 1 : 0
+  return Deci >= standard ? 1 : 0;
 };
 // console.log( newmPlus (.75, 191, .9, 'Linde') )
 
@@ -60,5 +60,5 @@ export const syzygySub = (Deci, Sd, SolsDeci, Name) => {
   const Rise = autoRise(Sd, SolsDeci, Name) / 100;
   let standard = Rise - LightRange;
   if (Type >= 8 || Name === "Qintian") standard = Rise;
-  return Deci < standard ? -1 : 0
+  return Deci < standard ? -1 : 0;
 };

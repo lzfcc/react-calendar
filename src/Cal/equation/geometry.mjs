@@ -3,7 +3,7 @@ import {
   Gong2Lon,
   GongFlat2High,
   GongHigh2Flat,
-  HighLon2FlatLat,
+  HighLon2FlatLat
 } from "../astronomy/pos_convert.mjs";
 
 const RoundL2HWest = (r, l) => r * (1 - cosd(l)); // 輸入半弧，輸出矢
@@ -41,13 +41,13 @@ export const RoundH2LCPrint = (h) => {
         l.toFixed(6),
         (l - lWest).toFixed(4),
         c.toFixed(6),
-        (c - cWest).toFixed(4),
-      ],
-    },
+        (c - cWest).toFixed(4)
+      ]
+    }
   ];
   Print = Print.concat({
     title: "三角函數",
-    data: [lWest.toFixed(6), 0, cWest.toFixed(6), 0],
+    data: [lWest.toFixed(6), 0, cWest.toFixed(6), 0]
   });
   return Print;
 };
@@ -55,8 +55,8 @@ export const RoundH2LCPrint = (h) => {
 
 /**
  * 弦 --> 弧、矢
- * @param {*} c 
- * @returns 
+ * @param {*} c
+ * @returns
  */
 const RoundC2LH = (c) => {
   // c 半弦長
@@ -73,34 +73,40 @@ export const RoundC2LHPrint = (cRaw) => {
   if (cRaw > 121.75) {
     throw new Error("c <= 121.75");
   }
-  const Sidereal = 365.25
-  const r = 60.875
-  const Portion2 = pi / 3
-  const Portion4 = Sidereal / 360
+  const Sidereal = 365.25;
+  const r = 60.875;
+  const Portion2 = pi / 3;
+  const Portion4 = Sidereal / 360;
   const { l, h } = RoundC2LH(c);
-  const rReal = Sidereal / pi / 2
-  const cReal = c / Portion2
-  let lWest = RoundC2LWest(rReal / Portion4, c / Portion4) * Portion4
-  const hWest = (rReal / Portion4 - Math.sqrt((rReal / Portion4) ** 2 - cReal ** 2))// / Portion2
-  lWest *= 2
+  const rReal = Sidereal / pi / 2;
+  const cReal = c / Portion2;
+  let lWest = RoundC2LWest(rReal / Portion4, c / Portion4) * Portion4;
+  const hWest =
+    rReal / Portion4 - Math.sqrt((rReal / Portion4) ** 2 - cReal ** 2); // / Portion2
+  lWest *= 2;
   let Print = [
     {
       title: "會圓術",
-      data: [l.toFixed(6), (l - lWest).toFixed(4), h.toFixed(6), (h - hWest).toFixed(4)]
-    },
+      data: [
+        l.toFixed(6),
+        (l - lWest).toFixed(4),
+        h.toFixed(6),
+        (h - hWest).toFixed(4)
+      ]
+    }
   ];
   Print = Print.concat({
-    title: '三角函數',
+    title: "三角函數",
     data: [lWest.toFixed(6), 0, hWest.toFixed(6), 0]
-  })
+  });
   return Print;
 };
 // console.log(RoundC2LHPrint(10))
 
 /**
  * 會圓術 半弧長 --> 矢長
- * @param {*} l 
- * @returns 
+ * @param {*} l
+ * @returns
  */
 export const RoundL2H = (l) => {
   const r = 60.875;
@@ -146,13 +152,13 @@ export const RoundL2HPrint = (lRaw) => {
         h.toFixed(6),
         (h - hWest).toFixed(4),
         c.toFixed(6),
-        (c - cWest).toFixed(4),
-      ],
-    },
+        (c - cWest).toFixed(4)
+      ]
+    }
   ];
   Print = Print.concat({
     title: "三角函數",
-    data: [hWest.toFixed(6), 0, cWest.toFixed(6), 0],
+    data: [hWest.toFixed(6), 0, cWest.toFixed(6), 0]
   });
   return Print;
 };
@@ -215,7 +221,7 @@ const Hushigeyuan_Sub = (LonRaw, p, q, pAnother) => {
     Lat,
     ON,
     p2Another,
-    sign,
+    sign
   };
 };
 // 弧矢割圓術黃赤轉換。跟元志六《黃赤道率》立成表分毫不差，耶！！！
@@ -236,7 +242,7 @@ export const Hushigeyuan = (LonRaw, Name) => {
     Lat,
     ON,
     p2Another,
-    sign,
+    sign
   } = Hushigeyuan_Sub(LonRaw, p, q, pAnother);
   // const Lat1 = 91.3125 - Lat // 91.314375
   /// ///////晷漏////////
@@ -344,16 +350,16 @@ export const Hushigeyuan_Ex_Print = (GongRaw, e) => {
         WestA1.toFixed(6),
         0,
         WestLat.toFixed(6),
-        0,
-      ],
-    },
+        0
+      ]
+    }
   ];
   const {
     Equa2Eclp: GeyuanB,
     Equa2EclpDif: GeyuanB1,
     Eclp2Equa: GeyuanA,
     Eclp2EquaDif: GeyuanA1,
-    Lat: GeyuanLat,
+    Lat: GeyuanLat
   } = Hushigeyuan_Ex(GongRaw, e);
   Print = Print.concat({
     title: "弧矢割圓",
@@ -365,8 +371,8 @@ export const Hushigeyuan_Ex_Print = (GongRaw, e) => {
       GeyuanA1.toFixed(6),
       Math.trunc(((GeyuanA - WestA) / WestA) * 10000),
       GeyuanLat.toFixed(6),
-      Math.trunc(((GeyuanLat - WestLat) / WestLat) * 10000),
-    ],
+      Math.trunc(((GeyuanLat - WestLat) / WestLat) * 10000)
+    ]
   });
   return Print;
 };

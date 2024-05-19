@@ -5,7 +5,7 @@ import {
   qiexianA,
   Gong2Lon,
   Lon2Gong,
-  aCb_Sph,
+  aCb_Sph
 } from "../astronomy/pos_convert.mjs";
 import {
   D2R,
@@ -28,10 +28,9 @@ import {
   f1,
   f2,
   f4,
-  vsind,
+  vsind
 } from "../parameter/functions.mjs";
 import { timeAvg2Real } from "../time/eot_qing.mjs";
-
 
 // 褚龙飞《崇祯历书系列历法中的太阳运动理论》：「可以断定日躔加减差表应该是根据对分圆模型计算而来的。」「从图上来看，平行心应为丙，即太阳应相对于丙作匀角速运动。这样，辛就应该是本轮圆心，辛乙才是本轮半径。」從上到下依此為平行心、本輪心、地心
 // const corrRingB = OrbRaw => {
@@ -60,7 +59,7 @@ export const corrRingA = (Orb, c) => {
   const JS = HS - HJ;
   return {
     Corr: +atand(DJ / JS).toFixed(12), // 初均
-    d: HS - CH, // 日地距離
+    d: HS - CH // 日地距離
   };
 };
 // 測本輪大小遠近及加減差後法第七，近世歌白尼法，今時通用。崇禎曆書對幾個均數的定義也很迷惑，第十二說本輪次輪產生一二均，也就是考成的初均。對比表格，崇禎曆書自行加減表=考成初均表
@@ -246,7 +245,7 @@ export const corrEllipseD1 = (OrbRaw, c) => {
   const Aor1 = qiexianA(c, a, t1(OrbRaw)); // ∠CJS
   const Arc1 = D2R * Aor1; // JQ弧=∠JCQ≒∠CJS
   const l1 = sqr(a ** 2 + c ** 2 + 2 * a * c * cosd(t2(OrbRaw))); // SJ
-  const Arc3 = (Arc1 - Math.sin(Arc1)) / l1; // ∠SJN ≒ sin∠SJN =SN/SJ=(NT-ST)/SJ，棋瀚案：其中NT-ST=JQ-JW，把整個值放大了一點，JQ-JW=∠JCQ-sin∠JCQ，而∠JCQ≒CJS之後把∠JCQ縮小了一點，所以一放一縮，大致NT-ST=∠CJS-sin∠CJS。又再進行一次近似∠SJN ≒ sin∠SJN
+  const Arc3 = (Arc1 - Math.sin(Arc1)) / l1; // ∠SJN ≈ sin∠SJN =SN/SJ=(NT-ST)/SJ，棋瀚案：其中NT-ST=JQ-JW，把整個值放大了一點，JQ-JW=∠JCQ-sin∠JCQ，而∠JCQ≒CJS之後把∠JCQ縮小了一點，所以一放一縮，大致NT-ST=∠CJS-sin∠CJS。又再進行一次近似∠SJN ≈ sin∠SJN
   const Ar3 = R2D * Arc3;
   // 為何不增加一步sin變角？
   // const Ar3 = R2D*Math.asin(Arc3) // 沒啥區別，多餘
@@ -338,7 +337,7 @@ const moonXinfa = (
   MapoRoot,
   Smd,
   SunCorr,
-  SunGong,
+  SunGong
 ) => {
   const { MoonAvgVd, MapoVd, NodeVd, Sobliq } = Para[Name];
   const R1 = 0.058;
@@ -369,7 +368,7 @@ const moonXinfa = (
   // 以下照抄甲子曆
   const Mobliq = aCb_Sph(MobliqMid, MobliqDif, t2(MSDif2)); // 黃白大距。90：5度8分9秒=5.1358333333
   const NodeCorr = asind(
-    (sind(t2(MSDif2)) * sind(MobliqDif)) / sind(MobliqMid),
+    (sind(t2(MSDif2)) * sind(MobliqDif)) / sind(MobliqMid)
   ); // 交均：白道極與交均輪心之差。90：1度46分8秒=1.7688888889
   const flag4 = MSDif2 < 180 ? -1 : 1; // 月距日倍度不及半周，交均爲減
   const AcrNode = fm360(AvgNode + flag4 * NodeCorr);
@@ -383,7 +382,7 @@ const moonXinfa = (
     MoonLon,
     MoonLat,
     Mobliq,
-    Mapo: AvgMapo,
+    Mapo: AvgMapo
   };
 };
 // console.log(moonXinfa('Xinfa'))
@@ -394,7 +393,7 @@ const moonJiazi = (
   MapoRoot,
   Smd,
   SunCorr,
-  SunGong,
+  SunGong
 ) => {
   const { MoonAvgVd, MapoVd, NodeVd, Sobliq } = Para[Name];
   const R2 = 0.029;
@@ -422,7 +421,7 @@ const moonJiazi = (
   const Jichou = R4 * sin2d(t2(MSDif2)); // 次輪月距日倍度之通弦。120：0.0407827。135：0.0306884。320：0.0278970
   const AngJichoujia = abs(
     AcrMorbTmp + // 均輪心距最卑之度=引數與半周相減
-    (flag1 * f4(MSDif) * t1(MSDif2)) / 2,
+    (flag1 * f4(MSDif) * t1(MSDif2)) / 2
   ); // 加減月距日距象限度爲夾角。距象限90度和我的算式等效。
   // 初均減者：月距日過一三象限，加；不過象限或過二象限，減。
   // 初均加者：相反。若初均與均輪心距最卑相加不足減月距日距象限度，則轉減。若相加過半周，則與全周相減。110、120用加：84度22分19秒=84.3719444444。135、230用減：8度53分6秒=8.885。320、300：74度14分51秒=74.2475
@@ -449,7 +448,7 @@ const moonJiazi = (
   // 白極自交均輪順時針行倍離
   const Mobliq = aCb_Sph(MobliqMid, MobliqDif, t2(MSDif2)); // 黃白大距。90：5度8分9秒=5.1358333333
   const NodeCorr = asind(
-    (sind(t2(MSDif2)) * sind(MobliqDif)) / sind(MobliqMid),
+    (sind(t2(MSDif2)) * sind(MobliqDif)) / sind(MobliqMid)
   ); // 交均：白道極與交均輪心之差。90：1度46分8秒=1.7688888889
   const flag4 = MSDif2 < 180 ? -1 : 1; // 月距日倍度不及半周，交均爲減
   const AcrNode = fm360(AvgNode + flag4 * NodeCorr);
@@ -463,7 +462,7 @@ const moonJiazi = (
     MoonLon,
     MoonLat,
     Mobliq,
-    Mapo: AvgMapo,
+    Mapo: AvgMapo
   };
 };
 
@@ -476,7 +475,7 @@ export const moonGuimao = (
   SunCorr,
   SunGong,
   Speri,
-  Sorb,
+  Sorb
 ) => {
   const { MoonAvgVd, MapoVd, NodeVd } = Para[Name];
   const SunCorrMax = 1.93694444444444; // 太陽最大均數1 + 56 / 60 + 13 / 3600
@@ -491,8 +490,7 @@ export const moonGuimao = (
   const Corr3Max = 0.04027777777778; // 最大三均2 / 60 + 25 / 3600
   const Corr4MaxList = [
     0, 0.01694444444444, 0.01861111111111, 0.02111111111111, 0.02444444444444,
-    0.02861111111111, 0.03333333333333, 0.03861111111111, 0.04416666666667,
-    0.05,
+    0.02861111111111, 0.03333333333333, 0.03861111111111, 0.04416666666667, 0.05
   ]; // [0, 61 / 3600, 67 / 3600, 76 / 3600, 88 / 3600, 103 / 3600, 120 / 3600, 139 / 3600, 159 / 3600, 180 / 3600]兩弦最大末均以10度爲率，依次為日月最高相距0、10、20⋯⋯90度。為何0-10有一個突然的陡坡？見廖育棟文檔附錄2
   const MobliqMax = 5.28888888888889;
   const MobliqMin = 4.99305555555556; // 黃白交角大距限5 + 17 / 60 + 20 / 3600。4 + 59 / 60 + 35 / 3600
@@ -535,7 +533,7 @@ export const moonGuimao = (
   const Dif90 = t3(SunMoonApoDif) / 10;
   const Corr4Max =
     deci(Dif90) *
-    (Corr4MaxList[Math.trunc(Dif90) + 1] - Corr4MaxList[Math.trunc(Dif90)]) +
+      (Corr4MaxList[Math.trunc(Dif90) + 1] - Corr4MaxList[Math.trunc(Dif90)]) +
     Corr4MaxList[Math.trunc(Dif90)]; // 兩弦最大末均
   const Corr4 = -sind(AcrMSDif) * Corr4Max; // 末均。实月距日初宫至五宫为减，六宫至十一宫为加。
   const Whitegong = Acr1 + Corr2 + Corr3 + Corr4; // 白道實行moon's path
@@ -563,7 +561,7 @@ export const moonGuimao = (
     Morb,
     Mapo: AcrMapo,
     Corr1,
-    MoonC,
+    MoonC
   };
 };
 export const moonQing = (
@@ -575,7 +573,7 @@ export const moonQing = (
   SunCorr,
   SunGong,
   Speri,
-  Sorb,
+  Sorb
 ) => {
   if (Name === "Xinfa" || Name === "Yongnian")
     return moonXinfa(Name, MoonRoot, NodeRoot, MapoRoot, Smd, SunCorr, SunGong);
@@ -591,6 +589,6 @@ export const moonQing = (
       SunCorr,
       SunGong,
       Speri,
-      Sorb,
+      Sorb
     );
 };

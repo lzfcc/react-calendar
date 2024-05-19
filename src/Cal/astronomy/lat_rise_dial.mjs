@@ -1,12 +1,8 @@
 import Para from "../parameter/calendars.mjs";
-import {
-  AutoSolar,
-  AutoSidereal,
-} from "../parameter/auto_consts.mjs";
+import { AutoSolar, AutoSidereal } from "../parameter/auto_consts.mjs";
 import { Interpolate1, Interpolate2, Interpolate3 } from "../equation/sn.mjs";
 import { AutoDifAccum } from "./acrv.mjs";
 import { Hushigeyuan } from "../equation/geometry.mjs";
-
 
 const termNum = (Sd, Name) => {
   const { Solar } = Para[Name];
@@ -36,7 +32,7 @@ export const latTable1 = (Sd, Name) => {
     Solar / 4 -
     (SunLatList[TermNum] +
       (TermDif / HalfTermLeng) *
-      (SunLatList[TermNum + 1] - SunLatList[TermNum]))
+        (SunLatList[TermNum + 1] - SunLatList[TermNum]))
   );
 };
 export const riseTable1 = (Sd, Name) => {
@@ -88,7 +84,7 @@ export const latRiseTable2 = (X, Name) => {
         NightList[TermNum],
         NightList[TermNum + 1],
         NightList[TermNum + 2],
-        NightList[TermNum + 3],
+        NightList[TermNum + 3]
       ]) /
         Denom);
     Lat = -(Rise - 25) / (10896 / 52300);
@@ -99,12 +95,12 @@ export const latRiseTable2 = (X, Name) => {
       Interpolate1(TermDifP, [
         NightList[TermNum],
         NightList[TermNum + 1],
-        NightList[TermNum + 2],
+        NightList[TermNum + 2]
       ]);
     Lat1 = Interpolate1(TermDifP, [
       SunLatList[TermNum],
       SunLatList[TermNum + 1],
-      SunLatList[TermNum + 2],
+      SunLatList[TermNum + 2]
     ]);
     Lat = 91.31 - Lat1; // 赤緯
   }
@@ -123,12 +119,12 @@ export const latRiseTable3 = (Sd, Name) => {
     Interpolate3(Sd, [
       [AcrTermList[TermNumAcr], NightList[TermNumAcr]],
       [AcrTermList[TermNumAcr + 1], NightList[TermNumAcr + 1]],
-      [AcrTermList[TermNumAcr + 2], NightList[TermNumAcr + 2]],
+      [AcrTermList[TermNumAcr + 2], NightList[TermNumAcr + 2]]
     ]);
   Lat1 = Interpolate3(Sd, [
     [AcrTermList[TermNumAcr], SunLatList[TermNumAcr]],
     [AcrTermList[TermNumAcr + 1], SunLatList[TermNumAcr + 1]],
-    [AcrTermList[TermNumAcr + 2], SunLatList[TermNumAcr + 2]],
+    [AcrTermList[TermNumAcr + 2], SunLatList[TermNumAcr + 2]]
   ]);
   Lat = 91.31 - Lat1;
   return { Lat, Lat1, Rise };
@@ -172,7 +168,7 @@ export const dialTable2 = (GongNoon, Name) => {
   return Interpolate1(TermDifP, [
     DialList[TermNum],
     DialList[TermNum + 1],
-    DialList[TermNum + 2],
+    DialList[TermNum + 2]
   ]);
 };
 export const dialTable3 = (Lat1) => {
@@ -243,15 +239,15 @@ export const latFormula = (XRaw, Name) => {
       Lat =
         23.9 -
         (491.3109 ** 2 * Lon ** 2 - 982.6218 * Lon ** 3 + Lon ** 4) /
-        160000 /
-        348.856;
+          160000 /
+          348.856;
     } else {
       // 冬至前後
       Lat =
         -23.9 +
         (608.3109 ** 2 * Lon ** 2 - 1216.6218 * Lon ** 3 + Lon ** 4) /
-        267289 /
-        348.856;
+          267289 /
+          348.856;
     }
   } else {
     const Lon = SolarQuar - Math.abs(LonHalf - SolarQuar);
@@ -263,7 +259,7 @@ export const latFormula = (XRaw, Name) => {
         "Mingtian",
         "Guantian",
         "Fengyuan",
-        "Zhantian",
+        "Zhantian"
       ].includes(Name)
     ) {
       let a = 1221360 / 346290367;
@@ -341,25 +337,25 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
       Dial =
         12.85 -
         1e-6 *
-        (1937.5 * Deg1 ** 2 -
-          Deg1 ** 3 -
-          (200 / 827) * Deg1 ** 4 +
-          (1 / 827) * Deg1 ** 5);
+          (1937.5 * Deg1 ** 2 -
+            Deg1 ** 3 -
+            (200 / 827) * Deg1 ** 4 +
+            (1 / 827) * Deg1 ** 5);
     } else if (DegRaw > SolarQuar && DegRaw < 3 * SolarQuar) {
       Dial =
         1.57 +
         1e-6 *
-        (545.25 * Deg2 ** 2 -
-          (3827 / 2481) * Deg2 ** 3 +
-          (5 / 827) * Deg2 ** 4);
+          (545.25 * Deg2 ** 2 -
+            (3827 / 2481) * Deg2 ** 3 +
+            (5 / 827) * Deg2 ** 4);
     } else {
       Dial =
         1.57 +
         1e-6 *
-        (510.09274 * Deg2 ** 2 -
-          1.213548 * Deg2 ** 3 +
-          0.01034059 * Deg2 ** 4 -
-          0.0000403063 * Deg2 ** 5);
+          (510.09274 * Deg2 ** 2 -
+            1.213548 * Deg2 ** 3 +
+            0.01034059 * Deg2 ** 4 -
+            0.0000403063 * Deg2 ** 5);
     }
   } else if (Name === "Jiyuan") {
     if (DegRaw <= xian || DegRaw >= Solar - xian) {
@@ -377,7 +373,6 @@ export const dialFormula = (DegRaw, Name, SolsDeci) => {
   return Dial;
 };
 // console.log(dialFormula(307, 'Chongxuan', .3))
-
 
 /**
  * 藤豔輝<v>紀元曆日食算法及精度分析</v>距離冬至 31.816049 日，紀元日出 2126.2566/7290 = 29.1667572，我之前是直接用黃經，是 29.227518，差了 1 天多，改用距冬至日數，加上日躔，29.1664，密合。

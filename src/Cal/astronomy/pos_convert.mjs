@@ -13,7 +13,7 @@ import {
   t2,
   t3,
   avsind,
-  vsind,
+  vsind
 } from "../parameter/functions.mjs";
 
 export const Lon2Gong = (Lon) => (Lon + 90) % 360;
@@ -140,7 +140,7 @@ export const moonRiseQing = (RiseLat, MEquaLon, MEquaLat, SEquaLon) => {
   const SetTmp = 0.75 + (MSDif - Dif) / 360;
   return {
     MoonRise: deci(RiseTmp + (12 * RiseTmp) / 360),
-    MoonSet: deci(SetTmp + (12 * SetTmp) / 360),
+    MoonSet: deci(SetTmp + (12 * SetTmp) / 360)
   };
 };
 
@@ -203,7 +203,7 @@ export const White2Eclp = (Mobliq, Node, Whitelongi) => {
   // const MoonGong = fm360(Whitegong + EclpWhiteDif)
   return {
     MoonLon: Gong2Lon(LonHigh2Flat(Mobliq, Whitelongi) + Node),
-    MoonLat: HighLon2FlatLat(Mobliq, Whitelongi),
+    MoonLat: HighLon2FlatLat(Mobliq, Whitelongi)
   };
 };
 
@@ -219,7 +219,7 @@ export const moonEclp2EquaGuimao = (Sobliq, Lon, Lat) => {
     atand(cosd(A_ArcMNox_Equa) * tanA_ArcMNox_Equa); // 太陰距二分赤道經度
   return {
     EquaLon,
-    EquaLat: atand(tand(A_ArcMNox_Equa) * sind(t3(EquaLon))),
+    EquaLat: atand(tand(A_ArcMNox_Equa) * sind(t3(EquaLon)))
   };
 };
 /**
@@ -234,12 +234,12 @@ export const eclp2Equa = (Sobliq, Lon, Lat) => {
   const EquaLat = 90 - aCb_Sph(Sobliq, 90 - Lat, t1(Gong)); // 赤緯
   let A = acosd(
     (cosd(90 - Lat) - cosd(Sobliq) * cosd(90 - EquaLat)) /
-    (sind(Sobliq) * sind(90 - EquaLat)),
+      (sind(Sobliq) * sind(90 - EquaLat))
   ); // cosA=(cosa-cosb·cosc)/(sinb·sinc)
   A = A || 180;
   return {
     EquaLon: Gong2Lon(Gong < 180 ? A : 360 - A),
-    EquaLat,
+    EquaLat
   };
 };
 // console.log(eclp2Equa(23 + 29.5 / 60, 27 + 10 / 60 - 90, 29 + 22 / 60)) // 考成卷十六恆星曆理算例:赤經緯23度41分58秒=23.6994444444，求得赤緯8度5分4秒=8.08444444444

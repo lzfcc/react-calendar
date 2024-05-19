@@ -579,3 +579,5 @@ a = [0, ...a]
 - 更換現代地軌偏心率算法
 - 下線 bindDeg2Mans
 - 改名：AutoMoonAcrS –> anojour, MoonAcrS –> Anojour, AnomaAccum –> AnoAccum, Ceclp –> Cec
+
+5-19 前端 `1.12.1` 重新配置eslint。所有文件重新lint一遍。修正deg2Hms is not defined导致时宪历算不出来

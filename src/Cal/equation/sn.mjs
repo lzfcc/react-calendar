@@ -102,7 +102,7 @@ export const Sn3 = (n, p) => {
     S;
   return {
     Print,
-    S: S.toString(),
+    S: S.toString()
   };
 };
 // console.log(Sn3(22.11112111111111, 3).Print)
@@ -159,13 +159,13 @@ const Interpolate1_big = (n, initial) => {
     `差分 = ${delta}
 sum (${n}) = ${S.toNumber()}` +
     (n1 === Number(n)
-      ? ``
+      ? ""
       : `
 sum (${n1}) = ${S1}`) +
     `
 f (${n}) = ${y}` +
     (n1 === Number(n)
-      ? ``
+      ? ""
       : `
 f (${n1}) = ${y1}`);
   return { Print, S, delta, delta1, y };
@@ -225,11 +225,11 @@ export const Make2DPoints = (xList, yList, baseIndex = 0, num = 3) => {
 };
 
 /**
- * 
- * @param {number} n 
+ *
+ * @param {number} n
  * @param {[number, number]} points in the form of [x, y]
- * @param {boolean} highPrecisionMode 
- * @returns 
+ * @param {boolean} highPrecisionMode
+ * @returns
  */
 export const Interpolate3 = (n, points, highPrecisionMode = false) => {
   if (highPrecisionMode) {
@@ -320,7 +320,7 @@ export const MeasureSols = (List) => {
   const f = Interpolate3_big(mid, List).f.toNumber();
   return {
     f,
-    Print: `f (${mid.toNumber()}) = ${f}`,
+    Print: `f (${mid.toNumber()}) = ${f}`
   };
 };
 // console.log(MeasureSols([-1, -5, 6, -12, 7, -21])) // (4-x)x

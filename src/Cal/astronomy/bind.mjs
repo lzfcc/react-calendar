@@ -1,25 +1,14 @@
 import Para from "../parameter/calendars.mjs";
 import { Hushigeyuan } from "../equation/geometry.mjs";
-import {
-  AutoTcorr,
-  AutoDifAccum,
-  anojour,
-  ShoushiXianV,
-} from "./acrv.mjs";
+import { AutoTcorr, AutoDifAccum, anojour, ShoushiXianV } from "./acrv.mjs";
 import {
   NameList,
   MansNameList,
   MansNameListQing,
-  NameJiudaoList,
+  NameJiudaoList
 } from "../parameter/constants.mjs";
 import { AutoEclipse } from "./eclipse.mjs";
-import {
-  deg2Mans,
-  mans2Deg,
-  mans,
-  mansQing,
-  degAccumList,
-} from "./mans.mjs";
+import { deg2Mans, mans2Deg, mans, mansQing, degAccumList } from "./mans.mjs";
 import { AutoSolar } from "../parameter/auto_consts.mjs";
 import {
   corrEllipse,
@@ -28,7 +17,7 @@ import {
   corrEllipseD1,
   corrEllipseD2,
   corrRingA,
-  corrRingC,
+  corrRingC
 } from "../astronomy/sun_moon_qing.mjs";
 import {
   GongFlat2High,
@@ -37,7 +26,7 @@ import {
   Lon2Gong,
   LonFlat2High,
   LonHigh2Flat,
-  sunRise,
+  sunRise
 } from "./pos_convert.mjs";
 import { mansModern } from "../modern/mans.mjs";
 import {
@@ -50,7 +39,14 @@ import {
   whEqObliq
 } from "./pos_convert_modern.mjs";
 import { equaEclp } from "./equa_eclp.mjs";
-import { chooseNode, eclp2WhiteDif, equa2WhiteDif, moonEclpLat, moonJiudao, moonShoushi } from "./moon_lon_lat.mjs";
+import {
+  chooseNode,
+  eclp2WhiteDif,
+  equa2WhiteDif,
+  moonEclpLat,
+  moonJiudao,
+  moonShoushi
+} from "./moon_lon_lat.mjs";
 import { autoLat, autoRise, autoDial } from "./lat_rise_dial.mjs";
 import { lat2NS } from "../parameter/functions.mjs";
 const Gong2Lon = (Gong) => (Gong + 270) % 360;
@@ -88,7 +84,7 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
     "Chunyou",
     "Huitian",
     "Chengtian",
-    "Shoushi",
+    "Shoushi"
   ];
   let List2 = [
     "Dayan",
@@ -100,7 +96,7 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
     "Chongtian",
     "Fengyuan",
     "Guantian",
-    "Zhantian",
+    "Zhantian"
   ];
   List1 = Name ? [Name] : List1;
   List2 = Name ? [Name] : List2;
@@ -122,7 +118,7 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
       const { SunTcorr, MoonTcorr, MoonAcrVd, NodeAccumCorrA } = AutoTcorr(
         AnoAccum,
         Sd,
-        Name,
+        Name
       );
       const { Anojour } = anojour(AnoAccum, Name);
       let SunTcorrPrint = "-";
@@ -161,10 +157,10 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
           AnojourPrint,
           MoonAcrVdPrint,
           Tcorr.toFixed(4),
-          NodeAccumCorrPrint,
-        ],
+          NodeAccumCorrPrint
+        ]
       };
-    }),
+    })
   );
   Print2 = Print2.concat(
     List2.map((Name) => {
@@ -179,7 +175,7 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
       const { SunTcorr, MoonTcorr, NodeAccumCorrA } = AutoTcorr(
         AnoAccum,
         Sd,
-        Name,
+        Name
       );
       const { Anojour } = anojour(AnoAccum, Name);
       const SunDifAccumPrint = SunDifAccum.toFixed(5);
@@ -209,10 +205,10 @@ export const bindTcorr = (AnoAccum, Sd, Name) => {
           MoonTcorrPrint,
           AnojourPrint,
           Tcorr.toFixed(4),
-          NodeAccumCorrA.toFixed(4),
-        ],
+          NodeAccumCorrA.toFixed(4)
+        ]
       };
-    }),
+    })
   );
   return { Print1, Print2 };
 };
@@ -242,28 +238,28 @@ export const bindCorrEllipse = (Orb, cRaw) => {
   const Print = [
     {
       title: "卡西尼",
-      data: [B, f(AA), f(B1)],
+      data: [B, f(AA), f(B1)]
     },
     {
       title: "借積求積",
-      data: [C, "", f(C1)],
+      data: [C, "", f(C1)]
     },
     {
       title: "兩三角形",
-      data: [D, "", f(D1)],
+      data: [D, "", f(D1)]
     },
     {
       title: "借角求角",
-      data: [E, "", f(E1)],
+      data: [E, "", f(E1)]
     },
     {
       title: "對分圓",
-      data: [F, cRaw ? "" : f(AB), f(F1)],
+      data: [F, cRaw ? "" : f(AB), f(F1)]
     },
     {
       title: "本輪均輪",
-      data: [G, "", f(G1)],
-    },
+      data: [G, "", f(G1)]
+    }
   ];
   return Print;
 };
@@ -290,7 +286,7 @@ export const bindEquaEclp = (GongRaw) => {
     "Mingtian",
     "Guantian",
     "Jiyuan",
-    "Shoushi",
+    "Shoushi"
   ];
   const List2 = [
     "Qianxiang",
@@ -302,7 +298,7 @@ export const bindEquaEclp = (GongRaw) => {
     "Mingtian",
     "Guantian",
     "Jiyuan",
-    "Shoushi",
+    "Shoushi"
   ];
   Print = Print.concat(
     List1.map((Name) => {
@@ -326,7 +322,7 @@ export const bindEquaEclp = (GongRaw) => {
       let Eclp2EquaLatErrPrint = "-";
       const { Equa2Eclp, Eclp2Equa, Equa2EclpDif, Eclp2EquaDif } = equaEclp(
         GongRaw,
-        Name,
+        Name
       );
       let Eclp2EquaLat = 0;
       if (Name === "Shoushi") Eclp2EquaLat = Hushigeyuan(GongRaw).Lat;
@@ -362,10 +358,10 @@ export const bindEquaEclp = (GongRaw) => {
           EquaLonErrPrint,
           Eclp2EquaLatPrint,
           Eclp2EquaLatWestPrint,
-          Eclp2EquaLatErrPrint,
-        ],
+          Eclp2EquaLatErrPrint
+        ]
       };
-    }),
+    })
   );
   return { Range, Print };
 };
@@ -389,8 +385,8 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       EquaLon.toFixed(8),
       EquaLonDif.toFixed(4),
       EquaLat.toFixed(8),
-      EquaLatDif.toFixed(4),
-    ],
+      EquaLatDif.toFixed(4)
+    ]
   });
   Print = Print.concat({
     title: "極黃",
@@ -398,17 +394,13 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       CecLon.toFixed(8),
       CecLonDif.toFixed(4),
       CecLat.toFixed(8),
-      CecLatDif.toFixed(4),
-    ],
+      CecLatDif.toFixed(4)
+    ]
   });
   Print = Print.concat({ title: "黃道", data: [Lon, "-", Lat, "-"] });
 
   const { Lon: EclpLon2, Lat: EclpLat2 } = equa2Eclp(Sobliq, Lon, Lat);
-  const { CecLon: CecLon2, CecLat: CecLat2 } = equa2Cec(
-    Sobliq,
-    Lon,
-    Lat,
-  );
+  const { CecLon: CecLon2, CecLat: CecLat2 } = equa2Cec(Sobliq, Lon, Lat);
   let CecLonDif2 = CecLon2 - Lon;
   let EclpLonDif2 = EclpLon2 - Lon;
   if (CecLonDif2 > 180) CecLonDif2 -= 360;
@@ -422,8 +414,8 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       CecLon2.toFixed(8),
       CecLonDif2.toFixed(4),
       CecLat2.toFixed(8),
-      CecLatDif2.toFixed(4),
-    ],
+      CecLatDif2.toFixed(4)
+    ]
   });
   Print2 = Print2.concat({
     title: "黃道",
@@ -431,27 +423,34 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       EclpLon2.toFixed(8),
       EclpLonDif2.toFixed(4),
       EclpLat2.toFixed(8),
-      EclpLatDif2.toFixed(4),
-    ],
+      EclpLatDif2.toFixed(4)
+    ]
   });
 
-  const { EquaLon: EquaLon3, EquaLat: EquaLat3 } = ceclp2Equa(Sobliq, Lon, Lat)
-  const { Lon: EclpLon3, Lat: EclpLat3 } = equa2Eclp(Sobliq, EquaLon3, EquaLat3);
+  const { EquaLon: EquaLon3, EquaLat: EquaLat3 } = ceclp2Equa(Sobliq, Lon, Lat);
+  const { Lon: EclpLon3, Lat: EclpLat3 } = equa2Eclp(
+    Sobliq,
+    EquaLon3,
+    EquaLat3
+  );
   let EquaLonDif3 = EquaLon3 - Lon;
   let EclpLonDif3 = EclpLon3 - Lon;
   if (EquaLonDif3 > 180) EquaLonDif3 -= 360;
   if (EclpLonDif3 > 180) EclpLonDif3 -= 360;
   const EquaLatDif3 = EquaLat3 - Lat;
   const EclpLatDif3 = EclpLat3 - Lat;
-  Print3 = Print3.concat({ title: "赤道", data: [EquaLon3.toFixed(8), EquaLonDif3.toFixed(4), EquaLat3.toFixed(8), EquaLatDif3.toFixed(4)] });
+  Print3 = Print3.concat({
+    title: "赤道",
+    data: [
+      EquaLon3.toFixed(8),
+      EquaLonDif3.toFixed(4),
+      EquaLat3.toFixed(8),
+      EquaLatDif3.toFixed(4)
+    ]
+  });
   Print3 = Print3.concat({
     title: "極黃",
-    data: [
-      Lon,
-      '-',
-      Lat,
-      '-',
-    ],
+    data: [Lon, "-", Lat, "-"]
   });
   Print3 = Print3.concat({
     title: "黃道",
@@ -459,8 +458,8 @@ export const bindStarEclp2Equa = (Sobliq, Lon, Lat) => {
       EclpLon3.toFixed(8),
       EclpLonDif3.toFixed(4),
       EclpLat3.toFixed(8),
-      EclpLatDif3.toFixed(4),
-    ],
+      EclpLatDif3.toFixed(4)
+    ]
   });
   return { Print, Print2, DifMax, Print3 };
 };
@@ -492,7 +491,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
       "Jiyuan",
       "Daming3",
       "Shoushi",
-      "Datong",
+      "Datong"
     ].map((Name) => {
       const { Sobliq, RiseLat, DialLat } = Para[Name];
       const Solar = AutoSolar(Name);
@@ -502,7 +501,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
       let GongMidnRaw = SdMidn;
       if (
         ["Easthan", "Yuanjia", "Daming", "Daye", "Wuyin", "Huangji"].includes(
-          Name,
+          Name
         )
       ) {
         GongRaw += corrEllipse(GongRaw * p, 0.0174) / p;
@@ -517,7 +516,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
       let WestA = HighLon2FlatLat(Sobliq * p, Lon); // 球面三角緯度
       const WestB = sunRise(RiseLat || 34.284, WestA);
       const WestC = Lon2DialWest(DialLat || 34.404, WestA);
-      WestA /= p
+      WestA /= p;
       let LatPrint = "-";
       let LatErrPrint = "-";
       let SunrisePrint = "-";
@@ -540,7 +539,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
         DialPrint = Dial.toFixed(4);
         DialErrPrint1 = Math.trunc(((Dial - WestC.Dial) / WestC.Dial) * 10000);
         DialErrPrint2 = Math.trunc(
-          ((Dial - WestC.Dial1) / WestC.Dial1) * 10000,
+          ((Dial - WestC.Dial1) / WestC.Dial1) * 10000
         );
       }
       return {
@@ -555,10 +554,10 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
           DialPrint,
           DialErrPrint1,
           DialErrPrint2,
-          DialLat || RiseLat,
-        ],
+          DialLat || RiseLat
+        ]
       };
-    }),
+    })
   );
   return Print;
 };
@@ -566,7 +565,7 @@ export const bindLon2Lat = (Sd, SolsDeci) => {
 const bindDeg2Mans = (Deg) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
-    EclpAccumList: EclpAccumListTaichu,
+    EclpAccumList: EclpAccumListTaichu
   } = degAccumList("Taichu", 300);
   const EquaAccumListHuangji = [];
   const EclpAccumListHuangji = degAccumList("Huangji", 500).EclpAccumList;
@@ -574,7 +573,7 @@ const bindDeg2Mans = (Deg) => {
   const EclpAccumListLinde = degAccumList("Linde", 665).EclpAccumList; // 麟德
   const {
     EquaAccumList: EquaAccumListDayan,
-    EclpAccumList: EclpAccumListDayan,
+    EclpAccumList: EclpAccumListDayan
   } = degAccumList("Dayan", 729);
   const EquaAccumListYingtian = [];
   const EclpAccumListYingtian = degAccumList("Yingtian", 964).EclpAccumList; // 應天
@@ -582,17 +581,17 @@ const bindDeg2Mans = (Deg) => {
   const EclpAccumListMingtian = degAccumList("Mingtian", 1065).EclpAccumList; // 明天
   const {
     EquaAccumList: EquaAccumListJiyuan,
-    EclpAccumList: EclpAccumListJiyuan,
+    EclpAccumList: EclpAccumListJiyuan
   } = degAccumList("Jiyuan", 1106);
   const EquaAccumListDaming3 = [];
   const EclpAccumListDaming3 = degAccumList("Daming3", 1180).EclpAccumList;
   const {
     EquaAccumList: EquaAccumListShoushi,
-    EclpAccumList: EclpAccumListShoushi,
+    EclpAccumList: EclpAccumListShoushi
   } = degAccumList("Shoushi", 1281);
   const {
     EquaAccumList: EquaAccumListJiazi,
-    EclpAccumList: EclpAccumListJiazi,
+    EclpAccumList: EclpAccumListJiazi
   } = degAccumList("Jiazi", 1684); // 甲子元曆
   const Print = [
     "Taichu",
@@ -604,7 +603,7 @@ const bindDeg2Mans = (Deg) => {
     "Jiyuan",
     "Daming3",
     "Shoushi",
-    "Jiazi",
+    "Jiazi"
   ].map((Name) => {
     const EclpList = eval(`EclpAccumList${Name}`);
     const Eclp = deg2Mans(Deg, EclpList).Print;
@@ -612,7 +611,7 @@ const bindDeg2Mans = (Deg) => {
     const Equa = deg2Mans(Deg, EquaList).Print;
     return {
       title: NameList[Name],
-      data: [Equa, Eclp],
+      data: [Equa, Eclp]
     };
   });
   return Print;
@@ -622,7 +621,7 @@ const bindDeg2Mans = (Deg) => {
 const bindMans2Deg = (Mans) => {
   const {
     EquaAccumList: EquaAccumListTaichu,
-    EclpAccumList: EclpAccumListTaichu,
+    EclpAccumList: EclpAccumListTaichu
   } = degAccumList("Taichu", 300);
   const EquaAccumListHuangji = [];
   const EclpAccumListHuangji = degAccumList("Huangji", 500).EclpAccumList;
@@ -630,7 +629,7 @@ const bindMans2Deg = (Mans) => {
   const EclpAccumListLinde = degAccumList("Linde", 665).EclpAccumList; // 麟德
   const {
     EquaAccumList: EquaAccumListDayan,
-    EclpAccumList: EclpAccumListDayan,
+    EclpAccumList: EclpAccumListDayan
   } = degAccumList("Dayan", 729);
   const EquaAccumListYingtian = [];
   const EclpAccumListYingtian = degAccumList("Yingtian", 964).EclpAccumList; // 應天
@@ -638,17 +637,17 @@ const bindMans2Deg = (Mans) => {
   const EclpAccumListMingtian = degAccumList("Mingtian", 1065).EclpAccumList; // 明天
   const {
     EquaAccumList: EquaAccumListJiyuan,
-    EclpAccumList: EclpAccumListJiyuan,
+    EclpAccumList: EclpAccumListJiyuan
   } = degAccumList("Jiyuan", 1106);
   const EquaAccumListDaming3 = [];
   const EclpAccumListDaming3 = degAccumList("Daming3", 1180).EclpAccumList;
   const {
     EquaAccumList: EquaAccumListShoushi,
-    EclpAccumList: EclpAccumListShoushi,
+    EclpAccumList: EclpAccumListShoushi
   } = degAccumList("Shoushi", 1281);
   const {
     EquaAccumList: EquaAccumListJiazi,
-    EclpAccumList: EclpAccumListJiazi,
+    EclpAccumList: EclpAccumListJiazi
   } = degAccumList("Jiazi", 1684);
   const Print = [
     "Taichu",
@@ -660,7 +659,7 @@ const bindMans2Deg = (Mans) => {
     "Jiyuan",
     "Daming3",
     "Shoushi",
-    "Jiazi",
+    "Jiazi"
   ].map((Name) => {
     const EclpList = eval(`EclpAccumList${Name}`);
     const Eclp = +mans2Deg(Mans, EclpList).toFixed(3);
@@ -668,7 +667,7 @@ const bindMans2Deg = (Mans) => {
     const Equa = +mans2Deg(Mans, EquaList).toFixed(3);
     return {
       title: NameList[Name],
-      data: [Equa || "", Eclp],
+      data: [Equa || "", Eclp]
     };
   });
   return Print;
@@ -707,10 +706,10 @@ export const bindMansAccumList = (Name, Y) => {
     EquaSortedList = Object.entries(EquaAccumList).sort((a, b) => a[1] - b[1]);
     for (let i = 0; i < 27; i++) {
       EclpList[i] = +(EclpSortedList[i + 1][1] - EclpSortedList[i][1]).toFixed(
-        3,
+        3
       );
       EquaList[i] = +(EquaSortedList[i + 1][1] - EquaSortedList[i][1]).toFixed(
-        3,
+        3
       );
     }
     EclpList[27] = +(360 - EclpSortedList[27][1]).toFixed(3);
@@ -737,10 +736,10 @@ export const bindMansAccumList = (Name, Y) => {
       for (let j = 0; j < 7; j++) {
         const index = i * 7 + j;
         EclpAccumPrint[i].push(
-          `${EclpSortedList[index][0]} ${EclpSortedList[index][1]}　\n${NumList[index]} ${EclpList[index]}`,
+          `${EclpSortedList[index][0]} ${EclpSortedList[index][1]}　\n${NumList[index]} ${EclpList[index]}`
         );
         EquaAccumPrint[i].push(
-          `${EquaSortedList[index][0]} ${EquaSortedList[index][1]}　\n${NumList[index]} ${EquaList[index]}`,
+          `${EquaSortedList[index][0]} ${EquaSortedList[index][1]}　\n${NumList[index]} ${EquaList[index]}`
         );
       }
       EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
@@ -761,13 +760,13 @@ export const bindMansAccumList = (Name, Y) => {
         const index = (i - 5) * 7 + j;
         EclpAccumPrint[i].push(
           `${EclpSortedList[index][0]} ${(EclpSortedList[index][1] / p).toFixed(
-            2,
-          )}　\n${NumList[index]} ${(EclpList[index] / p).toFixed(2)}`,
+            2
+          )}　\n${NumList[index]} ${(EclpList[index] / p).toFixed(2)}`
         );
         EquaAccumPrint[i].push(
           `${EquaSortedList[index][0]} ${(EquaSortedList[index][1] / p).toFixed(
-            2,
-          )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(2)}`,
+            2
+          )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(2)}`
         );
       }
       EclpAccumPrint[i][8] = DirList[i - 5] + +EclpSum.toFixed(2);
@@ -787,10 +786,10 @@ export const bindMansAccumList = (Name, Y) => {
       for (let j = 0; j < 7; j++) {
         const index = i * 7 + j;
         EclpAccumPrint[i].push(
-          `${NameList[index]} ${EclpAccumList[index]}　\n${NumList[index]} ${EclpList[index]}`,
+          `${NameList[index]} ${EclpAccumList[index]}　\n${NumList[index]} ${EclpList[index]}`
         );
         EquaAccumPrint[i].push(
-          `${NameList[index]} ${EquaAccumList[index]}　\n${NumList[index]} ${EquaList[index]}`,
+          `${NameList[index]} ${EquaAccumList[index]}　\n${NumList[index]} ${EquaList[index]}`
         );
       }
       EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
@@ -801,31 +800,33 @@ export const bindMansAccumList = (Name, Y) => {
     EclpAccumPrint,
     EquaAccumPrint,
     SolsEclpPrint,
-    SolsEquaPrint,
+    SolsEquaPrint
   };
 };
 // console.log(bindMansAccumList('Guimao', 281))
 
 /**
  * 九道宿度
- * @param {*} Name 
- * @param {*} Y 
+ * @param {*} Name
+ * @param {*} Y
  * @param {*} NodeAccum 平朔入交
  * @param {*} AnoAccum 平朔入轉
  * @param {*} AvgNewmSd 平朔距冬至時間
- * @returns 
+ * @returns
  */
 export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
   Y = parseInt(Y);
-  NodeAccum = +NodeAccum
-  AvgNewmSd = +AvgNewmSd
-  AnoAccum = +AnoAccum
-  const { Type } = Para[Name]
-  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
-  const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
-  const { WhiteAccumList, NewmWhiteDeg } = Type === 11
-    ? moonShoushi(NodeAccum, AvgNewmSd, NewmEclpGong, Y)
-    : moonJiudao(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
+  NodeAccum = +NodeAccum;
+  AvgNewmSd = +AvgNewmSd;
+  AnoAccum = +AnoAccum;
+  const { Type } = Para[Name];
+  const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr;
+  const NewmEclpGong =
+    AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum;
+  const { WhiteAccumList, NewmWhiteDeg } =
+    Type === 11
+      ? moonShoushi(NodeAccum, AvgNewmSd, NewmEclpGong, Y)
+      : moonJiudao(NodeAccum, AnoAccum, AvgNewmSd, NewmEclpGong, Name, Y);
   const WhiteList = [];
   for (let i = 0; i < 28; i++) {
     WhiteList[i] = +(WhiteAccumList[i + 1] - WhiteAccumList[i]).toFixed(3);
@@ -841,13 +842,13 @@ export const bindWhiteAccumList = (Name, Y, NodeAccum, AnoAccum, AvgNewmSd) => {
     for (let j = 0; j < 7; j++) {
       const index = i * 7 + j;
       WhiteAccumPrint[i].push(
-        `${MansNameList[index]} ${WhiteAccumList[index].toFixed(3)}　\n${NumList[index]} ${WhiteList[index]}`,
+        `${MansNameList[index]} ${WhiteAccumList[index].toFixed(3)}　\n${NumList[index]} ${WhiteList[index]}`
       );
     }
     WhiteAccumPrint[i][8] = DirList[i] + WhiteSum.toFixed(3);
   }
-  const WhiteDegMans = deg2Mans(NewmWhiteDeg, WhiteAccumList).Print
-  return { WhiteAccumPrint, WhiteDegMans }
+  const WhiteDegMans = deg2Mans(NewmWhiteDeg, WhiteAccumList).Print;
+  return { WhiteAccumPrint, WhiteDegMans };
 };
 // console.log(bindWhiteAccumList('Yingtian', 1281, 3, 3, 3))
 
@@ -884,16 +885,16 @@ export const bindMansAccumModernList = (Name, Jd) => {
       (CwhAccumListRaw[Mans] - CwhAccumListRaw["角"] + 360) % 360;
   }
   const EclpSortedList = Object.entries(EclpAccumList).sort(
-    (a, b) => a[1] - b[1],
+    (a, b) => a[1] - b[1]
   );
   const EquaSortedList = Object.entries(EquaAccumList).sort(
-    (a, b) => a[1] - b[1],
+    (a, b) => a[1] - b[1]
   );
   const CecSortedList = Object.entries(CecAccumList).sort(
-    (a, b) => a[1] - b[1],
+    (a, b) => a[1] - b[1]
   );
   const CwhSortedList = Object.entries(CwhAccumList).sort(
-    (a, b) => a[1] - b[1],
+    (a, b) => a[1] - b[1]
   );
   const EclpList = [];
   const EquaList = [];
@@ -933,23 +934,23 @@ export const bindMansAccumModernList = (Name, Jd) => {
       const index = i * 7 + j;
       EclpAccumPrint[i].push(
         `${EclpSortedList[index][0]} ${EclpSortedList[index][1].toFixed(
-          5,
-        )}　\n${NumList[index]} ${EclpList[index]}`,
+          5
+        )}　\n${NumList[index]} ${EclpList[index]}`
       );
       EquaAccumPrint[i].push(
         `${EquaSortedList[index][0]} ${EquaSortedList[index][1].toFixed(
-          5,
-        )}　\n${NumList[index]} ${EquaList[index]}`,
+          5
+        )}　\n${NumList[index]} ${EquaList[index]}`
       );
       CecAccumPrint[i].push(
         `${CecSortedList[index][0]} ${CecSortedList[index][1].toFixed(
-          5,
-        )}　\n${NumList[index]} ${CecList[index]}`,
+          5
+        )}　\n${NumList[index]} ${CecList[index]}`
       );
       CwhAccumPrint[i].push(
         `${CwhSortedList[index][0]} ${CwhSortedList[index][1].toFixed(
-          5,
-        )}　\n${NumList[index]} ${CwhList[index]}`,
+          5
+        )}　\n${NumList[index]} ${CwhList[index]}`
       );
     }
     EclpAccumPrint[i][8] = DirList[i] + EclpSum.toFixed(3);
@@ -957,7 +958,10 @@ export const bindMansAccumModernList = (Name, Jd) => {
     CecAccumPrint[i][8] = DirList[i] + CecSum.toFixed(3);
     CwhAccumPrint[i][8] = DirList[i] + CwhSum.toFixed(3);
   }
-  (EclpAccumPrint[4] = ["下爲古度"]), (EquaAccumPrint[4] = ["下爲古度"]), (CecAccumPrint[4] = ["下爲古度"]), (CwhAccumPrint[4] = ["下爲古度"]);
+  (EclpAccumPrint[4] = ["下爲古度"]),
+    (EquaAccumPrint[4] = ["下爲古度"]),
+    (CecAccumPrint[4] = ["下爲古度"]),
+    (CwhAccumPrint[4] = ["下爲古度"]);
   const p = 360 / 365.25;
   for (let i = 5; i < 9; i++) {
     EclpAccumPrint.push([]);
@@ -979,23 +983,23 @@ export const bindMansAccumModernList = (Name, Jd) => {
       const index = (i - 5) * 7 + j;
       EclpAccumPrint[i].push(
         `${EclpSortedList[index][0]} ${(EclpSortedList[index][1] / p).toFixed(
-          4,
-        )}　\n${NumList[index]} ${(EclpList[index] / p).toFixed(5)}`,
+          4
+        )}　\n${NumList[index]} ${(EclpList[index] / p).toFixed(5)}`
       );
       EquaAccumPrint[i].push(
         `${EquaSortedList[index][0]} ${(EquaSortedList[index][1] / p).toFixed(
-          4,
-        )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(5)}`,
+          4
+        )}　\n${NumList[index]} ${(EquaList[index] / p).toFixed(5)}`
       );
       CecAccumPrint[i].push(
         `${CecSortedList[index][0]} ${(CecSortedList[index][1] / p).toFixed(
-          4,
-        )}　\n${NumList[index]} ${(CecList[index] / p).toFixed(5)}`,
+          4
+        )}　\n${NumList[index]} ${(CecList[index] / p).toFixed(5)}`
       );
       CwhAccumPrint[i].push(
         `${CwhSortedList[index][0]} ${(CwhSortedList[index][1] / p).toFixed(
-          4,
-        )}　\n${NumList[index]} ${(CwhList[index] / p).toFixed(5)}`,
+          4
+        )}　\n${NumList[index]} ${(CwhList[index] / p).toFixed(5)}`
       );
     }
     EclpAccumPrint[i][8] = DirList[i - 5] + EclpSum.toFixed(3);
@@ -1011,7 +1015,7 @@ export const bindMansAccumModernList = (Name, Jd) => {
     SolsEclpPrint: SolsEclpMans,
     SolsEquaPrint: SolsEquaMans,
     SolsCecPrint: SolsCecMans,
-    SolsCwhPrint: SolsCwhMans,
+    SolsCwhPrint: SolsCwhMans
   };
 };
 // console.log(bindMansAccumModernList('Chongzhen', 2424222))
@@ -1021,10 +1025,15 @@ export const bindMansAccumModernList = (Name, Jd) => {
  * @param {*} AvgNewmAnoAccum 此前經朔入轉
  * @param {*} AvgNewmSd 此前經朔距冬至
  * @param {*} D 此時距離經朔時間
- * @returns 
+ * @returns
  */
-export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) => {
-  D = +D
+export const bindMoonLonLat = (
+  AvgNewmNodeAccum,
+  AvgNewmAnoAccum,
+  AvgNewmSd,
+  D
+) => {
+  D = +D;
   AvgNewmNodeAccum = +AvgNewmNodeAccum;
   AvgNewmAnoAccum = +AvgNewmAnoAccum;
   AvgNewmSd = +AvgNewmSd;
@@ -1034,7 +1043,7 @@ export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) 
     throw new Error("請輸入一週天度內的度數");
   if (AvgNewmAnoAccum >= 27.21221 || AvgNewmAnoAccum < 0)
     throw new Error("請輸入一交點月內的日數");
-  let Print = []
+  let Print = [];
   Print = Print.concat(
     [
       "Qianxiang",
@@ -1050,26 +1059,43 @@ export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) 
       "Qianyuan",
       "Yitian",
       "Chongtian",
-      "Guantian",
+      "Guantian"
     ].map((Name) => {
-      let { Solar, SolarRaw, Sidereal, Anoma, Node, Type, Sobliq } = Para[Name]
-      Solar = Solar || SolarRaw
-      const p = 360 / Sidereal
-      const AnoAccum = (AvgNewmAnoAccum + D) % Anoma
-      const Sd = (AvgNewmSd + D) % Solar
-      const { Tcorr, NodeAccumCorrA } = AutoTcorr(AvgNewmAnoAccum, AvgNewmSd, Name) // 經朔到定朔的時間
-      const NodeAccum = (AvgNewmNodeAccum + NodeAccumCorrA - Tcorr + D + Node) % Node // 此時入交
-      const AcrNewmAnoAccum = (AvgNewmAnoAccum + Tcorr + Anoma) % Anoma
-      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr
-      const NewmEclpGong = AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum
+      let { Solar, SolarRaw, Sidereal, Anoma, Node, Type, Sobliq } = Para[Name];
+      Solar = Solar || SolarRaw;
+      const p = 360 / Sidereal;
+      const AnoAccum = (AvgNewmAnoAccum + D) % Anoma;
+      const Sd = (AvgNewmSd + D) % Solar;
+      const { Tcorr, NodeAccumCorrA } = AutoTcorr(
+        AvgNewmAnoAccum,
+        AvgNewmSd,
+        Name
+      ); // 經朔到定朔的時間
+      const NodeAccum =
+        (AvgNewmNodeAccum + NodeAccumCorrA - Tcorr + D + Node) % Node; // 此時入交
+      const AcrNewmAnoAccum = (AvgNewmAnoAccum + Tcorr + Anoma) % Anoma;
+      const AcrNewmSd = AvgNewmSd + AutoTcorr(AnoAccum, AvgNewmSd, Name).Tcorr;
+      const NewmEclpGong =
+        AcrNewmSd + AutoDifAccum(undefined, AcrNewmSd, Name).SunDifAccum;
       // 九道術
-      let NewmWhiteGong = 0, Dingxian = 0, NodeWhiteGong = 0, WhEq_WhiteGong = 0, WhEqGong = 0;
-      const NodeEclpGong = chooseNode(NewmEclpGong, AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, Name)
-      const NowNewm_WhiteDif = (anojour(AnoAccum, Name).Anojour - anojour(AcrNewmAnoAccum, Name).Anojour + Sidereal) % Sidereal
-      let NowEclpGong,
-        NowEquaGong,
-        EclpLat,
-        EquaLat;
+      let NewmWhiteGong = 0,
+        Dingxian = 0,
+        NodeWhiteGong = 0,
+        WhEq_WhiteGong = 0,
+        WhEqGong = 0;
+      const NodeEclpGong = chooseNode(
+        NewmEclpGong,
+        AvgNewmNodeAccum,
+        AvgNewmAnoAccum,
+        AvgNewmSd,
+        Name
+      );
+      const NowNewm_WhiteDif =
+        (anojour(AnoAccum, Name).Anojour -
+          anojour(AcrNewmAnoAccum, Name).Anojour +
+          Sidereal) %
+        Sidereal;
+      let NowEclpGong, NowEquaGong, EclpLat, EquaLat;
       if (Type === 11) {
         const FuncNewm = moonShoushi(
           AvgNewmNodeAccum,
@@ -1078,11 +1104,11 @@ export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) 
           1281,
           NowNewm_WhiteDif
         );
-        NewmWhiteGong = FuncNewm.NewmWhiteGong
+        NewmWhiteGong = FuncNewm.NewmWhiteGong;
         Dingxian = FuncNewm.Dingxian;
-        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong
-        WhEqGong = FuncNewm.WhEqGong
-        EquaLat = FuncNewm.EquaLat
+        WhEq_WhiteGong = FuncNewm.WhEq_WhiteGong;
+        WhEqGong = FuncNewm.WhEqGong;
+        EquaLat = FuncNewm.EquaLat;
       } else if (Type >= 6) {
         const FuncNewm = moonJiudao(
           AvgNewmNodeAccum,
@@ -1092,57 +1118,68 @@ export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) 
           Name,
           1281
         );
-        NewmWhiteGong = FuncNewm.NewmWhiteGong
-        NodeWhiteGong = FuncNewm.NodeWhiteGong
-        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name)
+        NewmWhiteGong = FuncNewm.NewmWhiteGong;
+        NodeWhiteGong = FuncNewm.NodeWhiteGong;
+        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name);
       } else {
-        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name)
+        EclpLat = moonEclpLat(NodeAccum, AnoAccum, Sd, Name);
       }
-      const NowWhiteGong = NewmWhiteGong ? (NewmWhiteGong + NowNewm_WhiteDif) % Sidereal : undefined
-      const Now_WhEq_WhiteDif = (NowWhiteGong - WhEq_WhiteGong + Solar) % Solar
+      const NowWhiteGong = NewmWhiteGong
+        ? (NewmWhiteGong + NowNewm_WhiteDif) % Sidereal
+        : undefined;
+      const Now_WhEq_WhiteDif = (NowWhiteGong - WhEq_WhiteGong + Solar) % Solar;
       if (Type === 11) {
-        const Now_WhEq_EquaDif = Now_WhEq_WhiteDif - equa2WhiteDif(Dingxian, Now_WhEq_WhiteDif)
-        NowEquaGong = (WhEqGong + Now_WhEq_EquaDif) % Solar
-        NowEclpGong = equaEclp(NowEquaGong, Name).Equa2Eclp
+        const Now_WhEq_EquaDif =
+          Now_WhEq_WhiteDif - equa2WhiteDif(Dingxian, Now_WhEq_WhiteDif);
+        NowEquaGong = (WhEqGong + Now_WhEq_EquaDif) % Solar;
+        NowEclpGong = equaEclp(NowEquaGong, Name).Equa2Eclp;
       } else {
-        const MoonNode_WhiteDif = (NowWhiteGong - NodeWhiteGong + Solar) % Solar // 此處Gong和Lon是一樣的，沒有區別
-        const MoonNode_EclpDif = MoonNode_WhiteDif - eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name)
-        NowEclpGong = (NodeEclpGong + MoonNode_EclpDif) % Solar
-        NowEquaGong = equaEclp(NowEclpGong, Name).Eclp2Equa
+        const MoonNode_WhiteDif =
+          (NowWhiteGong - NodeWhiteGong + Solar) % Solar; // 此處Gong和Lon是一樣的，沒有區別
+        const MoonNode_EclpDif =
+          MoonNode_WhiteDif -
+          eclp2WhiteDif(NodeEclpGong, MoonNode_WhiteDif, Name);
+        NowEclpGong = (NodeEclpGong + MoonNode_EclpDif) % Solar;
+        NowEquaGong = equaEclp(NowEclpGong, Name).Eclp2Equa;
       }
-      const Moon2SunEquaLat = autoLat(NowEclpGong, Name, true) // 月亮所在黃道度對應的太陽的赤緯
+      const Moon2SunEquaLat = autoLat(NowEclpGong, Name, true); // 月亮所在黃道度對應的太陽的赤緯
       if (Type === 11) {
-        EclpLat = EquaLat - Moon2SunEquaLat
+        EclpLat = EquaLat - Moon2SunEquaLat;
       } else {
-        EquaLat = EclpLat + Moon2SunEquaLat
+        EquaLat = EclpLat + Moon2SunEquaLat;
       }
       /// 球面三角
-      const Sobliq360 = Sobliq * p
-      const { WhEqLon, WhEqObliq } = whEqObliq(Gong2Lon(NodeEclpGong * p), Sobliq360)
-      const NowWhEq_EquaDif = LonHigh2Flat(WhEqObliq, Now_WhEq_WhiteDif * p)
-      const NowEquaLon = (WhEqLon + NowWhEq_EquaDif) % 360
-      const NowCecLonWest = LonFlat2High(Sobliq360, NowEquaLon)
-      const NowEquaLatWest = HighLon2FlatLat(WhEqObliq, Now_WhEq_WhiteDif * p)
-      const Moon2SunEquaLatWest = HighLon2FlatLat(Sobliq360, NowCecLonWest)
-      const NowCecLatWest = NowEquaLatWest - Moon2SunEquaLatWest
-      const NowCecGongWest = Lon2Gong(NowCecLonWest) / p
-      const NowEquaGongWest = Lon2Gong(NowEquaLon) / p
-      const NowEclpGongErr =
-        NowEclpGong
-          ? Math.trunc(((NowEclpGong - NowCecGongWest) / NowCecGongWest) * 10000)
-          : "";
-      const NowEquaGongErr =
-        NowEquaGong
-          ? Math.trunc(((NowEquaGong - NowEquaGongWest) / NowEquaGongWest) * 10000)
-          : "";
-      const EclpLatErr =
-        EclpLat
-          ? Math.trunc(((EclpLat - NowCecLatWest / p) / (NowCecLatWest / p)) * 10000)
-          : "";
-      const EquaLatErr =
-        EquaLat
-          ? Math.trunc(((EquaLat - NowEquaLatWest / p) / (NowEquaLatWest / p)) * 10000)
-          : "";
+      const Sobliq360 = Sobliq * p;
+      const { WhEqLon, WhEqObliq } = whEqObliq(
+        Gong2Lon(NodeEclpGong * p),
+        Sobliq360
+      );
+      const NowWhEq_EquaDif = LonHigh2Flat(WhEqObliq, Now_WhEq_WhiteDif * p);
+      const NowEquaLon = (WhEqLon + NowWhEq_EquaDif) % 360;
+      const NowCecLonWest = LonFlat2High(Sobliq360, NowEquaLon);
+      const NowEquaLatWest = HighLon2FlatLat(WhEqObliq, Now_WhEq_WhiteDif * p);
+      const Moon2SunEquaLatWest = HighLon2FlatLat(Sobliq360, NowCecLonWest);
+      const NowCecLatWest = NowEquaLatWest - Moon2SunEquaLatWest;
+      const NowCecGongWest = Lon2Gong(NowCecLonWest) / p;
+      const NowEquaGongWest = Lon2Gong(NowEquaLon) / p;
+      const NowEclpGongErr = NowEclpGong
+        ? Math.trunc(((NowEclpGong - NowCecGongWest) / NowCecGongWest) * 10000)
+        : "";
+      const NowEquaGongErr = NowEquaGong
+        ? Math.trunc(
+            ((NowEquaGong - NowEquaGongWest) / NowEquaGongWest) * 10000
+          )
+        : "";
+      const EclpLatErr = EclpLat
+        ? Math.trunc(
+            ((EclpLat - NowCecLatWest / p) / (NowCecLatWest / p)) * 10000
+          )
+        : "";
+      const EquaLatErr = EquaLat
+        ? Math.trunc(
+            ((EquaLat - NowEquaLatWest / p) / (NowEquaLatWest / p)) * 10000
+          )
+        : "";
       return {
         title: NameList[Name],
         // data: [
@@ -1173,7 +1210,7 @@ export const bindMoonLonLat = (AvgNewmNodeAccum, AvgNewmAnoAccum, AvgNewmSd, D) 
           WhEqGong ? WhEqGong.toFixed(4) : ""
         ]
       };
-    }),
+    })
   );
   return Print;
 };
@@ -1184,7 +1221,7 @@ export const bindSunEclipse = (
   AnoAccum,
   AvgDeci,
   AvgSd,
-  SolsDeci,
+  SolsDeci
 ) => {
   NodeAccum = +NodeAccum;
   AnoAccum = +AnoAccum;
@@ -1224,7 +1261,7 @@ export const bindSunEclipse = (
       "Daming3",
       "Gengwu",
       "Shoushi",
-      "Datong",
+      "Datong"
     ].map((Name) => {
       const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
@@ -1241,7 +1278,7 @@ export const bindSunEclipse = (
         i + 1,
         0,
         0,
-        SolsDeci,
+        SolsDeci
       );
       let StartDeciPrint = "-";
       let GreatDeciPrint = "-";
@@ -1268,10 +1305,10 @@ export const bindSunEclipse = (
           StartDeciPrint,
           AcrDeciPrint,
           GreatDeciPrint,
-          EndDeciPrint,
-        ],
+          EndDeciPrint
+        ]
       };
-    }),
+    })
   );
   let Print2 = [];
   Print2 = Print2.concat(
@@ -1283,7 +1320,7 @@ export const bindSunEclipse = (
       "Qianyuan",
       "Yitian",
       "Chongtian",
-      "Guantian",
+      "Guantian"
     ].map((Name) => {
       const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
@@ -1300,7 +1337,7 @@ export const bindSunEclipse = (
         i + 1,
         0,
         0,
-        SolsDeci,
+        SolsDeci
       );
       let StartDeciPrint = "-";
       let GreatDeciPrint = "-";
@@ -1327,10 +1364,10 @@ export const bindSunEclipse = (
           StartDeciPrint,
           AcrDeciPrint,
           GreatDeciPrint,
-          EndDeciPrint,
-        ],
+          EndDeciPrint
+        ]
       };
-    }),
+    })
   );
   return { Print1, Print2 };
 };
@@ -1341,7 +1378,7 @@ export const bindMoonEclipse = (
   AnoAccum,
   AvgDeci,
   AvgSd,
-  SolsDeci,
+  SolsDeci
 ) => {
   NodeAccum = +NodeAccum;
   AnoAccum = +AnoAccum;
@@ -1384,7 +1421,7 @@ export const bindMoonEclipse = (
       "Gengwu",
       "Shoushi",
       "Datong",
-      "Datong2",
+      "Datong2"
     ].map((Name) => {
       const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
@@ -1401,7 +1438,7 @@ export const bindMoonEclipse = (
         i + 1,
         0,
         0,
-        SolsDeci,
+        SolsDeci
       );
       let StartDeciPrint = "-";
       let GreatDeciPrint = "-";
@@ -1421,10 +1458,10 @@ export const bindMoonEclipse = (
           StartDeciPrint,
           AcrDeciPrint,
           GreatDeciPrint,
-          EndDeciPrint,
-        ],
+          EndDeciPrint
+        ]
       };
-    }),
+    })
   );
   let Print2 = [];
   Print2 = Print2.concat(
@@ -1436,7 +1473,7 @@ export const bindMoonEclipse = (
       "Qianyuan",
       "Yitian",
       "Chongtian",
-      "Guantian",
+      "Guantian"
     ].map((Name) => {
       const { Tcorr1, Tcorr2 } = AutoTcorr(AnoAccum, AvgSd, Name);
       const AcrDeci = (AvgDeci + (Tcorr2 || Tcorr1) + 1) % 1;
@@ -1453,7 +1490,7 @@ export const bindMoonEclipse = (
         i + 1,
         0,
         0,
-        SolsDeci,
+        SolsDeci
       );
       let StartDeciPrint = "-";
       let GreatDeciPrint = "-";
@@ -1473,15 +1510,14 @@ export const bindMoonEclipse = (
           StartDeciPrint,
           AcrDeciPrint,
           GreatDeciPrint,
-          EndDeciPrint,
-        ],
+          EndDeciPrint
+        ]
       };
-    }),
+    })
   );
   return { Print1, Print2 };
 };
 // console.log(bindMoonEclipse(1.1, 22, 22, 22))
-
 
 const ErrPrint_SunTcorr = (Name, AnoAccum) => {
   const SunTcorrErr = [];

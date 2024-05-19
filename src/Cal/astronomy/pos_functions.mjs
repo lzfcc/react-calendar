@@ -6,26 +6,26 @@ export const rr1 = (a) =>
   matrix([
     [1, 0, 0],
     [0, Math.cos(a), Math.sin(a)],
-    [0, -Math.sin(a), Math.cos(a)],
+    [0, -Math.sin(a), Math.cos(a)]
   ]);
 export const rr2 = (b) =>
   matrix([
     [Math.cos(b), 0, -Math.sin(b)],
     [0, 1, 0],
-    [Math.sin(b), 0, Math.cos(b)],
+    [Math.sin(b), 0, Math.cos(b)]
   ]);
 export const rr3 = (g) =>
   matrix([
     [Math.cos(g), Math.sin(g), 0],
     [-Math.sin(g), Math.cos(g), 0],
-    [0, 0, 1],
+    [0, 0, 1]
   ]);
 
 // 參考架偏差矩陣 frame bias matrix
 export const Fbmx = matrix([
   [0.99999999999999425, -7.078279744e-8, 8.05614894e-8],
   [7.078279478e-8, 0.99999999999999695, 3.306041454e-8],
-  [-8.056149173e-8, -3.306040884e-8, 0.999999999999996208],
+  [-8.056149173e-8, -3.306040884e-8, 0.999999999999996208]
 ]);
 
 export const xyz2lonlat = (X) => {
@@ -46,7 +46,7 @@ export const xyz2lonlat = (X) => {
 export const lonlat2xyz = (Lon, Lat, D) => [
   (D || 1) * Math.cos(Lat) * Math.cos(Lon),
   (D || 1) * Math.cos(Lat) * Math.sin(Lon),
-  (D || 1) * Math.sin(Lat),
+  (D || 1) * Math.sin(Lat)
 ];
 // 求徑向速度
 export const radialV = (X, V) => {

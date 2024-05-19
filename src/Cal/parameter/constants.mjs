@@ -1,4 +1,3 @@
-
 export const NameList = {
   // 按照時間順序排列
   Yin: "殷",
@@ -106,7 +105,7 @@ export const NameList = {
   Xinfa: "新法曆書(日食待定)",
   Yongnian: "康熙永年表(日食待定)",
   Jiazi: "曆象考成",
-  Guimao: "曆象考成後編",
+  Guimao: "曆象考成後編"
 };
 export const NameDayList = {
   // 可計算日書的曆法
@@ -155,18 +154,18 @@ export const NameDayList = {
   Xinfa: "新法曆書",
   Yongnian: "康熙永年表",
   Jiazi: "曆象考成",
-  Guimao: "曆象考成後編",
+  Guimao: "曆象考成後編"
 };
 export const MansSystemList = {
-  Shanggu: '古度',
-  Shi: '石氏(古曆所用)',
-  Chongzhen: '崇禎曆書',
-  Xinfa: '新法曆書',
-  Lingtai: '靈臺儀象志',
-  Yixiang: '儀象考成'
-}
+  Shanggu: "古度",
+  Shi: "石氏(古曆所用)",
+  Chongzhen: "崇禎曆書",
+  Xinfa: "新法曆書",
+  Lingtai: "靈臺儀象志",
+  Yixiang: "儀象考成"
+};
 export const NameJiudaoList = {
-  Huangji: '皇極',
+  Huangji: "皇極",
   Dayan: "大衍",
   Qintian: "欽天",
   Yingtian: "應天",
@@ -177,7 +176,7 @@ export const NameJiudaoList = {
   Guantian: "觀天",
   Jiyuan: "紀元",
   Shoushi: "授時"
-}
+};
 export const ScList = [
   "癸亥",
   "甲子",
@@ -240,7 +239,7 @@ export const ScList = [
   "辛酉",
   "壬戌",
   "癸亥",
-  "甲子",
+  "甲子"
 ];
 export const StemList = " 甲乙丙丁戊己庚辛壬癸";
 export const BranchList = " 子丑寅卯辰巳午未申酉戌亥子";
@@ -255,7 +254,7 @@ export const StemList1 = [
   "上章",
   "重光",
   "玄黓",
-  "昭陽",
+  "昭陽"
 ];
 export const BranchList1 = [
   "",
@@ -270,7 +269,7 @@ export const BranchList1 = [
   "涒灘",
   "作鄂",
   "淹茂",
-  "大淵獻",
+  "大淵獻"
 ];
 export const NayinList = [
   "大海水",
@@ -304,7 +303,7 @@ export const NayinList = [
   "天上火",
   "石榴木",
   "大海水",
-  "爐中火",
+  "爐中火"
 ]; // 納音：甲子乙丑對應海中金
 export const HalfList = "初正初時时";
 export const QuarList = "初一二三四五六七八";
@@ -321,7 +320,7 @@ export const TwelveList = [
   "太",
   "太彊",
   "弱",
-  "",
+  ""
 ];
 export const FourList = ["", "半弱", "半", "半彊", ""];
 export const TwelveListHuangji = [
@@ -337,7 +336,7 @@ export const TwelveListHuangji = [
   "大",
   "大太",
   "弱",
-  "",
+  ""
 ];
 export const TwelveListWuyin = [
   "初",
@@ -352,18 +351,64 @@ export const TwelveListWuyin = [
   "太",
   "太彊",
   "末",
-  "初",
+  "初"
 ];
 export const TwentyfourList =
   "子癸丑艮寅甲卯乙辰巽巳丙午丁未坤申庚酉辛戌乾亥壬";
 export const TermNameList = [
-  "小雪中", "冬至中", "大寒中", "雨水中", "春分中", "穀雨中", "小滿中", "夏至中", "大暑中", "處暑中", "秋分中", "霜降中", "小雪中"
+  "小雪中",
+  "冬至中",
+  "大寒中",
+  "雨水中",
+  "春分中",
+  "穀雨中",
+  "小滿中",
+  "夏至中",
+  "大暑中",
+  "處暑中",
+  "秋分中",
+  "霜降中",
+  "小雪中"
 ]; // 用於朔閏表顯示中氣名
 export const Term1NameList = [
-  "立冬節", "大雪節", "小寒節", "立春節", "驚蟄節", "清明節", "立夏節", "芒種節", "小暑節", "立秋節", "白露節", "寒露節"
+  "立冬節",
+  "大雪節",
+  "小寒節",
+  "立春節",
+  "驚蟄節",
+  "清明節",
+  "立夏節",
+  "芒種節",
+  "小暑節",
+  "立秋節",
+  "白露節",
+  "寒露節"
 ];
 export const HalfTermNameList = [
-  "冬至", "小寒", "大寒", "立春", "雨水", "驚蟄", "春分", "清明", "穀雨", "立夏", "小滿", "芒種", "夏至", "小暑", "大暑", "立秋", "處暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪"
+  "冬至",
+  "小寒",
+  "大寒",
+  "立春",
+  "雨水",
+  "驚蟄",
+  "春分",
+  "清明",
+  "穀雨",
+  "立夏",
+  "小滿",
+  "芒種",
+  "夏至",
+  "小暑",
+  "大暑",
+  "立秋",
+  "處暑",
+  "白露",
+  "秋分",
+  "寒露",
+  "霜降",
+  "立冬",
+  "小雪",
+  "大雪"
 ];
 export const HouListA = [
   // 皇極
@@ -438,7 +483,7 @@ export const HouListA = [
   "虹藏", // 22小雪
   "冰壯",
   "地坼",
-  "鶡鴠鳴", // 十一月23大雪70
+  "鶡鴠鳴" // 十一月23大雪70
 ];
 export const HouListB = [
   "蚯蚓",
@@ -512,7 +557,7 @@ export const HouListB = [
   "閉塞成冬", // 22小雪
   "鶡鴠",
   "虎始交",
-  "荔挺生", // 十一月23大雪70
+  "荔挺生" // 十一月23大雪70
 ]; // 大衍的。爲了不將候與五行混淆，把「土潤溽暑」改「地」，「水澤腹堅」改冰，「草木萌動「草木黄落」」刪木，「水泉動」「水始涸」「雀入水爲蛤」「雉入水爲蜃」「水始冰」刪水。儘量減少字數
 export const Hexagram64ListA = [
   "伯坎",
@@ -578,7 +623,7 @@ export const Hexagram64ListA = [
   "辟坤",
   "侯未濟",
   "大夫蹇",
-  "卿頤",
+  "卿頤"
 ]; // 從冬至開始。// 冬坎29、春震51、夏離30、秋兌58主分至後的73/80日，晉35、井48、大畜26、頤27主5+14/80，其餘6+7/80。乾象:1075/1178,5+206/1178, 6+103/1178，景初：10091/11058, 5+1934/11058, 6+967/11058。正光：(5530+9.2/24)/6060,5+(1059+5.6/24)/6060, 6+(529+14.8/24)/6060
 export const HexagramSymbolListA = [
   "䷜",
@@ -644,7 +689,7 @@ export const HexagramSymbolListA = [
   "䷁",
   "䷿",
   "䷦",
-  "䷚",
+  "䷚"
 ];
 export const Hexagram64ListB = [
   "公中孚",
@@ -718,7 +763,7 @@ export const Hexagram64ListB = [
   "侯未濟內",
   "侯未濟外",
   "大夫蹇",
-  "卿頤",
+  "卿頤"
 ];
 export const HexagramSymbolListB = [
   "䷼",
@@ -792,7 +837,7 @@ export const HexagramSymbolListB = [
   "䷿",
   "䷿",
   "䷦",
-  "䷚",
+  "䷚"
 ];
 export const FiveList1 = " 木火土金水";
 export const FiveList2 = "火土金土水土木土火"; // 土王用事
@@ -813,7 +858,7 @@ export const MonScaleNameList = [
   "無射",
   "應鐘",
   "黃鐘",
-  "大呂",
+  "大呂"
 ];
 export const WeekList = "月火水木金土日"; // 回回不用甲子，用七曜。
 export const WeekList1 = "一二三四五六日";
@@ -848,7 +893,7 @@ export const NumList = [
   "廿七",
   "廿八",
   "廿九",
-  "卅",
+  "卅"
 ];
 export const MonNumList1 = [
   "十二",
@@ -863,7 +908,7 @@ export const MonNumList1 = [
   "九",
   "十",
   "十一",
-  "十二",
+  "十二"
 ];
 export const MonNumListChuA = [
   "獻馬(戌)",
@@ -878,7 +923,7 @@ export const MonNumListChuA = [
   "九月(未)",
   "十月(申)",
   "爨(酉)",
-  "獻馬(戌)",
+  "獻馬(戌)"
 ]; // 大正
 export const MonNumListChuB = [
   "塗(丑)",
@@ -893,7 +938,7 @@ export const MonNumListChuB = [
   "玄(戌)",
   "陽(亥)",
   "姑(子)",
-  "塗(丑)",
+  "塗(丑)"
 ]; // 小正
 export const ColorList = "白黑碧綠黃白赤白紫"; // 九宮
 export const ClassColorList = [
@@ -905,7 +950,7 @@ export const ClassColorList = [
   "color-white",
   "color-red",
   "color-white",
-  "color-purple",
+  "color-purple"
 ];
 export const Hexagram8List = " 乾兌離震巽坎艮坤"; // 震 正東;兌 正西;離 正南;坎 正北;坤 西南;艮 東北;巽 東南;乾 西北
 export const FourauspiciousList = ["甲丙庚壬", "艮巽坤乾", "癸乙丁辛"]; // 四大吉時，和十二次一一對應
@@ -924,7 +969,7 @@ export const MoonGodList = [
   "天道在南，天德在丙，月德在丙，月合在辛，月厭在卯，月煞在丑，月破在辰，月刑在未，月空在壬",
   "天道在東，天德在乙，月德在甲，月合在巳，月厭在寅，月煞在戌，月破在巳，月刑在亥，月空在庚",
   "天道在東南，天德在巽，月德在壬，月合在丁，月厭在子，月煞在未，月破在午，月刑在卯，月空在丙",
-  "天道在西，天德在庚，月德在庚，月合在乙，月厭在亥，月煞在辰，月破在未，月刑在戌，月空在申",
+  "天道在西，天德在庚，月德在庚，月合在乙，月厭在亥，月煞在辰，月破在未，月刑在戌，月空在申"
 ]; // 月神。這些迷信的內容參考何偉鳳《黑水城出土元代曆日研究》，寧夏大學碩士論文
 export const ManGodList = [
   "",
@@ -957,7 +1002,7 @@ export const ManGodList = [
   "膝",
   "陰",
   "膝脛",
-  "足趺",
+  "足趺"
 ]; // 根據陰曆日來排列。 [黃帝明堂灸經卷上](https://ctext.org/wiki.pl?if=gb&chapter=548650)
 // 十二部人神不宜灸.建日在足，禁晡時；除日在眼，禁日入；滿日在腹，禁黃昏；平日在背，禁人定，定日在心，禁夜半；執日在手，禁雞鳴；破日在口，禁平旦；危日在鼻，禁日出；成日在唇，禁食時；收日在頭，禁禺中；開日在耳，禁午時；閉日在目，禁日。
 export const JianchuList = "建除滿平定執破危成收開閉"; // 建除十二客（値、辰）
@@ -973,13 +1018,77 @@ export const HuangheiList = [
   "天牢",
   "玄武",
   "司命",
-  "句陳",
+  "句陳"
 ]; // https://www.zhihu.com/question/20167015/answer/15508998
-export const PlanetList = ['Sun', 'Moon', 'Saturn', 'Jupiter', 'Mars', 'Venus', 'Mercury']
-export const MansNameList =
-  ['角', '亢', '氐', '房', '心', '尾', '箕', '斗', '牛', '女', '虛', '危', '室', '壁', '奎', '婁', '胃', '昴', '畢', '觜', '參', '井', '鬼', '柳', '星', '張', '翼', '軫']; // 值日，星期日對應房、虛、昴、星
-export const MansNameListQing =
-  ['角', '亢', '氐', '房', '心', '尾', '箕', '斗', '牛', '女', '虛', '危', '室', '壁', '奎', '婁', '胃', '昴', '畢', '參', '觜', '井', '鬼', '柳', '星', '張', '翼', '軫']; // 參觜互換
+export const PlanetList = [
+  "Sun",
+  "Moon",
+  "Saturn",
+  "Jupiter",
+  "Mars",
+  "Venus",
+  "Mercury"
+];
+export const MansNameList = [
+  "角",
+  "亢",
+  "氐",
+  "房",
+  "心",
+  "尾",
+  "箕",
+  "斗",
+  "牛",
+  "女",
+  "虛",
+  "危",
+  "室",
+  "壁",
+  "奎",
+  "婁",
+  "胃",
+  "昴",
+  "畢",
+  "觜",
+  "參",
+  "井",
+  "鬼",
+  "柳",
+  "星",
+  "張",
+  "翼",
+  "軫"
+]; // 值日，星期日對應房、虛、昴、星
+export const MansNameListQing = [
+  "角",
+  "亢",
+  "氐",
+  "房",
+  "心",
+  "尾",
+  "箕",
+  "斗",
+  "牛",
+  "女",
+  "虛",
+  "危",
+  "室",
+  "壁",
+  "奎",
+  "婁",
+  "胃",
+  "昴",
+  "畢",
+  "參",
+  "觜",
+  "井",
+  "鬼",
+  "柳",
+  "星",
+  "張",
+  "翼",
+  "軫"
+]; // 參觜互換
 export const MansAnimalNameList =
   "蛟龍貉兔狐虎豹獬牛蝠鼠燕豬㺄狼狗雉雞烏猴猿犴羊獐馬鹿蛇蚓";
 export const GongList = [
@@ -994,7 +1103,7 @@ export const GongList = [
   "大火",
   "析木",
   "星紀",
-  "玄枵",
+  "玄枵"
 ]; // 十二次
 export const WestGongNameList = [
   "白羊",
@@ -1008,7 +1117,7 @@ export const WestGongNameList = [
   "人馬",
   "磨羯",
   "寶瓶",
-  "雙魚",
+  "雙魚"
 ]; // 回回曆法
 export const WestGongDayList = [31, 31, 31, 32, 31, 31, 30, 30, 29, 29, 30, 30]; // 已上十二宮，所謂不動之月，凡三百六十五日，乃歲周之日也。若遇宮分有閏之年，於雙魚宮加一日，凡三百六十六日
 

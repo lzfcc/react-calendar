@@ -103,9 +103,9 @@ export default class Converter extends React.Component {
   render() {
     return (
       <div>
-        <h3>太陰緯度</h3>
+        <h3>黃赤九道經緯</h3>
         {this.input()}
-        <button onClick={this.handle} className='button4-2'>月行陰陽</button>
+        <button onClick={this.handle} className='button4-2'>月行九道</button>
         {this.result()}
       </div>
     )

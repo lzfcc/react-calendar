@@ -698,7 +698,7 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
  */
 export const ShoushiXianV = (AnoAccum) => {
   // const V = []
-  const P = 0.082;
+  const P = 0.082; // 0.082=27.5545日/336限
   // for (let i = 1; i <= 336; i++) {
   //     V[i] = (13.3689 / (1 / P) + (MoonFormula(i * P, 'Shoushi').MoonDifAccum) - (MoonFormula((i - 1) * P, 'Shoushi').MoonDifAccum)).toFixed(4)
   // }

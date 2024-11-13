@@ -153,9 +153,9 @@ export default (Name, Y) => {
   } else if (Type >= 11) {
     FirstNodeAccum = fmod(
       OriginAccumThis -
-        LeapSurAvg +
-        NodeConst +
-        (YinyangConst === -1 ? Node / 2 : 0),
+      LeapSurAvg +
+      NodeConst +
+      (YinyangConst === -1 ? Node / 2 : 0),
       Node
     );
   }
@@ -175,13 +175,13 @@ export default (Name, Y) => {
     (Anoma ? "轉" + fmod(SolsAccum + AnomaConst, Anoma).toFixed(4) : "") +
     (Node
       ? "交" +
-        (
-          ((SolsAccum % Node) +
-            NodeConst +
-            (YinyangConst === -1 ? Node / 2 : 0) +
-            Node) %
-          Node
-        ).toFixed(4)
+      (
+        ((SolsAccum % Node) +
+          NodeConst +
+          (YinyangConst === -1 ? Node / 2 : 0) +
+          Node) %
+        Node
+      ).toFixed(4)
       : "") +
     (Sidereal ? "週" + fmod(SolsAccum + MansConst, Sidereal).toFixed(4) : "");
   let LeapLimit = 0;
@@ -349,7 +349,7 @@ export default (Name, Y) => {
       }
       Int[i] = isAcr ? AcrInt[i] : AvgInt[i];
       Raw[i] = isAcr ? AcrRaw[i] : AvgRaw[i];
-      Int[i] += NewmPlus + SyzygySub; // 這裏int是二次內差的結果，但線性與二次分屬兩日的極端情況太少了，暫且不論
+      Int[i] += NewmPlus + SyzygySub; // 這裏int是二次內插的結果，但線性與二次分屬兩日的極端情況太少了，暫且不論
       Raw[i] += NewmPlus + SyzygySub;
       AcrInt[i] += NewmPlus + SyzygySub;
       AnoAccumMidn[i] += NewmPlus;
@@ -478,7 +478,7 @@ export default (Name, Y) => {
   } = main(false);
   const LeapSurAcr = ZhangRange
     ? (LeapSurAvg - (NewmTcorr[1] * ZhangRange) / Lunar + ZhangRange) %
-      ZhangRange
+    ZhangRange
     : LeapSurAvg - NewmTcorr[1];
   return {
     LeapLimit,

@@ -86,7 +86,7 @@ export const N6 = (Y, Longitude) => {
         Equa[i] = NewmFunc.Equa;
         // 中氣
         const AcrTermJd = TermList[AcrChouTermJdIndex + i - 1];
-        UT1TermJd[i] = AcrTermJd + 8 / 24 - deltaT(AcrTermJd);
+        UT1TermJd[i] = AcrTermJd - deltaT(AcrTermJd) + Longitude / 360;
         const UT1TermJdDate = jd2Date(UT1TermJd[i]);
         TermAcrSc[i] = ScList[UT1TermJdDate.ScOrder];
         TermAcrMmdd[i] = UT1TermJdDate.mm + "-" + UT1TermJdDate.dd;
@@ -96,7 +96,7 @@ export const N6 = (Y, Longitude) => {
         TermEqua[i] = TermFunc.Equa;
         // 節氣
         const AcrTerm1Jd = Term1List[AcrChouTerm1JdIndex + i - 1];
-        const UT1Term1Jd = AcrTerm1Jd + 8 / 24 - deltaT(AcrTerm1Jd);
+        const UT1Term1Jd = AcrTerm1Jd - deltaT(AcrTerm1Jd) + Longitude / 360;
         const UT1Term1JdDate = jd2Date(UT1Term1Jd);
         Term1AcrSc[i] = ScList[UT1Term1JdDate.ScOrder];
         Term1AcrMmdd[i] = UT1Term1JdDate.mm + "-" + UT1Term1JdDate.dd;

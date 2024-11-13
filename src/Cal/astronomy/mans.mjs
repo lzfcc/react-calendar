@@ -530,6 +530,12 @@ export const degAccumList = (Name, Y) => {
   let EclpListRaw = [];
   let EquaListRaw = []; // 不同時期用不同的宿度
   Sidereal = Sidereal || Solar || SolarRaw;
+  const OriginYear = Y - (OriginAd || CloseOriginAd);
+  const OriginYear1 = OriginYear + 1;
+  if (Name === "Shoushi" || Name === "Shoushi2") {
+    Sidereal += +(Math.trunc(OriginYear1 / 100) * 0.0001).toFixed(4); // 方向和歲實消長反的
+    Solar = +(SolarRaw - Math.trunc(OriginYear / 100) / 10000).toFixed(4);
+  }
   const raw2Accum = (ListRaw) => {
     let DegList = [];
     const DegAccumList = [];
@@ -578,15 +584,8 @@ export const degAccumList = (Name, Y) => {
     else EquaListRaw = EquaDegTaichu;
     EquaAccumList = raw2Accum(EquaListRaw);
     if (Type >= 7) {
-      const OriginYear = Y - (OriginAd || CloseOriginAd) + 1;
-      if (Name === "Shoushi" || Name === "Shoushi2") {
-        Sidereal = +(
-          Sidereal + +(Math.trunc(OriginYear / 100) / 10000)
-        ).toFixed(4);
-        Solar = +(SolarRaw - Math.trunc(OriginYear / 100) / 10000).toFixed(4);
-      }
       const OriginDeg = EquaAccumList[MansRaw[0]] + MansRaw[1]; // 曆元宿度積度
-      const Accum = OriginYear * Solar + (MansConst || 0);
+      const Accum = OriginYear1 * Solar + (MansConst || 0);
       const SolsDeg = fmod(Accum + OriginDeg, Sidereal);
       // 參考紀元曆「求二十八宿黃道度」以及《中國古代曆法》p506
       for (let i = 0; i < 28; i++) {
@@ -618,7 +617,7 @@ export const degAccumList = (Name, Y) => {
   }
   return { EclpAccumList, EquaAccumList };
 };
-// console.log(degAccumList('Linde', 725))
+// console.log(degAccumList("Shoushi", -2155));
 
 export const mans2Deg = (Mans, AccumList) => {
   let Print = 0;

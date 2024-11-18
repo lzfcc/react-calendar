@@ -695,9 +695,9 @@ export const solsMans = (Name, Y) => {
     SolsEquaMansDeg = equaEclp(SolsEclpMansDeg, Name).Eclp2Equa;
     SolsEquaDeg = mans2Deg(SolsMansName + SolsEquaMansDeg, EquaAccumList);
   } else {
-    const OriginAccum = OriginYear * Solar + (MansConst || 0);
+    const OriginAccum = OriginYear * Solar;
     SolsEquaDeg = isPrecession
-      ? fmod(OriginAccum + OriginDeg, Sidereal) // 赤道冬至。算例參《古曆新探》p85
+      ? fmod(OriginAccum + (MansConst || 0) + OriginDeg, Sidereal) // 赤道冬至。算例參《古曆新探》p85
       : OriginDeg; // 沒有歲差的是夜半宿度，所以要減去冬至當日實行度分
     const Func = deg2Mans(SolsEquaDeg, EquaAccumList);
     SolsMansName = Func.Name;
@@ -711,13 +711,13 @@ export const solsMans = (Name, Y) => {
     SolsEquaDeg,
     SolsEclpDeg,
     SolsMansName,
-    SolsEclpMansDeg,
     SolsEquaMansDeg,
-    SolsEclpMans: SolsMansName + SolsEclpMansDeg.toFixed(3),
-    SolsEquaMans: SolsMansName + SolsEquaMansDeg.toFixed(3)
+    SolsEclpMansDeg,
+    SolsEquaMans: SolsMansName + SolsEquaMansDeg.toFixed(3),
+    SolsEclpMans: SolsMansName + SolsEclpMansDeg.toFixed(3)
   };
 };
-// console.log(solsMans("Linde", 624).SolsEclpMans)
+// console.log(solsMans("Shoushi", -2155).SolsEclpMans);
 /**
  * 20240312改寫，增加黃道宿度
  * @param {*} Name 曆法名
@@ -762,7 +762,7 @@ export const mans = (Name, Y, EclpGong) => {
     SolsEquaMans
   };
 };
-// console.log(mans('Dayan', 1555, 10).Equa)
+// console.log(mans('Shoushi', 1280, 365.2425).Equa)
 /**
  * 西曆日躔
  * @param {*} Name

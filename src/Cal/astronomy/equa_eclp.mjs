@@ -302,7 +302,7 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   let Equa2Eclp = 0;
   let Eclp2Equa = 0;
   const LonHalf = LonRaw % SolarHalf;
-  let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(LonHalf, Name);
+  let { Equa2EclpDif, Eclp2EquaDif } = equa2EclpPoly(LonHalf, Name); // Equa2EclpDif黃赤道差
   const sign1 = LonHalf < SolarQuar ? -1 : 1;
   Equa2EclpDif *= sign1;
   Eclp2EquaDif *= -sign1;
@@ -310,7 +310,7 @@ export const Equa2EclpFormula = (LonRaw, Name) => {
   Eclp2Equa = LonRaw + Eclp2EquaDif;
   return { Equa2Eclp, Equa2EclpDif, Eclp2Equa, Eclp2EquaDif };
 };
-// console.log(Equa2EclpFormula(24, "Jiyuan"))
+// console.log(Equa2EclpFormula(3, "Jiyuan").Equa2EclpDif)
 
 /**
  * 只有公式法的才有黃轉赤。表格的是直接取符號相反

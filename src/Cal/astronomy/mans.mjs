@@ -729,7 +729,7 @@ export const mans = (Name, Y, EclpGong) => {
   const { SolarRaw, MansRaw, OriginAd, CloseOriginAd } = Para[Name];
   if (!MansRaw) return;
   let { Sidereal, Solar } = Para[Name];
-  const isPrecession = !!Sidereal; // 有歲差的曆法
+  // const isPrecession = !!Sidereal; // 有歲差的曆法
   const { EclpAccumList, EquaAccumList } = degAccumList(Name, Y);
   Sidereal = Sidereal || Solar || SolarRaw;
   const OriginYear = Y - (OriginAd || CloseOriginAd);
@@ -738,22 +738,27 @@ export const mans = (Name, Y, EclpGong) => {
     Sidereal += +(Math.trunc(OriginYear1 / 100) * 0.0001).toFixed(4); // 方向和歲實消長反的
     Solar = +(SolarRaw - Math.trunc(OriginYear1 / 100) * 0.0001).toFixed(4);
   }
-  const { SolsEquaDeg, SolsEclpDeg, SolsEclpMans, SolsEquaMans } = solsMans(
+  let { SolsEquaDeg, SolsEclpDeg, SolsEclpMans, SolsEquaMans } = solsMans(
     Name,
     Y
   );
   let EclpDeg = 0;
   let EquaDeg = 0;
   const EquaGong = equaEclp(EclpGong, Name).Eclp2Equa;
-  const PrecessionFrac = isPrecession
-    ? (EquaGong / Sidereal) * (Sidereal - Solar)
-    : 0; // 一年之中的歲差
-  EclpDeg =
-    (SolsEclpDeg + EclpGong - equaEclp(PrecessionFrac, Name).Equa2Eclp) %
-    Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
-  EquaDeg = (SolsEquaDeg + EquaGong - PrecessionFrac) % Sidereal;
-  const Equa = deg2Mans(EquaDeg, EquaAccumList).Print;
-  const Eclp = deg2Mans(EclpDeg, EclpAccumList).Print;
+  // 不知道紀元是什麼原理，為什麼要算黃赤道差之差？這裏沒管。纪元p1859：【求天正冬至加時黄道日度】以冬至加時赤道日度及分秒，減一百一度，餘以冬至加時赤道日度及分秒乘之，進位，滿百爲分，分滿百爲度，命曰黃赤道差；用减冬至赤道日度及分秒，卽所求年天正冬至加時黄道日度及分秒。【求二十四氣加時黄道日度】置所求年冬至日躔黃赤道差，以次年黄赤道差減之，餘以所求氣數乘之，二十四而一，所得，以加其氣中積及約分，又以其氣初日先後數先加後減之，用加冬至加時黄道日度，依宿次命之，卽各得其氣加時黃道日躔宿度及分秒。（如其年冬至加時赤道宿度空，分秒在歲差已下者，卽加前宿全度。然求黄赤道差，餘依術算。）
+  EclpDeg = (SolsEclpDeg + EclpGong) % Sidereal; // 太陽改正所得就是黃道度，此處不要赤轉黃
+  EquaDeg = (SolsEquaDeg + EquaGong) % Sidereal;
+  let Equa = deg2Mans(EquaDeg, EquaAccumList).Print;
+  let Eclp = deg2Mans(EclpDeg, EclpAccumList).Print;
+  // 以下針對的情況：大於一年的長度，其實就是下一年了
+  if (EclpGong >= (SolarRaw || Solar)) {
+    const Result = mans(Name, Y + 1, EclpGong - (SolarRaw || Solar));
+    Equa = Result.Equa;
+    Eclp = Result.Eclp;
+    EquaDeg = Result.EquaDeg;
+    SolsEclpMans = Result.SolsEclpMans;
+    SolsEquaMans = Result.SolsEquaMans;
+  }
   return {
     Equa,
     Eclp,
@@ -762,7 +767,7 @@ export const mans = (Name, Y, EclpGong) => {
     SolsEquaMans
   };
 };
-// console.log(mans('Shoushi', 1280, 365.2425).Equa)
+// console.log(mans('Shoushi', 1280, 365.2425))
 /**
  * 西曆日躔
  * @param {*} Name

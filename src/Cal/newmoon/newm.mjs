@@ -129,10 +129,10 @@ export default (Name, Y) => {
     const LeapAccumThis = OriginAccumThis - FirstConst; // 閏積
     LeapSurAvg = fmod(LeapAccumThis, Lunar); // 閏餘、冬至月齡
   } else if (Type === 11) {
-    OriginAccumThis = CloseOriginYear * Solar; // 中積
-    SolsAccum = OriginAccumThis + SolsConst; // 通積：該年冬至積日
-    const LeapAccumThis = OriginAccumThis + FirstConst; // 閏積
-    LeapSurAvg = fmod(LeapAccumThis, Lunar); // 閏餘、冬至月齡
+    OriginAccumThis = CloseOriginYear * Solar; // 「置所求距算，以岁实乘之，为中积。」
+    SolsAccum = OriginAccumThis + SolsConst; // 通積：該年冬至積日。「加气应，为通积。满旬周去之，不尽，以日周约之为日，不满为分。其日命甲子算外，即所求天正冬至日辰及分。（如上考者，以气应减中积，满旬周去之，不尽，以减旬周。余同上。）」
+    const LeapAccumThis = OriginAccumThis + FirstConst; // 「置中积，加闰应，为闰积。」
+    LeapSurAvg = fmod(LeapAccumThis, Lunar); // 閏餘：冬至月齡「满朔实去之，不尽，为闰余。（上考者，以闰应减中积，满朔实去之，不尽，以减朔实，为闰余。）」
   }
   const SolsDeci = deci(SolsAccum); //.toFixed(fixed)
   let FirstAccum = 0,
@@ -243,7 +243,7 @@ export default (Name, Y) => {
       ).toFixed(fixed);
       AvgInt[i] = Math.floor(AvgRaw[i]);
       AvgSc[i] = ScList[fm60(AvgInt[i] + 1 + ScConst)];
-      AvgDeci[i] = deci(AvgRaw[i]);
+      AvgDeci[i] = deci(fm60(AvgRaw[i]));
       Sd[i] =
         ((ZhengSd + i - (isNewm ? 1 : 0.5)) * Lunar +
           FirstAccum -
@@ -284,7 +284,7 @@ export default (Name, Y) => {
           Deci2[i] = Deci[i];
           if (Tcorr1) Deci1[i] = deci(AvgRaw[i] + Tcorr1);
         } else if (Type === 11) {
-          Deci[i] = deci(AcrRaw[i]);
+          Deci[i] = deci(fm60(AcrRaw[i]));
           Deci3[i] = Deci[i];
         }
       } else Deci[i] = AvgDeci[i];
@@ -533,4 +533,4 @@ export default (Name, Y) => {
     SyzygyAcrSd
   };
 };
-// console.log(cal('Shoushi', 1282))
+// console.log(cal('Shoushi', -776))

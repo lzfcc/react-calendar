@@ -138,7 +138,7 @@ const SunTcorrTable = (Sd, Name) => {
         SunTcorrList[TermNum] +
         ((SunTcorrList[TermNum + 1] - SunTcorrList[TermNum]) *
           (Sd - AcrTermList[TermNum])) /
-          TermRange;
+        TermRange;
     } else {
       const D1 = SunTcorrList[TermNum + 1] - SunTcorrList[TermNum];
       const D2 = SunTcorrList[TermNum + 2] - SunTcorrList[TermNum + 1];
@@ -180,7 +180,10 @@ const SunDifAccumFormula = (Sd, Name) => {
     // DeltaSunB3: .0027262800048672, // .0027
     // DeltaMoon1: 11.11,
     // DeltaMoon2: .0281,
-    // DeltaMoon3: .000325,
+    // DeltaMoon3: .000325
+    // 用招差術工具，輸入《通軌》盈初縮末前四日：0,510.8569,1016.7752,1517.7363，得到差分 = 510.8569,-4.9386,-0.0186；
+    // 通軌太陰立成前四限：0,0.11081575,0.22105000,0.33068325，得到差分 = 0.11081575,-0.0005815,-0.0000195。得到的數值都與表格中其他的密合
+    // 這幾個數字見《中國古代曆法》10.2.1頁619
     let sign = 1;
     if (Sd >= SolarHalf) sign = -1;
     if (Sd >= QuarA && Sd < SolarHalf + QuarB) {
@@ -297,7 +300,7 @@ const MoonTcorrTable1 = (AnoAccum, Name) => {
   let MoonDifAccum1 =
     MoonDifAccumList[AnoAccumInt] +
     AnoAccumFract *
-      (MoonDifAccumList[AnoAccumInt + 1] - MoonDifAccumList[AnoAccumInt]); //* MoonAcrAvgDifList[AnoAccumInt]
+    (MoonDifAccumList[AnoAccumInt + 1] - MoonDifAccumList[AnoAccumInt]); //* MoonAcrAvgDifList[AnoAccumInt]
   const SunAvgV = ZhangRange;
   let MoonTcorr1 = 0;
   if (
@@ -336,11 +339,11 @@ const AnojourTable1 = (AnoAccum, Name) => {
   const Anojour =
     (AnojourList[AnoAccumInt] +
       AnoAccumFract *
-        (AnojourList[AnoAccumInt + 1] - AnojourList[AnoAccumInt])) /
+      (AnojourList[AnoAccumInt + 1] - AnojourList[AnoAccumInt])) /
     ZhangRange;
   return Anojour;
 };
-// console.log(AnojourTable1(.1, 'Daming'))
+// console.log(AnojourTable1(27, 'Daming'))
 
 const MoonTcorrTable = (AnoAccum, Name) => {
   const { Type, MoonTcorrList, Anoma, Denom } = Para[Name];
@@ -636,9 +639,9 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
     let signA = 1;
     const T =
       (AnomaQuar - Math.abs((AnoAccumRaw % AnomaHalf) - AnomaQuar)) / PartRange;
-    if (AnoAccumRaw >= AnomaHalf) signA = -1;
-    MoonDifAccum =
-      (signA * (11.11 * T - 0.0281 * T ** 2 - 0.000325 * T ** 3)) / 100; // 遲疾差。三個常數是遲疾定平立三差
+    if (AnoAccumRaw < AnomaHalf) signA = -1;
+    MoonDifAccum = (signA * ((325 * T + 28100) * T - 11110000) * T) / 1e8; // 遲疾差。三個常數是遲疾定平立三差
+    // 《通軌》立成是以84限對稱，5.42934424，83=85=5.42916616
     const AnoAccumPart = Math.trunc((AnoAccumRev * 336) / Anoma);
     const MoonAcrVListA = [
       1.2071, 1.2065, 1.2059, 1.2053, 1.2047, 1.204, 1.2033, 1.2026, 1.2019,
@@ -690,7 +693,7 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
   const Anojour = AnoAccumRaw * MoonAvgVd + MoonDifAccum;
   return { MoonDifAccum, MoonAcrVd, Anojour };
 };
-// console.log(MoonFormula(12.903, 'Shoushi').MoonAcrVd)
+console.log(MoonFormula(6.9065, "Shoushi").MoonDifAccum);
 
 /**
  * 用注釋中的算法算限下行度，和授時曆本表密合，只有一些相差.0001

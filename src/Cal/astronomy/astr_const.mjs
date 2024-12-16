@@ -30,27 +30,27 @@ export const modernConsts = (Jd) => {
   // 以下根據IAU2006 https://github.com/brandon-rhodes/python-novas/Cdist/nutation.c
   const AvgSorb = fm360(
     357.52910918 +
-      (129596581.0481 * T -
-        0.5532 * T ** 2 +
-        0.000136 * T ** 3 -
-        0.00001149 * T ** 4) /
-        3600
+    (129596581.0481 * T -
+      0.5532 * T ** 2 +
+      0.000136 * T ** 3 -
+      0.00001149 * T ** 4) /
+    3600
   ); // 太陽平近點角
   const AvgMorb = fm360(
     134.96340251 +
-      (1717915923.2178 * T +
-        31.8792 * T ** 2 +
-        0.051635 * T ** 3 -
-        0.0002447 * T ** 4) /
-        3600
+    (1717915923.2178 * T +
+      31.8792 * T ** 2 +
+      0.051635 * T ** 3 -
+      0.0002447 * T ** 4) /
+    3600
   ); // 月球平近點角
   const AvgWhEcLon = fm360(
     125.04455501 +
-      (-6962890.5431 * T +
-        7.4722 * T ** 2 +
-        0.007702 * T ** 3 -
-        0.00005939 * T ** 4) /
-        3600
+    (-6962890.5431 * T +
+      7.4722 * T ** 2 +
+      0.007702 * T ** 3 -
+      0.00005939 * T ** 4) /
+    3600
   ); // 月軌升交平黃經
   // delta根據La2010a_ecc3L.dat的4kyr內插：http://vo.imcce.fr/insola/earth/online/earth/earth.html
   //  0  0.016702362
@@ -110,9 +110,10 @@ export const BindSolarChange = (year) => {
         .toNumber()
     ).toPrecision(12)
   );
+  // 統天曆見滕豔輝《统天历》的岁实消长与气朔算法分析。用兩年氣定積相減得回歸年長度。
   const SolarTongtian = parseFloat(
-    (365.2425 - (0.021167 / 12000) * year1).toPrecision(10)
-  );
+    (365.2425 - (0.0127 / 12000) * 2 * year1).toPrecision(10)
+  ); // 滕的精确值是365.2424989147
   const SolarChangeTongtian = parseFloat(
     (((sign1 * 0.0127) / 12000) * year1 ** 2).toPrecision(10)
   );
@@ -142,7 +143,7 @@ export const BindSolarChange = (year) => {
   const LunarTongtian = parseFloat(
     (year1
       ? (365.2425 + SolarChangeTongtian / year1 - 7 / 8000) /
-        (365.2425 / (29 + 6368 / 12000))
+      (365.2425 / (29 + 6368 / 12000))
       : 29 + 6368 / 12000
     ).toPrecision(10)
   );

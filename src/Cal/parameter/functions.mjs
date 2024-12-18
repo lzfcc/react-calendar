@@ -34,7 +34,7 @@ export const sqr = (X) => Math.sqrt(X);
 export const sign = (X) => Math.sign(X);
 export const fmod = (X, m) => X - Math.floor(X / m) * m; // (X % m + m) % m
 // console.log(fmod(-370, 360)) // 350
-export const fm60 = (X) => fmod(X, 60);
+export const fm60 = (X) => X - Math.floor(X / 60) * 60; //fmod(X, 60);
 export const sind = (X) => Math.sin(D2R * X); //.toFixed(8) // 數理精蘊附八線表用的是七位小數
 export const sin2d = (X) => 2 * sind(X / 2); // 通弦
 export const atan2d = (a, b) => R2D * Math.atan2(a, b);

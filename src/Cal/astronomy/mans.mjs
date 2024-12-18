@@ -750,7 +750,7 @@ export const mans = (Name, Y, EclpGong) => {
   EquaDeg = (SolsEquaDeg + EquaGong) % Sidereal;
   let Equa = deg2Mans(EquaDeg, EquaAccumList).Print;
   let Eclp = deg2Mans(EclpDeg, EclpAccumList).Print;
-  // 以下針對的情況：大於一年的長度，其實就是下一年了
+  // 以下針對的情況：大於一年的長度，其實就是下一年了。241122變了十一十二月節氣日躔。241218變了十一十二月合朔日躔，輸入的AcrSd大於solar了，所以觸發這個條件
   if (EclpGong >= (SolarRaw || Solar)) {
     const Result = mans(Name, Y + 1, EclpGong - (SolarRaw || Solar));
     Equa = Result.Equa;

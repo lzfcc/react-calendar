@@ -50,7 +50,6 @@ export default (Name, YearStart, YearEnd) => {
       Sols,
       NewmEqua,
       NewmEclp,
-      AccumPrint,
       LeapLimit,
       SolsDeci
     } = ThisYear;
@@ -578,8 +577,7 @@ export default (Name, YearStart, YearEnd) => {
         YearInfo.push({
           LeapSur: `平${ThisYear.LeapSurAvg.toFixed(2)}定${ThisYear.LeapSurAcr.toFixed(2)}準${LeapLimit.toFixed(2)}`
         });
-    }
-    if (AccumPrint) YearInfo.push({ Accum: AccumPrint });
+    }    
     YearInfo = [
       YearInfo.reduce((accumulator, currentObject) => {
         return { ...accumulator, ...currentObject };

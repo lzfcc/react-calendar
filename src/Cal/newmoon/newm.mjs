@@ -3,7 +3,7 @@ import { ScList } from "../parameter/constants.mjs";
 import { AutoDifAccum, AutoTcorr } from "../astronomy/acrv.mjs";
 import { mans } from "../astronomy/mans.mjs";
 import { newmPlus, syzygySub } from "../astronomy/dayadjust.mjs";
-import { deci, fix, fmod, fm60 } from "../parameter/functions.mjs";
+import { abs, deci, fix, fmod, fm60 } from "../parameter/functions.mjs";
 
 // const cal = (Name, Y) => {
 export default (Name, Y) => {
@@ -11,7 +11,6 @@ export default (Name, Y) => {
     Type,
     isAcr,
     isNewmPlus,
-    Sidereal,
     SolarNumer,
     LunarNumer,
     Denom,
@@ -39,7 +38,6 @@ export default (Name, Y) => {
     NodeConst,
     FirstConst,
     AnomaConst,
-    MansConst,
     SolsConst
   } = Para[Name];
   ScConst = ScConst || 0;
@@ -48,7 +46,6 @@ export default (Name, Y) => {
   FirstConst = FirstConst || 0;
   NodeConst = NodeConst || 0;
   AnomaConst = Type === 11 ? AnomaConst : AnomaConst / Denom || 0;
-  MansConst = MansConst || 0;
   SolsConst = SolsConst || 0;
   const isExcl = Type >= 4 ? 1 : 0;
   const ZhangMon = Math.round(ZhangRange * (12 + ZhangLeap / ZhangRange));
@@ -57,10 +54,11 @@ export default (Name, Y) => {
   const OriginYear = Y - (OriginAd || CloseOriginAd); // 上元積年（算上）
   // const CloseSd = CloseOriginAd - OriginAd // 統天距算
   const CloseOriginYear = Y - CloseOriginAd; // 距差。授時以1280開始
+  const CloseOriginYearAbs = abs(CloseOriginYear);
   let SolarChangeAccum = 0,
     LunarChangeAccum = 0,
     LeapSurAvg = 0,
-    OriginAccumThis = 0;
+    OriginAccum = 0;
   // 統天躔差=斗分差/10000*距差
   const signX = CloseOriginYear > 0 ? 1 : -1;
   if (Name === "Tongtian") {
@@ -117,22 +115,17 @@ export default (Name, Y) => {
     LeapSurAvg = (OriginYear * SolarNumer) % LunarNumer; // OriginYear * SolarNumer爲期總
   } else if (Type < 11) {
     LeapSurAvg = fmod(SolsAccum + FirstConst, LunarRaw);
-  } else if (Name === "Wannian") {
-    // 置歲定積減去律應滿律總去之不盡得歲首黃鍾正律大小餘大餘命甲子筭外累加律策得次律大小餘滿律總去之
-    // 置歲定積減去閏應滿朔策去之不盡即所求閏餘日及分秒
-    // OriginAccumThis = WannianDingju(CloseOriginYear)
-    // const OriginAccumPrev = WannianDingju(CloseOriginYear - 1)
-    // const OriginAccumNext = WannianDingju(CloseOriginYear + 1)
-    // SolsAccum = OriginAccumThis + SolsConst
-    // const LeapAccumThis = OriginAccumThis + FirstConst // 閏積
-    OriginAccumThis = CloseOriginYear * SolarRaw + SolarChangeAccum;
-    const LeapAccumThis = OriginAccumThis - FirstConst; // 閏積
-    LeapSurAvg = fmod(LeapAccumThis, Lunar); // 閏餘、冬至月齡
   } else if (Type === 11) {
-    OriginAccumThis = CloseOriginYear * Solar; // 「置所求距算，以岁实乘之，为中积。」
-    SolsAccum = OriginAccumThis + SolsConst; // 通積：該年冬至積日。「加气应，为通积。满旬周去之，不尽，以日周约之为日，不满为分。其日命甲子算外，即所求天正冬至日辰及分。（如上考者，以气应减中积，满旬周去之，不尽，以减旬周。余同上。）」
-    const LeapAccumThis = OriginAccumThis + FirstConst; // 「置中积，加闰应，为闰积。」
-    LeapSurAvg = fmod(LeapAccumThis, Lunar); // 閏餘：冬至月齡「满朔实去之，不尽，为闰余。（上考者，以闰应减中积，满朔实去之，不尽，以减朔实，为闰余。）」
+    OriginAccum = CloseOriginYearAbs * Solar + SolarChangeAccum; // 「置所求距算，以岁实乘之，为中积。」SolarChangeAccum针对《圣寿万年》
+    SolsAccum =
+      Y >= CloseOriginAd ? OriginAccum + SolsConst : OriginAccum - SolsConst; // 通積：該年冬至積日。「加气应，为通积。满旬周去之，不尽，以日周约之为日，不满为分。其日命甲子算外，即所求天正冬至日辰及分。（如上考者，以气应减中积，满旬周去之，不尽，以减旬周。余同上。）」
+    SolsAccum = Y >= CloseOriginAd ? fm60(SolsAccum) : 60 - fm60(SolsAccum); // 這個是冬至，直接用SolsAccum替換了，查了下曆經全文，此後的計算不再用到通積
+    const LeapAccum =
+      Y >= CloseOriginAd ? OriginAccum + FirstConst : OriginAccum - FirstConst; // 「置中积，加闰应，为闰积。」
+    LeapSurAvg =
+      Y >= CloseOriginAd
+        ? fmod(LeapAccum, Lunar)
+        : Lunar - fmod(LeapAccum, Lunar); // 閏餘：冬至月齡「满朔实去之，不尽，为闰余。（上考者，以闰应减中积，满朔实去之，不尽，以减朔实，为闰余。）」
   }
   const SolsDeci = deci(SolsAccum); //.toFixed(fixed)
   let FirstAccum = 0,
@@ -141,8 +134,12 @@ export default (Name, Y) => {
   if (ZhangRange) {
     FirstAccum = Math.floor((OriginYear * ZhangMon) / ZhangRange) * Lunar;
   } else if (Type < 8) {
-    FirstAccum = SolsAccum - LeapSurAvg / Denom + LunarChangeAccum;
-  } else FirstAccum = SolsAccum - LeapSurAvg + LunarChangeAccum;
+    FirstAccum = SolsAccum - LeapSurAvg / Denom;
+  } else {
+    FirstAccum = SolsAccum - LeapSurAvg + LunarChangeAccum; // 授時「以日周约之为日，不满为分，以减冬至日及分，不及减者，加纪法减之，命如上。」卽使FirstAccum是負數也不影響，因為正月已經加了兩個月了。
+  }
+  FirstAccum += ZoneDif;
+  // 天正入交
   if (Node && Type < 11) {
     FirstNodeAccum =
       (FirstAccum +
@@ -151,39 +148,26 @@ export default (Name, Y) => {
         ZoneDif / 18) %
       Node;
   } else if (Type >= 11) {
-    FirstNodeAccum = fmod(
-      OriginAccumThis -
-      LeapSurAvg +
-      NodeConst +
-      (YinyangConst === -1 ? Node / 2 : 0),
-      Node
-    );
+    FirstNodeAccum =
+      Y >= CloseOriginAd
+        ? fmod(OriginAccum + NodeConst - LeapSurAvg, Node)
+        : Node - fmod(OriginAccum - NodeConst + LeapSurAvg, Node);
   }
-  FirstAccum += ZoneDif;
+  // 天正入转
   if (Type <= 10) {
     FirstAnoAccum = fmod(
       FirstAccum + AnomaConst + (Name === "Shenlong" ? Anoma / 2 : 0),
       Anoma
     );
   } else if (Type === 11) {
-    FirstAnoAccum = fmod(OriginAccumThis - LeapSurAvg + AnomaConst, Anoma);
+    FirstAnoAccum =
+      Y >= CloseOriginAd
+        ? fmod(OriginAccum + AnomaConst - LeapSurAvg, Anoma)
+        : Anoma - fmod(OriginAccum - AnomaConst + LeapSurAvg, Anoma);
   }
   FirstAccum = +FirstAccum.toFixed(fixed);
   FirstAnoAccum = +FirstAnoAccum.toFixed(fixed);
   FirstNodeAccum = +FirstNodeAccum.toFixed(fixed);
-  const AccumPrint =
-    (Anoma ? "轉" + fmod(SolsAccum + AnomaConst, Anoma).toFixed(4) : "") +
-    (Node
-      ? "交" +
-      (
-        ((SolsAccum % Node) +
-          NodeConst +
-          (YinyangConst === -1 ? Node / 2 : 0) +
-          Node) %
-        Node
-      ).toFixed(4)
-      : "") +
-    (Sidereal ? "週" + fmod(SolsAccum + MansConst, Sidereal).toFixed(4) : "");
   let LeapLimit = 0;
   if (ZhangRange) {
     LeapLimit = ZhangRange - ZhangLeap;
@@ -226,7 +210,6 @@ export default (Name, Y) => {
       Raw = [],
       Tcorr = [],
       AcrRaw = [],
-      AcrMod = [],
       Sc = [],
       Deci1 = [],
       Deci2 = [],
@@ -243,13 +226,9 @@ export default (Name, Y) => {
       ).toFixed(fixed);
       AvgInt[i] = Math.floor(AvgRaw[i]);
       AvgSc[i] = ScList[fm60(AvgInt[i] + 1 + ScConst)];
-      AvgDeci[i] = deci(fm60(AvgRaw[i]));
+      AvgDeci[i] = deci(AvgRaw[i]);
       Sd[i] =
-        ((ZhengSd + i - (isNewm ? 1 : 0.5)) * Lunar +
-          FirstAccum -
-          SolsAccum +
-          Solar) %
-        Solar;
+        (ZhengSd + i - (isNewm ? 1 : 0.5)) * Lunar + FirstAccum - SolsAccum;
       let Tcorr1 = 0;
       if (Anoma) {
         AnoAccum[i] = +(
@@ -274,7 +253,6 @@ export default (Name, Y) => {
         } else if (Math.floor(AcrRaw[i]) < Math.floor(AvgRaw[i])) {
           AnoAccumMidn[i]--;
         }
-        AcrMod[i] = fm60(AcrRaw[i]);
         AcrInt[i] = Math.floor(AcrRaw[i]);
         if (Type <= 4) {
           Deci[i] = deci(AcrRaw[i]);
@@ -284,7 +262,7 @@ export default (Name, Y) => {
           Deci2[i] = Deci[i];
           if (Tcorr1) Deci1[i] = deci(AvgRaw[i] + Tcorr1);
         } else if (Type === 11) {
-          Deci[i] = deci(fm60(AcrRaw[i]));
+          Deci[i] = deci(AcrRaw[i]);
           Deci3[i] = Deci[i];
         }
       } else Deci[i] = AvgDeci[i];
@@ -381,11 +359,13 @@ export default (Name, Y) => {
     let LeapNumTerm = 0;
     //////// 置閏
     if (isNewm) {
-      const NewmRaw = isAcr ? AcrRaw : AvgRaw;
+      const NewmSd = isAcr ? AcrSd : Sd;
       for (let i = 1; i <= 12; i++) {
         if (
-          Math.trunc(TermAvgRaw[i]) < Math.trunc(NewmRaw[i + 1]) &&
-          Math.trunc(TermAvgRaw[i + 1]) >= Math.trunc(NewmRaw[i + 2])
+          Math.trunc(TermAvgSd[i] + SolsDeci) <
+          Math.trunc(NewmSd[i + 1] + SolsDeci) &&
+          Math.trunc(TermAvgSd[i + 1] + SolsDeci) >=
+          Math.trunc(NewmSd[i + 2] + SolsDeci)
         ) {
           LeapNumTerm = i; // 閏Leap月，第Leap+1月爲閏月
           break;
@@ -486,7 +466,6 @@ export default (Name, Y) => {
     JiYear,
     JiScOrder,
     SolsAccum,
-    AccumPrint,
     NewmAvgSc,
     NewmAvgDeci,
     NewmSc,
@@ -533,4 +512,4 @@ export default (Name, Y) => {
     SyzygyAcrSd
   };
 };
-// console.log(cal('Shoushi', -776))
+// console.log(cal("Shoushi", 1278));

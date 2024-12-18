@@ -43,7 +43,14 @@ import {
   f3,
   lat2NS1
 } from "../parameter/functions.mjs";
-import { corrRingC, distEllipseA, moonGuimao, moonQing, sunCorrQing, sunQing } from "../astronomy/sun_moon_qing.mjs";
+import {
+  corrRingC,
+  distEllipseA,
+  moonGuimao,
+  moonQing,
+  sunCorrQing,
+  sunQing
+} from "../astronomy/sun_moon_qing.mjs";
 import { timeAvg2Real } from "../time/eot_qing.mjs";
 export const N4 = (Name, Y) => {
   const {
@@ -67,15 +74,16 @@ export const N4 = (Name, Y) => {
     MoonLimit,
     MansDayConst,
     Sobliq,
-    RiseLat,
+    RiseLat
   } = Para[Name]; // SunAvgVm, SorbVm, MorbVm, MoonNodeVmSum, ChouSunConst, ChouSorbConst, ChouMorbConst, ChouWhitelongiConst
   const TermLeng = Solar / 12;
   const MorbVd = MoonAvgVd - MapoVd;
   const SorbVd = SunAvgVd - SperiVd;
   const MSAvgVdDif = MoonAvgVd - SunAvgVd;
   const MoonNodeVdSum = MoonAvgVd + NodeVd;
-  const CloseOriginYear = abs(Y - CloseOriginAd); // 積年
-  const OriginAccum = +(CloseOriginYear * Solar).toFixed(9); // 中積
+  const CloseOriginYear = Y - CloseOriginAd;
+  const CloseOriginYearAbs = abs(CloseOriginYear); // 積年
+  const OriginAccum = +(CloseOriginYearAbs * Solar).toFixed(9); // 中積
   const SolsAccum =
     Y >= CloseOriginAd ? OriginAccum + SolsConst : OriginAccum - SolsConst; // 通積分
   const MansDaySolsmor =
@@ -120,18 +128,14 @@ export const N4 = (Name, Y) => {
       ? fm360(NodeConst - DayAccum * NodeVd)
       : fm360(NodeConst + DayAccum * NodeVd); // 正交年根，所得爲白經
   // const Mans = (OriginAccumMans % 28 + 1 + 28) % 28 // 自初日角宿起算，得值宿。（考成：天正冬至乃冬至本日之干支，值宿乃冬至次日之宿，故外加一日。）
-  const SperiRoot =
-    SperiConst +
-    (Y >= CloseOriginAd
-      ? SperiVy * CloseOriginYear
-      : -SperiVy * CloseOriginYear); // 本年最卑行+最卑應=我命名的最卑年根
+  const SperiRoot = SperiConst + SperiVy * CloseOriginYear; // 本年最卑行+最卑應=我命名的最卑年根
   const sunEcliJiazi = (
     NowSmd,
     AcrWhitelongi,
     AcrMorb,
     AcrMoonCorr1,
     AcrSorb,
-    AcrSunLon,
+    AcrSunLon
   ) => {
     // AcrWhitelongi = 179 + 49 / 60 + 47.28 / 3600 // 2009算例
     const Mobliq0116 = 4.975;
@@ -172,7 +176,7 @@ export const N4 = (Name, Y) => {
         90 - RiseLat + (NoonEclpLon < 180 ? 1 : -1) * NoonLatDif; // 用時正午黃道高。算例癸乙72度44分19秒=72.7386111111
       const EclpmidHigh = BaC_Sph(90, AngEclpSou, NoonEclpHigh); // 黃平象限距地平。算例丑角=72度50分56秒=72.8488888889
       const EclpmidSouDif = abs(
-        90 - ABCa_Sph(EclpmidHigh, 90, AngEclpSou, NoonEclpHigh),
+        90 - ABCa_Sph(EclpmidHigh, 90, AngEclpSou, NoonEclpHigh)
       ); // 用時黃平象限距午度。算例癸丑弧88度1分18秒=88.02166666667
       const EclpmidGong =
         NoonEclpGong +
@@ -185,7 +189,7 @@ export const N4 = (Name, Y) => {
       const Zichou = 90 - SunEclpmidDif; // 太陽距黃平象限之餘
       // const Maochou = LonHigh2Flat(EclpmidHigh, Zichou)
       const AngEclpHigharc = abs(
-        atand(cotd(EclpmidHigh) / sind(SunEclpmidDif)),
+        atand(cotd(EclpmidHigh) / sind(SunEclpmidDif))
       ); // asind(sind(Maochou) / sind(Zichou)) // 黃道高弧交角。sin90/sin子丑=sin子/sin卯丑=sin丑/sin子卯。或BaC_Sph(EclpmidHigh, 90, Maochou) 算例角子=19度15分19秒=19.2552777778
       const SunHigh = asind(sind(Zichou) * sind(EclpmidHigh)); // 太陽高弧。算例子卯=26度35分30秒
       let flag1 = 1;
@@ -218,7 +222,7 @@ export const N4 = (Name, Y) => {
     const { EwCorr: AvgEwCorr } = sunEcliJiaziMain(
       AcrSunGong,
       AcrSunEquaLon,
-      SmdAvg,
+      SmdAvg
     );
     const Acr0AvgDif = AvgEwCorr / MSAcrVhDif / 24; // 近時距分
     const SmdAcr0 = SmdAvg - Acr0AvgDif; // 食甚近時。用時月距限西爲加（以用時白道高弧交角變限不變限爲定）
@@ -226,7 +230,7 @@ export const N4 = (Name, Y) => {
     const { EwCorr: Acr0EwCorr } = sunEcliJiaziMain(
       AcrSunGong - AvgEwCorr,
       AcrSunEquaLon,
-      SmdAcr0,
+      SmdAcr0
     ); // 太陽距春分後赤道度，即前求用時春分距午赤道度條內所得之數
     const AcrAvgDif = (AvgEwCorr / (AvgEwCorr * 2 - Acr0EwCorr)) * Acr0AvgDif; // 食甚距分。加減號與近時距分同。AvgEwCorr * 2 - Acr0EwCorr是食甚視行
     const SmdAcr = SmdAvg - AcrAvgDif;
@@ -234,14 +238,14 @@ export const N4 = (Name, Y) => {
     const { EwCorr: AcrEwCorr, SnCorr: AcrSnCorr } = sunEcliJiaziMain(
       AcrSunGong - Acr0EwCorr,
       AcrSunEquaLon,
-      SmdAcr,
+      SmdAcr
     );
     const Distappa = Distreal + AcrSnCorr; // 視緯=實緯加減南北差。白平象限在天頂南者，實緯在黃道南則加，視緯仍爲南。實緯在黃道北則減，視緯仍爲北；若實緯在黃道北而南北差大於實緯，則反減，視緯即變為南。白平象限在天顶北者，实纬在黄道北则加，而视纬仍为北；實緯在黃道南則減，視緯仍爲南；若實緯在黃道南，而南北差大於實緯，則反減，視緯即變為北
     const SRadAppa = asind(SRadReal / SDistRat); // 太陽半徑。爲何是正弦不是正切？？
     const MRadAppa = asind(MRadReal / MDistRat);
     const RadSum = SRadAppa + MRadAppa; // 併徑
     const Magni = ((100 * (RadSum - abs(Distappa))) / (SRadAppa * 2)).toFixed(
-      1,
+      1
     );
     if (+Magni < 1) return;
     /// ///// 【十二】初虧真時
@@ -251,7 +255,7 @@ export const N4 = (Name, Y) => {
     const { EwCorr: StartEwCorr } = sunEcliJiaziMain(
       AcrSunGong - AcrEwCorr - ArcStartGreat,
       AcrSunEquaLon,
-      SmdStartAvg,
+      SmdStartAvg
     );
     const StartGreatDif =
       (ArcStartGreat / (ArcStartGreat - (StartEwCorr - AcrEwCorr))) *
@@ -262,7 +266,7 @@ export const N4 = (Name, Y) => {
     const { EwCorr: EndEwCorr } = sunEcliJiaziMain(
       AcrSunGong - AcrEwCorr + ArcStartGreat,
       AcrSunEquaLon,
-      SmdEndAvg,
+      SmdEndAvg
     );
     const EndGreatDif =
       (ArcStartGreat / (ArcStartGreat + (EndEwCorr - AcrEwCorr))) *
@@ -276,7 +280,7 @@ export const N4 = (Name, Y) => {
       Magni,
       GreatSLon,
       GreatSEquaLon: LonHigh2Flat(Sobliq, GreatSLon),
-      GreatSLat: HighLon2FlatLat(Sobliq, GreatSLon),
+      GreatSLat: HighLon2FlatLat(Sobliq, GreatSLon)
     };
   };
   const sunEcliGuimao = (NowSmd) => {
@@ -293,7 +297,7 @@ export const N4 = (Name, Y) => {
       SunNow.SunCorr,
       SunNow.SunGong,
       SunNow.Speri,
-      SunNow.Sorb,
+      SunNow.Sorb
     );
     const SunOnehAft = sunQing(Name, SunRoot, SperiRoot, NowSmd + 1 / 24);
     const MoonOnehAft = moonGuimao(
@@ -305,13 +309,13 @@ export const N4 = (Name, Y) => {
       SunOnehAft.SunCorr,
       SunOnehAft.SunGong,
       SunOnehAft.Speri,
-      SunOnehAft.Sorb,
+      SunOnehAft.Sorb
     );
     // 斜距交角差。本時此時二月離白道實行相減，得一小時太陰白道實行——「本時」應該是實望用時
     const AngEquiWhite = qiexian(
       SunOnehAft.SunGong - SunNow.SunGong,
       MoonOnehAft.Whitegong - MoonNow.Whitegong,
-      MoonNow.Mobliq,
+      MoonNow.Mobliq
     ).Ashort; // 斜距交角差（斜距黃道交角與黃白交角之差，也就是斜距與白道交角。暫且將斜距稱為equilibrium）
     const AngEquiEclp = MoonNow.Mobliq + AngEquiWhite; // 斜距黃道交角
     const DistrealAvg = abs(cosd(AngEquiEclp) * MoonNow.MoonLat); // 食甚實緯，即食甚兩心實距，南北與兩心實望黃道實緯同。
@@ -333,7 +337,7 @@ export const N4 = (Name, Y) => {
       SunAvg.SunCorr,
       SunAvg.SunGong,
       SunAvg.Speri,
-      SunAvg.Sorb,
+      SunAvg.Sorb
     );
     /// ///// 【三】地平高下差、日月視徑
     const AcrSorb = SunNow.Sorb + SunAvg.SunCorr; // 太陽實引：實朔引數+-本時太陽均數
@@ -345,7 +349,7 @@ export const N4 = (Name, Y) => {
     const RadSum = SunAcrRad + MoonRad; // 併徑
     /// ///// 【四】食甚太陽黃赤經緯宿度、黃赤二經交角
     const AvgGreatSLon = fm360(
-      SunAvg.SunLon + GreatNowDif * (SunOnehAft.SunGong - SunAvg.SunGong) * 24,
+      SunAvg.SunLon + GreatNowDif * (SunOnehAft.SunGong - SunAvg.SunGong) * 24
     ); // 食甚太陽黃道經度=實朔太陽黃道實行+距時日實行
     const AvgGreatSEquaLon = LonHigh2Flat(Sobliq, AvgGreatSLon);
     const AvgGreatSEquaGong = Lon2Gong(AvgGreatSEquaLon); // 自冬至初宮起算，得食甚太陽赤道經度。
@@ -365,7 +369,7 @@ export const N4 = (Name, Y) => {
       FlagDistrealAsm,
       FlagDistrealAcr0,
       AngWhiteHigharcAsm,
-      AngDistrealAsm,
+      AngDistrealAsm
     ) => {
       let flag = 1;
       AngWhiteHigharcAcr0 = t2(AngWhiteHigharcAcr0); // ⚠️暫時這樣處理。1646-1649都有大於180的情況
@@ -391,7 +395,7 @@ export const N4 = (Name, Y) => {
       const { AngA: AngEquaHigharc, c: AngSunZenith } = aCtimeb_Sph(
         AngZenithPolar,
         AngSunPolar,
-        Smd,
+        Smd
       ); // 赤經高弧交角
       const Parallax = HorizonParallax * sind(AngSunZenith); // 高下差
       const AngWhiteHigharc = t2(AngEquaHigharc + AngWhiteEqua); // 白經高弧交角⚠️暫時這樣處理
@@ -424,7 +428,7 @@ export const N4 = (Name, Y) => {
       const { AngA: AngEquaHigharc, c: AngSunZenith } = aCtimeb_Sph(
         AngZenithPolar,
         AngSunPolar,
-        Smd,
+        Smd
       ); // 赤經高弧交角
       const Parallax = HorizonParallax * sind(AngSunZenith); // 高下差
       const AngWhiteHigharc = t2(AngEquaHigharc + AngWhiteEqua); // 白經高弧交角⚠️暫時這樣處理
@@ -452,7 +456,7 @@ export const N4 = (Name, Y) => {
       AngWhiteHigharc: AngWhiteHigharcAvg,
       FlagDistreal: FlagDistrealAvg,
       AngDistreal: AngDistrealAvg,
-      Distappa: DistappaAvg,
+      Distappa: DistappaAvg
     } = distAppa(SmdAvg, DistrealAvg); // 見符號3
     /// ///// 【六】食甚設時兩心視距、食甚真時
     const AsmAvgDif = -(((AngWhiteHigharcAvg / 180) * 8.8) / 96 + 0.2 / 96); // 設時距分
@@ -466,11 +470,11 @@ export const N4 = (Name, Y) => {
       AngWhiteHigharc: AngWhiteHigharcAsm,
       FlagDistreal: FlagDistrealAsm,
       AngDistreal: AngDistrealAsm,
-      Distappa: DistappaAsm,
+      Distappa: DistappaAsm
     } = distAppa(SmdAsm, DistrealAsm, AngArcAvgAsm); // 見符號4
     const AngHigharcAsm_DistappaAvg = abs(
       abs(AngWhiteHigharcAsm - AngWhiteHigharcAvg) +
-      (SunAvg.SunLon < 180 ? -1 : 1) * AngDistrealAvg,
+      (SunAvg.SunLon < 180 ? -1 : 1) * AngDistrealAvg
     ); // 設時高弧交用時視距角
     let flag2 = 1;
     let flag4 = 1;
@@ -478,7 +482,7 @@ export const N4 = (Name, Y) => {
     let flag6 = 1;
     if (FlagDistrealAsm === FlagDistrealAvg) flag2 = -1; // 見符號5
     const AngDistMovingAsm = t2(
-      abs(AngHigharcAsm_DistappaAvg + flag2 * AngDistrealAsm),
+      abs(AngHigharcAsm_DistappaAvg + flag2 * AngDistrealAsm)
     ); // 對設時視行角
     const AngDistappaAsm = qiexianA(DistappaAsm, DistappaAvg, AngDistMovingAsm); // 對設時視距角
     const DistMovingAsm =
@@ -496,7 +500,7 @@ export const N4 = (Name, Y) => {
       AngWhiteHigharc: AngWhiteHigharcAcr0,
       FlagDistreal: FlagDistrealAcr0,
       AngDistreal: AngDistrealAcr0,
-      Distappa: DistappaAcr1,
+      Distappa: DistappaAcr1
     } = distAppa(SmdAcr0, DistrealAcr0, AngArcAvgAcr0); // 真時對視距角法與設時同
     const AngHigharcAcr0_DistappaAsm = abs(
       abs(AngWhiteHigharcAcr0 - AngWhiteHigharcAsm) +
@@ -505,18 +509,18 @@ export const N4 = (Name, Y) => {
         FlagDistrealAsm,
         FlagDistrealAcr0,
         AngWhiteHigharcAsm,
-        AngDistrealAsm,
+        AngDistrealAsm
       ) *
-      AngDistrealAsm,
+      AngDistrealAsm
     ); // 真時高弧交設時視距角
     if (FlagDistrealAcr0 === FlagDistrealAsm) flag4 = -1;
     const AngDistMovingAcr1 = t2(
-      abs(AngHigharcAcr0_DistappaAsm + flag4 * AngDistrealAcr0),
+      abs(AngHigharcAcr0_DistappaAsm + flag4 * AngDistrealAcr0)
     ); // 對考真時視行角
     const AngDistappaAcr1 = qiexianA(
       DistappaAcr1,
       DistappaAsm,
-      AngDistMovingAcr1,
+      AngDistMovingAcr1
     ); // 對考真時視距角
     const DistMovingAcr1 =
       (sind(AngDistMovingAcr1) / sind(AngDistappaAcr1)) * DistappaAcr1; // 考真時視行
@@ -554,7 +558,7 @@ export const N4 = (Name, Y) => {
         SmdBefStartAsm,
         DistrealBefStartAsm,
         AngArcBefStartAsm,
-        flagAngArcBefStartAsm,
+        flagAngArcBefStartAsm
       ); // 見符號8
       /// ///// 【九】初虧後設時兩心視距
       if (DistappaBefStartAsm < RadSum) flag6 = -1;
@@ -572,7 +576,7 @@ export const N4 = (Name, Y) => {
         SmdAftStartAsm,
         DistrealAftStartAsm,
         AngArcAftStartAsm,
-        flagAngArcAftStartAsm,
+        flagAngArcAftStartAsm
       );
       /// ///// 【十】初虧考定真時
       const StartDistappaDif = abs(DistappaBefStartAsm - DistappaAftStartAsm); // 初虧視距較
@@ -595,7 +599,7 @@ export const N4 = (Name, Y) => {
       Magni,
       GreatSLon,
       GreatSEquaLon: LonHigh2Flat(Sobliq, GreatSLon),
-      GreatSLat: HighLon2FlatLat(Sobliq, GreatSLon),
+      GreatSLat: HighLon2FlatLat(Sobliq, GreatSLon)
     };
   };
   const moonEcliJiazi = (
@@ -604,7 +608,7 @@ export const N4 = (Name, Y) => {
     AcrMorb,
     AcrMoonCorr1,
     AcrSorb,
-    AcrSunLon,
+    AcrSunLon
   ) => {
     // 1949算例AcrWhitelongi：177.3276
     const SDistMax = 1.0179208;
@@ -632,7 +636,7 @@ export const N4 = (Name, Y) => {
     const ShadowRad = atand(ShadowWid / MDistRat); // （從地球看的）地影半徑 // 1949算例46′24.78″=0.77355
     const RadSum = MRadAppa + ShadowRad; // 併徑
     const Magni = ((100 * (RadSum - abs(Distreal))) / (MRadAppa * 2)).toFixed(
-      1,
+      1
     );
     if (+Magni < 1) return;
     /// ///// 【十】初虧復原時刻
@@ -647,7 +651,7 @@ export const N4 = (Name, Y) => {
     const { EquaLon: GreatMEquaLon, EquaLat: GreatMEquaLat } = eclp2Equa(
       Sobliq,
       GreatMLon,
-      GreatMLat,
+      GreatMLat
     );
     return {
       Start: fix(deci(GreatSmd - T_StartGreat)),
@@ -657,7 +661,7 @@ export const N4 = (Name, Y) => {
       GreatMLon,
       GreatMLat,
       GreatMEquaLon,
-      GreatMEquaLat,
+      GreatMEquaLat
     };
   };
   const moonEcliGuimao = (NowSmd) => {
@@ -678,7 +682,7 @@ export const N4 = (Name, Y) => {
       SunNow.SunCorr,
       SunNow.SunGong,
       SunNow.Speri,
-      SunNow.Sorb,
+      SunNow.Sorb
     );
     const MoonOnehAft = moonGuimao(
       Name,
@@ -689,13 +693,13 @@ export const N4 = (Name, Y) => {
       SunOnehAft.SunCorr,
       SunOnehAft.SunGong,
       SunOnehAft.Speri,
-      SunOnehAft.Sorb,
+      SunOnehAft.Sorb
     );
     // 斜距交角差。本時此時二月離白道實行相減，得一小時太陰白道實行——「本時」應該是實望用時
     const AngEquiWhite = qiexian(
       SunOnehAft.SunGong - SunNow.SunGong,
       MoonOnehAft.Whitegong - MoonNow.Whitegong,
-      MoonNow.Mobliq,
+      MoonNow.Mobliq
     ).Ashort; // 斜距交角差（斜距黃道交角與黃白交角之差，也就是斜距與白道交角。暫且將斜距稱為equilibrium）
     const AngEquiEclp = MoonNow.Mobliq + AngEquiWhite; // 斜距黃道交角
     const Dist = abs(cosd(AngEquiEclp) * MoonNow.MoonLat); // 食甚實緯，即食甚兩心實距，南北與兩心實望黃道實緯同。
@@ -717,7 +721,7 @@ export const N4 = (Name, Y) => {
       SunGreat.SunCorr,
       SunGreat.SunGong,
       SunGreat.Speri,
-      SunGreat.Sorb,
+      SunGreat.Sorb
     );
     /// ///// 【三】食分
     const AcrMorb = MoonNow.Morb + MoonGreat.Corr1;
@@ -742,7 +746,7 @@ export const N4 = (Name, Y) => {
     const { MoonLon: GreatMLon, MoonLat: GreatMLat } = White2Eclp(
       MoonNow.Mobliq,
       MoonNow.Node,
-      GreatWhitelongi,
+      GreatWhitelongi
     );
     /// ///// 【七】食甚太陰赤道經緯宿度
     const { EquaLon: GreatMEquaLon, EquaLat: GreatMEquaLat } =
@@ -755,7 +759,7 @@ export const N4 = (Name, Y) => {
       GreatMLon,
       GreatMLat,
       GreatMEquaLon,
-      GreatMEquaLat,
+      GreatMEquaLat
     };
   };
   const iteration = (Smd, step, isNewm) => {
@@ -765,7 +769,7 @@ export const N4 = (Name, Y) => {
       Sorb: SorbBef,
       SunCorr: SunCorrBef,
       SunLon: SunLonBef,
-      SunGong: SunGongBef,
+      SunGong: SunGongBef
     } = sunQing(Name, SunRoot, SperiRoot, Smd - step); // 如實望泛時爲丑正二刻，則以丑正初刻爲前時，寅初初刻爲後時——為什麼不說前後一時呢
     const { MoonLon: MoonLonBef } = moonGuimao(
       Name,
@@ -776,7 +780,7 @@ export const N4 = (Name, Y) => {
       SunCorrBef,
       SunGongBef,
       SperiBef,
-      SorbBef,
+      SorbBef
     );
     SunLonBef += isNewm ? 0 : 180;
     SunLonBef %= 360;
@@ -785,7 +789,7 @@ export const N4 = (Name, Y) => {
       Sorb: SorbAft,
       SunCorr: SunCorrAft,
       SunLon: SunLonAft,
-      SunGong: SunGongAft,
+      SunGong: SunGongAft
     } = sunQing(Name, SunRoot, SperiRoot, Smd + step);
     const { MoonLon: MoonLonAft } = moonGuimao(
       Name,
@@ -796,7 +800,7 @@ export const N4 = (Name, Y) => {
       SunCorrAft,
       SunGongAft,
       SperiAft,
-      SorbAft,
+      SorbAft
     );
     SunLonAft += isNewm ? 0 : 180;
     SunLonAft %= 360;
@@ -823,7 +827,7 @@ export const N4 = (Name, Y) => {
       Name,
       SunRoot,
       SperiRoot,
-      Math.trunc(AcrlineBSmd) + 1,
+      Math.trunc(AcrlineBSmd) + 1
     );
     const Tod = SunTod.SunGong;
     const Mor = SunMor.SunGong;
@@ -847,7 +851,7 @@ export const N4 = (Name, Y) => {
         Name,
         Sobliq,
         Gong2Lon(TermGong),
-        sunQing(Name, SunRoot, SperiRoot, AcrSmd).SunCorr,
+        sunQing(Name, SunRoot, SperiRoot, AcrSmd).SunCorr
       );
     const NowDeci = fix(deci(NowSmd), 3);
     return {
@@ -858,7 +862,7 @@ export const N4 = (Name, Y) => {
       TermAcrDeci: NowlineDeci,
       TermNowDeci: NowDeci,
       TermEqua,
-      TermEclp,
+      TermEclp
     }; // 為了和古曆統一，此處改名
   };
   const main = (isNewm, LeapNumTerm) => {
@@ -912,7 +916,7 @@ export const N4 = (Name, Y) => {
           Sorb: SorbTod,
           SunCorr: SunCorrTod,
           SunLon: SunLonTodRaw,
-          SunGong: SunGongTod,
+          SunGong: SunGongTod
         } = sunQing(Name, SunRoot, SperiRoot, SmdMidn);
         const { MoonLon: MoonLonTod } = moonQing(
           Name,
@@ -923,7 +927,7 @@ export const N4 = (Name, Y) => {
           SunCorrTod,
           SunGongTod,
           SperiTod,
-          SorbTod,
+          SorbTod
         );
         const SunLonTod = (SunLonTodRaw + (isNewm ? 0 : 180)) % 360;
         const {
@@ -931,7 +935,7 @@ export const N4 = (Name, Y) => {
           Sorb: SorbMor,
           SunCorr: SunCorrMor,
           SunLon: SunLonMorRaw,
-          SunGong: SunGongMor,
+          SunGong: SunGongMor
         } = sunQing(Name, SunRoot, SperiRoot, SmdMidn + 1);
         const { MoonLon: MoonLonMor } = moonQing(
           Name,
@@ -942,7 +946,7 @@ export const N4 = (Name, Y) => {
           SunCorrMor,
           SunGongMor,
           SperiMor,
-          SorbMor,
+          SorbMor
         );
         const SunLonMor = (SunLonMorRaw + (isNewm ? 0 : 180)) % 360;
         return {
@@ -952,7 +956,7 @@ export const N4 = (Name, Y) => {
           SunLonMor,
           AcrlineDeci:
             fm360(SunLonTod - MoonLonTod) /
-            (fm360(MoonLonMor - MoonLonTod) - fm360(SunLonMor - SunLonTod)),
+            (fm360(MoonLonMor - MoonLonTod) - fm360(SunLonMor - SunLonTod))
         };
       };
       const {
@@ -960,7 +964,7 @@ export const N4 = (Name, Y) => {
         SunLonTod,
         MoonLonMor,
         SunLonMor,
-        AcrlineDeci: AcrlineDeciTmp,
+        AcrlineDeci: AcrlineDeciTmp
       } = acrlineDeci(AvgSmdMidn);
       AcrlineDeci = AcrlineDeciTmp;
       if (fm360(MoonLonTod - SunLonTod) > 180) {
@@ -985,7 +989,7 @@ export const N4 = (Name, Y) => {
           Speri: AcrSperi,
           Sorb: AcrSorbTmp,
           SunCorr: AcrSunCorrTmp,
-          SunGong: AcrSunGongTmp,
+          SunGong: AcrSunGongTmp
         } = sunQing(Name, SunRoot, SperiRoot, AcrSmd);
         AcrWhitelongi = moonGuimao(
           Name,
@@ -996,7 +1000,7 @@ export const N4 = (Name, Y) => {
           AcrSunCorrTmp,
           AcrSunGongTmp,
           AcrSperi,
-          AcrSorbTmp,
+          AcrSorbTmp
         ).Whitelongi;
         AcrSunGong = AcrSunGongTmp;
         AcrSunCorr = AcrSunCorrTmp;
@@ -1024,7 +1028,7 @@ export const N4 = (Name, Y) => {
         const S_MoonPlusNode = AcrT_MSDif * MoonNodeVdSum; // 交周距弧
         // const AvgWhitelongi = (ChouWhitelongi + i * MoonNodeVmSum + (isNewm ? 0 : (MoonNodeVmSum + 360) / 2)) % 360
         const AvgWhitelongi = fm360(
-          MoonRoot - NodeRoot + AvgSmd * MoonNodeVdSum,
+          MoonRoot - NodeRoot + AvgSmd * MoonNodeVdSum
         );
         AcrWhitelongi = fm360(AvgWhitelongi + S_MoonPlusNode + AcrMoonCorr1); // 實望實交周=實望平交周（平望太陰交周+交周距弧）+太陰實均。1949算例：175°17′16.62″+14′8.34″+1°48′14.36″=177°19′39.36″，175.28795+0.23565+1.8039888889=177.327588889
         AcrSunGong = AvgSunGong + AcrT_MSDif * SunAvgVd + AcrSunCorr; // 太陽黃經=實望太陽平行（平望+太陽距弧（平望至實望太陽本輪心行度））+太陽實均 // 1949算例23°5′9.38″=23.08593888889
@@ -1034,7 +1038,7 @@ export const N4 = (Name, Y) => {
         Name,
         SunRoot,
         SperiRoot,
-        AcrlineSmdMidn,
+        AcrlineSmdMidn
       ); // 為了寫得方便，索性重算一遍
       NowlineSmd[i] =
         AcrlineSmd +
@@ -1072,7 +1076,7 @@ export const N4 = (Name, Y) => {
               AcrMorb,
               AcrMoonCorr1,
               AcrSorb,
-              AcrSunLon,
+              AcrSunLon
             );
           else if (Name === "Jiazi")
             Ecli[i] = sunEcliJiazi(
@@ -1081,7 +1085,7 @@ export const N4 = (Name, Y) => {
               AcrMorb,
               AcrMoonCorr1,
               AcrSorb,
-              AcrSunLon,
+              AcrSunLon
             );
           else
             Ecli[i] = sunEcliGuimao(
@@ -1090,7 +1094,7 @@ export const N4 = (Name, Y) => {
               AcrMorb,
               AcrMoonCorr1,
               AcrSorb,
-              AcrSunLon,
+              AcrSunLon
             );
         } else if (
           deci(NowSmd[i]) > Rise[i] + 9 / 96 &&
@@ -1104,7 +1108,7 @@ export const N4 = (Name, Y) => {
             AcrMorb,
             AcrMoonCorr1,
             AcrSorb,
-            AcrSunLon,
+            AcrSunLon
           );
         else if (Name === "Jiazi")
           Ecli[i] = moonEcliJiazi(
@@ -1113,7 +1117,7 @@ export const N4 = (Name, Y) => {
             AcrMorb,
             AcrMoonCorr1,
             AcrSorb,
-            AcrSunLon,
+            AcrSunLon
           );
         else
           Ecli[i] = moonEcliGuimao(
@@ -1122,7 +1126,7 @@ export const N4 = (Name, Y) => {
             AcrMorb,
             AcrMoonCorr1,
             AcrSorb,
-            AcrSunLon,
+            AcrSunLon
           );
       }
 
@@ -1173,14 +1177,14 @@ export const N4 = (Name, Y) => {
         if (isNewm) {
           EcliPrint[i] = {
             EclipseMon: "S" + NoleapMon,
-            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i],)} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon,)} ${lat2NS1(Ecli[i].GreatSLat)}`
+            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i])} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon)} ${lat2NS1(Ecli[i].GreatSLat)}`
           };
         } else {
           EcliPrint[i] = {
             EclipseMon: "M" + NoleapMon,
             EclipseInfo: `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
-              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon,)} ${lat2NS1(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon,)} ${lat2NS1(Ecli[i].GreatMEquaLat)}`
-          }
+              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon)} ${lat2NS1(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon)} ${lat2NS1(Ecli[i].GreatMEquaLat)}`
+          };
           if (Ecli[i].Magni >= 99) {
             NowSc[i] += "●";
           } else if (Ecli[i].Magni > 10) {
@@ -1215,7 +1219,7 @@ export const N4 = (Name, Y) => {
       Term1Equa,
       Term1Eclp,
       EcliPrint,
-      LeapNumTerm,
+      LeapNumTerm
     };
   };
   const {
@@ -1242,13 +1246,13 @@ export const N4 = (Name, Y) => {
     Term1NowDeci,
     Term1Equa,
     Term1Eclp,
-    LeapNumTerm,
+    LeapNumTerm
   } = main(true);
   const {
     NowlineDeci: SyzygyNowlineDeci,
     NowSc: SyzygySc,
     NowDeci: SyzygyDeci,
-    EcliPrint: MoonEcli,
+    EcliPrint: MoonEcli
   } = main(false, LeapNumTerm);
   return {
     LeapNumTerm,
@@ -1288,7 +1292,7 @@ export const N4 = (Name, Y) => {
     MansDaySolsmor,
     NewmSmd,
     Sols,
-    SolsmorScOrder,
+    SolsmorScOrder
   };
 };
 

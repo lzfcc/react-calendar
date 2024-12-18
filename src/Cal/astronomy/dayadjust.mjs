@@ -29,6 +29,7 @@ const LeapAdjust = (LeapNumTerm, TermAvgRaw, NewmInt, Name) => {
 export const newmPlus = (Deci, Sd, SolsDeci, Name) => {
   // 朔小分
   const { Solar } = Para[Name];
+  Sd %= Solar;
   const SolarQuar = Solar / 4;
   const SpringequinoxSunrise = autoRise(SolarQuar, 0, Name) / 100;
   const Rise = autoRise(Sd, SolsDeci, Name) / 100;

@@ -693,7 +693,7 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
   const Anojour = AnoAccumRaw * MoonAvgVd + MoonDifAccum;
   return { MoonDifAccum, MoonAcrVd, Anojour };
 };
-console.log(MoonFormula(6.9065, "Shoushi").MoonDifAccum);
+// console.log(MoonFormula(6.9065, "Shoushi").MoonDifAccum);
 
 /**
  * 用注釋中的算法算限下行度，和授時曆本表密合，只有一些相差.0001

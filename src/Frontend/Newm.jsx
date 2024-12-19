@@ -303,10 +303,6 @@ export default class Newm extends React.Component {
                 elements.push(' ');
               }
             });
-            // Add a line break after the object (except after the last object)
-            if (objIndex < yearInfo.length - 1) {
-              elements.push(<br key={`br-${objIndex}`} />);
-            }
           }
         });
         // Return the array of spans and line breaks
@@ -339,20 +335,24 @@ export default class Newm extends React.Component {
 
     };
     const renderEcliInfo = (data) => {
-      return (
-        <table style={{ border: 'none', textAlign: 'right' }}>
-          <thead><tr><td></td><td>食分</td><td>日出入</td><td>初虧</td><td>食甚</td><td>復圓</td><td>日出入</td></tr></thead>
-          <tbody>
-            {data.map((row, rowIndex) => (
-              <tr key={`row-${rowIndex}`}>
-                {row.map((cell, cellIndex) => (
-                  <td key={`cell-${rowIndex}-${cellIndex}`}>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
+      if ((data || []).length) {
+        return (
+          <table style={{ border: 'none', textAlign: 'right' }}>
+            <thead><tr><td></td><td>食分</td><td>日出入</td><td>初虧</td><td>食甚</td><td>復圓</td><td>日出入</td></tr></thead>
+            <tbody>
+              {data.map((row, rowIndex) => (
+                <tr key={`row-${rowIndex}`}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={`cell-${rowIndex}-${cellIndex}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      } else {
+        return null;
+      }
     };
 
     return (

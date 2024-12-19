@@ -440,7 +440,7 @@ export default (Name, YearStart, YearEnd) => {
               SunEcli[i] = [
                 MonthPrint[i] + " 日食",
                 NewmMagni,
-                Rise,                
+                Rise,
                 NewmStartDeci ? NewmStartDeci : "",
                 NewmGreatDeci ? NewmGreatDeci : "",
                 NewmEndDeci ? NewmEndDeci : "",
@@ -480,7 +480,7 @@ export default (Name, YearStart, YearEnd) => {
               MoonEcli[i] = [
                 MonthPrint[i] + " 月食",
                 SyzygyMagni,
-                Sunset,                
+                Sunset,
                 SyzygyStartDeci ? SyzygyStartDeci : "",
                 SyzygyGreatDeci ? SyzygyGreatDeci : "",
                 SyzygyEndDeci ? SyzygyEndDeci : "",

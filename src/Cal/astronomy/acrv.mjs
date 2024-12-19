@@ -663,7 +663,7 @@ export const MoonFormula = (AnoAccumRaw, Name) => {
       1.0038, 1.0028, 1.0018, 1.0008, 0.9999, 0.9985, 0.998, 0.9971, 0.9962,
       0.9954, 0.9946, 0.9937, 0.9929, 0.9922, 0.9914, 0.9907, 0.99, 0.9893,
       0.9886, 0.9879, 0.9873, 0.9867, 0.9861, 0.9855
-    ];
+    ]; // 所有相加得184.1763，*2=368.3526，看來不是嚴格按照周天來分的
     MoonAcrVd = MoonAcrVListA[AnoAccumPart];
   } else if (Name === "Mingtian") {
     // AnoAccum = big.div(SolsAccum, Lunar).add(i - 1 + ZhengSd).mul(2142887000).mod(AnomaNumer).floor().div(81120000).toNumber()

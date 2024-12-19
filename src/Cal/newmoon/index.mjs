@@ -15,7 +15,7 @@ import {
 } from "../parameter/constants.mjs";
 import { AutoEclipse } from "../astronomy/eclipse.mjs";
 import { AutoRangeEcli } from "../parameter/auto_consts.mjs";
-import { fix } from "../parameter/functions.mjs";
+import { fix, fm60 } from "../parameter/functions.mjs";
 import { autoRise } from "../astronomy/lat_rise_dial.mjs";
 
 // const Index = (Name, YearStart, YearEnd) => {
@@ -356,10 +356,15 @@ export default (Name, YearStart, YearEnd) => {
     ////////// 調用交食模塊。由於隋系交食需要用月份，所以必須要切了之後才能用，傳一堆參數，很惡心
     let SunEcli = [],
       MoonEcli = [],
+      MonthInfo = [],
       NewmNodeAccumPrint = [],
       NewmNodeAccumMidnPrint = [],
       NewmAnoAccumPrint = [],
-      NewmAnoAccumMidnPrint = [];
+      NewmAnoAccumMidnPrint = [],
+      SyzygyNodeAccumPrint = [],
+      SyzygyAnoAccumPrint = [],
+      SyzygySdPrint = [],
+      SyzygyAcrSdPrint = [];
     if (Type > 1 && Type <= 11) {
       NewmDeciPrint = NewmSlice(ThisYear.NewmDeci);
       const SyzygyAvgDeciPrint = NewmSlice(ThisYear.SyzygyAvgDeci);
@@ -368,10 +373,10 @@ export default (Name, YearStart, YearEnd) => {
         NewmNodeAccumMidnPrint = NewmSlice(ThisYear.NewmNodeAccumMidn);
         NewmAnoAccumPrint = NewmSlice(ThisYear.NewmAnoAccum);
         NewmAnoAccumMidnPrint = NewmSlice(ThisYear.NewmAnoAccumMidn);
-        const SyzygyNodeAccumPrint = NewmSlice(ThisYear.SyzygyNodeAccum);
-        const SyzygyAnoAccumPrint = NewmSlice(ThisYear.SyzygyAnoAccum);
-        const SyzygySdPrint = NewmSlice(ThisYear.SyzygySd);
-        const SyzygyAcrSdPrint = NewmSlice(ThisYear.SyzygyAcrSd);
+        SyzygyNodeAccumPrint = NewmSlice(ThisYear.SyzygyNodeAccum);
+        SyzygyAnoAccumPrint = NewmSlice(ThisYear.SyzygyAnoAccum);
+        SyzygySdPrint = NewmSlice(ThisYear.SyzygySd);
+        SyzygyAcrSdPrint = NewmSlice(ThisYear.SyzygyAcrSd);
         for (let i = 0; i < MonthPrint.length; i++) {
           // 切了之後從0開始索引
           let NoleapMon = i + 1;
@@ -432,19 +437,15 @@ export default (Name, YearStart, YearEnd) => {
               : 0;
             if (SunEcliStatus) {
               NewmMagni = SunEcliFunc.Magni.toFixed(2);
-              SunEcli[i] = {
-                EclipseMon: "S" + NoleapMon,
-                EclipseInfo:
-                  "出" +
-                  Rise +
-                  " 分" +
-                  NewmMagni +
-                  (NewmStartDeci ? "虧" + NewmStartDeci : "") +
-                  (NewmGreatDeci ? "甚" + NewmGreatDeci : "") +
-                  (NewmEndDeci ? "復" + NewmEndDeci : "") +
-                  " 入" +
-                  Sunset
-              };
+              SunEcli[i] = [
+                MonthPrint[i] + " 日食",
+                NewmMagni,
+                Rise,                
+                NewmStartDeci ? NewmStartDeci : "",
+                NewmGreatDeci ? NewmGreatDeci : "",
+                NewmEndDeci ? NewmEndDeci : "",
+                Sunset
+              ];
               NewmScPrint[i] += StatusList[SunEcliStatus];
             }
           }
@@ -476,20 +477,15 @@ export default (Name, YearStart, YearEnd) => {
               : 0;
             if (MoonEcliStatus) {
               SyzygyMagni = MoonEcliFunc.Magni.toFixed(2);
-              MoonEcli[i] = {
-                EclipseMon: "M" + NoleapMon,
-                EclipseInfo:
-                  "入" +
-                  Sunset +
-                  " 分" +
-                  SyzygyMagni +
-                  (SyzygyStartDeci
-                    ? "虧" + SyzygyStartDeci + "甚" + SyzygyGreatDeci
-                    : "") +
-                  (SyzygyEndDeci ? "復" + SyzygyEndDeci : "") +
-                  " 出" +
-                  Rise
-              };
+              MoonEcli[i] = [
+                MonthPrint[i] + " 月食",
+                SyzygyMagni,
+                Sunset,                
+                SyzygyStartDeci ? SyzygyStartDeci : "",
+                SyzygyGreatDeci ? SyzygyGreatDeci : "",
+                SyzygyEndDeci ? SyzygyEndDeci : "",
+                Rise
+              ];
               SyzygyScPrint[i] += StatusList[MoonEcliStatus];
             }
           }
@@ -510,7 +506,7 @@ export default (Name, YearStart, YearEnd) => {
       SunEcli = ThisYear.SunEcli;
       MoonEcli = ThisYear.MoonEcli;
     }
-    const YearSc = ScList[(((Y - 3) % 60) + 60) % 60];
+    const YearSc = ScList[fm60(Y - 3)];
     let Era = Y;
     if (Y > 0) Era = `公元 ${Y} 年 ${YearSc}`;
     else Era = `公元前 ${1 - Y} 年 ${YearSc}`;
@@ -538,11 +534,11 @@ export default (Name, YearStart, YearEnd) => {
       });
       if (SolsOriginDif === -45.65625) {
         YearInfo.push({
-          SolsSur: `立春${parseFloat((((SolsAccum % 60) + 60) % 60).toPrecision(6)).toFixed(4)}`
+          SolsSur: `立春${parseFloat(fm60(SolsAccum).toPrecision(6)).toFixed(4)}`
         });
       } else if (SolsOriginDif === -60.875) {
         YearInfo.push({
-          SolsSur: `雨水${parseFloat((((SolsAccum % 60) + 60) % 60).toPrecision(6)).toFixed(4)}`
+          SolsSur: `雨水${parseFloat(fm60(SolsAccum).toPrecision(6)).toFixed(4)}`
         });
       }
       YearInfo.push({ LeapSur: `閏餘${LeapSur.toFixed(4)}` });
@@ -557,34 +553,46 @@ export default (Name, YearStart, YearEnd) => {
       if (Type <= 10) {
         YearInfo.push({
           SolsAccum:
-            (OriginMonNum === 2 ? "雨" : "冬") +
-            (((SolsAccum % 60) + 60) % 60).toFixed(4)
+            (OriginMonNum === 2 ? "雨" : "冬") + fm60(SolsAccum).toFixed(4)
         });
       }
       if (Type === 2)
         YearInfo.push({
-          LeapSur: `平${ThisYear.LeapSurAvg}定${ThisYear.LeapSurAcr.toFixed(2)}準${LeapLimit}`
+          LeapSur: `平閏餘${ThisYear.LeapSurAvg}定閏餘${ThisYear.LeapSurAcr.toFixed(2)}閏準${LeapLimit}`
         });
       else if (Type === 3)
         YearInfo.push({
-          LeapSur: `平${Math.round(ThisYear.LeapSurAvg * ZhangRange)}定${(ThisYear.LeapSurAcr * ZhangRange).toFixed(2)}準${Math.round(LeapLimit * ZhangRange)}`
+          LeapSur: `平閏餘${Math.round(ThisYear.LeapSurAvg * ZhangRange)}定閏餘${(ThisYear.LeapSurAcr * ZhangRange).toFixed(2)}閏準${Math.round(LeapLimit * ZhangRange)}`
         });
       else if (Type <= 7)
         YearInfo.push({
-          LeapSur: `平${parseFloat(ThisYear.LeapSurAvg.toPrecision(8))}定${ThisYear.LeapSurAcr.toFixed(2)}準${LeapLimit}`
+          LeapSur: `平閏餘${parseFloat(ThisYear.LeapSurAvg.toPrecision(8))}定閏餘${ThisYear.LeapSurAcr.toFixed(2)}閏準${LeapLimit}`
         });
       else if (Type <= 11)
         YearInfo.push({
-          LeapSur: `平${ThisYear.LeapSurAvg.toFixed(2)}定${ThisYear.LeapSurAcr.toFixed(2)}準${LeapLimit.toFixed(2)}`
+          LeapSur: `平閏餘${ThisYear.LeapSurAvg.toFixed(2)}定閏餘${ThisYear.LeapSurAcr.toFixed(2)}閏準${LeapLimit.toFixed(2)}`
         });
-    }    
+    }
     YearInfo = [
       YearInfo.reduce((accumulator, currentObject) => {
         return { ...accumulator, ...currentObject };
       }, {})
-    ]; // 扁平化到一個對象中
-    if ((SunEcli || []).length) YearInfo.push(...SunEcli);
-    if ((MoonEcli || []).length) YearInfo.push(...MoonEcli);
+    ];
+    const EcliInfo = [...SunEcli, ...MoonEcli].filter((x) => x != null);
+    // 每個月交轉盈縮曆詳情
+    if (Node) {
+      for (let i = 0; i < MonthPrint.length; i++) {
+        MonthInfo[i] = [
+          MonthPrint[i],
+          NewmSdPrint[i].toFixed(6),
+          NewmAnoAccumPrint[i].toFixed(6),
+          NewmNodeAccumPrint[i].toFixed(6),
+          SyzygySdPrint[i].toFixed(6),
+          SyzygyAnoAccumPrint[i].toFixed(6),
+          SyzygyNodeAccumPrint[i].toFixed(6)
+        ];
+      }
+    }
     if (Type < 13) {
       const step = [];
       let NewmIntLong = NewmInt.concat(NextYear.NewmInt);
@@ -619,6 +627,8 @@ export default (Name, YearStart, YearEnd) => {
     return {
       Era,
       YearInfo,
+      EcliInfo,
+      MonthInfo,
       MonthPrint,
       NewmAvgScPrint,
       NewmAvgDeciPrint,
@@ -691,4 +701,4 @@ export default (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(Index('Shoushi', 2020, 2020))
+// console.log(Index("Shoushi", 2020, 2020));

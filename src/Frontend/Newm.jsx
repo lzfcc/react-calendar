@@ -5,7 +5,7 @@ import MyWorker from "workers/worker_ancient.mjs?worker";
 
 const TableRowNameMap = {
   MonthPrint: " ",
-  NewmAvgScPrint: "平朔",
+  NewmAvgScPrint: "經朔",
   NewmAvgDeciPrint: " ",
   NewmScPrint: "定朔",
   NewmDeciUT18Print: "UT1+8",
@@ -28,7 +28,7 @@ const TableRowNameMap = {
   Term1EquaPrint: "赤道",
   Term1EclpPrint: "黃道",
   TermNamePrint: "節氣",
-  TermScPrint: "平氣",
+  TermScPrint: "恆氣",
   TermDeciPrint: " ",
   TermAcrScPrint: "定氣",
   TermAcrDeciPrint: " ",
@@ -134,6 +134,7 @@ export default class Newm extends React.Component {
 
   handleRetrieve() {
     const isAuto = (this.isAuto && this.isAuto.checked) || false;
+    const isDetail = (this.isDetail && this.isDetail.checked) || false;
     if (this.state.calendars.length === 0 && isAuto === false) {
       alert("Please choose a calendar");
       return;
@@ -204,6 +205,7 @@ export default class Newm extends React.Component {
         YearStart,
         YearEnd,
         isAuto,
+        isDetail,
         ...this.state,
       });
     };
@@ -258,7 +260,20 @@ export default class Newm extends React.Component {
       </span>
     );
   }
-
+  renderDetail() {
+    return (
+      <span style={{ marginLeft: '10px' }}>
+        <input
+          type="checkbox"
+          name="isDetail"
+          ref={(ref) => {
+            this.isDetail = ref;
+          }}
+        />
+        <label>詳細信息</label>
+      </span>
+    );
+  }
   renderTableList() {
     // Only display the section if showTableList is true
     if (!this.state.showTableList) {
@@ -300,7 +315,45 @@ export default class Newm extends React.Component {
       // If yearInfo is not an array or is null/undefined, return an empty fragment
       return <></>;
     }
+    // renderMonthInfo函數由ChatGPT-4生成
+    const renderMonthInfo = (data) => {
+      const isDetail = (this.isDetail && this.isDetail.checked) || false;
+      if (isDetail === true) {
+        return (
+          <table style={{ border: 'none', textAlign: 'right' }}>
+            <thead><tr><td></td><td>經朔 距冬至</td><td>入轉</td><td>入交</td><td>經望 距冬至</td><td>入轉</td><td>入交</td></tr></thead>
+            <tbody>
+              {data.map((row, rowIndex) => (
+                <tr key={`row-${rowIndex}`}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={`cell-${rowIndex}-${cellIndex}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      } else {
+        return null;
+      }
 
+    };
+    const renderEcliInfo = (data) => {
+      return (
+        <table style={{ border: 'none', textAlign: 'right' }}>
+          <thead><tr><td></td><td>食分</td><td>日出入</td><td>初虧</td><td>食甚</td><td>復圓</td><td>日出入</td></tr></thead>
+          <tbody>
+            {data.map((row, rowIndex) => (
+              <tr key={`row-${rowIndex}`}>
+                {row.map((cell, cellIndex) => (
+                  <td key={`cell-${rowIndex}-${cellIndex}`}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    };
 
     return (
       <section className="main-render">
@@ -312,6 +365,8 @@ export default class Newm extends React.Component {
                 <p>
                   {renderYearInfo(calInfo.YearInfo)}
                 </p>
+                {renderEcliInfo(calInfo.EcliInfo)}
+                {renderMonthInfo(calInfo.MonthInfo)}
                 <table>
                   <tbody>
                     <tr>{this.RenderTableContent(calInfo)}</tr>
@@ -373,6 +428,7 @@ export default class Newm extends React.Component {
           <div>
             {this.renderCalendar()}
             {this.renderAutoCal()}
+            {this.renderDetail()}
           </div>
           <div>
             {this.renderInput()}

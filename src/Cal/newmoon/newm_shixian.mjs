@@ -1175,23 +1175,40 @@ export const N4 = (Name, Y) => {
       // 1738年NoleapMon會因為去年不閏而閏多一個月，暫時不想解決
       if (Ecli[i]) {
         if (isNewm) {
-          EcliPrint[i] = {
-            EclipseMon: "S" + NoleapMon,
-            EclipseInfo: `出${fix(Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start}甚${Ecli[i].Great}復${Ecli[i].End} 入${fix(1 - Rise[i])} 甚日黃道${deg2Hms(Ecli[i].GreatSLon)} 赤道${deg2Hms(Ecli[i].GreatSEquaLon)} ${lat2NS1(Ecli[i].GreatSLat)}`
-          };
+          EcliPrint[i] = [
+            NoleapMon + "日食",
+            Ecli[i].Magni,
+            fix(Rise[i]),
+            Ecli[i].Start,
+            Ecli[i].Great,
+            Ecli[i].End,
+            fix(1 - Rise[i]),
+            deg2Hms(Ecli[i].GreatSLon),
+            "",
+            deg2Hms(Ecli[i].GreatSEquaLon),
+            lat2NS1(Ecli[i].GreatSLat)
+          ];
         } else {
-          EcliPrint[i] = {
-            EclipseMon: "M" + NoleapMon,
-            EclipseInfo: `入${fix(1 - Rise[i])} ${Ecli[i].Magni}% 虧${Ecli[i].Start
-              }甚${Ecli[i].Great}復${Ecli[i].End} 出${fix(Rise[i])} 甚月黃道${deg2Hms(Ecli[i].GreatMLon)} ${lat2NS1(Ecli[i].GreatMLat)} 赤道${deg2Hms(Ecli[i].GreatMEquaLon)} ${lat2NS1(Ecli[i].GreatMEquaLat)}`
-          };
-          if (Ecli[i].Magni >= 99) {
-            NowSc[i] += "●";
-          } else if (Ecli[i].Magni > 10) {
-            NowSc[i] += "◐";
-          } else if (Ecli[i].Magni > 0) {
-            NowSc[i] += "◔";
-          }
+          EcliPrint[i] = [
+            NoleapMon + "月食",
+            Ecli[i].Magni,
+            fix(1 - Rise[i]),
+            Ecli[i].Start,
+            Ecli[i].Great,
+            Ecli[i].End,
+            fix(Rise[i]),
+            deg2Hms(Ecli[i].GreatMLon),
+            lat2NS1(Ecli[i].GreatMLat),
+            deg2Hms(Ecli[i].GreatMEquaLon),
+            lat2NS1(Ecli[i].GreatMEquaLat)
+          ];
+        }
+        if (Ecli[i].Magni >= 99) {
+          NowSc[i] += "●";
+        } else if (Ecli[i].Magni > 10) {
+          NowSc[i] += "◐";
+        } else if (Ecli[i].Magni > 0) {
+          NowSc[i] += "◔";
         }
       }
     }

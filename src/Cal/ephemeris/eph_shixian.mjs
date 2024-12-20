@@ -34,7 +34,6 @@ export const D2 = (Name, YearStart, YearEnd) => {
     const { Solar, Sobliq, RiseLat } = Para[Name];
     const {
       LeapNumTerm,
-      Sols,
       SunRoot,
       SperiRoot,
       MoonRoot,

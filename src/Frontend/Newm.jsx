@@ -317,7 +317,7 @@ export default class Newm extends React.Component {
       if (isDetail === true) {
         return (
           <table style={{ border: 'none', textAlign: 'right' }}>
-            <thead><tr><td></td><td>經朔 距冬至</td><td>入轉</td><td>入交</td><td>經望 距冬至</td><td>入轉</td><td>入交</td></tr></thead>
+            <thead><tr><td></td><td>朔 距冬至</td><td>入轉</td><td>入交</td><td>望 距冬至</td><td>入轉</td><td>入交</td></tr></thead>
             <tbody>
               {data.map((row, rowIndex) => (
                 <tr key={`row-${rowIndex}`}>
@@ -338,7 +338,7 @@ export default class Newm extends React.Component {
       if ((data || []).length) {
         return (
           <table style={{ border: 'none', textAlign: 'right' }}>
-            <thead><tr><td></td><td>食分</td><td>日出入</td><td>初虧</td><td>食甚</td><td>復圓</td><td>日出入</td></tr></thead>
+            <thead><tr><td></td><td>食分</td><td>日出入</td><td>初虧</td><td>食甚</td><td>復圓</td><td>日出入</td><td>食甚日或月黃經</td><td>黃緯</td><td>赤經</td><td>赤緯</td></tr></thead>
             <tbody>
               {data.map((row, rowIndex) => (
                 <tr key={`row-${rowIndex}`}>

@@ -15,7 +15,7 @@ import {
 } from "../parameter/constants.mjs";
 import { AutoEclipse } from "../astronomy/eclipse.mjs";
 import { AutoRangeEcli } from "../parameter/auto_consts.mjs";
-import { fix, fm60 } from "../parameter/functions.mjs";
+import { fix, fm360, fm60 } from "../parameter/functions.mjs";
 import { autoRise } from "../astronomy/lat_rise_dial.mjs";
 
 // const Index = (Name, YearStart, YearEnd) => {
@@ -257,6 +257,7 @@ export default (Name, YearStart, YearEnd) => {
     const TermSlice = (array) => array.slice(1 + TermStart, 13 + TermEnd);
     ////////////下爲調整輸出////////////
     const NewmSdPrint = ThisYear.NewmSd ? NewmSlice(ThisYear.NewmSd) : [];
+    const NewmSmdPrint = ThisYear.NewmSmd ? NewmSlice(ThisYear.NewmSmd) : [];
     const NewmAcrSdPrint = ThisYear.NewmAcrSd
       ? NewmSlice(ThisYear.NewmAcrSd)
       : [];
@@ -547,6 +548,10 @@ export default (Name, YearStart, YearEnd) => {
           LeapMon: `閏${ThisYear.LeapNumOriginLeapSur - NewmStart}`
         });
       }
+    } else if (Type === 13) {
+      YearInfo.push({
+        LeapSur: `年根${fm360(ThisYear.SunRoot).toFixed(6)} 太陽最卑${fm360(ThisYear.SperiRoot).toFixed(6)} 太陰${fm360(ThisYear.MoonRoot).toFixed(6)} 太陰最高${fm360(ThisYear.MapoRoot).toFixed(6)} 正交${fm360(ThisYear.NodeRoot).toFixed(6)}`
+      });
     } else {
       if (JiScOrder)
         YearInfo.push({ BuYear: `${ScList[JiScOrder]}紀${ThisYear.JiYear}` });
@@ -580,7 +585,19 @@ export default (Name, YearStart, YearEnd) => {
     ];
     const EcliInfo = [...SunEcli, ...MoonEcli].filter((x) => x != null);
     // 每個月交轉盈縮曆詳情
-    if (Node) {
+    if (Type === 13) {
+      for (let i = 0; i < MonthPrint.length; i++) {
+        MonthInfo[i] = [
+          MonthPrint[i],
+          NewmSmdPrint[i].toFixed(6),
+          "",
+          "",
+          "",
+          "",
+          ""
+        ];
+      }
+    } else if (Node) {
       for (let i = 0; i < MonthPrint.length; i++) {
         MonthInfo[i] = [
           MonthPrint[i],

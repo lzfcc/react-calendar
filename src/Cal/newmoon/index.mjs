@@ -597,7 +597,7 @@ export default (Name, YearStart, YearEnd) => {
           ""
         ];
       }
-    } else if (Node) {
+    } else if (Type > 1 && Node) {
       for (let i = 0; i < MonthPrint.length; i++) {
         MonthInfo[i] = [
           MonthPrint[i],
@@ -718,4 +718,4 @@ export default (Name, YearStart, YearEnd) => {
   }
   return result;
 };
-// console.log(Index("Shoushi", 2020, 2020));
+// console.log(Index("Taichu", 2020, 2020));

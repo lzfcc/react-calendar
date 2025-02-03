@@ -108,9 +108,9 @@ export default class Newm extends React.Component {
       return;
     }
     if (
-      YearStart < -2499 ||
+      YearStart < -2498 ||
       YearStart > 2499 ||
-      YearEnd < -2499 ||
+      YearEnd < -2498 ||
       YearEnd > 2499
     ) {
       alert("Year range: -2499 to 2499");
